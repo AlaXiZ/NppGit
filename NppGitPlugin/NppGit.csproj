@@ -64,6 +64,7 @@
     <Compile Include="Forms\frmMyDlg.Designer.cs">
       <DependentUpon>frmMyDlg.cs</DependentUpon>
     </Compile>
+    <Compile Include="IniFile.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="NppPluginNETBase.cs" />
     <Compile Include="NppPluginNETHelper.cs" />
@@ -74,6 +75,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="TortoiseGitHelper.cs" />
     <Compile Include="UnmanagedExports.cs" />
   </ItemGroup>
   <ItemGroup>

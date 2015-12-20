@@ -12,7 +12,8 @@ namespace NppGitPlugin
     {
         #region " Fields "
         internal const string PluginName = "NppGitPlugin";
-        static string iniFilePath = null;
+        private static readonly string TortoiseGitBin = "TortoiseGit\\bin\\";
+        static string iniPath = null;
         //static bool someSetting = false;
         //static frmMyDlg frmMyDlg = null;
         //static int idMyDlg = -1;
@@ -24,21 +25,41 @@ namespace NppGitPlugin
         #region " StartUp/CleanUp "
         internal static void CommandMenuInit()
         {
-            /* get ini file
-            StringBuilder sbIniFilePath = new StringBuilder(Win32.MAX_PATH);
-            Win32.SendMessage(Plugin.nppData._nppHandle, NppMsg.NPPM_GETPLUGINSCONFIGDIR, Win32.MAX_PATH, sbIniFilePath);
-            iniFilePath = sbIniFilePath.ToString();
-            if (!Directory.Exists(iniFilePath)) Directory.CreateDirectory(iniFilePath);
-            iniFilePath = Path.Combine(iniFilePath, PluginName + ".ini");
-            someSetting = (Win32.GetPrivateProfileInt("SomeSection", "SomeKey", 0, iniFilePath) != 0);
+            iniPath = Path.Combine(Plugin.ConfigDir, PluginName + ".ini");
+            InitTortoise();
+
+            if (TortoiseGitHelper.TortoiseGitPath != "")
+            {
+                Plugin.SetCommand("TGit Log file", TortoiseGitHelper.TGitLogFile);
+                Plugin.SetCommand("TGit Log path", TortoiseGitHelper.TGitLogPath);
+                Plugin.SetCommand("TGit Log repo", TortoiseGitHelper.TGitLogRepo);
+                Plugin.SetCommand("TGit Fetch", TortoiseGitHelper.TGitFetch);
+                Plugin.SetCommand("TGit Pull", TortoiseGitHelper.TGitPull);
+                Plugin.SetCommand("TGit Push", TortoiseGitHelper.TGitPush);
+                Plugin.SetCommand("TGit Commit", TortoiseGitHelper.TGitCommit);
+                Plugin.SetCommand("TGit Blame", TortoiseGitHelper.TGitBlame);
+                Plugin.SetCommand("TGit Blame line", TortoiseGitHelper.TGitBlameCurrentLine);
+                Plugin.SetCommand("TGit Switch", TortoiseGitHelper.TGitSwitch);
+            } else
+            {
+                Plugin.SetCommand("Readme", ReadmeFunc);
+            }
+            /*Plugin.SetCommand("TGit ", TortoiseGitHelper.TGit);
+            Plugin.SetCommand("TGit ", TortoiseGitHelper.TGit);
+            Plugin.SetCommand("TGit ", TortoiseGitHelper.TGit);
             */
-
-            //Plugin.SetCommand("MyMenuCommand", myMenuFunction);
             //idMyDlg = Plugin.SetCommand("MyDockableDialog", myDockableDialog);
-
         }
+
+        internal static void ReadmeFunc()
+        {
+            string text = "Не установлен TortoiseGit или не найдена папка с установленной программой!";
+            MessageBox.Show(text, "Ошибка настройки", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
         internal static void SetToolBarIcon()
         {
+
             /*
             toolbarIcons tbIcons = new toolbarIcons();
             tbIcons.hToolbarBmp = tbBmp.GetHbitmap();
@@ -46,11 +67,60 @@ namespace NppGitPlugin
             Marshal.StructureToPtr(tbIcons, pTbIcons, false);
             Win32.SendMessage(Plugin.nppData._nppHandle, NppMsg.NPPM_ADDTOOLBARICON, Plugin._funcItems.Items[idMyDlg]._cmdID, pTbIcons);
             Marshal.FreeHGlobal(pTbIcons);
-            */
+            */            
         }
+
         internal static void PluginCleanUp()
         {
             //Win32.WritePrivateProfileString("SomeSection", "SomeKey", someSetting ? "1" : "0", iniFilePath);
+        }
+
+        private static bool ExistsTortoiseGit(string programPath)
+        {
+            return System.IO.Directory.Exists(System.IO.Path.Combine(programPath, TortoiseGitBin));
+        }
+
+        internal static void InitTortoise()
+        {
+            IniFile iniFile = new IniFile(iniPath);
+            string tortoisePath = iniFile.GetValue<string>("TortoiseGitProc", "Path", "");
+            // Path not set
+            if (tortoisePath == "")
+            {
+                // x64
+                if (8 == IntPtr.Size || (!String.IsNullOrEmpty(Environment.GetEnvironmentVariable("PROCESSOR_ARCHITEW6432"))))
+                {
+                    var path = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+                    if (ExistsTortoiseGit(path))
+                    {
+                        tortoisePath = System.IO.Path.Combine(path, TortoiseGitBin);
+                    }
+                }
+                if (tortoisePath == "")
+                {
+                    var path = Environment.GetEnvironmentVariable("ProgramFiles").Replace(" (x86)", "");
+                    if (ExistsTortoiseGit(path))
+                    {
+                        tortoisePath = System.IO.Path.Combine(path, TortoiseGitBin);
+                    }
+                }
+                if (tortoisePath == "")
+                {
+                    var dlg = new FolderBrowserDialog();
+                    dlg.Description = "Select folder with TortoiseGitProc";
+                    dlg.ShowNewFolderButton = false;
+                    if (dlg.ShowDialog() == DialogResult.OK)
+                    {
+                        tortoisePath = dlg.SelectedPath;
+                    }
+                }
+                if (tortoisePath != "")
+                {
+                    iniFile.SetValue<string>("TortoiseGitProc", "Path", tortoisePath);
+                }
+            }
+            //
+            TortoiseGitHelper.TortoiseGitPath = tortoisePath;
         }
         #endregion
 
