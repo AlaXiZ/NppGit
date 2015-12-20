@@ -42,19 +42,22 @@ namespace NppGitPlugin
             return funcItem._cmdID;
         }
 
-        public static IntPtr GetCurrentScintilla()
+        public static IntPtr CurrentScintilla
         {
-            int curScintilla;
-            Win32.SendMessage(nppData._nppHandle, NppMsg.NPPM_GETCURRENTSCINTILLA, 0, out curScintilla);
-            return (curScintilla == 0) ? nppData._scintillaMainHandle : nppData._scintillaSecondHandle;
+            get
+            {
+                int curScintilla;
+                Win32.SendMessage(nppData._nppHandle, NppMsg.NPPM_GETCURRENTSCINTILLA, 0, out curScintilla);
+                return (curScintilla == 0) ? nppData._scintillaMainHandle : nppData._scintillaSecondHandle;
+            }
         }
 
         public static string ConfigDir
         {
             get
             {
-                var buffer = new StringBuilder(260);
-                Win32.SendMessage(nppData._nppHandle, NppMsg.NPPM_GETPLUGINSCONFIGDIR, 260, buffer);
+                var buffer = new StringBuilder(Win32.MAX_PATH);
+                Win32.SendMessage(nppData._nppHandle, NppMsg.NPPM_GETPLUGINSCONFIGDIR, Win32.MAX_PATH, buffer);
                 return buffer.ToString();
             }
         }
@@ -76,6 +79,34 @@ namespace NppGitPlugin
             Marshal.StructureToPtr(tbIcons, pTbIcons, false);
             Win32.SendMessage(nppData._nppHandle, NppMsg.NPPM_ADDTOOLBARICON, _funcItems.Items[pluginId]._cmdID, pTbIcons);
             Marshal.FreeHGlobal(pTbIcons);
+        }
+
+        public static string CurrentFilePath
+        {
+            get
+            {
+                var buffer = new StringBuilder(Win32.MAX_PATH);
+                Win32.SendMessage(nppData._nppHandle, NppMsg.NPPM_GETFULLCURRENTPATH, Win32.MAX_PATH, buffer);
+                return buffer.ToString();
+            }
+        }
+
+        public static string CurrentFileDir
+        {
+            get
+            {
+                var buffer = new StringBuilder(Win32.MAX_PATH);
+                Win32.SendMessage(nppData._nppHandle, NppMsg.NPPM_GETFULLCURRENTPATH, Win32.MAX_PATH, buffer);
+                return System.IO.Path.GetDirectoryName(buffer.ToString());
+            }
+        }
+
+        public static long CurrentLine
+        {
+            get
+            {
+                return ((long)Win32.SendMessage(nppData._nppHandle, NppMsg.NPPM_GETCURRENTLINE, 0, 0)) + 1;
+            }
         }
         #endregion
     }

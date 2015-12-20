@@ -1,12 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
 
 namespace NppGitPlugin
 {
     #region " Notepad++ "
+
     [StructLayout(LayoutKind.Sequential)]
     public struct NppData
     {
@@ -15,11 +18,22 @@ namespace NppGitPlugin
         public IntPtr _scintillaSecondHandle;
     }
 
-    public delegate void NppFuncItemDelegate();
-
     [StructLayout(LayoutKind.Sequential)]
     public struct ShortcutKey
     {
+        static public ShortcutKey None = new ShortcutKey();
+
+        public ShortcutKey(string data)
+        {
+            //Ctrl+Shift+Alt+Key
+            var parts = data.Split('+');
+            _key = Convert.ToByte(Enum.Parse(typeof(Keys), parts.Last()));
+            parts = parts.Take(parts.Length - 1).ToArray();
+            _isCtrl = Convert.ToByte(parts.Contains("Ctrl"));
+            _isShift = Convert.ToByte(parts.Contains("Shift"));
+            _isAlt = Convert.ToByte(parts.Contains("Alt"));
+        }
+
         public ShortcutKey(bool isCtrl, bool isAlt, bool isShift, Keys key)
         {
             // the types 'bool' and 'char' have a size of 1 byte only!
@@ -28,10 +42,21 @@ namespace NppGitPlugin
             _isShift = Convert.ToByte(isShift);
             _key = Convert.ToByte(key);
         }
+
         public byte _isCtrl;
         public byte _isAlt;
         public byte _isShift;
         public byte _key;
+
+        public bool IsCtrl { get { return _isCtrl != 0; } }
+        public bool IsShift { get { return _isShift != 0; } }
+        public bool IsAlt { get { return _isAlt != 0; } }
+        public Keys Key { get { return (Keys)_key; } }
+
+        public bool IsSet
+        {
+            get { return _key != 0; }
+        }
 
         public override string ToString()
         {
@@ -45,6 +70,7 @@ namespace NppGitPlugin
             retval.Append(((Keys)_key).ToString());
             return retval.ToString();
         }
+
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
@@ -52,6 +78,7 @@ namespace NppGitPlugin
     {
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 64)]
         public string _itemName;
+
         public Action _pFunc;
         public int _cmdID;
         public bool _init2Check;
@@ -75,7 +102,7 @@ namespace NppGitPlugin
 
         [DllImport("kernel32")]
         static extern void RtlMoveMemory(IntPtr Destination, IntPtr Source, int Length);
-     
+
         public void Add(FuncItem funcItem)
         {
             int oldSize = _funcItems.Count * _sizeFuncItem;
@@ -132,6 +159,7 @@ namespace NppGitPlugin
         }
 
         public IntPtr NativePointer { get { return _nativePointer; } }
+
         public List<FuncItem> Items { get { return _funcItems; } }
 
         public void Dispose()
@@ -143,6 +171,7 @@ namespace NppGitPlugin
                 _disposed = true;
             }
         }
+
         ~FuncItems()
         {
             Dispose();
@@ -156,6 +185,7 @@ namespace NppGitPlugin
         {
             Left = left; Top = top; Right = right; Bottom = bottom;
         }
+
         public int Left;
         public int Top;
         public int Right;
@@ -170,24 +200,27 @@ namespace NppGitPlugin
         //CAPTION_BOTTOM            = 0,
 
         // defines for docking manager
-        CONT_LEFT        = 0,
-        CONT_RIGHT        = 1,
-        CONT_TOP        = 2,
-        CONT_BOTTOM        = 3,
-        DOCKCONT_MAX    = 4,
+        CONT_LEFT = 0,
+
+        CONT_RIGHT = 1,
+        CONT_TOP = 2,
+        CONT_BOTTOM = 3,
+        DOCKCONT_MAX = 4,
 
         // mask params for plugins of internal dialogs
-        DWS_ICONTAB            = 0x00000001,            // Icon for tabs are available
-        DWS_ICONBAR            = 0x00000002,            // Icon for icon bar are available (currently not supported)
-        DWS_ADDINFO            = 0x00000004,            // Additional information are in use
-        DWS_PARAMSALL        = (DWS_ICONTAB|DWS_ICONBAR|DWS_ADDINFO),
+        DWS_ICONTAB = 0x00000001,            // Icon for tabs are available
+
+        DWS_ICONBAR = 0x00000002,            // Icon for icon bar are available (currently not supported)
+        DWS_ADDINFO = 0x00000004,            // Additional information are in use
+        DWS_PARAMSALL = (DWS_ICONTAB | DWS_ICONBAR | DWS_ADDINFO),
 
         // default docking values for first call of plugin
-        DWS_DF_CONT_LEFT    = (CONT_LEFT    << 28),    // default docking on left
-        DWS_DF_CONT_RIGHT    = (CONT_RIGHT    << 28),    // default docking on right
-        DWS_DF_CONT_TOP        = (CONT_TOP    << 28),        // default docking on top
-        DWS_DF_CONT_BOTTOM    = (CONT_BOTTOM << 28),    // default docking on bottom
-        DWS_DF_FLOATING        = 0x80000000            // default state is floating
+        DWS_DF_CONT_LEFT = (CONT_LEFT << 28),    // default docking on left
+
+        DWS_DF_CONT_RIGHT = (CONT_RIGHT << 28),    // default docking on right
+        DWS_DF_CONT_TOP = (CONT_TOP << 28),        // default docking on top
+        DWS_DF_CONT_BOTTOM = (CONT_BOTTOM << 28),    // default docking on bottom
+        DWS_DF_FLOATING = 0x80000000            // default state is floating
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
@@ -196,33 +229,44 @@ namespace NppGitPlugin
         public IntPtr hClient;            // HWND: client Window Handle
         public string pszName;            // TCHAR*: name of plugin (shown in window)
         public int dlgID;                // int: a funcItem provides the function pointer to start a dialog. Please parse here these ID
+
         // user modifications
         public NppTbMsg uMask;                // UINT: mask params: look to above defines
+
         public uint hIconTab;            // HICON: icon for tabs
         public string pszAddInfo;        // TCHAR*: for plugin to display additional informations
+
         // internal data, do not use !!!
         public RECT rcFloat;            // RECT: floating position
+
         public int iPrevCont;           // int: stores the privious container (toggling between float and dock)
         public string pszModuleName;    // const TCHAR*: it's the plugin file name. It's used to identify the plugin
     }
 
     public enum LangType
     {
-        L_TEXT, L_PHP , L_C, L_CPP, L_CS, L_OBJC, L_JAVA, L_RC,
+        L_TEXT, L_PHP, L_C, L_CPP, L_CS, L_OBJC, L_JAVA, L_RC,
         L_HTML, L_XML, L_MAKEFILE, L_PASCAL, L_BATCH, L_INI, L_ASCII, L_USER,
         L_ASP, L_SQL, L_VB, L_JS, L_CSS, L_PERL, L_PYTHON, L_LUA,
         L_TEX, L_FORTRAN, L_BASH, L_FLASH, L_NSIS, L_TCL, L_LISP, L_SCHEME,
         L_ASM, L_DIFF, L_PROPS, L_PS, L_RUBY, L_SMALLTALK, L_VHDL, L_KIX, L_AU3,
         L_CAML, L_ADA, L_VERILOG, L_MATLAB, L_HASKELL, L_INNO, L_SEARCHRESULT,
         L_CMAKE, L_YAML, L_COBOL, L_GUI4CLI, L_D, L_POWERSHELL, L_R, L_JSP,
+
         // The end of enumated language type, so it should be always at the end
         L_EXTERNAL
     }
 
     [Flags]
+    public enum WinMsg : int
+    {
+        WM_COMMAND = 0x111
+    }
+
+    [Flags]
     public enum NppMsg : uint
     {
-        //Here you can find how to use these messages : http://notepad-plus.sourceforge.net/uk/plugins-HOWTO.php 
+        //Here you can find how to use these messages : http://notepad-plus.sourceforge.net/uk/plugins-HOWTO.php
         NPPMSG = (0x400/*WM_USER*/ + 1000),
 
         NPPM_GETCURRENTSCINTILLA = (NPPMSG + 4),
@@ -230,53 +274,53 @@ namespace NppGitPlugin
         NPPM_SETCURRENTLANGTYPE = (NPPMSG + 6),
 
         NPPM_GETNBOPENFILES = (NPPMSG + 7),
-            ALL_OPEN_FILES = 0,
-            PRIMARY_VIEW = 1,
-            SECOND_VIEW = 2,
+        ALL_OPEN_FILES = 0,
+        PRIMARY_VIEW = 1,
+        SECOND_VIEW = 2,
 
         NPPM_GETOPENFILENAMES = (NPPMSG + 8),
 
         NPPM_MODELESSDIALOG = (NPPMSG + 12),
-            MODELESSDIALOGADD = 0,
-            MODELESSDIALOGREMOVE = 1,
+        MODELESSDIALOGADD = 0,
+        MODELESSDIALOGREMOVE = 1,
 
         NPPM_GETNBSESSIONFILES = (NPPMSG + 13),
         NPPM_GETSESSIONFILES = (NPPMSG + 14),
         NPPM_SAVESESSION = (NPPMSG + 15),
         NPPM_SAVECURRENTSESSION = (NPPMSG + 16),
-            //struct sessionInfo {
-            //    TCHAR* sessionFilePathName;
-            //    int nbFile;
-            //    TCHAR** files;
-            //};
+        //struct sessionInfo {
+        //    TCHAR* sessionFilePathName;
+        //    int nbFile;
+        //    TCHAR** files;
+        //};
 
         NPPM_GETOPENFILENAMESPRIMARY = (NPPMSG + 17),
         NPPM_GETOPENFILENAMESSECOND = (NPPMSG + 18),
-        
+
         NPPM_CREATESCINTILLAHANDLE = (NPPMSG + 20),
         NPPM_DESTROYSCINTILLAHANDLE = (NPPMSG + 21),
         NPPM_GETNBUSERLANG = (NPPMSG + 22),
 
         NPPM_GETCURRENTDOCINDEX = (NPPMSG + 23),
-            MAIN_VIEW = 0,
-            SUB_VIEW = 1,
+        MAIN_VIEW = 0,
+        SUB_VIEW = 1,
 
         NPPM_SETSTATUSBAR = (NPPMSG + 24),
-            STATUSBAR_DOC_TYPE = 0,
-            STATUSBAR_DOC_SIZE = 1,
-            STATUSBAR_CUR_POS = 2,
-            STATUSBAR_EOF_FORMAT = 3,
-            STATUSBAR_UNICODE_TYPE = 4,
-            STATUSBAR_TYPING_MODE = 5,
+        STATUSBAR_DOC_TYPE = 0,
+        STATUSBAR_DOC_SIZE = 1,
+        STATUSBAR_CUR_POS = 2,
+        STATUSBAR_EOF_FORMAT = 3,
+        STATUSBAR_UNICODE_TYPE = 4,
+        STATUSBAR_TYPING_MODE = 5,
 
         NPPM_GETMENUHANDLE = (NPPMSG + 25),
-            NPPPLUGINMENU = 0,
+        NPPPLUGINMENU = 0,
 
         NPPM_ENCODESCI = (NPPMSG + 26),
         //ascii file to unicode
         //int NPPM_ENCODESCI(MAIN_VIEW/SUB_VIEW, 0)
         //return new unicodeMode
-        
+
         NPPM_DECODESCI = (NPPMSG + 27),
         //unicode file to ascii
         //int NPPM_DECODESCI(MAIN_VIEW/SUB_VIEW, 0)
@@ -319,10 +363,10 @@ namespace NppGitPlugin
 
         NPPM_ADDTOOLBARICON = (NPPMSG + 41),
         //void WM_ADDTOOLBARICON(UINT funcItem[X]._cmdID, toolbarIcons icon)
-            //struct toolbarIcons {
-            //    HBITMAP    hToolbarBmp;
-            //    HICON    hToolbarIcon;
-            //};
+        //struct toolbarIcons {
+        //    HBITMAP    hToolbarBmp;
+        //    HICON    hToolbarIcon;
+        //};
 
         NPPM_GETWINDOWSVERSION = (NPPMSG + 42),
         //winVer NPPM_GETWINDOWSVERSION(0, 0)
@@ -331,7 +375,7 @@ namespace NppGitPlugin
         //HWND WM_DMM_GETPLUGINHWNDBYNAME(const TCHAR *windowName, const TCHAR *moduleName)
         // if moduleName is NULL, then return value is NULL
         // if windowName is NULL, then the first found window handle which matches with the moduleName will be returned
-        
+
         NPPM_MAKECURRENTBUFFERDIRTY = (NPPMSG + 44),
         //BOOL NPPM_MAKECURRENTBUFFERDIRTY(0, 0)
 
@@ -345,24 +389,24 @@ namespace NppGitPlugin
         //BOOL NPPM_MSGTOPLUGIN(TCHAR *destModuleName, CommunicationInfo *info)
         // return value is TRUE when the message arrive to the destination plugins.
         // if destModule or info is NULL, then return value is FALSE
-            //struct CommunicationInfo {
-            //    long internalMsg;
-            //    const TCHAR * srcModuleName;
-            //    void * info; // defined by plugin
-            //};
+        //struct CommunicationInfo {
+        //    long internalMsg;
+        //    const TCHAR * srcModuleName;
+        //    void * info; // defined by plugin
+        //};
 
         NPPM_MENUCOMMAND = (NPPMSG + 48),
         //void NPPM_MENUCOMMAND(0, int cmdID)
         // uncomment //#include "menuCmdID.h"
         // in the beginning of this file then use the command symbols defined in "menuCmdID.h" file
         // to access all the Notepad++ menu command items
-        
+
         NPPM_TRIGGERTABBARCONTEXTMENU = (NPPMSG + 49),
         //void NPPM_TRIGGERTABBARCONTEXTMENU(int view, int index2Activate)
 
         NPPM_GETNPPVERSION = (NPPMSG + 50),
         // int NPPM_GETNPPVERSION(0, 0)
-        // return version 
+        // return version
         // ex : v4.6
         // HIWORD(version) == 4
         // LOWORD(version) == 6
@@ -381,14 +425,14 @@ namespace NppGitPlugin
         // INT NPPM_GETPOSFROMBUFFERID(INT bufferID, 0)
         // Return VIEW|INDEX from a buffer ID. -1 if the bufferID non existing
         //
-        // VIEW takes 2 highest bits and INDEX (0 based) takes the rest (30 bits) 
+        // VIEW takes 2 highest bits and INDEX (0 based) takes the rest (30 bits)
         // Here's the values for the view :
         //  MAIN_VIEW 0
         //  SUB_VIEW  1
 
         NPPM_GETFULLPATHFROMBUFFERID = (NPPMSG + 58),
         // INT NPPM_GETFULLPATHFROMBUFFERID(INT bufferID, TCHAR *fullFilePath)
-        // Get full path file name from a bufferID. 
+        // Get full path file name from a bufferID.
         // Return -1 if the bufferID non existing, otherwise the number of TCHAR copied/to copy
         // User should call it with fullFilePath be NULL to get the number of TCHAR (not including the nul character),
         // allocate fullFilePath with the return values + 1, then call it again to get  full path file name
@@ -405,7 +449,6 @@ namespace NppGitPlugin
         //Reloads Buffer
         //wParam: Buffer to reload
         //lParam: 0 if no alert, else alert
-
 
         NPPM_GETBUFFERLANGTYPE = (NPPMSG + 64),
         //wParam: BufferID to get LangType from
@@ -518,13 +561,13 @@ namespace NppGitPlugin
         // Returns: TRUE if successful, FALSE otherwise. startNumber will also be set to 0 if unsuccessful
 
         RUNCOMMAND_USER = (0x400/*WM_USER*/ + 3000),
-        NPPM_GETFULLCURRENTPATH     = (RUNCOMMAND_USER + FULL_CURRENT_PATH),
-        NPPM_GETCURRENTDIRECTORY    = (RUNCOMMAND_USER + CURRENT_DIRECTORY),
-        NPPM_GETFILENAME            = (RUNCOMMAND_USER + FILE_NAME),
-        NPPM_GETNAMEPART            = (RUNCOMMAND_USER + NAME_PART),
-        NPPM_GETEXTPART                = (RUNCOMMAND_USER + EXT_PART),
-        NPPM_GETCURRENTWORD            = (RUNCOMMAND_USER + CURRENT_WORD),
-        NPPM_GETNPPDIRECTORY        = (RUNCOMMAND_USER + NPP_DIRECTORY),
+        NPPM_GETFULLCURRENTPATH = (RUNCOMMAND_USER + FULL_CURRENT_PATH),
+        NPPM_GETCURRENTDIRECTORY = (RUNCOMMAND_USER + CURRENT_DIRECTORY),
+        NPPM_GETFILENAME = (RUNCOMMAND_USER + FILE_NAME),
+        NPPM_GETNAMEPART = (RUNCOMMAND_USER + NAME_PART),
+        NPPM_GETEXTPART = (RUNCOMMAND_USER + EXT_PART),
+        NPPM_GETCURRENTWORD = (RUNCOMMAND_USER + CURRENT_WORD),
+        NPPM_GETNPPDIRECTORY = (RUNCOMMAND_USER + NPP_DIRECTORY),
         // BOOL NPPM_GETXXXXXXXXXXXXXXXX(size_t strLen, TCHAR *str)
         // where str is the allocated TCHAR array,
         //         strLen is the allocated array size
@@ -532,24 +575,28 @@ namespace NppGitPlugin
         // Otherwise (allocated array size is too small) FALSE
 
         NPPM_GETCURRENTLINE = (RUNCOMMAND_USER + CURRENT_LINE),
+
         // INT NPPM_GETCURRENTLINE(0, 0)
         // return the caret current position line
         NPPM_GETCURRENTCOLUMN = (RUNCOMMAND_USER + CURRENT_COLUMN),
+
         // INT NPPM_GETCURRENTCOLUMN(0, 0)
         // return the caret current position column
-            VAR_NOT_RECOGNIZED = 0,
-            FULL_CURRENT_PATH = 1,
-            CURRENT_DIRECTORY = 2,
-            FILE_NAME = 3,
-            NAME_PART = 4,
-            EXT_PART = 5,
-            CURRENT_WORD = 6,
-            NPP_DIRECTORY = 7,
-            CURRENT_LINE = 8,
-            CURRENT_COLUMN = 9,
+        VAR_NOT_RECOGNIZED = 0,
+
+        FULL_CURRENT_PATH = 1,
+        CURRENT_DIRECTORY = 2,
+        FILE_NAME = 3,
+        NAME_PART = 4,
+        EXT_PART = 5,
+        CURRENT_WORD = 6,
+        NPP_DIRECTORY = 7,
+        CURRENT_LINE = 8,
+        CURRENT_COLUMN = 9,
 
         // Notification code
         NPPN_FIRST = 1000,
+
         NPPN_READY = (NPPN_FIRST + 1), // To notify plugins that all the procedures of launchment of notepad++ are done.
         //scnNotification->nmhdr.code = NPPN_READY;
         //scnNotification->nmhdr.hwndFrom = hwndNpp;
@@ -579,12 +626,12 @@ namespace NppGitPlugin
         //scnNotification->nmhdr.code = NPPN_FILEBEFOREOPEN;
         //scnNotification->nmhdr.hwndFrom = hwndNpp;
         //scnNotification->nmhdr.idFrom = BufferID;
-        
+
         NPPN_FILEBEFORESAVE = (NPPN_FIRST + 7), // To notify plugins that the current file is about to be saved
         //scnNotification->nmhdr.code = NPPN_FILEBEFOREOPEN;
         //scnNotification->nmhdr.hwndFrom = hwndNpp;
         //scnNotification->nmhdr.idFrom = BufferID;
-        
+
         NPPN_FILESAVED = (NPPN_FIRST + 8), // To notify plugins that the current file is just saved
         //scnNotification->nmhdr.code = NPPN_FILESAVED;
         //scnNotification->nmhdr.hwndFrom = hwndNpp;
@@ -614,13 +661,13 @@ namespace NppGitPlugin
         //scnNotification->nmhdr.code = NPPN_SHORTCUTSREMAPPED;
         //scnNotification->nmhdr.hwndFrom = ShortcutKeyStructurePointer;
         //scnNotification->nmhdr.idFrom = cmdID;
-            //where ShortcutKeyStructurePointer is pointer of struct ShortcutKey:
-            //struct ShortcutKey {
-            //    bool _isCtrl;
-            //    bool _isAlt;
-            //    bool _isShift;
-            //    UCHAR _key;
-            //};
+        //where ShortcutKeyStructurePointer is pointer of struct ShortcutKey:
+        //struct ShortcutKey {
+        //    bool _isCtrl;
+        //    bool _isAlt;
+        //    bool _isShift;
+        //    UCHAR _key;
+        //};
 
         NPPN_FILEBEFORELOAD = (NPPN_FIRST + 14), // To notify plugins that the current file is about to be loaded
         //scnNotification->nmhdr.code = NPPN_FILEBEFOREOPEN;
@@ -636,11 +683,11 @@ namespace NppGitPlugin
         //scnNotification->nmhdr.code = NPPN_READONLYCHANGED;
         //scnNotification->nmhdr.hwndFrom = bufferID;
         //scnNotification->nmhdr.idFrom = docStatus;
-            // where bufferID is BufferID
-            //       docStatus can be combined by DOCSTAUS_READONLY and DOCSTAUS_BUFFERDIRTY
+        // where bufferID is BufferID
+        //       docStatus can be combined by DOCSTAUS_READONLY and DOCSTAUS_BUFFERDIRTY
 
-            DOCSTAUS_READONLY = 1,
-            DOCSTAUS_BUFFERDIRTY = 2,
+        DOCSTAUS_READONLY = 1,
+        DOCSTAUS_BUFFERDIRTY = 2,
 
         NPPN_DOCORDERCHANGED = (NPPN_FIRST + 16)  // To notify plugins that document order is changed
         //scnNotification->nmhdr.code = NPPN_DOCORDERCHANGED;
@@ -650,434 +697,440 @@ namespace NppGitPlugin
 
     public enum NppMenuCmd : uint
     {
-        IDM    = 40000,
+        IDM = 40000,
 
-        IDM_FILE    = (IDM + 1000),
-            IDM_FILE_NEW                     = (IDM_FILE + 1),
-            IDM_FILE_OPEN                    = (IDM_FILE + 2),
-            IDM_FILE_CLOSE                   = (IDM_FILE + 3),
-            IDM_FILE_CLOSEALL                = (IDM_FILE + 4),
-            IDM_FILE_CLOSEALL_BUT_CURRENT    = (IDM_FILE + 5),
-            IDM_FILE_SAVE                    = (IDM_FILE + 6),
-            IDM_FILE_SAVEALL                 = (IDM_FILE + 7),
-            IDM_FILE_SAVEAS                  = (IDM_FILE + 8),
-            //IDM_FILE_ASIAN_LANG              = (IDM_FILE + 9), 
-            IDM_FILE_PRINT                   = (IDM_FILE + 10),
-            IDM_FILE_PRINTNOW                = 1001,
-            IDM_FILE_EXIT                    = (IDM_FILE + 11),
-            IDM_FILE_LOADSESSION             = (IDM_FILE + 12),
-            IDM_FILE_SAVESESSION             = (IDM_FILE + 13),
-            IDM_FILE_RELOAD                  = (IDM_FILE + 14),
-            IDM_FILE_SAVECOPYAS              = (IDM_FILE + 15),
-            IDM_FILE_DELETE                  = (IDM_FILE + 16),
-            IDM_FILE_RENAME                  = (IDM_FILE + 17),
- 
-         // A mettre à jour si on ajoute nouveau menu item dans le menu "File"
-            IDM_FILEMENU_LASTONE             = IDM_FILE_RENAME,
-         
-        IDM_EDIT       = (IDM + 2000),
-            IDM_EDIT_CUT                         = (IDM_EDIT + 1),
-            IDM_EDIT_COPY                        = (IDM_EDIT + 2),
-            IDM_EDIT_UNDO                        = (IDM_EDIT + 3),
-            IDM_EDIT_REDO                        = (IDM_EDIT + 4),
-            IDM_EDIT_PASTE                       = (IDM_EDIT + 5),
-            IDM_EDIT_DELETE                      = (IDM_EDIT + 6),
-            IDM_EDIT_SELECTALL                   = (IDM_EDIT + 7),
-            
-            IDM_EDIT_INS_TAB                     = (IDM_EDIT + 8),
-            IDM_EDIT_RMV_TAB                     = (IDM_EDIT + 9),
-            IDM_EDIT_DUP_LINE                    = (IDM_EDIT + 10),
-            IDM_EDIT_TRANSPOSE_LINE              = (IDM_EDIT + 11),
-            IDM_EDIT_SPLIT_LINES                 = (IDM_EDIT + 12),
-            IDM_EDIT_JOIN_LINES                  = (IDM_EDIT + 13),
-            IDM_EDIT_LINE_UP                     = (IDM_EDIT + 14),
-            IDM_EDIT_LINE_DOWN                   = (IDM_EDIT + 15),
-            IDM_EDIT_UPPERCASE                   = (IDM_EDIT + 16),
-            IDM_EDIT_LOWERCASE                   = (IDM_EDIT + 17),
+        IDM_FILE = (IDM + 1000),
+        IDM_FILE_NEW = (IDM_FILE + 1),
+        IDM_FILE_OPEN = (IDM_FILE + 2),
+        IDM_FILE_CLOSE = (IDM_FILE + 3),
+        IDM_FILE_CLOSEALL = (IDM_FILE + 4),
+        IDM_FILE_CLOSEALL_BUT_CURRENT = (IDM_FILE + 5),
+        IDM_FILE_SAVE = (IDM_FILE + 6),
+        IDM_FILE_SAVEALL = (IDM_FILE + 7),
+        IDM_FILE_SAVEAS = (IDM_FILE + 8),
 
-        // Menu macro
-            IDM_MACRO_STARTRECORDINGMACRO        = (IDM_EDIT + 18),
-            IDM_MACRO_STOPRECORDINGMACRO         = (IDM_EDIT + 19),
-            IDM_MACRO_PLAYBACKRECORDEDMACRO      = (IDM_EDIT + 21),
-        //-----------
+        //IDM_FILE_ASIAN_LANG              = (IDM_FILE + 9),
+        IDM_FILE_PRINT = (IDM_FILE + 10),
 
-            IDM_EDIT_BLOCK_COMMENT               = (IDM_EDIT + 22),
-            IDM_EDIT_STREAM_COMMENT              = (IDM_EDIT + 23),
-            IDM_EDIT_TRIMTRAILING                = (IDM_EDIT + 24),
-            IDM_EDIT_TRIMLINEHEAD                = (IDM_EDIT + 42),
-            IDM_EDIT_TRIM_BOTH                   = (IDM_EDIT + 43),
-            IDM_EDIT_EOL2WS                      = (IDM_EDIT + 44),
-            IDM_EDIT_TRIMALL                     = (IDM_EDIT + 45),
-            IDM_EDIT_TAB2SW                      = (IDM_EDIT + 46),
-            IDM_EDIT_SW2TAB                      = (IDM_EDIT + 47),
-            
-        // Menu macro
-            IDM_MACRO_SAVECURRENTMACRO           = (IDM_EDIT + 25),
-        //-----------
+        IDM_FILE_PRINTNOW = 1001,
+        IDM_FILE_EXIT = (IDM_FILE + 11),
+        IDM_FILE_LOADSESSION = (IDM_FILE + 12),
+        IDM_FILE_SAVESESSION = (IDM_FILE + 13),
+        IDM_FILE_RELOAD = (IDM_FILE + 14),
+        IDM_FILE_SAVECOPYAS = (IDM_FILE + 15),
+        IDM_FILE_DELETE = (IDM_FILE + 16),
+        IDM_FILE_RENAME = (IDM_FILE + 17),
 
-            IDM_EDIT_RTL                         = (IDM_EDIT + 26),
-            IDM_EDIT_LTR                         = (IDM_EDIT + 27),
-            IDM_EDIT_SETREADONLY                 = (IDM_EDIT + 28),
-            IDM_EDIT_FULLPATHTOCLIP              = (IDM_EDIT + 29),
-            IDM_EDIT_FILENAMETOCLIP              = (IDM_EDIT + 30),
-            IDM_EDIT_CURRENTDIRTOCLIP            = (IDM_EDIT + 31),
+        // A mettre à jour si on ajoute nouveau menu item dans le menu "File"
+        IDM_FILEMENU_LASTONE = IDM_FILE_RENAME,
+
+        IDM_EDIT = (IDM + 2000),
+        IDM_EDIT_CUT = (IDM_EDIT + 1),
+        IDM_EDIT_COPY = (IDM_EDIT + 2),
+        IDM_EDIT_UNDO = (IDM_EDIT + 3),
+        IDM_EDIT_REDO = (IDM_EDIT + 4),
+        IDM_EDIT_PASTE = (IDM_EDIT + 5),
+        IDM_EDIT_DELETE = (IDM_EDIT + 6),
+        IDM_EDIT_SELECTALL = (IDM_EDIT + 7),
+
+        IDM_EDIT_INS_TAB = (IDM_EDIT + 8),
+        IDM_EDIT_RMV_TAB = (IDM_EDIT + 9),
+        IDM_EDIT_DUP_LINE = (IDM_EDIT + 10),
+        IDM_EDIT_TRANSPOSE_LINE = (IDM_EDIT + 11),
+        IDM_EDIT_SPLIT_LINES = (IDM_EDIT + 12),
+        IDM_EDIT_JOIN_LINES = (IDM_EDIT + 13),
+        IDM_EDIT_LINE_UP = (IDM_EDIT + 14),
+        IDM_EDIT_LINE_DOWN = (IDM_EDIT + 15),
+        IDM_EDIT_UPPERCASE = (IDM_EDIT + 16),
+        IDM_EDIT_LOWERCASE = (IDM_EDIT + 17),
 
         // Menu macro
-            IDM_MACRO_RUNMULTIMACRODLG           = (IDM_EDIT + 32),
+        IDM_MACRO_STARTRECORDINGMACRO = (IDM_EDIT + 18),
+
+        IDM_MACRO_STOPRECORDINGMACRO = (IDM_EDIT + 19),
+        IDM_MACRO_PLAYBACKRECORDEDMACRO = (IDM_EDIT + 21),
         //-----------
 
-            IDM_EDIT_CLEARREADONLY               = (IDM_EDIT + 33),
-            IDM_EDIT_COLUMNMODE                  = (IDM_EDIT + 34),
-            IDM_EDIT_BLOCK_COMMENT_SET           = (IDM_EDIT + 35),
-            IDM_EDIT_BLOCK_UNCOMMENT             = (IDM_EDIT + 36),
+        IDM_EDIT_BLOCK_COMMENT = (IDM_EDIT + 22),
+        IDM_EDIT_STREAM_COMMENT = (IDM_EDIT + 23),
+        IDM_EDIT_TRIMTRAILING = (IDM_EDIT + 24),
+        IDM_EDIT_TRIMLINEHEAD = (IDM_EDIT + 42),
+        IDM_EDIT_TRIM_BOTH = (IDM_EDIT + 43),
+        IDM_EDIT_EOL2WS = (IDM_EDIT + 44),
+        IDM_EDIT_TRIMALL = (IDM_EDIT + 45),
+        IDM_EDIT_TAB2SW = (IDM_EDIT + 46),
+        IDM_EDIT_SW2TAB = (IDM_EDIT + 47),
 
-            IDM_EDIT_AUTOCOMPLETE                = (50000 + 0),
-            IDM_EDIT_AUTOCOMPLETE_CURRENTFILE    = (50000 + 1),
-            IDM_EDIT_FUNCCALLTIP                 = (50000 + 2),
-    
-            //Belong to MENU FILE
-            IDM_OPEN_ALL_RECENT_FILE             = (IDM_EDIT + 40),
-            IDM_CLEAN_RECENT_FILE_LIST           = (IDM_EDIT + 41),
-            
-        IDM_SEARCH    = (IDM + 3000),
+        // Menu macro
+        IDM_MACRO_SAVECURRENTMACRO = (IDM_EDIT + 25),
 
-            IDM_SEARCH_FIND                 = (IDM_SEARCH + 1),
-            IDM_SEARCH_FINDNEXT             = (IDM_SEARCH + 2),
-            IDM_SEARCH_REPLACE              = (IDM_SEARCH + 3),
-            IDM_SEARCH_GOTOLINE             = (IDM_SEARCH + 4),
-            IDM_SEARCH_TOGGLE_BOOKMARK      = (IDM_SEARCH + 5),
-            IDM_SEARCH_NEXT_BOOKMARK        = (IDM_SEARCH + 6),
-            IDM_SEARCH_PREV_BOOKMARK        = (IDM_SEARCH + 7),
-            IDM_SEARCH_CLEAR_BOOKMARKS      = (IDM_SEARCH + 8),
-            IDM_SEARCH_GOTOMATCHINGBRACE    = (IDM_SEARCH + 9),
-            IDM_SEARCH_FINDPREV             = (IDM_SEARCH + 10),
-            IDM_SEARCH_FINDINCREMENT        = (IDM_SEARCH + 11),
-            IDM_SEARCH_FINDINFILES          = (IDM_SEARCH + 13),
-            IDM_SEARCH_VOLATILE_FINDNEXT    = (IDM_SEARCH + 14),
-            IDM_SEARCH_VOLATILE_FINDPREV    = (IDM_SEARCH + 15),
-            IDM_SEARCH_CUTMARKEDLINES       = (IDM_SEARCH + 18),
-            IDM_SEARCH_COPYMARKEDLINES      = (IDM_SEARCH + 19),
-            IDM_SEARCH_PASTEMARKEDLINES     = (IDM_SEARCH + 20),
-            IDM_SEARCH_DELETEMARKEDLINES    = (IDM_SEARCH + 21),
-            IDM_SEARCH_MARKALLEXT1          = (IDM_SEARCH + 22),
-            IDM_SEARCH_UNMARKALLEXT1        = (IDM_SEARCH + 23),
-            IDM_SEARCH_MARKALLEXT2          = (IDM_SEARCH + 24),
-            IDM_SEARCH_UNMARKALLEXT2        = (IDM_SEARCH + 25),
-            IDM_SEARCH_MARKALLEXT3          = (IDM_SEARCH + 26),
-            IDM_SEARCH_UNMARKALLEXT3        = (IDM_SEARCH + 27),
-            IDM_SEARCH_MARKALLEXT4          = (IDM_SEARCH + 28),
-            IDM_SEARCH_UNMARKALLEXT4        = (IDM_SEARCH + 29),
-            IDM_SEARCH_MARKALLEXT5          = (IDM_SEARCH + 30),
-            IDM_SEARCH_UNMARKALLEXT5        = (IDM_SEARCH + 31),
-            IDM_SEARCH_CLEARALLMARKS        = (IDM_SEARCH + 32),
+        //-----------
 
-            IDM_SEARCH_GOPREVMARKER1        = (IDM_SEARCH + 33),
-            IDM_SEARCH_GOPREVMARKER2        = (IDM_SEARCH + 34),
-            IDM_SEARCH_GOPREVMARKER3        = (IDM_SEARCH + 35),
-            IDM_SEARCH_GOPREVMARKER4        = (IDM_SEARCH + 36),
-            IDM_SEARCH_GOPREVMARKER5        = (IDM_SEARCH + 37),
-            IDM_SEARCH_GOPREVMARKER_DEF     = (IDM_SEARCH + 38),
+        IDM_EDIT_RTL = (IDM_EDIT + 26),
+        IDM_EDIT_LTR = (IDM_EDIT + 27),
+        IDM_EDIT_SETREADONLY = (IDM_EDIT + 28),
+        IDM_EDIT_FULLPATHTOCLIP = (IDM_EDIT + 29),
+        IDM_EDIT_FILENAMETOCLIP = (IDM_EDIT + 30),
+        IDM_EDIT_CURRENTDIRTOCLIP = (IDM_EDIT + 31),
 
-            IDM_SEARCH_GONEXTMARKER1        = (IDM_SEARCH + 39),
-            IDM_SEARCH_GONEXTMARKER2        = (IDM_SEARCH + 40),
-            IDM_SEARCH_GONEXTMARKER3        = (IDM_SEARCH + 41),
-            IDM_SEARCH_GONEXTMARKER4        = (IDM_SEARCH + 42),
-            IDM_SEARCH_GONEXTMARKER5        = (IDM_SEARCH + 43),
-            IDM_SEARCH_GONEXTMARKER_DEF     = (IDM_SEARCH + 44),
+        // Menu macro
+        IDM_MACRO_RUNMULTIMACRODLG = (IDM_EDIT + 32),
 
-            IDM_FOCUS_ON_FOUND_RESULTS      = (IDM_SEARCH + 45),
-            IDM_SEARCH_GOTONEXTFOUND        = (IDM_SEARCH + 46),
-            IDM_SEARCH_GOTOPREVFOUND        = (IDM_SEARCH + 47),
-            
-            IDM_SEARCH_SETANDFINDNEXT       = (IDM_SEARCH + 48),
-            IDM_SEARCH_SETANDFINDPREV       = (IDM_SEARCH + 49),
-            IDM_SEARCH_INVERSEMARKS         = (IDM_SEARCH + 50),
-            
-        IDM_VIEW    = (IDM + 4000),
-            //IDM_VIEW_TOOLBAR_HIDE            = (IDM_VIEW + 1),
-            IDM_VIEW_TOOLBAR_REDUCE            = (IDM_VIEW + 2),   
-            IDM_VIEW_TOOLBAR_ENLARGE           = (IDM_VIEW + 3),
-            IDM_VIEW_TOOLBAR_STANDARD          = (IDM_VIEW + 4),
-            IDM_VIEW_REDUCETABBAR              = (IDM_VIEW + 5),
-            IDM_VIEW_LOCKTABBAR                = (IDM_VIEW + 6),
-            IDM_VIEW_DRAWTABBAR_TOPBAR         = (IDM_VIEW + 7),
-            IDM_VIEW_DRAWTABBAR_INACIVETAB     = (IDM_VIEW + 8),
-            IDM_VIEW_POSTIT                    = (IDM_VIEW + 9),
-            IDM_VIEW_TOGGLE_FOLDALL            = (IDM_VIEW + 10),
-            IDM_VIEW_USER_DLG                  = (IDM_VIEW + 11),
-            IDM_VIEW_LINENUMBER                = (IDM_VIEW + 12),
-            IDM_VIEW_SYMBOLMARGIN              = (IDM_VIEW + 13),
-            IDM_VIEW_FOLDERMAGIN               = (IDM_VIEW + 14),
-            IDM_VIEW_FOLDERMAGIN_SIMPLE        = (IDM_VIEW + 15),
-            IDM_VIEW_FOLDERMAGIN_ARROW         = (IDM_VIEW + 16),
-            IDM_VIEW_FOLDERMAGIN_CIRCLE        = (IDM_VIEW + 17),
-            IDM_VIEW_FOLDERMAGIN_BOX           = (IDM_VIEW + 18),
-            IDM_VIEW_ALL_CHARACTERS            = (IDM_VIEW + 19),
-            IDM_VIEW_INDENT_GUIDE              = (IDM_VIEW + 20),
-            IDM_VIEW_CURLINE_HILITING          = (IDM_VIEW + 21),
-            IDM_VIEW_WRAP                      = (IDM_VIEW + 22),
-            IDM_VIEW_ZOOMIN                    = (IDM_VIEW + 23),
-            IDM_VIEW_ZOOMOUT                   = (IDM_VIEW + 24),
-            IDM_VIEW_TAB_SPACE                 = (IDM_VIEW + 25),
-            IDM_VIEW_EOL                       = (IDM_VIEW + 26),
-            IDM_VIEW_EDGELINE                  = (IDM_VIEW + 27),
-            IDM_VIEW_EDGEBACKGROUND            = (IDM_VIEW + 28),
-            IDM_VIEW_TOGGLE_UNFOLDALL          = (IDM_VIEW + 29),
-            IDM_VIEW_FOLD_CURRENT              = (IDM_VIEW + 30),
-            IDM_VIEW_UNFOLD_CURRENT            = (IDM_VIEW + 31),
-            IDM_VIEW_FULLSCREENTOGGLE          = (IDM_VIEW + 32),
-            IDM_VIEW_ZOOMRESTORE               = (IDM_VIEW + 33),
-            IDM_VIEW_ALWAYSONTOP               = (IDM_VIEW + 34),
-            IDM_VIEW_SYNSCROLLV                = (IDM_VIEW + 35),
-            IDM_VIEW_SYNSCROLLH                = (IDM_VIEW + 36),
-            IDM_VIEW_EDGENONE                  = (IDM_VIEW + 37),
-            IDM_VIEW_DRAWTABBAR_CLOSEBOTTUN    = (IDM_VIEW + 38),
-            IDM_VIEW_DRAWTABBAR_DBCLK2CLOSE    = (IDM_VIEW + 39),
-            IDM_VIEW_REFRESHTABAR              = (IDM_VIEW + 40),
-            IDM_VIEW_WRAP_SYMBOL               = (IDM_VIEW + 41),
-            IDM_VIEW_HIDELINES                 = (IDM_VIEW + 42),
-            IDM_VIEW_DRAWTABBAR_VERTICAL       = (IDM_VIEW + 43),
-            IDM_VIEW_DRAWTABBAR_MULTILINE      = (IDM_VIEW + 44),
-            IDM_VIEW_DOCCHANGEMARGIN           = (IDM_VIEW + 45),
-            IDM_VIEW_LWDEF                     = (IDM_VIEW + 46),
-            IDM_VIEW_LWALIGN                   = (IDM_VIEW + 47),
-            IDM_VIEW_LWINDENT                  = (IDM_VIEW + 48),
-            IDM_VIEW_SUMMARY                   = (IDM_VIEW + 49),
-            
-            IDM_VIEW_FOLD                      = (IDM_VIEW + 50),
-                IDM_VIEW_FOLD_1    = (IDM_VIEW_FOLD + 1),
-                IDM_VIEW_FOLD_2    = (IDM_VIEW_FOLD + 2),
-                IDM_VIEW_FOLD_3    = (IDM_VIEW_FOLD + 3),
-                IDM_VIEW_FOLD_4    = (IDM_VIEW_FOLD + 4),
-                IDM_VIEW_FOLD_5    = (IDM_VIEW_FOLD + 5),
-                IDM_VIEW_FOLD_6    = (IDM_VIEW_FOLD + 6),
-                IDM_VIEW_FOLD_7    = (IDM_VIEW_FOLD + 7),
-                IDM_VIEW_FOLD_8    = (IDM_VIEW_FOLD + 8),
+        //-----------
 
-            IDM_VIEW_UNFOLD                    = (IDM_VIEW + 60), 
-                IDM_VIEW_UNFOLD_1    = (IDM_VIEW_UNFOLD + 1),
-                IDM_VIEW_UNFOLD_2    = (IDM_VIEW_UNFOLD + 2),
-                IDM_VIEW_UNFOLD_3    = (IDM_VIEW_UNFOLD + 3),
-                IDM_VIEW_UNFOLD_4    = (IDM_VIEW_UNFOLD + 4),
-                IDM_VIEW_UNFOLD_5    = (IDM_VIEW_UNFOLD + 5),
-                IDM_VIEW_UNFOLD_6    = (IDM_VIEW_UNFOLD + 6),
-                IDM_VIEW_UNFOLD_7    = (IDM_VIEW_UNFOLD + 7),
-                IDM_VIEW_UNFOLD_8    = (IDM_VIEW_UNFOLD + 8),
-        
-            IDM_VIEW_GOTO_ANOTHER_VIEW        = 10001,
-            IDM_VIEW_CLONE_TO_ANOTHER_VIEW    = 10002,
-            IDM_VIEW_GOTO_NEW_INSTANCE        = 10003,
-            IDM_VIEW_LOAD_IN_NEW_INSTANCE     = 10004,
+        IDM_EDIT_CLEARREADONLY = (IDM_EDIT + 33),
+        IDM_EDIT_COLUMNMODE = (IDM_EDIT + 34),
+        IDM_EDIT_BLOCK_COMMENT_SET = (IDM_EDIT + 35),
+        IDM_EDIT_BLOCK_UNCOMMENT = (IDM_EDIT + 36),
 
-            IDM_VIEW_SWITCHTO_OTHER_VIEW       = (IDM_VIEW + 72),
-            
-        IDM_FORMAT    = (IDM + 5000),
-            IDM_FORMAT_TODOS             = (IDM_FORMAT + 1),
-            IDM_FORMAT_TOUNIX            = (IDM_FORMAT + 2),
-            IDM_FORMAT_TOMAC             = (IDM_FORMAT + 3),
-            IDM_FORMAT_ANSI              = (IDM_FORMAT + 4),
-            IDM_FORMAT_UTF_8             = (IDM_FORMAT + 5),
-            IDM_FORMAT_UCS_2BE           = (IDM_FORMAT + 6),
-            IDM_FORMAT_UCS_2LE           = (IDM_FORMAT + 7),
-            IDM_FORMAT_AS_UTF_8          = (IDM_FORMAT + 8),
-            IDM_FORMAT_CONV2_ANSI        = (IDM_FORMAT + 9),
-            IDM_FORMAT_CONV2_AS_UTF_8    = (IDM_FORMAT + 10),
-            IDM_FORMAT_CONV2_UTF_8       = (IDM_FORMAT + 11),
-            IDM_FORMAT_CONV2_UCS_2BE     = (IDM_FORMAT + 12),
-            IDM_FORMAT_CONV2_UCS_2LE     = (IDM_FORMAT + 13),
+        IDM_EDIT_AUTOCOMPLETE = (50000 + 0),
+        IDM_EDIT_AUTOCOMPLETE_CURRENTFILE = (50000 + 1),
+        IDM_EDIT_FUNCCALLTIP = (50000 + 2),
 
-            IDM_FORMAT_ENCODE            = (IDM_FORMAT + 20),
-            IDM_FORMAT_WIN_1250          = (IDM_FORMAT_ENCODE + 0),
-            IDM_FORMAT_WIN_1251          = (IDM_FORMAT_ENCODE + 1),
-            IDM_FORMAT_WIN_1252          = (IDM_FORMAT_ENCODE + 2),
-            IDM_FORMAT_WIN_1253          = (IDM_FORMAT_ENCODE + 3),
-            IDM_FORMAT_WIN_1254          = (IDM_FORMAT_ENCODE + 4),
-            IDM_FORMAT_WIN_1255          = (IDM_FORMAT_ENCODE + 5),
-            IDM_FORMAT_WIN_1256          = (IDM_FORMAT_ENCODE + 6),
-            IDM_FORMAT_WIN_1257          = (IDM_FORMAT_ENCODE + 7),
-            IDM_FORMAT_WIN_1258          = (IDM_FORMAT_ENCODE + 8),
-            IDM_FORMAT_ISO_8859_1        = (IDM_FORMAT_ENCODE + 9),
-            IDM_FORMAT_ISO_8859_2        = (IDM_FORMAT_ENCODE + 10),
-            IDM_FORMAT_ISO_8859_3        = (IDM_FORMAT_ENCODE + 11),
-            IDM_FORMAT_ISO_8859_4        = (IDM_FORMAT_ENCODE + 12),
-            IDM_FORMAT_ISO_8859_5        = (IDM_FORMAT_ENCODE + 13),
-            IDM_FORMAT_ISO_8859_6        = (IDM_FORMAT_ENCODE + 14),
-            IDM_FORMAT_ISO_8859_7        = (IDM_FORMAT_ENCODE + 15),
-            IDM_FORMAT_ISO_8859_8        = (IDM_FORMAT_ENCODE + 16),
-            IDM_FORMAT_ISO_8859_9        = (IDM_FORMAT_ENCODE + 17),
-            IDM_FORMAT_ISO_8859_10       = (IDM_FORMAT_ENCODE + 18),
-            IDM_FORMAT_ISO_8859_11       = (IDM_FORMAT_ENCODE + 19),
-            IDM_FORMAT_ISO_8859_13       = (IDM_FORMAT_ENCODE + 20),
-            IDM_FORMAT_ISO_8859_14       = (IDM_FORMAT_ENCODE + 21),
-            IDM_FORMAT_ISO_8859_15       = (IDM_FORMAT_ENCODE + 22),
-            IDM_FORMAT_ISO_8859_16       = (IDM_FORMAT_ENCODE + 23),
-            IDM_FORMAT_DOS_437           = (IDM_FORMAT_ENCODE + 24),
-            IDM_FORMAT_DOS_720           = (IDM_FORMAT_ENCODE + 25),
-            IDM_FORMAT_DOS_737           = (IDM_FORMAT_ENCODE + 26),
-            IDM_FORMAT_DOS_775           = (IDM_FORMAT_ENCODE + 27),
-            IDM_FORMAT_DOS_850           = (IDM_FORMAT_ENCODE + 28),
-            IDM_FORMAT_DOS_852           = (IDM_FORMAT_ENCODE + 29),
-            IDM_FORMAT_DOS_855           = (IDM_FORMAT_ENCODE + 30),
-            IDM_FORMAT_DOS_857           = (IDM_FORMAT_ENCODE + 31),
-            IDM_FORMAT_DOS_858           = (IDM_FORMAT_ENCODE + 32),
-            IDM_FORMAT_DOS_860           = (IDM_FORMAT_ENCODE + 33),
-            IDM_FORMAT_DOS_861           = (IDM_FORMAT_ENCODE + 34),
-            IDM_FORMAT_DOS_862           = (IDM_FORMAT_ENCODE + 35),
-            IDM_FORMAT_DOS_863           = (IDM_FORMAT_ENCODE + 36),
-            IDM_FORMAT_DOS_865           = (IDM_FORMAT_ENCODE + 37),
-            IDM_FORMAT_DOS_866           = (IDM_FORMAT_ENCODE + 38),
-            IDM_FORMAT_DOS_869           = (IDM_FORMAT_ENCODE + 39),
-            IDM_FORMAT_BIG5              = (IDM_FORMAT_ENCODE + 40),
-            IDM_FORMAT_GB2312            = (IDM_FORMAT_ENCODE + 41),
-            IDM_FORMAT_SHIFT_JIS         = (IDM_FORMAT_ENCODE + 42),
-            IDM_FORMAT_KOREAN_WIN        = (IDM_FORMAT_ENCODE + 43),
-            IDM_FORMAT_EUC_KR            = (IDM_FORMAT_ENCODE + 44),
-            IDM_FORMAT_TIS_620           = (IDM_FORMAT_ENCODE + 45),
-            IDM_FORMAT_MAC_CYRILLIC      = (IDM_FORMAT_ENCODE + 46),
-            IDM_FORMAT_KOI8U_CYRILLIC    = (IDM_FORMAT_ENCODE + 47),
-            IDM_FORMAT_KOI8R_CYRILLIC    = (IDM_FORMAT_ENCODE + 48),
-            IDM_FORMAT_ENCODE_END        = IDM_FORMAT_KOI8R_CYRILLIC,
-            
-            //#define    IDM_FORMAT_CONVERT            200
+        //Belong to MENU FILE
+        IDM_OPEN_ALL_RECENT_FILE = (IDM_EDIT + 40),
 
-        IDM_LANG    = (IDM + 6000),
-            IDM_LANGSTYLE_CONFIG_DLG    = (IDM_LANG + 1),
-            IDM_LANG_C                  = (IDM_LANG + 2),
-            IDM_LANG_CPP                = (IDM_LANG + 3),
-            IDM_LANG_JAVA               = (IDM_LANG + 4),
-            IDM_LANG_HTML               = (IDM_LANG + 5),       
-            IDM_LANG_XML                = (IDM_LANG + 6),
-            IDM_LANG_JS                 = (IDM_LANG + 7),
-            IDM_LANG_PHP                = (IDM_LANG + 8),
-            IDM_LANG_ASP                = (IDM_LANG + 9),
-            IDM_LANG_CSS                = (IDM_LANG + 10),
-            IDM_LANG_PASCAL             = (IDM_LANG + 11),
-            IDM_LANG_PYTHON             = (IDM_LANG + 12),
-            IDM_LANG_PERL               = (IDM_LANG + 13),
-            IDM_LANG_OBJC               = (IDM_LANG + 14),
-            IDM_LANG_ASCII              = (IDM_LANG + 15),
-            IDM_LANG_TEXT               = (IDM_LANG + 16),
-            IDM_LANG_RC                 = (IDM_LANG + 17),
-            IDM_LANG_MAKEFILE           = (IDM_LANG + 18),
-            IDM_LANG_INI                = (IDM_LANG + 19),
-            IDM_LANG_SQL                = (IDM_LANG + 20),
-            IDM_LANG_VB                 = (IDM_LANG + 21),
-            IDM_LANG_BATCH              = (IDM_LANG + 22),
-            IDM_LANG_CS                 = (IDM_LANG + 23),
-            IDM_LANG_LUA                = (IDM_LANG + 24),
-            IDM_LANG_TEX                = (IDM_LANG + 25),
-            IDM_LANG_FORTRAN            = (IDM_LANG + 26),
-            IDM_LANG_BASH               = (IDM_LANG + 27),
-            IDM_LANG_FLASH              = (IDM_LANG + 28),
-            IDM_LANG_NSIS               = (IDM_LANG + 29),
-            IDM_LANG_TCL                = (IDM_LANG + 30),
-            IDM_LANG_LISP               = (IDM_LANG + 31),
-            IDM_LANG_SCHEME             = (IDM_LANG + 32),
-            IDM_LANG_ASM                = (IDM_LANG + 33),
-            IDM_LANG_DIFF               = (IDM_LANG + 34),
-            IDM_LANG_PROPS              = (IDM_LANG + 35),
-            IDM_LANG_PS                 = (IDM_LANG + 36),
-            IDM_LANG_RUBY               = (IDM_LANG + 37),
-            IDM_LANG_SMALLTALK          = (IDM_LANG + 38),
-            IDM_LANG_VHDL               = (IDM_LANG + 39),
-            IDM_LANG_CAML               = (IDM_LANG + 40),
-            IDM_LANG_KIX                = (IDM_LANG + 41),
-            IDM_LANG_ADA                = (IDM_LANG + 42),
-            IDM_LANG_VERILOG            = (IDM_LANG + 43),
-            IDM_LANG_AU3                = (IDM_LANG + 44),
-            IDM_LANG_MATLAB             = (IDM_LANG + 45),
-            IDM_LANG_HASKELL            = (IDM_LANG + 46),
-            IDM_LANG_INNO               = (IDM_LANG + 47),
-            IDM_LANG_CMAKE              = (IDM_LANG + 48),
-            IDM_LANG_YAML               = (IDM_LANG + 49),
-            IDM_LANG_COBOL              = (IDM_LANG + 50),
-            IDM_LANG_D                  = (IDM_LANG + 51),
-            IDM_LANG_GUI4CLI            = (IDM_LANG + 52),
-            IDM_LANG_POWERSHELL         = (IDM_LANG + 53),
-            IDM_LANG_R                  = (IDM_LANG + 54),
-            IDM_LANG_JSP                = (IDM_LANG + 55),
+        IDM_CLEAN_RECENT_FILE_LIST = (IDM_EDIT + 41),
 
-            IDM_LANG_EXTERNAL           = (IDM_LANG + 65),
-            IDM_LANG_EXTERNAL_LIMIT     = (IDM_LANG + 79),
+        IDM_SEARCH = (IDM + 3000),
 
-            IDM_LANG_USER               = (IDM_LANG + 80),     //46080
-            IDM_LANG_USER_LIMIT         = (IDM_LANG + 110),    //46110
-            
-            
-        IDM_ABOUT    = (IDM  + 7000),
-            IDM_HOMESWEETHOME    = (IDM_ABOUT  + 1),
-            IDM_PROJECTPAGE      = (IDM_ABOUT  + 2),
-            IDM_ONLINEHELP       = (IDM_ABOUT  + 3),
-            IDM_FORUM            = (IDM_ABOUT  + 4),
-            IDM_PLUGINSHOME      = (IDM_ABOUT  + 5),
-            IDM_UPDATE_NPP       = (IDM_ABOUT  + 6),
-            IDM_WIKIFAQ          = (IDM_ABOUT  + 7),
-            IDM_HELP             = (IDM_ABOUT  + 8),
+        IDM_SEARCH_FIND = (IDM_SEARCH + 1),
+        IDM_SEARCH_FINDNEXT = (IDM_SEARCH + 2),
+        IDM_SEARCH_REPLACE = (IDM_SEARCH + 3),
+        IDM_SEARCH_GOTOLINE = (IDM_SEARCH + 4),
+        IDM_SEARCH_TOGGLE_BOOKMARK = (IDM_SEARCH + 5),
+        IDM_SEARCH_NEXT_BOOKMARK = (IDM_SEARCH + 6),
+        IDM_SEARCH_PREV_BOOKMARK = (IDM_SEARCH + 7),
+        IDM_SEARCH_CLEAR_BOOKMARKS = (IDM_SEARCH + 8),
+        IDM_SEARCH_GOTOMATCHINGBRACE = (IDM_SEARCH + 9),
+        IDM_SEARCH_FINDPREV = (IDM_SEARCH + 10),
+        IDM_SEARCH_FINDINCREMENT = (IDM_SEARCH + 11),
+        IDM_SEARCH_FINDINFILES = (IDM_SEARCH + 13),
+        IDM_SEARCH_VOLATILE_FINDNEXT = (IDM_SEARCH + 14),
+        IDM_SEARCH_VOLATILE_FINDPREV = (IDM_SEARCH + 15),
+        IDM_SEARCH_CUTMARKEDLINES = (IDM_SEARCH + 18),
+        IDM_SEARCH_COPYMARKEDLINES = (IDM_SEARCH + 19),
+        IDM_SEARCH_PASTEMARKEDLINES = (IDM_SEARCH + 20),
+        IDM_SEARCH_DELETEMARKEDLINES = (IDM_SEARCH + 21),
+        IDM_SEARCH_MARKALLEXT1 = (IDM_SEARCH + 22),
+        IDM_SEARCH_UNMARKALLEXT1 = (IDM_SEARCH + 23),
+        IDM_SEARCH_MARKALLEXT2 = (IDM_SEARCH + 24),
+        IDM_SEARCH_UNMARKALLEXT2 = (IDM_SEARCH + 25),
+        IDM_SEARCH_MARKALLEXT3 = (IDM_SEARCH + 26),
+        IDM_SEARCH_UNMARKALLEXT3 = (IDM_SEARCH + 27),
+        IDM_SEARCH_MARKALLEXT4 = (IDM_SEARCH + 28),
+        IDM_SEARCH_UNMARKALLEXT4 = (IDM_SEARCH + 29),
+        IDM_SEARCH_MARKALLEXT5 = (IDM_SEARCH + 30),
+        IDM_SEARCH_UNMARKALLEXT5 = (IDM_SEARCH + 31),
+        IDM_SEARCH_CLEARALLMARKS = (IDM_SEARCH + 32),
 
+        IDM_SEARCH_GOPREVMARKER1 = (IDM_SEARCH + 33),
+        IDM_SEARCH_GOPREVMARKER2 = (IDM_SEARCH + 34),
+        IDM_SEARCH_GOPREVMARKER3 = (IDM_SEARCH + 35),
+        IDM_SEARCH_GOPREVMARKER4 = (IDM_SEARCH + 36),
+        IDM_SEARCH_GOPREVMARKER5 = (IDM_SEARCH + 37),
+        IDM_SEARCH_GOPREVMARKER_DEF = (IDM_SEARCH + 38),
 
-        IDM_SETTING    = (IDM + 8000),
-            IDM_SETTING_TAB_SIZE                 = (IDM_SETTING + 1),
-            IDM_SETTING_TAB_REPLCESPACE          = (IDM_SETTING + 2),
-            IDM_SETTING_HISTORY_SIZE             = (IDM_SETTING + 3),
-            IDM_SETTING_EDGE_SIZE                = (IDM_SETTING + 4),
-            IDM_SETTING_IMPORTPLUGIN             = (IDM_SETTING + 5),
-            IDM_SETTING_IMPORTSTYLETHEMS         = (IDM_SETTING + 6),
-            IDM_SETTING_TRAYICON                 = (IDM_SETTING + 8),
-            IDM_SETTING_SHORTCUT_MAPPER          = (IDM_SETTING + 9),
-            IDM_SETTING_REMEMBER_LAST_SESSION    = (IDM_SETTING + 10),
-            IDM_SETTING_PREFERECE                = (IDM_SETTING + 11),
-            IDM_SETTING_AUTOCNBCHAR              = (IDM_SETTING + 15),
-            IDM_SETTING_SHORTCUT_MAPPER_MACRO    = (IDM_SETTING + 16),
-            IDM_SETTING_SHORTCUT_MAPPER_RUN      = (IDM_SETTING + 17),
-            IDM_SETTING_EDITCONTEXTMENU          = (IDM_SETTING + 18),
+        IDM_SEARCH_GONEXTMARKER1 = (IDM_SEARCH + 39),
+        IDM_SEARCH_GONEXTMARKER2 = (IDM_SEARCH + 40),
+        IDM_SEARCH_GONEXTMARKER3 = (IDM_SEARCH + 41),
+        IDM_SEARCH_GONEXTMARKER4 = (IDM_SEARCH + 42),
+        IDM_SEARCH_GONEXTMARKER5 = (IDM_SEARCH + 43),
+        IDM_SEARCH_GONEXTMARKER_DEF = (IDM_SEARCH + 44),
 
-        IDM_EXECUTE  = (IDM + 9000),
+        IDM_FOCUS_ON_FOUND_RESULTS = (IDM_SEARCH + 45),
+        IDM_SEARCH_GOTONEXTFOUND = (IDM_SEARCH + 46),
+        IDM_SEARCH_GOTOPREVFOUND = (IDM_SEARCH + 47),
 
-        IDM_SYSTRAYPOPUP     = (IDM + 3100),
-            IDM_SYSTRAYPOPUP_ACTIVATE         = (IDM_SYSTRAYPOPUP + 1),
-            IDM_SYSTRAYPOPUP_NEWDOC           = (IDM_SYSTRAYPOPUP + 2),
-            IDM_SYSTRAYPOPUP_NEW_AND_PASTE    = (IDM_SYSTRAYPOPUP + 3),
-            IDM_SYSTRAYPOPUP_OPENFILE         = (IDM_SYSTRAYPOPUP + 4),
-            IDM_SYSTRAYPOPUP_CLOSE            = (IDM_SYSTRAYPOPUP + 5)
+        IDM_SEARCH_SETANDFINDNEXT = (IDM_SEARCH + 48),
+        IDM_SEARCH_SETANDFINDPREV = (IDM_SEARCH + 49),
+        IDM_SEARCH_INVERSEMARKS = (IDM_SEARCH + 50),
+
+        IDM_VIEW = (IDM + 4000),
+
+        //IDM_VIEW_TOOLBAR_HIDE            = (IDM_VIEW + 1),
+        IDM_VIEW_TOOLBAR_REDUCE = (IDM_VIEW + 2),
+
+        IDM_VIEW_TOOLBAR_ENLARGE = (IDM_VIEW + 3),
+        IDM_VIEW_TOOLBAR_STANDARD = (IDM_VIEW + 4),
+        IDM_VIEW_REDUCETABBAR = (IDM_VIEW + 5),
+        IDM_VIEW_LOCKTABBAR = (IDM_VIEW + 6),
+        IDM_VIEW_DRAWTABBAR_TOPBAR = (IDM_VIEW + 7),
+        IDM_VIEW_DRAWTABBAR_INACIVETAB = (IDM_VIEW + 8),
+        IDM_VIEW_POSTIT = (IDM_VIEW + 9),
+        IDM_VIEW_TOGGLE_FOLDALL = (IDM_VIEW + 10),
+        IDM_VIEW_USER_DLG = (IDM_VIEW + 11),
+        IDM_VIEW_LINENUMBER = (IDM_VIEW + 12),
+        IDM_VIEW_SYMBOLMARGIN = (IDM_VIEW + 13),
+        IDM_VIEW_FOLDERMAGIN = (IDM_VIEW + 14),
+        IDM_VIEW_FOLDERMAGIN_SIMPLE = (IDM_VIEW + 15),
+        IDM_VIEW_FOLDERMAGIN_ARROW = (IDM_VIEW + 16),
+        IDM_VIEW_FOLDERMAGIN_CIRCLE = (IDM_VIEW + 17),
+        IDM_VIEW_FOLDERMAGIN_BOX = (IDM_VIEW + 18),
+        IDM_VIEW_ALL_CHARACTERS = (IDM_VIEW + 19),
+        IDM_VIEW_INDENT_GUIDE = (IDM_VIEW + 20),
+        IDM_VIEW_CURLINE_HILITING = (IDM_VIEW + 21),
+        IDM_VIEW_WRAP = (IDM_VIEW + 22),
+        IDM_VIEW_ZOOMIN = (IDM_VIEW + 23),
+        IDM_VIEW_ZOOMOUT = (IDM_VIEW + 24),
+        IDM_VIEW_TAB_SPACE = (IDM_VIEW + 25),
+        IDM_VIEW_EOL = (IDM_VIEW + 26),
+        IDM_VIEW_EDGELINE = (IDM_VIEW + 27),
+        IDM_VIEW_EDGEBACKGROUND = (IDM_VIEW + 28),
+        IDM_VIEW_TOGGLE_UNFOLDALL = (IDM_VIEW + 29),
+        IDM_VIEW_FOLD_CURRENT = (IDM_VIEW + 30),
+        IDM_VIEW_UNFOLD_CURRENT = (IDM_VIEW + 31),
+        IDM_VIEW_FULLSCREENTOGGLE = (IDM_VIEW + 32),
+        IDM_VIEW_ZOOMRESTORE = (IDM_VIEW + 33),
+        IDM_VIEW_ALWAYSONTOP = (IDM_VIEW + 34),
+        IDM_VIEW_SYNSCROLLV = (IDM_VIEW + 35),
+        IDM_VIEW_SYNSCROLLH = (IDM_VIEW + 36),
+        IDM_VIEW_EDGENONE = (IDM_VIEW + 37),
+        IDM_VIEW_DRAWTABBAR_CLOSEBOTTUN = (IDM_VIEW + 38),
+        IDM_VIEW_DRAWTABBAR_DBCLK2CLOSE = (IDM_VIEW + 39),
+        IDM_VIEW_REFRESHTABAR = (IDM_VIEW + 40),
+        IDM_VIEW_WRAP_SYMBOL = (IDM_VIEW + 41),
+        IDM_VIEW_HIDELINES = (IDM_VIEW + 42),
+        IDM_VIEW_DRAWTABBAR_VERTICAL = (IDM_VIEW + 43),
+        IDM_VIEW_DRAWTABBAR_MULTILINE = (IDM_VIEW + 44),
+        IDM_VIEW_DOCCHANGEMARGIN = (IDM_VIEW + 45),
+        IDM_VIEW_LWDEF = (IDM_VIEW + 46),
+        IDM_VIEW_LWALIGN = (IDM_VIEW + 47),
+        IDM_VIEW_LWINDENT = (IDM_VIEW + 48),
+        IDM_VIEW_SUMMARY = (IDM_VIEW + 49),
+
+        IDM_VIEW_FOLD = (IDM_VIEW + 50),
+        IDM_VIEW_FOLD_1 = (IDM_VIEW_FOLD + 1),
+        IDM_VIEW_FOLD_2 = (IDM_VIEW_FOLD + 2),
+        IDM_VIEW_FOLD_3 = (IDM_VIEW_FOLD + 3),
+        IDM_VIEW_FOLD_4 = (IDM_VIEW_FOLD + 4),
+        IDM_VIEW_FOLD_5 = (IDM_VIEW_FOLD + 5),
+        IDM_VIEW_FOLD_6 = (IDM_VIEW_FOLD + 6),
+        IDM_VIEW_FOLD_7 = (IDM_VIEW_FOLD + 7),
+        IDM_VIEW_FOLD_8 = (IDM_VIEW_FOLD + 8),
+
+        IDM_VIEW_UNFOLD = (IDM_VIEW + 60),
+        IDM_VIEW_UNFOLD_1 = (IDM_VIEW_UNFOLD + 1),
+        IDM_VIEW_UNFOLD_2 = (IDM_VIEW_UNFOLD + 2),
+        IDM_VIEW_UNFOLD_3 = (IDM_VIEW_UNFOLD + 3),
+        IDM_VIEW_UNFOLD_4 = (IDM_VIEW_UNFOLD + 4),
+        IDM_VIEW_UNFOLD_5 = (IDM_VIEW_UNFOLD + 5),
+        IDM_VIEW_UNFOLD_6 = (IDM_VIEW_UNFOLD + 6),
+        IDM_VIEW_UNFOLD_7 = (IDM_VIEW_UNFOLD + 7),
+        IDM_VIEW_UNFOLD_8 = (IDM_VIEW_UNFOLD + 8),
+
+        IDM_VIEW_GOTO_ANOTHER_VIEW = 10001,
+        IDM_VIEW_CLONE_TO_ANOTHER_VIEW = 10002,
+        IDM_VIEW_GOTO_NEW_INSTANCE = 10003,
+        IDM_VIEW_LOAD_IN_NEW_INSTANCE = 10004,
+
+        IDM_VIEW_SWITCHTO_OTHER_VIEW = (IDM_VIEW + 72),
+
+        IDM_FORMAT = (IDM + 5000),
+        IDM_FORMAT_TODOS = (IDM_FORMAT + 1),
+        IDM_FORMAT_TOUNIX = (IDM_FORMAT + 2),
+        IDM_FORMAT_TOMAC = (IDM_FORMAT + 3),
+        IDM_FORMAT_ANSI = (IDM_FORMAT + 4),
+        IDM_FORMAT_UTF_8 = (IDM_FORMAT + 5),
+        IDM_FORMAT_UCS_2BE = (IDM_FORMAT + 6),
+        IDM_FORMAT_UCS_2LE = (IDM_FORMAT + 7),
+        IDM_FORMAT_AS_UTF_8 = (IDM_FORMAT + 8),
+        IDM_FORMAT_CONV2_ANSI = (IDM_FORMAT + 9),
+        IDM_FORMAT_CONV2_AS_UTF_8 = (IDM_FORMAT + 10),
+        IDM_FORMAT_CONV2_UTF_8 = (IDM_FORMAT + 11),
+        IDM_FORMAT_CONV2_UCS_2BE = (IDM_FORMAT + 12),
+        IDM_FORMAT_CONV2_UCS_2LE = (IDM_FORMAT + 13),
+
+        IDM_FORMAT_ENCODE = (IDM_FORMAT + 20),
+        IDM_FORMAT_WIN_1250 = (IDM_FORMAT_ENCODE + 0),
+        IDM_FORMAT_WIN_1251 = (IDM_FORMAT_ENCODE + 1),
+        IDM_FORMAT_WIN_1252 = (IDM_FORMAT_ENCODE + 2),
+        IDM_FORMAT_WIN_1253 = (IDM_FORMAT_ENCODE + 3),
+        IDM_FORMAT_WIN_1254 = (IDM_FORMAT_ENCODE + 4),
+        IDM_FORMAT_WIN_1255 = (IDM_FORMAT_ENCODE + 5),
+        IDM_FORMAT_WIN_1256 = (IDM_FORMAT_ENCODE + 6),
+        IDM_FORMAT_WIN_1257 = (IDM_FORMAT_ENCODE + 7),
+        IDM_FORMAT_WIN_1258 = (IDM_FORMAT_ENCODE + 8),
+        IDM_FORMAT_ISO_8859_1 = (IDM_FORMAT_ENCODE + 9),
+        IDM_FORMAT_ISO_8859_2 = (IDM_FORMAT_ENCODE + 10),
+        IDM_FORMAT_ISO_8859_3 = (IDM_FORMAT_ENCODE + 11),
+        IDM_FORMAT_ISO_8859_4 = (IDM_FORMAT_ENCODE + 12),
+        IDM_FORMAT_ISO_8859_5 = (IDM_FORMAT_ENCODE + 13),
+        IDM_FORMAT_ISO_8859_6 = (IDM_FORMAT_ENCODE + 14),
+        IDM_FORMAT_ISO_8859_7 = (IDM_FORMAT_ENCODE + 15),
+        IDM_FORMAT_ISO_8859_8 = (IDM_FORMAT_ENCODE + 16),
+        IDM_FORMAT_ISO_8859_9 = (IDM_FORMAT_ENCODE + 17),
+        IDM_FORMAT_ISO_8859_10 = (IDM_FORMAT_ENCODE + 18),
+        IDM_FORMAT_ISO_8859_11 = (IDM_FORMAT_ENCODE + 19),
+        IDM_FORMAT_ISO_8859_13 = (IDM_FORMAT_ENCODE + 20),
+        IDM_FORMAT_ISO_8859_14 = (IDM_FORMAT_ENCODE + 21),
+        IDM_FORMAT_ISO_8859_15 = (IDM_FORMAT_ENCODE + 22),
+        IDM_FORMAT_ISO_8859_16 = (IDM_FORMAT_ENCODE + 23),
+        IDM_FORMAT_DOS_437 = (IDM_FORMAT_ENCODE + 24),
+        IDM_FORMAT_DOS_720 = (IDM_FORMAT_ENCODE + 25),
+        IDM_FORMAT_DOS_737 = (IDM_FORMAT_ENCODE + 26),
+        IDM_FORMAT_DOS_775 = (IDM_FORMAT_ENCODE + 27),
+        IDM_FORMAT_DOS_850 = (IDM_FORMAT_ENCODE + 28),
+        IDM_FORMAT_DOS_852 = (IDM_FORMAT_ENCODE + 29),
+        IDM_FORMAT_DOS_855 = (IDM_FORMAT_ENCODE + 30),
+        IDM_FORMAT_DOS_857 = (IDM_FORMAT_ENCODE + 31),
+        IDM_FORMAT_DOS_858 = (IDM_FORMAT_ENCODE + 32),
+        IDM_FORMAT_DOS_860 = (IDM_FORMAT_ENCODE + 33),
+        IDM_FORMAT_DOS_861 = (IDM_FORMAT_ENCODE + 34),
+        IDM_FORMAT_DOS_862 = (IDM_FORMAT_ENCODE + 35),
+        IDM_FORMAT_DOS_863 = (IDM_FORMAT_ENCODE + 36),
+        IDM_FORMAT_DOS_865 = (IDM_FORMAT_ENCODE + 37),
+        IDM_FORMAT_DOS_866 = (IDM_FORMAT_ENCODE + 38),
+        IDM_FORMAT_DOS_869 = (IDM_FORMAT_ENCODE + 39),
+        IDM_FORMAT_BIG5 = (IDM_FORMAT_ENCODE + 40),
+        IDM_FORMAT_GB2312 = (IDM_FORMAT_ENCODE + 41),
+        IDM_FORMAT_SHIFT_JIS = (IDM_FORMAT_ENCODE + 42),
+        IDM_FORMAT_KOREAN_WIN = (IDM_FORMAT_ENCODE + 43),
+        IDM_FORMAT_EUC_KR = (IDM_FORMAT_ENCODE + 44),
+        IDM_FORMAT_TIS_620 = (IDM_FORMAT_ENCODE + 45),
+        IDM_FORMAT_MAC_CYRILLIC = (IDM_FORMAT_ENCODE + 46),
+        IDM_FORMAT_KOI8U_CYRILLIC = (IDM_FORMAT_ENCODE + 47),
+        IDM_FORMAT_KOI8R_CYRILLIC = (IDM_FORMAT_ENCODE + 48),
+        IDM_FORMAT_ENCODE_END = IDM_FORMAT_KOI8R_CYRILLIC,
+
+        //#define    IDM_FORMAT_CONVERT            200
+
+        IDM_LANG = (IDM + 6000),
+        IDM_LANGSTYLE_CONFIG_DLG = (IDM_LANG + 1),
+        IDM_LANG_C = (IDM_LANG + 2),
+        IDM_LANG_CPP = (IDM_LANG + 3),
+        IDM_LANG_JAVA = (IDM_LANG + 4),
+        IDM_LANG_HTML = (IDM_LANG + 5),
+        IDM_LANG_XML = (IDM_LANG + 6),
+        IDM_LANG_JS = (IDM_LANG + 7),
+        IDM_LANG_PHP = (IDM_LANG + 8),
+        IDM_LANG_ASP = (IDM_LANG + 9),
+        IDM_LANG_CSS = (IDM_LANG + 10),
+        IDM_LANG_PASCAL = (IDM_LANG + 11),
+        IDM_LANG_PYTHON = (IDM_LANG + 12),
+        IDM_LANG_PERL = (IDM_LANG + 13),
+        IDM_LANG_OBJC = (IDM_LANG + 14),
+        IDM_LANG_ASCII = (IDM_LANG + 15),
+        IDM_LANG_TEXT = (IDM_LANG + 16),
+        IDM_LANG_RC = (IDM_LANG + 17),
+        IDM_LANG_MAKEFILE = (IDM_LANG + 18),
+        IDM_LANG_INI = (IDM_LANG + 19),
+        IDM_LANG_SQL = (IDM_LANG + 20),
+        IDM_LANG_VB = (IDM_LANG + 21),
+        IDM_LANG_BATCH = (IDM_LANG + 22),
+        IDM_LANG_CS = (IDM_LANG + 23),
+        IDM_LANG_LUA = (IDM_LANG + 24),
+        IDM_LANG_TEX = (IDM_LANG + 25),
+        IDM_LANG_FORTRAN = (IDM_LANG + 26),
+        IDM_LANG_BASH = (IDM_LANG + 27),
+        IDM_LANG_FLASH = (IDM_LANG + 28),
+        IDM_LANG_NSIS = (IDM_LANG + 29),
+        IDM_LANG_TCL = (IDM_LANG + 30),
+        IDM_LANG_LISP = (IDM_LANG + 31),
+        IDM_LANG_SCHEME = (IDM_LANG + 32),
+        IDM_LANG_ASM = (IDM_LANG + 33),
+        IDM_LANG_DIFF = (IDM_LANG + 34),
+        IDM_LANG_PROPS = (IDM_LANG + 35),
+        IDM_LANG_PS = (IDM_LANG + 36),
+        IDM_LANG_RUBY = (IDM_LANG + 37),
+        IDM_LANG_SMALLTALK = (IDM_LANG + 38),
+        IDM_LANG_VHDL = (IDM_LANG + 39),
+        IDM_LANG_CAML = (IDM_LANG + 40),
+        IDM_LANG_KIX = (IDM_LANG + 41),
+        IDM_LANG_ADA = (IDM_LANG + 42),
+        IDM_LANG_VERILOG = (IDM_LANG + 43),
+        IDM_LANG_AU3 = (IDM_LANG + 44),
+        IDM_LANG_MATLAB = (IDM_LANG + 45),
+        IDM_LANG_HASKELL = (IDM_LANG + 46),
+        IDM_LANG_INNO = (IDM_LANG + 47),
+        IDM_LANG_CMAKE = (IDM_LANG + 48),
+        IDM_LANG_YAML = (IDM_LANG + 49),
+        IDM_LANG_COBOL = (IDM_LANG + 50),
+        IDM_LANG_D = (IDM_LANG + 51),
+        IDM_LANG_GUI4CLI = (IDM_LANG + 52),
+        IDM_LANG_POWERSHELL = (IDM_LANG + 53),
+        IDM_LANG_R = (IDM_LANG + 54),
+        IDM_LANG_JSP = (IDM_LANG + 55),
+
+        IDM_LANG_EXTERNAL = (IDM_LANG + 65),
+        IDM_LANG_EXTERNAL_LIMIT = (IDM_LANG + 79),
+
+        IDM_LANG_USER = (IDM_LANG + 80),     //46080
+        IDM_LANG_USER_LIMIT = (IDM_LANG + 110),    //46110
+
+        IDM_ABOUT = (IDM + 7000),
+        IDM_HOMESWEETHOME = (IDM_ABOUT + 1),
+        IDM_PROJECTPAGE = (IDM_ABOUT + 2),
+        IDM_ONLINEHELP = (IDM_ABOUT + 3),
+        IDM_FORUM = (IDM_ABOUT + 4),
+        IDM_PLUGINSHOME = (IDM_ABOUT + 5),
+        IDM_UPDATE_NPP = (IDM_ABOUT + 6),
+        IDM_WIKIFAQ = (IDM_ABOUT + 7),
+        IDM_HELP = (IDM_ABOUT + 8),
+
+        IDM_SETTING = (IDM + 8000),
+        IDM_SETTING_TAB_SIZE = (IDM_SETTING + 1),
+        IDM_SETTING_TAB_REPLCESPACE = (IDM_SETTING + 2),
+        IDM_SETTING_HISTORY_SIZE = (IDM_SETTING + 3),
+        IDM_SETTING_EDGE_SIZE = (IDM_SETTING + 4),
+        IDM_SETTING_IMPORTPLUGIN = (IDM_SETTING + 5),
+        IDM_SETTING_IMPORTSTYLETHEMS = (IDM_SETTING + 6),
+        IDM_SETTING_TRAYICON = (IDM_SETTING + 8),
+        IDM_SETTING_SHORTCUT_MAPPER = (IDM_SETTING + 9),
+        IDM_SETTING_REMEMBER_LAST_SESSION = (IDM_SETTING + 10),
+        IDM_SETTING_PREFERECE = (IDM_SETTING + 11),
+        IDM_SETTING_AUTOCNBCHAR = (IDM_SETTING + 15),
+        IDM_SETTING_SHORTCUT_MAPPER_MACRO = (IDM_SETTING + 16),
+        IDM_SETTING_SHORTCUT_MAPPER_RUN = (IDM_SETTING + 17),
+        IDM_SETTING_EDITCONTEXTMENU = (IDM_SETTING + 18),
+
+        IDM_EXECUTE = (IDM + 9000),
+
+        IDM_SYSTRAYPOPUP = (IDM + 3100),
+        IDM_SYSTRAYPOPUP_ACTIVATE = (IDM_SYSTRAYPOPUP + 1),
+        IDM_SYSTRAYPOPUP_NEWDOC = (IDM_SYSTRAYPOPUP + 2),
+        IDM_SYSTRAYPOPUP_NEW_AND_PASTE = (IDM_SYSTRAYPOPUP + 3),
+        IDM_SYSTRAYPOPUP_OPENFILE = (IDM_SYSTRAYPOPUP + 4),
+        IDM_SYSTRAYPOPUP_CLOSE = (IDM_SYSTRAYPOPUP + 5)
     }
 
     [Flags]
     public enum DockMgrMsg : uint
     {
         IDB_CLOSE_DOWN = 137,
-        IDB_CLOSE_UP                    = 138,
-        IDD_CONTAINER_DLG               = 139,
+        IDB_CLOSE_UP = 138,
+        IDD_CONTAINER_DLG = 139,
 
-        IDC_TAB_CONT                    = 1027,
-        IDC_CLIENT_TAB                  = 1028,
-        IDC_BTN_CAPTION                 = 1050,
+        IDC_TAB_CONT = 1027,
+        IDC_CLIENT_TAB = 1028,
+        IDC_BTN_CAPTION = 1050,
 
-        DMM_MSG                         = 0x5000,
-            DMM_CLOSE                   = (DMM_MSG + 1),
-            DMM_DOCK                    = (DMM_MSG + 2),
-            DMM_FLOAT                   = (DMM_MSG + 3),
-            DMM_DOCKALL                 = (DMM_MSG + 4),
-            DMM_FLOATALL                = (DMM_MSG + 5),
-            DMM_MOVE                    = (DMM_MSG + 6),
-            DMM_UPDATEDISPINFO          = (DMM_MSG + 7),
-            DMM_GETIMAGELIST            = (DMM_MSG + 8),
-            DMM_GETICONPOS              = (DMM_MSG + 9),
-            DMM_DROPDATA                = (DMM_MSG + 10),
-            DMM_MOVE_SPLITTER            = (DMM_MSG + 11),
-            DMM_CANCEL_MOVE                = (DMM_MSG + 12),
-            DMM_LBUTTONUP                = (DMM_MSG + 13),
+        DMM_MSG = 0x5000,
+        DMM_CLOSE = (DMM_MSG + 1),
+        DMM_DOCK = (DMM_MSG + 2),
+        DMM_FLOAT = (DMM_MSG + 3),
+        DMM_DOCKALL = (DMM_MSG + 4),
+        DMM_FLOATALL = (DMM_MSG + 5),
+        DMM_MOVE = (DMM_MSG + 6),
+        DMM_UPDATEDISPINFO = (DMM_MSG + 7),
+        DMM_GETIMAGELIST = (DMM_MSG + 8),
+        DMM_GETICONPOS = (DMM_MSG + 9),
+        DMM_DROPDATA = (DMM_MSG + 10),
+        DMM_MOVE_SPLITTER = (DMM_MSG + 11),
+        DMM_CANCEL_MOVE = (DMM_MSG + 12),
+        DMM_LBUTTONUP = (DMM_MSG + 13),
 
         DMN_FIRST = 1050,
-            DMN_CLOSE                    = (DMN_FIRST + 1),
-            //nmhdr.code = DWORD(DMN_CLOSE, 0));
-            //nmhdr.hwndFrom = hwndNpp;
-            //nmhdr.idFrom = ctrlIdNpp;
+        DMN_CLOSE = (DMN_FIRST + 1),
+        //nmhdr.code = DWORD(DMN_CLOSE, 0));
+        //nmhdr.hwndFrom = hwndNpp;
+        //nmhdr.idFrom = ctrlIdNpp;
 
-            DMN_DOCK                    = (DMN_FIRST + 2),
-            DMN_FLOAT                    = (DMN_FIRST + 3)
-            //nmhdr.code = DWORD(DMN_XXX, int newContainer);
-            //nmhdr.hwndFrom = hwndNpp;
-            //nmhdr.idFrom = ctrlIdNpp;
+        DMN_DOCK = (DMN_FIRST + 2),
+        DMN_FLOAT = (DMN_FIRST + 3)
+        //nmhdr.code = DWORD(DMN_XXX, int newContainer);
+        //nmhdr.hwndFrom = hwndNpp;
+        //nmhdr.idFrom = ctrlIdNpp;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -1086,9 +1139,11 @@ namespace NppGitPlugin
         public IntPtr hToolbarBmp;
         public IntPtr hToolbarIcon;
     }
-    #endregion
+
+    #endregion " Notepad++ "
 
     #region " Scintilla "
+
     [StructLayout(LayoutKind.Sequential)]
     public struct Sci_NotifyHeader
     {
@@ -1330,7 +1385,7 @@ namespace NppGitPlugin
         INDIC_BOX = 6,
         INDIC_ROUNDBOX = 7,
         INDIC_MAX = 31,
-        INDIC_CONTAINER = 8,
+        INDIC_STRAIGHTBOX = 8,
         INDIC0_MASK = 0x20,
         INDIC1_MASK = 0x40,
         INDIC2_MASK = 0x80,
@@ -1429,6 +1484,7 @@ namespace NppGitPlugin
         SCI_FINDTEXT = 2150,
         SCI_FORMATRANGE = 2151,
         SCI_GETFIRSTVISIBLELINE = 2152,
+        SCI_SETFIRSTVISIBLELINE = 2613,
         SCI_GETLINE = 2153,
         SCI_GETLINECOUNT = 2154,
         SCI_SETMARGINLEFT = 2155,
@@ -1802,6 +1858,8 @@ namespace NppGitPlugin
         SCI_ANNOTATIONSETSTYLEOFFSET = 2550,
         SCI_ANNOTATIONGETSTYLEOFFSET = 2551,
         UNDO_MAY_COALESCE = 1,
+        SCI_INDICSETOUTLINEALPHA = 2558,
+        SCI_INDICGETOUTLINEALPHA = 2559,
         SCI_ADDUNDOACTION = 2560,
         SCI_CHARPOSITIONFROMPOINT = 2561,
         SCI_CHARPOSITIONFROMPOINTCLOSE = 2562,
@@ -1947,7 +2005,11 @@ namespace NppGitPlugin
     [StructLayout(LayoutKind.Sequential)]
     public struct Sci_CharacterRange
     {
-        public Sci_CharacterRange(int cpmin, int cpmax) { cpMin = cpmin; cpMax = cpmax; }
+        public Sci_CharacterRange(int cpmin, int cpmax)
+        {
+            cpMin = cpmin; cpMax = cpmax;
+        }
+
         public int cpMin;
         public int cpMax;
     }
@@ -1957,12 +2019,13 @@ namespace NppGitPlugin
         _Sci_TextRange _sciTextRange;
         IntPtr _ptrSciTextRange;
         bool _disposed = false;
-        
+
         public Sci_TextRange(Sci_CharacterRange chrRange, int stringCapacity)
         {
             _sciTextRange.chrg = chrRange;
             _sciTextRange.lpstrText = Marshal.AllocHGlobal(stringCapacity);
         }
+
         public Sci_TextRange(int cpmin, int cpmax, int stringCapacity)
         {
             _sciTextRange.chrg.cpMin = cpmin;
@@ -1978,14 +2041,18 @@ namespace NppGitPlugin
         }
 
         public IntPtr NativePointer { get { _initNativeStruct(); return _ptrSciTextRange; } }
+
         public string lpstrText { get { _readNativeStruct(); return Marshal.PtrToStringAnsi(_sciTextRange.lpstrText); } }
+
         public Sci_CharacterRange chrg { get { _readNativeStruct(); return _sciTextRange.chrg; } set { _sciTextRange.chrg = value; _initNativeStruct(); } }
+
         void _initNativeStruct()
         {
             if (_ptrSciTextRange == IntPtr.Zero)
                 _ptrSciTextRange = Marshal.AllocHGlobal(Marshal.SizeOf(_sciTextRange));
             Marshal.StructureToPtr(_sciTextRange, _ptrSciTextRange, false);
         }
+
         void _readNativeStruct()
         {
             if (_ptrSciTextRange != IntPtr.Zero)
@@ -2001,6 +2068,7 @@ namespace NppGitPlugin
                 _disposed = true;
             }
         }
+
         ~Sci_TextRange()
         {
             Dispose();
@@ -2018,6 +2086,7 @@ namespace NppGitPlugin
             _sciTextToFind.chrg = chrRange;
             _sciTextToFind.lpstrText = Marshal.StringToHGlobalAnsi(searchText);
         }
+
         public Sci_TextToFind(int cpmin, int cpmax, string searchText)
         {
             _sciTextToFind.chrg.cpMin = cpmin;
@@ -2034,20 +2103,26 @@ namespace NppGitPlugin
         }
 
         public IntPtr NativePointer { get { _initNativeStruct(); return _ptrSciTextToFind; } }
+
         public string lpstrText { set { _freeNativeString(); _sciTextToFind.lpstrText = Marshal.StringToHGlobalAnsi(value); } }
+
         public Sci_CharacterRange chrg { get { _readNativeStruct(); return _sciTextToFind.chrg; } set { _sciTextToFind.chrg = value; _initNativeStruct(); } }
+
         public Sci_CharacterRange chrgText { get { _readNativeStruct(); return _sciTextToFind.chrgText; } }
+
         void _initNativeStruct()
         {
             if (_ptrSciTextToFind == IntPtr.Zero)
                 _ptrSciTextToFind = Marshal.AllocHGlobal(Marshal.SizeOf(_sciTextToFind));
             Marshal.StructureToPtr(_sciTextToFind, _ptrSciTextToFind, false);
         }
+
         void _readNativeStruct()
         {
             if (_ptrSciTextToFind != IntPtr.Zero)
                 _sciTextToFind = (_Sci_TextToFind)Marshal.PtrToStructure(_ptrSciTextToFind, typeof(_Sci_TextToFind));
         }
+
         void _freeNativeString()
         {
             if (_sciTextToFind.lpstrText != IntPtr.Zero) Marshal.FreeHGlobal(_sciTextToFind.lpstrText);
@@ -2062,59 +2137,141 @@ namespace NppGitPlugin
                 _disposed = true;
             }
         }
+
         ~Sci_TextToFind()
         {
             Dispose();
         }
     }
-    #endregion
+
+    #endregion " Scintilla "
 
     #region " Platform "
-    public class Win32
+
+    public partial class Win32
     {
+        [DllImport("user32.dll")]
+        static public extern bool SetForegroundWindow(IntPtr hWnd);
+
+        [DllImport("user32")]
+        public static extern IntPtr SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
+
+        public static IntPtr SendMenuCmd(IntPtr hWnd, NppMenuCmd wParam, int lParam)
+        {
+            return Win32.SendMessage(hWnd, (int)WinMsg.WM_COMMAND, (int)wParam, lParam);
+        }
+
         [DllImport("user32")]
         public static extern IntPtr SendMessage(IntPtr hWnd, NppMsg Msg, int wParam, NppMenuCmd lParam);
+
         [DllImport("user32")]
         public static extern IntPtr SendMessage(IntPtr hWnd, NppMsg Msg, int wParam, IntPtr lParam);
+
         [DllImport("user32")]
         public static extern IntPtr SendMessage(IntPtr hWnd, NppMsg Msg, int wParam, int lParam);
+
         [DllImport("user32")]
         public static extern IntPtr SendMessage(IntPtr hWnd, NppMsg Msg, int wParam, out int lParam);
+
         [DllImport("user32")]
         public static extern IntPtr SendMessage(IntPtr hWnd, NppMsg Msg, IntPtr wParam, int lParam);
+
         [DllImport("user32")]
         public static extern IntPtr SendMessage(IntPtr hWnd, NppMsg Msg, int wParam, ref LangType lParam);
+
         [DllImport("user32")]
         public static extern IntPtr SendMessage(IntPtr hWnd, NppMsg Msg, int wParam, [MarshalAs(UnmanagedType.LPWStr)] StringBuilder lParam);
+
         [DllImport("user32")]
         public static extern IntPtr SendMessage(IntPtr hWnd, NppMsg Msg, int wParam, [MarshalAs(UnmanagedType.LPWStr)] string lParam);
+
         [DllImport("user32")]
         public static extern IntPtr SendMessage(IntPtr hWnd, NppMsg Msg, IntPtr wParam, [MarshalAs(UnmanagedType.LPWStr)] string lParam);
 
         [DllImport("user32")]
+        public static extern IntPtr SendMessage(IntPtr hWnd, NppMsg Msg, IntPtr wParam, [MarshalAs(UnmanagedType.LPWStr)] StringBuilder lParam);
+
+        public static IntPtr SendMessage(IntPtr hWnd, NppMsg Msg, int wParam, out string lParam)
+        {
+            var text = new StringBuilder(Win32.MAX_PATH);
+            IntPtr retval = Win32.SendMessage(hWnd, Msg, 0, text);
+            lParam = text.ToString();
+            return retval;
+        }
+
+        public static IntPtr SendMessage(IntPtr hWnd, NppMsg Msg, int wParam, out List<string> lParam)
+        {
+            lParam = new List<string>();
+
+            using (var cStrArray = new ClikeStringArray(wParam, Win32.MAX_PATH))
+            {
+                if (Win32.SendMessage(hWnd, Msg, cStrArray.NativePointer, wParam) != IntPtr.Zero)
+                    foreach (string item in cStrArray.ManagedStringsUnicode)
+                        lParam.Add(item);
+            }
+
+            return IntPtr.Zero;
+        }
+
+        [DllImport("user32")]
         public static extern IntPtr SendMessage(IntPtr hWnd, SciMsg Msg, int wParam, IntPtr lParam);
+
         [DllImport("user32")]
         public static extern IntPtr SendMessage(IntPtr hWnd, SciMsg Msg, int wParam, string lParam);
+
         [DllImport("user32")]
         public static extern IntPtr SendMessage(IntPtr hWnd, SciMsg Msg, int wParam, [MarshalAs(UnmanagedType.LPStr)] StringBuilder lParam);
+
         [DllImport("user32")]
         public static extern IntPtr SendMessage(IntPtr hWnd, SciMsg Msg, int wParam, int lParam);
 
+        public static IntPtr SendMessage(IntPtr hWnd, SciMsg Msg, int wParam, out string lParam)
+        {
+            var text = new StringBuilder(Win32.MAX_PATH);
+            IntPtr retval = Win32.SendMessage(hWnd, Msg, 0, text);
+            lParam = text.ToString();
+            return retval;
+        }
+
+        [DllImport("Shell32.dll")]
+        public extern static int ExtractIconEx(string libName, int iconIndex, IntPtr[] largeIcon, IntPtr[] smallIcon, int nIcons);
+
+        public static Icon ExtractIcon(string file, int index, bool small = true)
+        {
+            IntPtr[] icons = new IntPtr[index + 1];
+            if (small)
+                ExtractIconEx(file, 0, null, icons, icons.Length);
+            else
+                ExtractIconEx(file, 0, icons, null, icons.Length);
+
+            return Icon.FromHandle(icons[index]);
+        }
+
         public const int MAX_PATH = 260;
+
         [DllImport("kernel32")]
         public static extern int GetPrivateProfileInt(string lpAppName, string lpKeyName, int nDefault, string lpFileName);
+
         [DllImport("kernel32")]
         public static extern bool WritePrivateProfileString(string lpAppName, string lpKeyName, string lpString, string lpFileName);
 
         public const int MF_BYCOMMAND = 0;
         public const int MF_CHECKED = 8;
         public const int MF_UNCHECKED = 0;
+
         [DllImport("user32")]
         public static extern IntPtr GetMenu(IntPtr hWnd);
+
         [DllImport("user32")]
         public static extern int CheckMenuItem(IntPtr hmenu, int uIDCheckItem, int uCheck);
 
         public const int WM_CREATE = 1;
+
+        [DllImport("user32")]
+        public static extern bool ClientToScreen(IntPtr hWnd, ref Point lpPoint);
+
+        [DllImport("kernel32")]
+        public static extern void OutputDebugString(string lpOutputString);
     }
 
     public class ClikeStringArray : IDisposable
@@ -2136,9 +2293,25 @@ namespace NppGitPlugin
             Marshal.WriteIntPtr((IntPtr)((int)_nativeArray + (num * IntPtr.Size)), IntPtr.Zero);
         }
 
+        public ClikeStringArray(List<string> lstStrings)
+        {
+            _nativeArray = Marshal.AllocHGlobal((lstStrings.Count + 1) * IntPtr.Size);
+            _nativeItems = new List<IntPtr>();
+            for (int i = 0; i < lstStrings.Count; i++)
+            {
+                IntPtr item = Marshal.StringToHGlobalUni(lstStrings[i]);
+                Marshal.WriteIntPtr((IntPtr)((int)_nativeArray + (i * IntPtr.Size)), item);
+                _nativeItems.Add(item);
+            }
+            Marshal.WriteIntPtr((IntPtr)((int)_nativeArray + (lstStrings.Count * IntPtr.Size)), IntPtr.Zero);
+        }
+
         public IntPtr NativePointer { get { return _nativeArray; } }
+
         public List<string> ManagedStringsAnsi { get { return _getManagedItems(false); } }
+
         public List<string> ManagedStringsUnicode { get { return _getManagedItems(true); } }
+
         List<string> _getManagedItems(bool unicode)
         {
             List<string> _managedItems = new List<string>();
@@ -2160,10 +2333,12 @@ namespace NppGitPlugin
                 _disposed = true;
             }
         }
+
         ~ClikeStringArray()
         {
             Dispose();
         }
     }
-    #endregion
+
+    #endregion " Platform "
 }
