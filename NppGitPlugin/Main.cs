@@ -42,7 +42,9 @@ namespace NppGitPlugin
                 Plugin.SetCommand("TGit Switch", TortoiseGitHelper.TGitSwitch);
                 Plugin.SetCommand("TGit Stash save", TortoiseGitHelper.TGitStashSave);
                 Plugin.SetCommand("TGit Stash pop", TortoiseGitHelper.TGitStashPop);
-            } else
+                Plugin.SetCommand("TGit Repo status", TortoiseGitHelper.TGitRepoStatus);
+            }
+            else
             {
                 Plugin.SetCommand("Readme", ReadmeFunc);
             }

@@ -17,7 +17,8 @@ namespace NppGitPlugin
         Pull,
         Push,
         StashSave,
-        StashPop
+        StashPop,
+        RepoStatus
     }
     public class TortoiseGitHelper
     {
@@ -145,7 +146,7 @@ namespace NppGitPlugin
         {
             string filePath = Plugin.CurrentFilePath;
             string param = string.Format("/line:{0}", Plugin.CurrentLine);
-            StartCommand(CreateCommand(TortoiseGitCommand.Blame, filePath, additionalParam:param));
+            StartCommand(CreateCommand(TortoiseGitCommand.Blame, filePath, additionalParam: param));
         }
 
         public static void TGitSwitch()
@@ -165,6 +166,12 @@ namespace NppGitPlugin
         {
             string dirPath = GetRootDir(Plugin.CurrentFileDir);
             StartCommand(CreateCommand(TortoiseGitCommand.StashPop, dirPath));
+        }
+    
+        public static void TGitRepoStatus()
+        {
+            string dirPath = GetRootDir(Plugin.CurrentFileDir);
+            StartCommand(CreateCommand(TortoiseGitCommand.RepoStatus, dirPath));
         }
     }
 }
