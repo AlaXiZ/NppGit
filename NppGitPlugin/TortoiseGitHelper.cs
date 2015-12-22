@@ -153,5 +153,18 @@ namespace NppGitPlugin
             string dirPath = GetRootDir(Plugin.CurrentFileDir);
             StartCommand(CreateCommand(TortoiseGitCommand.Switch, dirPath));
         }
+
+        public static void TGitStashSave()
+        {
+            string dirPath = GetRootDir(Plugin.CurrentFileDir);
+            string msg = "/msg:" + DateTime.Now.ToString();
+            StartCommand(CreateCommand(TortoiseGitCommand.StashSave, dirPath, additionalParam: msg));
+        }
+
+        public static void TGitStashPop()
+        {
+            string dirPath = GetRootDir(Plugin.CurrentFileDir);
+            StartCommand(CreateCommand(TortoiseGitCommand.StashPop, dirPath));
+        }
     }
 }

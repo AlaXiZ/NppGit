@@ -40,6 +40,8 @@ namespace NppGitPlugin
                 Plugin.SetCommand("TGit Blame", TortoiseGitHelper.TGitBlame);
                 Plugin.SetCommand("TGit Blame line", TortoiseGitHelper.TGitBlameCurrentLine);
                 Plugin.SetCommand("TGit Switch", TortoiseGitHelper.TGitSwitch);
+                Plugin.SetCommand("TGit Stash save", TortoiseGitHelper.TGitStashSave);
+                Plugin.SetCommand("TGit Stash pop", TortoiseGitHelper.TGitStashPop);
             } else
             {
                 Plugin.SetCommand("Readme", ReadmeFunc);
