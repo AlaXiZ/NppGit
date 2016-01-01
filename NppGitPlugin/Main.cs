@@ -48,6 +48,7 @@ namespace NppGitPlugin
             {
                 Plugin.SetCommand("Readme", ReadmeFunc);
             }
+            Plugin.SetCommand("Sample context menu", PluginCommands.ContextMenu);
             /*Plugin.SetCommand("TGit ", TortoiseGitHelper.TGit);
             Plugin.SetCommand("TGit ", TortoiseGitHelper.TGit);
             Plugin.SetCommand("TGit ", TortoiseGitHelper.TGit);

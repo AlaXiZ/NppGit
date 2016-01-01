@@ -108,6 +108,28 @@ namespace NppGitPlugin
                 return ((long)Win32.SendMessage(nppData._nppHandle, NppMsg.NPPM_GETCURRENTLINE, 0, 0)) + 1;
             }
         }
+
+        public static void NewFile()
+        {
+            Win32.SendMessage(nppData._nppHandle, NppMsg.NPPM_MENUCOMMAND, 0, NppMenuCmd.IDM_FILE_NEW);
+        }
+
+        public static void AppendText(string text)
+        {
+            var buffer = new StringBuilder(text.Length);
+            buffer.Append(text);
+            Win32.SendMessage(CurrentScintilla, SciMsg.SCI_ADDTEXT, buffer.Length, buffer);
+        }
+
+        public static void SetLang(LangType langType)
+        {
+            Win32.SendMessage(nppData._nppHandle, NppMsg.NPPM_SETCURRENTLANGTYPE, 0, (int)langType);
+        }
+
+        public static void NewLine()
+        {
+            Win32.SendMessage(CurrentScintilla, SciMsg.SCI_NEWLINE, 0, 0);
+        }
         #endregion
     }
 }
