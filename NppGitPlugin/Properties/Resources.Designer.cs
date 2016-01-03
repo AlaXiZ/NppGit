@@ -63,19 +63,9 @@ namespace NppGitPlugin.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap star {
+        internal static System.Drawing.Bitmap Git {
             get {
-                object obj = ResourceManager.GetObject("star", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap star_bmp {
-            get {
-                object obj = ResourceManager.GetObject("star_bmp", resourceCulture);
+                object obj = ResourceManager.GetObject("Git", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

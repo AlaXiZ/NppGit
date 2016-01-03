@@ -439,7 +439,7 @@ namespace NppGitPlugin
 
         NPPM_GETBUFFERIDFROMPOS = (NPPMSG + 59),
         //wParam: Position of document
-        //lParam: View to use, 0 = Main, 1 = Secondary
+        //lParam: View to use, 0 = Plugin, 1 = Secondary
         //Returns 0 if invalid
 
         NPPM_GETCURRENTBUFFERID = (NPPMSG + 60),

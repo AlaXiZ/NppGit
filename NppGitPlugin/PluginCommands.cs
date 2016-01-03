@@ -1,30 +1,60 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.IO;
+using System.Windows.Forms;
 
 namespace NppGitPlugin
 {
     public static class PluginCommands
     {
         private static readonly string ItemTemplate = "<Item FolderName=\"{0}\" PluginEntryName=\"{1}\" PluginCommandItemName=\"{2}\" />";
+        private static readonly string ItemSeparator = "<Item FolderName=\"{0}\" id = \"0\" />";
 
         private static string GetItemTemplate(string itemName)
         {
-            return string.Format(ItemTemplate, Main.PluginName, Main.PluginName, itemName);
+            if (itemName == "-")
+                return string.Format(ItemSeparator, Plugin.PluginName);
+            else
+                return string.Format(ItemTemplate, Plugin.PluginName, Plugin.PluginName, itemName);
         }
 
         public static void ContextMenu()
         {
-            Plugin.NewFile();
-            Plugin.AppendText("\t\t<!--Sample menu -->");
-            Plugin.NewLine();
-            for (int i = 0; i < Plugin._funcItems.Items.Count; i++)
+            PluginUtils.NewFile();
+            PluginUtils.AppendText("\t\t<!--Sample menu -->");
+            PluginUtils.NewLine();
+            for (int i = 0; i < PluginUtils._funcItems.Items.Count; i++)
             {
-                Plugin.AppendText(GetItemTemplate(Plugin._funcItems.Items[i]._itemName));
-                Plugin.NewLine();
+                PluginUtils.AppendText(GetItemTemplate(PluginUtils._funcItems.Items[i]._itemName));
+                PluginUtils.NewLine();
             }
-            Plugin.SetLang(LangType.L_XML);
+            PluginUtils.SetLang(LangType.L_XML);
+        }
+
+        public static void Branch()
+        {
+            var repoDir = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
+            try
+            {
+                if (LibGit2Sharp.Repository.IsValid(repoDir))
+                {
+                    using (var repo = new LibGit2Sharp.Repository(repoDir))
+                    {
+                        foreach (var br in repo.Branches)
+                        {
+                            if (br.IsCurrentRepositoryHead)
+                            {
+                                MessageBox.Show(br.Name);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                //
+            }
+
         }
     }
 }

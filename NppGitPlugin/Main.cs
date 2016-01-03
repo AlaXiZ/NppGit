@@ -3,57 +3,71 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Windows.Forms;
 
 namespace NppGitPlugin
 {
-    class Main
+    class Plugin
     {
-        #region " Fields "
+        #region "Fields"
         internal const string PluginName = "NppGitPlugin";
         private static readonly string TortoiseGitBin = "TortoiseGit\\bin\\";
         static string iniPath = null;
+        static GitStatus gitStatusDlg = null;
+        static int gitStatusId = -1;
+        static IniFile settings = null;
         //static bool someSetting = false;
         //static frmMyDlg frmMyDlg = null;
         //static int idMyDlg = -1;
         //static Bitmap tbBmp = Properties.Resources.star;
         //static Bitmap tbBmp_tbTab = Properties.Resources.star_bmp;
-        //static Icon tbIcon = null;
+        static Icon tbIcon = null;
         #endregion
 
         #region " StartUp/CleanUp "
         internal static void CommandMenuInit()
         {
-            iniPath = Path.Combine(Plugin.ConfigDir, PluginName + ".ini");
+            iniPath = Path.Combine(PluginUtils.ConfigDir, PluginName + ".ini");
+            settings = new IniFile(iniPath);
+
+            var isVisiblePanel = settings.GetValue<int>("Panels", "StatusPanel.Visible", 0);
+
             InitTortoise();
 
             if (TortoiseGitHelper.TortoiseGitPath != "")
             {
-                Plugin.SetCommand("TGit Log file", TortoiseGitHelper.TGitLogFile);
-                Plugin.SetCommand("TGit Log path", TortoiseGitHelper.TGitLogPath);
-                Plugin.SetCommand("TGit Log repo", TortoiseGitHelper.TGitLogRepo);
-                Plugin.SetCommand("TGit Fetch", TortoiseGitHelper.TGitFetch);
-                Plugin.SetCommand("TGit Pull", TortoiseGitHelper.TGitPull);
-                Plugin.SetCommand("TGit Push", TortoiseGitHelper.TGitPush);
-                Plugin.SetCommand("TGit Commit", TortoiseGitHelper.TGitCommit);
-                Plugin.SetCommand("TGit Blame", TortoiseGitHelper.TGitBlame);
-                Plugin.SetCommand("TGit Blame line", TortoiseGitHelper.TGitBlameCurrentLine);
-                Plugin.SetCommand("TGit Switch", TortoiseGitHelper.TGitSwitch);
-                Plugin.SetCommand("TGit Stash save", TortoiseGitHelper.TGitStashSave);
-                Plugin.SetCommand("TGit Stash pop", TortoiseGitHelper.TGitStashPop);
-                Plugin.SetCommand("TGit Repo status", TortoiseGitHelper.TGitRepoStatus);
+                PluginUtils.SetCommand("TGit Log file", TortoiseGitHelper.TGitLogFile);
+                PluginUtils.SetCommand("TGit Log path", TortoiseGitHelper.TGitLogPath);
+                PluginUtils.SetCommand("TGit Log repo", TortoiseGitHelper.TGitLogRepo);
+                PluginUtils.SetCommand("TGit Fetch", TortoiseGitHelper.TGitFetch);
+                PluginUtils.SetCommand("TGit Pull", TortoiseGitHelper.TGitPull);
+                PluginUtils.SetCommand("TGit Push", TortoiseGitHelper.TGitPush);
+                PluginUtils.SetCommand("TGit Commit", TortoiseGitHelper.TGitCommit);
+                PluginUtils.SetCommand("TGit Blame", TortoiseGitHelper.TGitBlame);
+                PluginUtils.SetCommand("TGit Blame line", TortoiseGitHelper.TGitBlameCurrentLine);
+                PluginUtils.SetCommand("TGit Switch", TortoiseGitHelper.TGitSwitch);
+                PluginUtils.SetCommand("TGit Stash save", TortoiseGitHelper.TGitStashSave);
+                PluginUtils.SetCommand("TGit Stash pop", TortoiseGitHelper.TGitStashPop);
+                PluginUtils.SetCommand("TGit Repo status", TortoiseGitHelper.TGitRepoStatus);
             }
             else
             {
-                Plugin.SetCommand("Readme", ReadmeFunc);
+                PluginUtils.SetCommand("Readme", ReadmeFunc);
             }
-            Plugin.SetCommand("Sample context menu", PluginCommands.ContextMenu);
-            /*Plugin.SetCommand("TGit ", TortoiseGitHelper.TGit);
-            Plugin.SetCommand("TGit ", TortoiseGitHelper.TGit);
-            Plugin.SetCommand("TGit ", TortoiseGitHelper.TGit);
+            PluginUtils.SetCommand("-", null);
+            PluginUtils.SetCommand("Sample context menu", PluginCommands.ContextMenu);
+            PluginUtils.SetCommand("-", null);
+            gitStatusId = PluginUtils.SetCommand("Git status", GitStatusDialog, isVisiblePanel == 1);
+
+            if (isVisiblePanel == 1)
+            {
+                GitStatusDialog();
+            }
+            /*PluginUtils.SetCommand("TGit ", TortoiseGitHelper.TGit);
+            PluginUtils.SetCommand("TGit ", TortoiseGitHelper.TGit);
+            PluginUtils.SetCommand("TGit ", TortoiseGitHelper.TGit);
             */
-            //idMyDlg = Plugin.SetCommand("MyDockableDialog", myDockableDialog);
+            //idMyDlg = PluginUtils.SetCommand("MyDockableDialog", myDockableDialog);
         }
 
         internal static void ReadmeFunc()
@@ -70,13 +84,16 @@ namespace NppGitPlugin
             tbIcons.hToolbarBmp = tbBmp.GetHbitmap();
             IntPtr pTbIcons = Marshal.AllocHGlobal(Marshal.SizeOf(tbIcons));
             Marshal.StructureToPtr(tbIcons, pTbIcons, false);
-            Win32.SendMessage(Plugin.nppData._nppHandle, NppMsg.NPPM_ADDTOOLBARICON, Plugin._funcItems.Items[idMyDlg]._cmdID, pTbIcons);
+            Win32.SendMessage(PluginUtils.nppData._nppHandle, NppMsg.NPPM_ADDTOOLBARICON, PluginUtils._funcItems.Items[idMyDlg]._cmdID, pTbIcons);
             Marshal.FreeHGlobal(pTbIcons);
             */            
         }
 
         internal static void PluginCleanUp()
         {
+            var isVisible = gitStatusDlg != null && gitStatusDlg.Visible ? 1 : 0;
+            settings.SetValue<int>("Panels", "StatusPanel.Visible", isVisible);
+            gitStatusDlg = null;
             //Win32.WritePrivateProfileString("SomeSection", "SomeKey", someSetting ? "1" : "0", iniFilePath);
         }
 
@@ -87,8 +104,7 @@ namespace NppGitPlugin
 
         internal static void InitTortoise()
         {
-            IniFile iniFile = new IniFile(iniPath);
-            string tortoisePath = iniFile.GetValue<string>("TortoiseGitProc", "Path", "");
+            string tortoisePath = settings.GetValue<string>("TortoiseGitProc", "Path", "");
             // Path not set
             if (tortoisePath == "")
             {
@@ -121,7 +137,7 @@ namespace NppGitPlugin
                 }
                 if (tortoisePath != "")
                 {
-                    iniFile.SetValue<string>("TortoiseGitProc", "Path", tortoisePath);
+                    settings.SetValue<string>("TortoiseGitProc", "Path", tortoisePath);
                 }
             }
             //
@@ -130,48 +146,53 @@ namespace NppGitPlugin
         #endregion
 
         #region " Menu functions "
-        /*
-        internal static void myMenuFunction()
+        static void GitStatusDialog()
         {
-            MessageBox.Show("Hello N++!");
-        }
-        internal static void myDockableDialog()
-        {
-            if (frmMyDlg == null)
+            var isVisible = 0;
+            if (gitStatusDlg == null)
             {
-                frmMyDlg = new frmMyDlg();
+                gitStatusDlg = new GitStatus();
 
-                using (Bitmap newBmp = new Bitmap(16, 16))
-                {
-                    Graphics g = Graphics.FromImage(newBmp);
-                    ColorMap[] colorMap = new ColorMap[1];
-                    colorMap[0] = new ColorMap();
-                    colorMap[0].OldColor = Color.Fuchsia;
-                    colorMap[0].NewColor = Color.FromKnownColor(KnownColor.ButtonFace);
-                    ImageAttributes attr = new ImageAttributes();
-                    attr.SetRemapTable(colorMap);
-                    g.DrawImage(tbBmp_tbTab, new Rectangle(0, 0, 16, 16), 0, 0, 16, 16, GraphicsUnit.Pixel, attr);
-                    tbIcon = Icon.FromHandle(newBmp.GetHicon());
-                }
+                tbIcon = PluginUtils.NppBitmapToIcon(Properties.Resources.Git);
 
                 NppTbData _nppTbData = new NppTbData();
-                _nppTbData.hClient = frmMyDlg.Handle;
-                _nppTbData.pszName = "My dockable dialog";
-                _nppTbData.dlgID = idMyDlg;
+                _nppTbData.hClient = gitStatusDlg.Handle;
+                _nppTbData.pszName = "Git status";
+                _nppTbData.dlgID = gitStatusId;
                 _nppTbData.uMask = NppTbMsg.DWS_DF_CONT_RIGHT | NppTbMsg.DWS_ICONTAB | NppTbMsg.DWS_ICONBAR;
                 _nppTbData.hIconTab = (uint)tbIcon.Handle;
                 _nppTbData.pszModuleName = PluginName;
                 IntPtr _ptrNppTbData = Marshal.AllocHGlobal(Marshal.SizeOf(_nppTbData));
                 Marshal.StructureToPtr(_nppTbData, _ptrNppTbData, false);
 
-                Win32.SendMessage(Plugin.nppData._nppHandle, NppMsg.NPPM_DMMREGASDCKDLG, 0, _ptrNppTbData);
+                Win32.SendMessage(PluginUtils.nppData._nppHandle, NppMsg.NPPM_DMMREGASDCKDLG, 0, _ptrNppTbData);
+                isVisible = 1;
             }
             else
             {
-                Win32.SendMessage(Plugin.nppData._nppHandle, NppMsg.NPPM_DMMSHOW, 0, frmMyDlg.Handle);
+                if (gitStatusDlg.Visible)
+                {
+                    Win32.SendMessage(PluginUtils.nppData._nppHandle, NppMsg.NPPM_DMMHIDE, 0, gitStatusDlg.Handle);
+                }
+                else
+                {
+                    Win32.SendMessage(PluginUtils.nppData._nppHandle, NppMsg.NPPM_DMMSHOW, 0, gitStatusDlg.Handle);
+                    isVisible = 1;
+                }
             }
+            if (gitStatusDlg != null && gitStatusDlg.Visible)
+            {
+                (gitStatusDlg as FormDockable).ChangeContext();
+            }
+
+           Win32.SendMessage(PluginUtils.nppData._nppHandle, NppMsg.NPPM_SETMENUITEMCHECK, PluginUtils._funcItems.Items[gitStatusId]._cmdID, isVisible);
         }
-        */
+
+        public static void UpdateDialogs()
+        {
+            if (gitStatusDlg != null)
+                (gitStatusDlg as FormDockable).ChangeContext();
+        }
         #endregion
     }
 }

@@ -5,10 +5,8 @@ using System.Text;
 
 namespace NppGitPlugin
 {
-    public partial class Plugin
+    public interface FormDockable
     {
-        #region SCI Command
-
-        #endregion
+        void ChangeContext();
     }
 }

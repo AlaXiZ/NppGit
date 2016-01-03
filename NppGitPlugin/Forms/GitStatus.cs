@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 
 namespace NppGitPlugin
 {
-    public partial class frmMyDlg : Form
+    public partial class GitStatus : Form
     {
-        public frmMyDlg()
+        public GitStatus()
         {
             InitializeComponent();
         }

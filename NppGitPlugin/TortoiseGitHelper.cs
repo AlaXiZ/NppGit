@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace NppGitPlugin
@@ -53,17 +51,6 @@ namespace NppGitPlugin
             System.Diagnostics.Process.Start(tortoiseGitProc, param);
         }
 
-        private static string GetRootDir(string path)
-        {
-            if (System.IO.Directory.Exists(System.IO.Path.Combine(path, ".git")))
-            {
-                return path;
-            } else
-            {
-                return GetRootDir(System.IO.Directory.GetParent(path).FullName);
-            }
-        }
-
         private static string CreateCommand(TortoiseGitCommand command, string path, string logMsg = null, byte? closeParam = null, string additionalParam = null)
         {
             var builder = new StringBuilder();
@@ -96,81 +83,81 @@ namespace NppGitPlugin
 
         public static void TGitLogFile()
         {
-            string filePath = Plugin.CurrentFilePath;
+            string filePath = PluginUtils.CurrentFilePath;
             StartCommand(CreateCommand(TortoiseGitCommand.Log, filePath));
         }
 
         public static void TGitLogPath()
         {
-            string dirPath = Plugin.CurrentFileDir;
+            string dirPath = PluginUtils.CurrentFileDir;
             StartCommand(CreateCommand(TortoiseGitCommand.Log, dirPath));
         }
 
         public static void TGitLogRepo()
         {
-            string dirPath = GetRootDir(Plugin.CurrentFileDir);
+            string dirPath = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
             StartCommand(CreateCommand(TortoiseGitCommand.Log, dirPath));
         }
 
         public static void TGitFetch()
         {
-            string dirPath = GetRootDir(Plugin.CurrentFileDir);
+            string dirPath = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
             StartCommand(CreateCommand(TortoiseGitCommand.Fetch, dirPath));
         }
 
         public static void TGitPull()
         {
-            string dirPath = GetRootDir(Plugin.CurrentFileDir);
+            string dirPath = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
             StartCommand(CreateCommand(TortoiseGitCommand.Pull, dirPath));
         }
 
         public static void TGitPush()
         {
-            string dirPath = GetRootDir(Plugin.CurrentFileDir);
+            string dirPath = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
             StartCommand(CreateCommand(TortoiseGitCommand.Push, dirPath));
         }
 
         public static void TGitCommit()
         {
-            string dirPath = GetRootDir(Plugin.CurrentFileDir);
+            string dirPath = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
             StartCommand(CreateCommand(TortoiseGitCommand.Commit, dirPath));
         }
 
         public static void TGitBlame()
         {
-            string filePath = Plugin.CurrentFilePath;
+            string filePath = PluginUtils.CurrentFilePath;
             StartCommand(CreateCommand(TortoiseGitCommand.Blame, filePath));
         }
 
         public static void TGitBlameCurrentLine()
         {
-            string filePath = Plugin.CurrentFilePath;
-            string param = string.Format("/line:{0}", Plugin.CurrentLine);
+            string filePath = PluginUtils.CurrentFilePath;
+            string param = string.Format("/line:{0}", PluginUtils.CurrentLine);
             StartCommand(CreateCommand(TortoiseGitCommand.Blame, filePath, additionalParam: param));
         }
 
         public static void TGitSwitch()
         {
-            string dirPath = GetRootDir(Plugin.CurrentFileDir);
+            string dirPath = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
             StartCommand(CreateCommand(TortoiseGitCommand.Switch, dirPath));
         }
 
         public static void TGitStashSave()
         {
-            string dirPath = GetRootDir(Plugin.CurrentFileDir);
+            string dirPath = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
             string msg = "/msg:" + DateTime.Now.ToString();
             StartCommand(CreateCommand(TortoiseGitCommand.StashSave, dirPath, additionalParam: msg));
         }
 
         public static void TGitStashPop()
         {
-            string dirPath = GetRootDir(Plugin.CurrentFileDir);
+            string dirPath = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
             StartCommand(CreateCommand(TortoiseGitCommand.StashPop, dirPath));
         }
     
         public static void TGitRepoStatus()
         {
-            string dirPath = GetRootDir(Plugin.CurrentFileDir);
+            string dirPath = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
             StartCommand(CreateCommand(TortoiseGitCommand.RepoStatus, dirPath));
         }
     }

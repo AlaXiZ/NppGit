@@ -15,15 +15,16 @@ namespace NppGitPlugin
         [DllExport(CallingConvention = CallingConvention.Cdecl)]
         static void setInfo(NppData notepadPlusData)
         {
-            Plugin.nppData = notepadPlusData;
-            Main.CommandMenuInit();
+            PluginUtils.nppData = notepadPlusData;
+            AssemblyLoader.Init();
+            Plugin.CommandMenuInit();
         }
 
         [DllExport(CallingConvention = CallingConvention.Cdecl)]
         static IntPtr getFuncsArray(ref int nbF)
         {
-            nbF = Plugin._funcItems.Items.Count;
-            return Plugin._funcItems.NativePointer;
+            nbF = PluginUtils._funcItems.Items.Count;
+            return PluginUtils._funcItems.NativePointer;
         }
 
         [DllExport(CallingConvention = CallingConvention.Cdecl)]
@@ -37,7 +38,7 @@ namespace NppGitPlugin
         static IntPtr getName()
         {
             if (_ptrPluginName == IntPtr.Zero)
-                _ptrPluginName = Marshal.StringToHGlobalUni(Main.PluginName);
+                _ptrPluginName = Marshal.StringToHGlobalUni(Plugin.PluginName);
             return _ptrPluginName;
         }
 
@@ -47,13 +48,17 @@ namespace NppGitPlugin
             SCNotification nc = (SCNotification)Marshal.PtrToStructure(notifyCode, typeof(SCNotification));
             if (nc.nmhdr.code == (uint)NppMsg.NPPN_TBMODIFICATION)
             {
-                Plugin._funcItems.RefreshItems();
-                Main.SetToolBarIcon();
+                PluginUtils._funcItems.RefreshItems();
+                Plugin.SetToolBarIcon();
             }
             else if (nc.nmhdr.code == (uint)NppMsg.NPPN_SHUTDOWN)
             {
-                Main.PluginCleanUp();
+                Plugin.PluginCleanUp();
                 Marshal.FreeHGlobal(_ptrPluginName);
+            }
+            else if (nc.nmhdr.code == (uint)NppMsg.NPPN_BUFFERACTIVATED)
+            {
+                Plugin.UpdateDialogs();
             }
         }
     }
