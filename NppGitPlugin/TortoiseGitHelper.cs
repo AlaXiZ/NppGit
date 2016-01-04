@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using System.Windows.Forms;
 
 namespace NppGitPlugin
 {
@@ -18,27 +19,65 @@ namespace NppGitPlugin
         StashPop,
         RepoStatus
     }
+
     public class TortoiseGitHelper
     {
         private static readonly string EXE = "TortoiseGitProc.exe";
         private static readonly string PARAM = "/command:{0} {2} /path:\"{1}\"";
         private static readonly string LOG_MSG = "/logmsg:\"{0}\"";
         private static readonly string CLOSE = "/closeonend:{0}";
+        private static readonly string TORTOISEGITBIN = "TortoiseGit\\bin\\";
 
         private static string tortoiseGitPath = "";
         private static string tortoiseGitProc = "";
-
-        public static string TortoiseGitPath
+        
+        private static bool ExistsTortoiseGit(string programPath)
         {
-            get
+            return System.IO.Directory.Exists(System.IO.Path.Combine(programPath, TORTOISEGITBIN));
+        }
+
+        public static bool Init()
+        {
+            string tortoisePath = Settings.Instance.TortoiseGit.Path;
+            // Path not set
+            if (tortoisePath == "")
             {
-                return tortoiseGitPath;
+                // x64
+                if (8 == IntPtr.Size || (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("PROCESSOR_ARCHITEW6432"))))
+                {
+                    var path = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+                    if (ExistsTortoiseGit(path))
+                    {
+                        tortoisePath = System.IO.Path.Combine(path, TORTOISEGITBIN);
+                    }
+                }
+                if (tortoisePath == "")
+                {
+                    var path = Environment.GetEnvironmentVariable("ProgramFiles").Replace(" (x86)", "");
+                    if (ExistsTortoiseGit(path))
+                    {
+                        tortoisePath = System.IO.Path.Combine(path, TORTOISEGITBIN);
+                    }
+                }
+                if (tortoisePath == "")
+                {
+                    var dlg = new FolderBrowserDialog();
+                    dlg.Description = "Select folder with TortoiseGitProc.exe";
+                    dlg.ShowNewFolderButton = false;
+                    if (dlg.ShowDialog() == DialogResult.OK)
+                    {
+                        tortoisePath = dlg.SelectedPath;
+                    }
+                }
+                if (tortoisePath != "")
+                {
+                    Settings.Instance.TortoiseGit.Path = tortoisePath;
+                }
             }
-            set
-            {
-                tortoiseGitPath = value;
-                tortoiseGitProc = System.IO.Path.Combine(value, EXE);
-            }
+            tortoiseGitPath = tortoisePath;
+            tortoiseGitProc = System.IO.Path.Combine(tortoiseGitPath, EXE);
+
+            return !string.IsNullOrEmpty(tortoiseGitPath);
         }
 
         private static string GetCommandName(TortoiseGitCommand command)
@@ -159,6 +198,12 @@ namespace NppGitPlugin
         {
             string dirPath = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
             StartCommand(CreateCommand(TortoiseGitCommand.RepoStatus, dirPath));
+        }
+
+        public static void ReadmeFunc()
+        {
+            string text = "Не установлен TortoiseGit или не найдена папка с установленной программой!";
+            MessageBox.Show(text, "Ошибка настройки", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }

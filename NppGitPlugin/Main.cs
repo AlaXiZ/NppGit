@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
 
 namespace NppGitPlugin
 {
@@ -11,30 +8,18 @@ namespace NppGitPlugin
     {
         #region "Fields"
         internal const string PluginName = "NppGitPlugin";
-        private static readonly string TortoiseGitBin = "TortoiseGit\\bin\\";
-        static string iniPath = null;
         static GitStatus gitStatusDlg = null;
         static int gitStatusId = -1;
-        static IniFile settings = null;
-        //static bool someSetting = false;
-        //static frmMyDlg frmMyDlg = null;
-        //static int idMyDlg = -1;
-        //static Bitmap tbBmp = Properties.Resources.star;
-        //static Bitmap tbBmp_tbTab = Properties.Resources.star_bmp;
+
         static Icon tbIcon = null;
         #endregion
 
         #region " StartUp/CleanUp "
         internal static void CommandMenuInit()
         {
-            iniPath = Path.Combine(PluginUtils.ConfigDir, PluginName + ".ini");
-            settings = new IniFile(iniPath);
-
-            var isVisiblePanel = settings.GetValue<int>("Panels", "StatusPanel.Visible", 0);
-
-            InitTortoise();
-
-            if (TortoiseGitHelper.TortoiseGitPath != "")
+            var isVisiblePanel = Settings.Instance.PanelsSet.StatusPanelVisible;
+            
+            if (TortoiseGitHelper.Init())
             {
                 PluginUtils.SetCommand("TGit Log file", TortoiseGitHelper.TGitLogFile);
                 PluginUtils.SetCommand("TGit Log path", TortoiseGitHelper.TGitLogPath);
@@ -52,33 +37,20 @@ namespace NppGitPlugin
             }
             else
             {
-                PluginUtils.SetCommand("Readme", ReadmeFunc);
+                PluginUtils.SetCommand("Readme", TortoiseGitHelper.ReadmeFunc);
             }
             PluginUtils.SetCommand("-", null);
             PluginUtils.SetCommand("Sample context menu", PluginCommands.ContextMenu);
             PluginUtils.SetCommand("-", null);
-            gitStatusId = PluginUtils.SetCommand("Git status", GitStatusDialog, isVisiblePanel == 1);
+            gitStatusId = PluginUtils.SetCommand("Status panel", GitStatusDialog, isVisiblePanel);
+            PluginCommands.ShowBranchID = PluginUtils.SetCommand("Branch in title", PluginCommands.ShowBranch, Settings.Instance.FuncSet.ShowBranch); 
 
-            if (isVisiblePanel == 1)
-            {
+            if (isVisiblePanel)
                 GitStatusDialog();
-            }
-            /*PluginUtils.SetCommand("TGit ", TortoiseGitHelper.TGit);
-            PluginUtils.SetCommand("TGit ", TortoiseGitHelper.TGit);
-            PluginUtils.SetCommand("TGit ", TortoiseGitHelper.TGit);
-            */
-            //idMyDlg = PluginUtils.SetCommand("MyDockableDialog", myDockableDialog);
-        }
-
-        internal static void ReadmeFunc()
-        {
-            string text = "Не установлен TortoiseGit или не найдена папка с установленной программой!";
-            MessageBox.Show(text, "Ошибка настройки", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         internal static void SetToolBarIcon()
         {
-
             /*
             toolbarIcons tbIcons = new toolbarIcons();
             tbIcons.hToolbarBmp = tbBmp.GetHbitmap();
@@ -91,58 +63,11 @@ namespace NppGitPlugin
 
         internal static void PluginCleanUp()
         {
-            var isVisible = gitStatusDlg != null && gitStatusDlg.Visible ? 1 : 0;
-            settings.SetValue<int>("Panels", "StatusPanel.Visible", isVisible);
+            Settings.Instance.PanelsSet.StatusPanelVisible = gitStatusDlg != null && gitStatusDlg.Visible;
             gitStatusDlg = null;
             //Win32.WritePrivateProfileString("SomeSection", "SomeKey", someSetting ? "1" : "0", iniFilePath);
         }
-
-        private static bool ExistsTortoiseGit(string programPath)
-        {
-            return System.IO.Directory.Exists(System.IO.Path.Combine(programPath, TortoiseGitBin));
-        }
-
-        internal static void InitTortoise()
-        {
-            string tortoisePath = settings.GetValue<string>("TortoiseGitProc", "Path", "");
-            // Path not set
-            if (tortoisePath == "")
-            {
-                // x64
-                if (8 == IntPtr.Size || (!String.IsNullOrEmpty(Environment.GetEnvironmentVariable("PROCESSOR_ARCHITEW6432"))))
-                {
-                    var path = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
-                    if (ExistsTortoiseGit(path))
-                    {
-                        tortoisePath = System.IO.Path.Combine(path, TortoiseGitBin);
-                    }
-                }
-                if (tortoisePath == "")
-                {
-                    var path = Environment.GetEnvironmentVariable("ProgramFiles").Replace(" (x86)", "");
-                    if (ExistsTortoiseGit(path))
-                    {
-                        tortoisePath = System.IO.Path.Combine(path, TortoiseGitBin);
-                    }
-                }
-                if (tortoisePath == "")
-                {
-                    var dlg = new FolderBrowserDialog();
-                    dlg.Description = "Select folder with TortoiseGitProc";
-                    dlg.ShowNewFolderButton = false;
-                    if (dlg.ShowDialog() == DialogResult.OK)
-                    {
-                        tortoisePath = dlg.SelectedPath;
-                    }
-                }
-                if (tortoisePath != "")
-                {
-                    settings.SetValue<string>("TortoiseGitProc", "Path", tortoisePath);
-                }
-            }
-            //
-            TortoiseGitHelper.TortoiseGitPath = tortoisePath;
-        }
+        
         #endregion
 
         #region " Menu functions "
@@ -188,10 +113,13 @@ namespace NppGitPlugin
            Win32.SendMessage(PluginUtils.nppData._nppHandle, NppMsg.NPPM_SETMENUITEMCHECK, PluginUtils._funcItems.Items[gitStatusId]._cmdID, isVisible);
         }
 
-        public static void UpdateDialogs()
+        public static void ChangeTabItem()
         {
             if (gitStatusDlg != null)
                 (gitStatusDlg as FormDockable).ChangeContext();
+
+            if (Settings.Instance.FuncSet.ShowBranch)
+                PluginCommands.DoShowBranch();
         }
         #endregion
     }

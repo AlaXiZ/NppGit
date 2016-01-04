@@ -260,7 +260,9 @@ namespace NppGitPlugin
     [Flags]
     public enum WinMsg : int
     {
-        WM_COMMAND = 0x111
+        WM_COMMAND = 0x111  ,
+        WM_SETTEXT = 0x000C,
+        WM_GETTEXT = 0x000D
     }
 
     [Flags]
@@ -2221,6 +2223,9 @@ namespace NppGitPlugin
 
         [DllImport("user32")]
         public static extern IntPtr SendMessage(IntPtr hWnd, SciMsg Msg, int wParam, [MarshalAs(UnmanagedType.LPStr)] StringBuilder lParam);
+
+        [DllImport("user32")]
+        public static extern IntPtr SendMessage(IntPtr hWnd, int Msg, int wParam, [MarshalAs(UnmanagedType.LPStr)] StringBuilder lParam);
 
         [DllImport("user32")]
         public static extern IntPtr SendMessage(IntPtr hWnd, SciMsg Msg, int wParam, int lParam);

@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Drawing;
-using System.IO;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Text;
 
 namespace NppGitPlugin
 {
     public partial class PluginUtils
     {
+        //private static Logger logger = LogManager.GetCurrentClassLogger();
         #region " Fields "
         public static NppData nppData;
         internal static FuncItems _funcItems = new FuncItems();
@@ -33,6 +29,7 @@ namespace NppGitPlugin
 
         public static int SetCommand(string commandName, Action functionPointer, ShortcutKey shortcut, bool checkOnInit)
         {
+            //logger.Trace("Add command: " + commandName + " Shortcut Key: " + shortcut.ToString());
             FuncItem funcItem = new FuncItem();
             funcItem._cmdID = index++;
             funcItem._itemName = commandName;

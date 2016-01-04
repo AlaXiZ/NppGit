@@ -122,8 +122,6 @@ namespace NppGitPlugin
             }
         }
 
-
-
         public static Icon NppBitmapToIcon(Bitmap bitmap)
         {
             using (Bitmap newBmp = new Bitmap(16, 16))
@@ -137,6 +135,21 @@ namespace NppGitPlugin
                 attr.SetRemapTable(colorMap);
                 g.DrawImage(bitmap, new Rectangle(0, 0, 16, 16), 0, 0, 16, 16, GraphicsUnit.Pixel, attr);
                 return Icon.FromHandle(newBmp.GetHicon());
+            }
+        }
+
+        public static string WindowTitle
+        {
+            get
+            {
+                var title = new StringBuilder(Win32.MAX_PATH);
+                Win32.SendMessage(nppData._nppHandle, (int)WinMsg.WM_GETTEXT, Win32.MAX_PATH, title);
+                return title.ToString();
+            }
+            set
+            {
+                var title = new StringBuilder(value);
+                Win32.SendMessage(nppData._nppHandle, (int)WinMsg.WM_SETTEXT, 0, title);
             }
         }
     }

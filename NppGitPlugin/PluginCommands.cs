@@ -1,8 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Windows.Forms;
-
-namespace NppGitPlugin
+﻿namespace NppGitPlugin
 {
     public static class PluginCommands
     {
@@ -30,31 +26,35 @@ namespace NppGitPlugin
             PluginUtils.SetLang(LangType.L_XML);
         }
 
-        public static void Branch()
+        public static int ShowBranchID { get; set; }
+
+        public static void ShowBranch()
+        {
+            Settings.Instance.FuncSet.ShowBranch = !Settings.Instance.FuncSet.ShowBranch;
+            Win32.SendMessage(PluginUtils.nppData._nppHandle, NppMsg.NPPM_SETMENUITEMCHECK, PluginUtils._funcItems.Items[ShowBranchID]._cmdID, Settings.Instance.FuncSet.ShowBranch ? 1 : 0);
+            DoShowBranch(Settings.Instance.FuncSet.ShowBranch);
+        }
+
+        public static void DoShowBranch(bool isShow = true)
         {
             var repoDir = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
-            try
+            if (!string.IsNullOrEmpty(repoDir) && LibGit2Sharp.Repository.IsValid(repoDir))
             {
-                if (LibGit2Sharp.Repository.IsValid(repoDir))
+                using (var repo = new LibGit2Sharp.Repository(repoDir))
                 {
-                    using (var repo = new LibGit2Sharp.Repository(repoDir))
+                    var branch = " [Branch: " + repo.Head.Name + "]";
+                    if (isShow)
                     {
-                        foreach (var br in repo.Branches)
-                        {
-                            if (br.IsCurrentRepositoryHead)
-                            {
-                                MessageBox.Show(br.Name);
-                                break;
-                            }
-                        }
+                        PluginUtils.WindowTitle += branch;
+                    }
+                    else
+                    {
+                        var title = PluginUtils.WindowTitle;
+                        PluginUtils.WindowTitle = title.Replace(branch, "");
                     }
                 }
             }
-            catch (Exception e)
-            {
-                //
-            }
-
         }
     }
+
 }

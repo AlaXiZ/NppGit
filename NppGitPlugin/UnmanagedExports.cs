@@ -15,8 +15,9 @@ namespace NppGitPlugin
         [DllExport(CallingConvention = CallingConvention.Cdecl)]
         static void setInfo(NppData notepadPlusData)
         {
-            PluginUtils.nppData = notepadPlusData;
             AssemblyLoader.Init();
+            PluginUtils.nppData = notepadPlusData;
+            Settings.Init();
             Plugin.CommandMenuInit();
         }
 
@@ -58,7 +59,7 @@ namespace NppGitPlugin
             }
             else if (nc.nmhdr.code == (uint)NppMsg.NPPN_BUFFERACTIVATED)
             {
-                Plugin.UpdateDialogs();
+                Plugin.ChangeTabItem();
             }
         }
     }
