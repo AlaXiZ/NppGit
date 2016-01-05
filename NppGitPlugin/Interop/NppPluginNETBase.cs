@@ -1,15 +1,23 @@
 ﻿using System;
 
-namespace NppGitPlugin
+namespace NppGit
 {
     public partial class PluginUtils
     {
         //private static Logger logger = LogManager.GetCurrentClassLogger();
         #region " Fields "
-        public static NppData nppData;
+        private static NppData nppData;
         internal static FuncItems _funcItems = new FuncItems();
         internal static int index = 0;
         #endregion
+
+        public static NppData NppData
+        {
+            get { return nppData; }
+            set { nppData = value; }
+        }
+
+        public static IntPtr NppHandle { get { return nppData._nppHandle; } }
 
         #region " Helper "
         public static int SetCommand(string commandName, Action functionPointer)
@@ -41,6 +49,7 @@ namespace NppGitPlugin
             _funcItems.Add(funcItem);
             return (index - 1); // funcItem._cmdID;
         }
+        
         #endregion
     }
 }

@@ -2,7 +2,7 @@ using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace NppGitPlugin
+namespace NppGit
 {
     public class IniFile
     {

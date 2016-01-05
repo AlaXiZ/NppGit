@@ -5,7 +5,7 @@ using System;
 using System.IO;
 using System.Reflection;
 
-namespace NppGitPlugin
+namespace NppGit
 {
     public static class AssemblyLoader
     {
@@ -17,12 +17,10 @@ namespace NppGitPlugin
 
         private static void InitLog()
         {
-            //var config = new LoggingConfiguration();
             var console = new DebuggerTarget
             {
-                Layout = "[${longdate}][${processid}] ${message}"
+                Layout = "[${longdate}][${level:uppercase=true}][${processid}] ${message}"
             };
-            var rule = new LoggingRule("*", LogLevel.Trace, console);
             SimpleConfigurator.ConfigureForTargetLogging(console, LogLevel.Trace);
 
             LogManager.GetCurrentClassLogger().Debug("Logger initialized");            

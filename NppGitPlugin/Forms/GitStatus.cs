@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace NppGitPlugin
+namespace NppGit
 {
     public partial class GitStatus : Form
     {

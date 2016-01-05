@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Drawing;
 
-namespace NppGitPlugin
+namespace NppGit
 {
     partial class GitStatus : FormDockable
     {
@@ -98,5 +99,21 @@ namespace NppGitPlugin
         }
         private System.Windows.Forms.Label lRepo;
         private System.Windows.Forms.Label lBranch;
+
+        public string Title
+        {
+            get
+            {
+                return "Git Status";
+            }
+        }
+
+        public Bitmap TabIcon
+        {
+            get
+            {
+                return Properties.Resources.Git;
+            }
+        }
     }
 }

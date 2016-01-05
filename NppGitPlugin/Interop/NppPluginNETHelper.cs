@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 
-namespace NppGitPlugin
+namespace NppGit
 {
     #region " Notepad++ "
 

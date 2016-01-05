@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using NppPlugin.DllExport;
 
-namespace NppGitPlugin
+namespace NppGit
 {
     class UnmanagedExports
     {
@@ -15,12 +15,13 @@ namespace NppGitPlugin
         [DllExport(CallingConvention = CallingConvention.Cdecl)]
         static void setInfo(NppData notepadPlusData)
         {
+            PluginUtils.NppData = notepadPlusData;
             AssemblyLoader.Init();
-            PluginUtils.nppData = notepadPlusData;
             Settings.Init();
-            Plugin.CommandMenuInit();
-        }
 
+            Plugin.Init();
+        }
+    
         [DllExport(CallingConvention = CallingConvention.Cdecl)]
         static IntPtr getFuncsArray(ref int nbF)
         {
@@ -39,7 +40,7 @@ namespace NppGitPlugin
         static IntPtr getName()
         {
             if (_ptrPluginName == IntPtr.Zero)
-                _ptrPluginName = Marshal.StringToHGlobalUni(Plugin.PluginName);
+                _ptrPluginName = Marshal.StringToHGlobalUni(Properties.Resources.PluginName);
             return _ptrPluginName;
         }
 
@@ -50,7 +51,7 @@ namespace NppGitPlugin
             if (nc.nmhdr.code == (uint)NppMsg.NPPN_TBMODIFICATION)
             {
                 PluginUtils._funcItems.RefreshItems();
-                Plugin.SetToolBarIcon();
+                Plugin.ToolBarInit();
             }
             else if (nc.nmhdr.code == (uint)NppMsg.NPPN_SHUTDOWN)
             {

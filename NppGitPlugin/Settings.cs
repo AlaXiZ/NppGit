@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.IO;
 
-namespace NppGitPlugin
+namespace NppGit
 {
     public class Settings
     {
@@ -45,7 +45,7 @@ namespace NppGitPlugin
         public static void Init()
         {
             logger.Debug("Init settings");
-            var iniPath = Path.Combine(PluginUtils.ConfigDir, Plugin.PluginName + ".ini");
+            var iniPath = Path.Combine(PluginUtils.ConfigDir, Properties.Resources.PluginName + ".ini");
             logger.Debug("Plugin setting file: {0}", iniPath);
             _file = new IniFile(iniPath);
         }
@@ -75,6 +75,16 @@ namespace NppGitPlugin
             public string Path
             {
                 get { return Get(""); }
+                set { Set(value); }
+            }
+            public bool ShowToolbar
+            {
+                get { return Get(false); }
+                set { Set(value); }
+            }
+            public uint ButtonMask
+            {
+                get { return Get(0u); }
                 set { Set(value); }
             }
         }

@@ -8,7 +8,7 @@
     <ProjectGuid>{E56F6E12-089C-40ED-BCFD-923E5FA121A1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NppGitPlugin</RootNamespace>
+    <RootNamespace>NppGit</RootNamespace>
     <AssemblyName>NppGit</AssemblyName>
     <OutputPath>bin\Debug\</OutputPath>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
@@ -45,6 +45,9 @@
     <PlatformTarget>x86</PlatformTarget>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <Prefer32Bit>false</Prefer32Bit>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <CodeAnalysisIgnoreGeneratedCode>false</CodeAnalysisIgnoreGeneratedCode>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DefineConstants>TRACE</DefineConstants>
@@ -65,8 +68,10 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyLoader.cs" />
@@ -78,10 +83,18 @@
     <Compile Include="Forms\GitStatus.Designer.cs">
       <DependentUpon>GitStatus.cs</DependentUpon>
     </Compile>
-    <Compile Include="IniFile.cs" />
+    <Compile Include="Forms\SettingsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SettingsDialog.Designer.cs">
+      <DependentUpon>SettingsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Interfaces.cs" />
+    <Compile Include="Interop\IniFile.cs" />
     <Compile Include="Main.cs" />
-    <Compile Include="NppPluginNETBase.cs" />
-    <Compile Include="NppPluginNETHelper.cs" />
+    <Compile Include="Interop\NppPluginNETBase.cs" />
+    <Compile Include="Interop\NppPluginNETHelper.cs" />
+    <Compile Include="ModuleManager.cs" />
     <Compile Include="PluginUtils.cs" />
     <Compile Include="PluginCommands.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -92,11 +105,14 @@
     </Compile>
     <Compile Include="Settings.cs" />
     <Compile Include="TortoiseGitHelper.cs" />
-    <Compile Include="UnmanagedExports.cs" />
+    <Compile Include="Interop\UnmanagedExports.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Forms\GitStatus.resx">
       <DependentUpon>GitStatus.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\SettingsDialog.resx">
+      <DependentUpon>SettingsDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -124,6 +140,15 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\switch.png" />
+    <None Include="Resources\stashsave.png" />
+    <None Include="Resources\stashpop.png" />
+    <None Include="Resources\repo.png" />
+    <None Include="Resources\push.png" />
+    <None Include="Resources\pull.png" />
+    <None Include="Resources\log.png" />
+    <None Include="Resources\commit.png" />
+    <None Include="Resources\blame.png" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

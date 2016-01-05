@@ -1,4 +1,4 @@
-﻿namespace NppGitPlugin
+﻿namespace NppGit
 {
     public static class PluginCommands
     {
@@ -8,9 +8,9 @@
         private static string GetItemTemplate(string itemName)
         {
             if (itemName == "-")
-                return string.Format(ItemSeparator, Plugin.PluginName);
+                return string.Format(ItemSeparator, Properties.Resources.PluginName);
             else
-                return string.Format(ItemTemplate, Plugin.PluginName, Plugin.PluginName, itemName);
+                return string.Format(ItemTemplate, Properties.Resources.PluginName, Properties.Resources.PluginName, itemName);
         }
 
         public static void ContextMenu()
@@ -31,7 +31,7 @@
         public static void ShowBranch()
         {
             Settings.Instance.FuncSet.ShowBranch = !Settings.Instance.FuncSet.ShowBranch;
-            Win32.SendMessage(PluginUtils.nppData._nppHandle, NppMsg.NPPM_SETMENUITEMCHECK, PluginUtils._funcItems.Items[ShowBranchID]._cmdID, Settings.Instance.FuncSet.ShowBranch ? 1 : 0);
+            Win32.SendMessage(PluginUtils.NppHandle, NppMsg.NPPM_SETMENUITEMCHECK, PluginUtils._funcItems.Items[ShowBranchID]._cmdID, Settings.Instance.FuncSet.ShowBranch ? 1 : 0);
             DoShowBranch(Settings.Instance.FuncSet.ShowBranch);
         }
 

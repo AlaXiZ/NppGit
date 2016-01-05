@@ -2,12 +2,13 @@
 using System.Drawing;
 using System.Runtime.InteropServices;
 
-namespace NppGitPlugin
+namespace NppGit
 {
     class Plugin
     {
         #region "Fields"
-        internal const string PluginName = "NppGitPlugin";
+        //internal const string PluginName = "NppGit";
+        private static ModuleManager mm = new ModuleManager();
         static GitStatus gitStatusDlg = null;
         static int gitStatusId = -1;
 
@@ -15,30 +16,13 @@ namespace NppGitPlugin
         #endregion
 
         #region " StartUp/CleanUp "
-        internal static void CommandMenuInit()
+        internal static void Init()
         {
+            mm.AddModule(new TortoiseGitHelper());
+
+            mm.Init();
             var isVisiblePanel = Settings.Instance.PanelsSet.StatusPanelVisible;
             
-            if (TortoiseGitHelper.Init())
-            {
-                PluginUtils.SetCommand("TGit Log file", TortoiseGitHelper.TGitLogFile);
-                PluginUtils.SetCommand("TGit Log path", TortoiseGitHelper.TGitLogPath);
-                PluginUtils.SetCommand("TGit Log repo", TortoiseGitHelper.TGitLogRepo);
-                PluginUtils.SetCommand("TGit Fetch", TortoiseGitHelper.TGitFetch);
-                PluginUtils.SetCommand("TGit Pull", TortoiseGitHelper.TGitPull);
-                PluginUtils.SetCommand("TGit Push", TortoiseGitHelper.TGitPush);
-                PluginUtils.SetCommand("TGit Commit", TortoiseGitHelper.TGitCommit);
-                PluginUtils.SetCommand("TGit Blame", TortoiseGitHelper.TGitBlame);
-                PluginUtils.SetCommand("TGit Blame line", TortoiseGitHelper.TGitBlameCurrentLine);
-                PluginUtils.SetCommand("TGit Switch", TortoiseGitHelper.TGitSwitch);
-                PluginUtils.SetCommand("TGit Stash save", TortoiseGitHelper.TGitStashSave);
-                PluginUtils.SetCommand("TGit Stash pop", TortoiseGitHelper.TGitStashPop);
-                PluginUtils.SetCommand("TGit Repo status", TortoiseGitHelper.TGitRepoStatus);
-            }
-            else
-            {
-                PluginUtils.SetCommand("Readme", TortoiseGitHelper.ReadmeFunc);
-            }
             PluginUtils.SetCommand("-", null);
             PluginUtils.SetCommand("Sample context menu", PluginCommands.ContextMenu);
             PluginUtils.SetCommand("-", null);
@@ -47,22 +31,19 @@ namespace NppGitPlugin
 
             if (isVisiblePanel)
                 GitStatusDialog();
+            PluginUtils.SetCommand("-", null);
+            PluginUtils.SetCommand("Settings", DoSettings);
+            PluginUtils.SetCommand("About", null);
         }
 
-        internal static void SetToolBarIcon()
+        internal static void ToolBarInit()
         {
-            /*
-            toolbarIcons tbIcons = new toolbarIcons();
-            tbIcons.hToolbarBmp = tbBmp.GetHbitmap();
-            IntPtr pTbIcons = Marshal.AllocHGlobal(Marshal.SizeOf(tbIcons));
-            Marshal.StructureToPtr(tbIcons, pTbIcons, false);
-            Win32.SendMessage(PluginUtils.nppData._nppHandle, NppMsg.NPPM_ADDTOOLBARICON, PluginUtils._funcItems.Items[idMyDlg]._cmdID, pTbIcons);
-            Marshal.FreeHGlobal(pTbIcons);
-            */            
+            mm.ToolBarInit();          
         }
 
         internal static void PluginCleanUp()
         {
+            mm.Final();
             Settings.Instance.PanelsSet.StatusPanelVisible = gitStatusDlg != null && gitStatusDlg.Visible;
             gitStatusDlg = null;
             //Win32.WritePrivateProfileString("SomeSection", "SomeKey", someSetting ? "1" : "0", iniFilePath);
@@ -71,6 +52,12 @@ namespace NppGitPlugin
         #endregion
 
         #region " Menu functions "
+        internal static void DoSettings()
+        {
+            var dlg = new Forms.SettingsDialog();
+            dlg.ShowDialog();
+        }
+
         static void GitStatusDialog()
         {
             var isVisible = 0;
@@ -86,22 +73,22 @@ namespace NppGitPlugin
                 _nppTbData.dlgID = gitStatusId;
                 _nppTbData.uMask = NppTbMsg.DWS_DF_CONT_RIGHT | NppTbMsg.DWS_ICONTAB | NppTbMsg.DWS_ICONBAR;
                 _nppTbData.hIconTab = (uint)tbIcon.Handle;
-                _nppTbData.pszModuleName = PluginName;
+                _nppTbData.pszModuleName = Properties.Resources.PluginName;
                 IntPtr _ptrNppTbData = Marshal.AllocHGlobal(Marshal.SizeOf(_nppTbData));
                 Marshal.StructureToPtr(_nppTbData, _ptrNppTbData, false);
 
-                Win32.SendMessage(PluginUtils.nppData._nppHandle, NppMsg.NPPM_DMMREGASDCKDLG, 0, _ptrNppTbData);
+                Win32.SendMessage(PluginUtils.NppHandle, NppMsg.NPPM_DMMREGASDCKDLG, 0, _ptrNppTbData);
                 isVisible = 1;
             }
             else
             {
                 if (gitStatusDlg.Visible)
                 {
-                    Win32.SendMessage(PluginUtils.nppData._nppHandle, NppMsg.NPPM_DMMHIDE, 0, gitStatusDlg.Handle);
+                    Win32.SendMessage(PluginUtils.NppHandle, NppMsg.NPPM_DMMHIDE, 0, gitStatusDlg.Handle);
                 }
                 else
                 {
-                    Win32.SendMessage(PluginUtils.nppData._nppHandle, NppMsg.NPPM_DMMSHOW, 0, gitStatusDlg.Handle);
+                    Win32.SendMessage(PluginUtils.NppHandle, NppMsg.NPPM_DMMSHOW, 0, gitStatusDlg.Handle);
                     isVisible = 1;
                 }
             }
@@ -110,11 +97,13 @@ namespace NppGitPlugin
                 (gitStatusDlg as FormDockable).ChangeContext();
             }
 
-           Win32.SendMessage(PluginUtils.nppData._nppHandle, NppMsg.NPPM_SETMENUITEMCHECK, PluginUtils._funcItems.Items[gitStatusId]._cmdID, isVisible);
+           Win32.SendMessage(PluginUtils.NppHandle, NppMsg.NPPM_SETMENUITEMCHECK, PluginUtils._funcItems.Items[gitStatusId]._cmdID, isVisible);
         }
 
         public static void ChangeTabItem()
         {
+            mm.ChangeContext();
+
             if (gitStatusDlg != null)
                 (gitStatusDlg as FormDockable).ChangeContext();
 
