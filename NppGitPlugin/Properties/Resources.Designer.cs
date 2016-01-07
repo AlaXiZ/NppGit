@@ -71,6 +71,15 @@ namespace NppGit.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на .
+        /// </summary>
+        internal static string ChangeLog {
+            get {
+                return ResourceManager.GetString("ChangeLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap checkout {
@@ -131,6 +140,16 @@ namespace NppGit.Properties {
         internal static string NLog {
             get {
                 return ResourceManager.GetString("NLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap NppGit_Logo {
+            get {
+                object obj = ResourceManager.GetObject("NppGit_Logo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

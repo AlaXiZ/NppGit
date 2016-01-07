@@ -33,7 +33,7 @@ namespace NppGit
                 GitStatusDialog();
             PluginUtils.SetCommand("-", null);
             PluginUtils.SetCommand("Settings", DoSettings);
-            PluginUtils.SetCommand("About", null);
+            PluginUtils.SetCommand("About", DoAbout);
         }
 
         internal static void ToolBarInit()
@@ -55,6 +55,12 @@ namespace NppGit
         internal static void DoSettings()
         {
             var dlg = new Forms.SettingsDialog();
+            dlg.ShowDialog();
+        }
+
+        internal static void DoAbout()
+        {
+            var dlg = new Forms.About();
             dlg.ShowDialog();
         }
 

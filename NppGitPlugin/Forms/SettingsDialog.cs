@@ -43,5 +43,10 @@ namespace NppGit.Forms
             Settings.Instance.TortoiseGit.ShowToolbar = chbTGToolbar.Checked;
             Settings.Instance.TortoiseGit.ButtonMask = GetButtonMask();
         }
+
+        private void bOk_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
     }
 }

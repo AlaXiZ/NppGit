@@ -32,6 +32,7 @@
             this.chbTGToolbar = new System.Windows.Forms.CheckBox();
             this.chlButtons = new System.Windows.Forms.CheckedListBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.bOk = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // chbTGToolbar
@@ -63,7 +64,7 @@
             this.chlButtons.Location = new System.Drawing.Point(12, 35);
             this.chlButtons.MultiColumn = true;
             this.chlButtons.Name = "chlButtons";
-            this.chlButtons.Size = new System.Drawing.Size(380, 64);
+            this.chlButtons.Size = new System.Drawing.Size(378, 64);
             this.chlButtons.TabIndex = 1;
             // 
             // label1
@@ -75,11 +76,22 @@
             this.label1.TabIndex = 2;
             this.label1.Text = "*Only after restart NPP";
             // 
+            // bOk
+            // 
+            this.bOk.Location = new System.Drawing.Point(340, 132);
+            this.bOk.Name = "bOk";
+            this.bOk.Size = new System.Drawing.Size(50, 25);
+            this.bOk.TabIndex = 3;
+            this.bOk.Text = "OK";
+            this.bOk.UseVisualStyleBackColor = true;
+            this.bOk.Click += new System.EventHandler(this.bOk_Click);
+            // 
             // SettingsDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(402, 144);
+            this.ClientSize = new System.Drawing.Size(402, 169);
+            this.Controls.Add(this.bOk);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.chlButtons);
             this.Controls.Add(this.chbTGToolbar);
@@ -103,5 +115,6 @@
         private System.Windows.Forms.CheckBox chbTGToolbar;
         private System.Windows.Forms.CheckedListBox chlButtons;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button bOk;
     }
 }

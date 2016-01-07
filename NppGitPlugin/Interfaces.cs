@@ -9,6 +9,7 @@ namespace NppGit
         void RegisterDockForm(Type formClass, int cmdId, bool updateWithChangeContext);
         void AddToolbarButton(int cmdId, Bitmap icon);
         bool ToogleFormState(int cmdId);
+        void SetCheckedMenu(int cmdId, bool isChecked);
     }
 
     public interface IModule

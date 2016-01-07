@@ -136,5 +136,10 @@ namespace NppGit
             Win32.SendMessage(PluginUtils.NppHandle, NppMsg.NPPM_ADDTOOLBARICON, PluginUtils._funcItems.Items[cmdId]._cmdID, pTbIcons);
             Marshal.FreeHGlobal(pTbIcons);
         }
+
+        public void SetCheckedMenu(int cmdId, bool isChecked)
+        {
+            Win32.SendMessage(PluginUtils.NppHandle, NppMsg.NPPM_SETMENUITEMCHECK, cmdId, isChecked ? 1 : 0);
+        }
     }
 }
