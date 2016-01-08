@@ -19,19 +19,19 @@ namespace NppGit
         internal static void Init()
         {
             mm.AddModule(new TortoiseGitHelper());
+            mm.AddModule(new GitFeatures());
 
             mm.Init();
-            var isVisiblePanel = Settings.Instance.PanelsSet.StatusPanelVisible;
+            var isVisiblePanel = Settings.Panels.StatusPanelVisible;
             
-            PluginUtils.SetCommand("-", null);
-            PluginUtils.SetCommand("Sample context menu", PluginCommands.ContextMenu);
-            PluginUtils.SetCommand("-", null);
-            gitStatusId = PluginUtils.SetCommand("Status panel", GitStatusDialog, isVisiblePanel);
-            PluginCommands.ShowBranchID = PluginUtils.SetCommand("Branch in title", PluginCommands.ShowBranch, Settings.Instance.FuncSet.ShowBranch); 
+            // PluginUtils.SetCommand("-", null);
+            // gitStatusId = PluginUtils.SetCommand("Status panel", GitStatusDialog, isVisiblePanel);
+            // PluginCommands.ShowBranchID = PluginUtils.SetCommand("Branch in title", PluginCommands.ShowBranch, Settings.Instance.FuncSet.ShowBranch); 
 
-            if (isVisiblePanel)
-                GitStatusDialog();
-            PluginUtils.SetCommand("-", null);
+            // if (isVisiblePanel)
+            //     GitStatusDialog();
+            //PluginUtils.SetCommand("-", null);
+            //PluginUtils.SetCommand("Sample context menu", mm.ContextMenu);
             PluginUtils.SetCommand("Settings", DoSettings);
             PluginUtils.SetCommand("About", DoAbout);
         }
@@ -44,11 +44,16 @@ namespace NppGit
         internal static void PluginCleanUp()
         {
             mm.Final();
-            Settings.Instance.PanelsSet.StatusPanelVisible = gitStatusDlg != null && gitStatusDlg.Visible;
+            Settings.Panels.StatusPanelVisible = gitStatusDlg != null && gitStatusDlg.Visible;
             gitStatusDlg = null;
-            //Win32.WritePrivateProfileString("SomeSection", "SomeKey", someSetting ? "1" : "0", iniFilePath);
         }
-        
+
+        internal static void MessageProc (SCNotification sn)
+        {
+            mm.MessageProc(sn);
+        }
+
+
         #endregion
 
         #region " Menu functions "
@@ -108,13 +113,8 @@ namespace NppGit
 
         public static void ChangeTabItem()
         {
-            mm.ChangeContext();
-
             if (gitStatusDlg != null)
                 (gitStatusDlg as FormDockable).ChangeContext();
-
-            if (Settings.Instance.FuncSet.ShowBranch)
-                PluginCommands.DoShowBranch();
         }
         #endregion
     }

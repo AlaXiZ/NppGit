@@ -58,9 +58,9 @@ namespace NppGit
                 Plugin.PluginCleanUp();
                 Marshal.FreeHGlobal(_ptrPluginName);
             }
-            else if (nc.nmhdr.code == (uint)NppMsg.NPPN_BUFFERACTIVATED)
+            else
             {
-                Plugin.ChangeTabItem();
+                Plugin.MessageProc(nc);
             }
         }
     }

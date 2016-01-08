@@ -83,6 +83,12 @@
     <Compile Include="Forms\About.Designer.cs">
       <DependentUpon>About.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\BranchList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\BranchList.Designer.cs">
+      <DependentUpon>BranchList.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\GitStatus.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -101,6 +107,7 @@
     <Compile Include="Interop\NppPluginNETBase.cs" />
     <Compile Include="Interop\NppPluginNETHelper.cs" />
     <Compile Include="ModuleManager.cs" />
+    <Compile Include="Modules\GitFeatures.cs" />
     <Compile Include="PluginUtils.cs" />
     <Compile Include="PluginCommands.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -110,12 +117,16 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
-    <Compile Include="TortoiseGitHelper.cs" />
+    <Compile Include="Modules\TortoiseGitHelper.cs" />
     <Compile Include="Interop\UnmanagedExports.cs" />
+    <Compile Include="Utils\Git.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Forms\About.resx">
       <DependentUpon>About.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\BranchList.resx">
+      <DependentUpon>BranchList.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\GitStatus.resx">
       <DependentUpon>GitStatus.cs</DependentUpon>
@@ -149,7 +160,6 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="NppGit_Move.target" />
     <None Include="Resources\NppGit-Logo.jpg" />
     <None Include="Resources\ChangeLog.txt" />
     <None Include="Resources\switch.png" />
@@ -181,28 +191,16 @@
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
-  </Target>-->  
+  </Target>-->
   <ItemGroup>
-  	<FilesToMove Include="$(OutputPath)NLog.*"/>
-  	<FilesToMove Include="$(OutputPath)LibGit2Sharp.*"/>
-  	<DirToMove Include="$(OutputPath)NativeBinaries\**\*.*" />
+    <FilesToMove Include="$(OutputPath)NLog.*" />
+    <FilesToMove Include="$(OutputPath)LibGit2Sharp.*" />
+    <DirToMove Include="$(OutputPath)NativeBinaries\**\*.*" />
   </ItemGroup>
   <Target Name="AfterBuild" Condition=" '$(Configuration)' == 'Debug' ">
-		<MakeDir
-		    Condition="!Exists('$(OutputPath)NppGit\')"
-			Directories="$(OutputPath)NppGit\"
-		/>
-		<Move
-			SourceFiles="@(FilesToMove)"
-			DestinationFolder="$(OutputPath)NppGit\"
-			OverwriteReadOnlyFiles="true"
-		/>
-		<Copy 
-			SourceFiles="@(DirToMove)"
-			DestinationFolder="$(OutputPath)NppGit\NativeBinaries\%(RecursiveDir)"
-		/>
-		<RemoveDir
-			Directories="$(OutputPath)NativeBinaries"
-		/>
+    <MakeDir Condition="!Exists('$(OutputPath)NppGit\')" Directories="$(OutputPath)NppGit\" />
+    <Move SourceFiles="@(FilesToMove)" DestinationFolder="$(OutputPath)NppGit\" OverwriteReadOnlyFiles="true" />
+    <Copy SourceFiles="@(DirToMove)" DestinationFolder="$(OutputPath)NppGit\NativeBinaries\%(RecursiveDir)" />
+    <RemoveDir Directories="$(OutputPath)NativeBinaries" />
   </Target>
 </Project>

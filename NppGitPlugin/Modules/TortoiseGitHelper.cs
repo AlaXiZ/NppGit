@@ -58,7 +58,7 @@ namespace NppGit
 
         private bool InitTG()
         {
-            string tortoisePath = Settings.Instance.TortoiseGit.Path;
+            string tortoisePath = Settings.TortoiseGitProc.Path;
             // Path not set
             if (tortoisePath == "")
             {
@@ -91,7 +91,7 @@ namespace NppGit
                 }
                 if (tortoisePath != "")
                 {
-                    Settings.Instance.TortoiseGit.Path = tortoisePath;
+                    Settings.TortoiseGitProc.Path = tortoisePath;
                 }
             }
             tortoiseGitPath = tortoisePath;
@@ -229,50 +229,148 @@ namespace NppGit
         void IModule.Init(IModuleManager manager)
         {
             _manager = manager;
+            _manager.OnToolbarRegisterEvent += ToolBarInit;
+
             logger.Debug("Create menu");
             _icons = new Dictionary<int, Bitmap>();
             if (InitTG())
             {
-                var btnMask = Settings.Instance.TortoiseGit.ButtonMask;
+                var btnMask = Settings.TortoiseGitProc.ButtonMask;
                 logger.Info("TortoiseGit found");
-                PluginUtils.SetCommand("TGit Log file", TGitLogFile);
-                PluginUtils.SetCommand("TGit Log path", TGitLogPath);
-                var cmdID = PluginUtils.SetCommand("TGit Log repo", TGitLogRepo);
+
+                _manager.RegisterMenuItem(new MenuItem
+                {
+                    Name = "TGit Log file",
+                    Hint = "Log file",
+                    ShortcutKey = new ShortcutKey { _isCtrl = 1, _isShift = 1, _key = (byte)Keys.L },
+                    Action = TGitLogFile
+                });
+
+                _manager.RegisterMenuItem(new MenuItem
+                {
+                    Name = "TGit Log path",
+                    Hint = "Log path",
+                    ShortcutKey = new ShortcutKey { },
+                    Action = TGitLogPath
+                });
+
+                var cmdID = _manager.RegisterMenuItem(new MenuItem
+                {
+                    Name = "TGit Log repo",
+                    Hint = "Log repo",
+                    ShortcutKey = new ShortcutKey { _isAlt = 1, _isCtrl = 1, _isShift = 1, _key = (byte)Keys.L },
+                    Action = TGitLogRepo
+                });
                 if ((btnMask & (uint)TortoiseGitCommand.Log) > 0)
                     _icons.Add(cmdID, Properties.Resources.log);
-                cmdID = PluginUtils.SetCommand("TGit Fetch", TGitFetch);
+
+                cmdID = _manager.RegisterMenuItem(new MenuItem
+                {
+                    Name = "TGit Fetch",
+                    Hint = "Fetch",
+                    ShortcutKey = new ShortcutKey { _isAlt = 1, _isCtrl = 1, _isShift = 1, _key = (byte)Keys.F },
+                    Action = TGitFetch
+                });
                 if ((btnMask & (uint)TortoiseGitCommand.Fetch) > 0)
                     _icons.Add(cmdID, Properties.Resources.pull);
-                cmdID = PluginUtils.SetCommand("TGit Pull", TGitPull);
+
+                cmdID = _manager.RegisterMenuItem(new MenuItem
+                {
+                    Name = "TGit Pull",
+                    Hint = "Pull",
+                    ShortcutKey = new ShortcutKey { _isAlt = 1, _key = (byte)Keys.P },
+                    Action = TGitPull
+                });
                 if ((btnMask & (uint)TortoiseGitCommand.Pull) > 0)
                     _icons.Add(cmdID, Properties.Resources.pull);
-                cmdID = PluginUtils.SetCommand("TGit Push", TGitPush);
+
+                cmdID = _manager.RegisterMenuItem(new MenuItem
+                {
+                    Name = "TGit Push",
+                    Hint = "Push",
+                    ShortcutKey = new ShortcutKey { _isAlt = 1, _isCtrl = 1, _key = (byte)Keys.P },
+                    Action = TGitPush
+                });
                 if ((btnMask & (uint)TortoiseGitCommand.Push) > 0)
                     _icons.Add(cmdID, Properties.Resources.push);
-                cmdID = PluginUtils.SetCommand("TGit Commit", TGitCommit);
+
+                cmdID = _manager.RegisterMenuItem(new MenuItem
+                {
+                    Name = "TGit Commit",
+                    Hint = "Commit",
+                    ShortcutKey = new ShortcutKey { _isAlt = 1, _isCtrl = 1, _key = (byte)Keys.C },
+                    Action = TGitCommit
+                });
                 if ((btnMask & (uint)TortoiseGitCommand.Commit) > 0)
                     _icons.Add(cmdID, Properties.Resources.commit);
-                cmdID = PluginUtils.SetCommand("TGit Blame", TGitBlame);
+
+                cmdID = _manager.RegisterMenuItem(new MenuItem
+                {
+                    Name = "TGit Blame",
+                    Hint = "Blame",
+                    ShortcutKey = new ShortcutKey { _isAlt = 1, _isCtrl = 1, _key = (byte)Keys.B },
+                    Action = TGitBlame
+                });
                 if ((btnMask & (uint)TortoiseGitCommand.Blame) > 0)
                     _icons.Add(cmdID, Properties.Resources.blame);
-                PluginUtils.SetCommand("TGit Blame line", TGitBlameCurrentLine);
-                cmdID = PluginUtils.SetCommand("TGit Switch", TGitSwitch);
+
+                _manager.RegisterMenuItem(new MenuItem
+                {
+                    Name = "TGit Blame line",
+                    Hint = "Blame line",
+                    ShortcutKey = new ShortcutKey { _isAlt = 1, _key = (byte)Keys.B },
+                    Action = TGitBlameCurrentLine
+                });
+
+                cmdID = _manager.RegisterMenuItem(new MenuItem
+                {
+                    Name = "TGit Switch",
+                    Hint = "Switch",
+                    ShortcutKey = new ShortcutKey { _isCtrl = 1, _isAlt = 1, _key = (byte)Keys.S },
+                    Action = TGitSwitch
+                });
                 if ((btnMask & (uint)TortoiseGitCommand.Switch) > 0)
                     _icons.Add(cmdID, Properties.Resources.checkout);
-                cmdID = PluginUtils.SetCommand("TGit Stash save", TGitStashSave);
+
+                cmdID = _manager.RegisterMenuItem(new MenuItem
+                {
+                    Name = "TGit Stash save",
+                    Hint = "Stash save",
+                    ShortcutKey = null,
+                    Action = TGitStashSave
+                });
                 if ((btnMask & (uint)TortoiseGitCommand.StashSave) > 0)
                     _icons.Add(cmdID, Properties.Resources.stashsave);
-                cmdID = PluginUtils.SetCommand("TGit Stash pop", TGitStashPop);
+
+                cmdID = _manager.RegisterMenuItem(new MenuItem
+                {
+                    Name = "TGit Stash pop",
+                    Hint = "Stash pop",
+                    ShortcutKey = null,
+                    Action = TGitStashPop
+                });
                 if ((btnMask & (uint)TortoiseGitCommand.StashPop) > 0)
                     _icons.Add(cmdID, Properties.Resources.stashpop);
-                cmdID = PluginUtils.SetCommand("TGit Repo stastus", TGitRepoStatus);
+
+                cmdID = _manager.RegisterMenuItem(new MenuItem
+                {
+                    Name = "TGit Repo stastus",
+                    Hint = "Repo stastus",
+                    ShortcutKey = null,
+                    Action = TGitRepoStatus
+                });
                 if ((btnMask & (uint)TortoiseGitCommand.RepoStatus) > 0)
                     _icons.Add(cmdID, Properties.Resources.repo);
             }
             else
             {
                 logger.Info("TortoiseGit not found");
-                PluginUtils.SetCommand("Readme", ReadmeFunc);
+                _manager.RegisterMenuItem(new MenuItem
+                {
+                    Name = "TortoiseGit not found",
+                    Hint = "-",
+                    Action = ReadmeFunc
+                });
             }
         }
 
@@ -280,7 +378,7 @@ namespace NppGit
         { 
             logger.Debug("Create toolbar");
 
-            if (Settings.Instance.TortoiseGit.ShowToolbar)
+            if (Settings.TortoiseGitProc.ShowToolbar)
                 foreach (var i in _icons)
                 {
                     _manager.AddToolbarButton(i.Key, i.Value);
@@ -291,11 +389,6 @@ namespace NppGit
         public void Final()
         {
             logger.Debug("Finalization");
-        }
-
-        public void ChangeContext()
-        {
-            logger.Debug("ChangeContext");
         }
     }
 }

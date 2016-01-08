@@ -59,6 +59,19 @@ namespace NppGit
                 Win32.SendMessage(nppData._nppHandle, NppMsg.NPPM_GETFULLCURRENTPATH, Win32.MAX_PATH, buffer);
                 return buffer.ToString();
             }
+            set
+            {
+                var buffer = new StringBuilder(value);
+                Win32.SendMessage(nppData._nppHandle, NppMsg.NPPM_SWITCHTOFILE, 0, buffer);
+            }
+        }
+
+        public static string CurrentFileName
+        {
+            get
+            {
+                return Path.GetFileName(CurrentFilePath);
+            }
         }
 
         public static string CurrentFileDir
@@ -87,6 +100,25 @@ namespace NppGit
         public static void SetLang(LangType langType)
         {
             Win32.SendMessage(nppData._nppHandle, NppMsg.NPPM_SETCURRENTLANGTYPE, 0, (int)langType);
+        }
+
+        public static bool OpenFile(string filePath)
+        {
+            var buf = new StringBuilder(filePath);
+           return 1 == (int)Win32.SendMessage(NppData._nppHandle, NppMsg.NPPM_DOOPEN, 0, buf);
+        }
+
+        public static void MoveFileToOtherView()
+        {
+            Win32.SendMessage(nppData._nppHandle, NppMsg.NPPM_MENUCOMMAND, 0, NppMenuCmd.IDM_VIEW_GOTO_ANOTHER_VIEW);
+        }
+
+        public static int CurrentBufferId
+        {
+            get
+            {
+                return (int)Win32.SendMessage(nppData._nppHandle, NppMsg.NPPM_GETCURRENTBUFFERID, 0, 0);
+            }
         }
 
         #endregion

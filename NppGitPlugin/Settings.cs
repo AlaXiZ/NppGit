@@ -3,17 +3,15 @@ using System.IO;
 
 namespace NppGit
 {
-    public class Settings
+    public static class Settings
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-
-        private static Settings _inst = new Settings();
         private static IniFile _file;
 
         #region "Get/Set"
         // Загрузка/сохранение происходит по имени класса и свойства
         // Имена получаются через стек и рефлексию
-        protected static void Set<T>(T value)
+        private static void Set<T>(T value)
         {
             var mth = new StackTrace().GetFrame(1).GetMethod();
             var className = mth.ReflectedType.Name;
@@ -21,7 +19,7 @@ namespace NppGit
             logger.Debug("Save: Section={0}, Key={1}, Value={2}", className, propName, value);
             _file.SetValue(className, propName, value);
         }
-        protected static T Get<T>(T defaultValue)
+        private static T Get<T>(T defaultValue)
         {
             var mth = new StackTrace().GetFrame(1).GetMethod();
             var className = mth.ReflectedType.Name;
@@ -33,14 +31,6 @@ namespace NppGit
         #endregion
 
         #region "Common"
-        private Settings()
-        {
-            FuncSet = new Functions();
-            PanelsSet = new Panels();
-            TortoiseGit = new TortoiseGitProc();
-        }
-
-        public static Settings Instance { get { return _inst; } }
 
         public static void Init()
         {
@@ -52,49 +42,63 @@ namespace NppGit
         #endregion
 
         #region "Settings classes"
-        public class Functions
+        public static class Functions
         {
-            public bool ShowBranch
+            public static bool ShowBranch
+            {
+                get { return Get(false); }
+                set { Set(value); }
+            }
+
+            public static byte SHACount
+            {
+                get { return Get((byte)6); }
+                set { Set(value); }
+            }
+
+            public static bool OpenFileInOtherView
             {
                 get { return Get(false); }
                 set { Set(value); }
             }
         }
 
-        public class Panels
+        public static class Panels
         {
-            public bool StatusPanelVisible
+            public static bool StatusPanelVisible
             {
                 get { return Get(false); }
                 set { Set(value); }
             }
         }
 
-        public class TortoiseGitProc
+        public static class TortoiseGitProc
         {
-            public string Path
+            public static string Path
             {
                 get { return Get(""); }
                 set { Set(value); }
             }
-            public bool ShowToolbar
+            public static bool ShowToolbar
             {
                 get { return Get(false); }
                 set { Set(value); }
             }
-            public uint ButtonMask
+            public static uint ButtonMask
             {
                 get { return Get(0u); }
                 set { Set(value); }
             }
         }
-        #endregion
 
-        #region "Properties"
-        public Functions FuncSet { get; protected set; }
-        public Panels PanelsSet { get; protected set; }
-        public TortoiseGitProc TortoiseGit { get; protected set; }
+        public static class InnerSettings
+        {
+            public static bool IsSetDefaultShortcut
+            {
+                get { return Get(false); }
+                set { Set(value); }
+            }
+        }
         #endregion
-
     }
 }

@@ -19,6 +19,15 @@ namespace NppGit
 
         public static IntPtr NppHandle { get { return nppData._nppHandle; } }
 
+        public static int GetCmdId(int index)
+        {
+            if (index >= 0 && index < _funcItems.Items.Count)
+            {
+                return _funcItems.Items[index]._cmdID;
+            }
+            else return -1;
+        }
+
         #region " Helper "
         public static int SetCommand(string commandName, Action functionPointer)
         {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -10,7 +11,7 @@ namespace NppGit
     {
         public string Name;
         public string Hint;
-        public ShortcutKey ShortcutKey;
+        public ShortcutKey? ShortcutKey;
         public Action Action;
         public bool Checked;
     }
@@ -25,13 +26,30 @@ namespace NppGit
 
     public class ModuleManager : IModuleManager
     {
+
         private LinkedList<IModule> _modules;
         private Dictionary<int, DockForm> _forms;
+        private Dictionary<string, List<MenuItem>> _cmdList;
+        
+        public event Action OnToolbarRegisterEvent;
+        public event TabChange OnTabChangeEvent;
 
         public ModuleManager()
         {
             _modules = new LinkedList<IModule>();
             _forms = new Dictionary<int, DockForm>();
+            _cmdList = new Dictionary<string, List<MenuItem>>();
+        }
+
+        public void MessageProc(SCNotification sn)
+        {           
+            if (sn.nmhdr.code == (uint)NppMsg.NPPN_BUFFERACTIVATED)
+            {
+                if (OnTabChangeEvent != null)
+                {
+                    OnTabChangeEvent(new TabEventArgs(sn.nmhdr.idFrom));
+                }
+            }
         }
 
         public void Final()
@@ -43,22 +61,30 @@ namespace NppGit
         public void Init()
         {
             foreach (var m in _modules)
+            {
                 m.Init(this);
+                this.RegisterMenuItem(new MenuItem
+                {
+                    Name = "-",
+                    Hint = "-",
+                    Action = null
+                });
+            }
+            RegisterMenuItem(new MenuItem {
+                Name = "Sample context menu",
+                Hint = "Sample context menu",
+                Action = ContextMenu
+            });
         }
 
         public void ToolBarInit()
         {
-            foreach (var m in _modules)
-                m.ToolBarInit();
+            if (OnToolbarRegisterEvent != null)
+            {
+                OnToolbarRegisterEvent();
+            }
         }
-
-        public void ChangeContext()
-        {
-            foreach (var f in _forms)
-                if (f.Value.Form != null && f.Value.UpdateWithChangeContext)
-                    (f.Value.Form as FormDockable).ChangeContext();
-        }
-
+        
         public void AddModule(IModule item)
         {
             if (!_modules.Contains(item))
@@ -69,7 +95,18 @@ namespace NppGit
 
         public int RegisterMenuItem(MenuItem menuItem)
         {
-            return PluginUtils.SetCommand(menuItem.Name, menuItem.Action, menuItem.ShortcutKey, menuItem.Checked);
+            if (!Settings.InnerSettings.IsSetDefaultShortcut)
+                menuItem.ShortcutKey = null;
+
+            var mth = new StackTrace().GetFrame(1).GetMethod();
+            var className = mth.ReflectedType.Name;
+            if (!_cmdList.ContainsKey(className))
+            {
+                _cmdList.Add(className, new List<MenuItem>());
+            }
+            _cmdList[className].Add(menuItem);
+
+            return PluginUtils.SetCommand(menuItem.Name, menuItem.Action, (menuItem.ShortcutKey ?? new ShortcutKey()), menuItem.Checked);
         }
 
         public void RegisterDockForm(Type formClass, int cmdId, bool updateWithChangeContext)
@@ -133,13 +170,68 @@ namespace NppGit
             tbIcons.hToolbarBmp = icon.GetHbitmap();
             IntPtr pTbIcons = Marshal.AllocHGlobal(Marshal.SizeOf(tbIcons));
             Marshal.StructureToPtr(tbIcons, pTbIcons, false);
-            Win32.SendMessage(PluginUtils.NppHandle, NppMsg.NPPM_ADDTOOLBARICON, PluginUtils._funcItems.Items[cmdId]._cmdID, pTbIcons);
+            Win32.SendMessage(PluginUtils.NppHandle, NppMsg.NPPM_ADDTOOLBARICON, PluginUtils.GetCmdId(cmdId), pTbIcons);
             Marshal.FreeHGlobal(pTbIcons);
         }
 
         public void SetCheckedMenu(int cmdId, bool isChecked)
         {
-            Win32.SendMessage(PluginUtils.NppHandle, NppMsg.NPPM_SETMENUITEMCHECK, cmdId, isChecked ? 1 : 0);
+            Win32.SendMessage(PluginUtils.NppHandle, NppMsg.NPPM_SETMENUITEMCHECK, PluginUtils.GetCmdId(cmdId), isChecked ? 1 : 0);
         }
+
+        #region "Context menu"
+
+        private static readonly string ItemTemplate = "<Item FolderName=\"{0}\" PluginEntryName=\"{1}\" PluginCommandItemName=\"{2}\" ItemNameAs=\"{3}\"/>";
+        private static readonly string ItemSeparator = "<Item FolderName=\"{0}\" id = \"0\" />";
+        private static readonly string ItemSeparator2 = "<Item id=\"0\" />";
+
+        private static string GetItemTemplate(string folder = "", string itemName = "---", string itemNameAs = "---")
+        {
+            if (itemName == "---" && itemNameAs == "---")
+                return ItemSeparator2;
+            else if (itemName == "-")
+                return string.Format(ItemSeparator, folder);
+            else
+                return string.Format(ItemTemplate, folder, Properties.Resources.PluginName, itemName, itemNameAs);
+        }
+
+        public void ContextMenu()
+        {
+            PluginUtils.NewFile();
+            PluginUtils.AppendText("\t\t<!--Sample menu -->");
+            PluginUtils.NewLine();
+
+            var countItem = 1;
+            foreach (var folder in _cmdList.Keys)
+            {
+                if (countItem > 0)
+                {
+                    PluginUtils.AppendText(GetItemTemplate());
+                    PluginUtils.NewLine();
+                    countItem = 0;
+                }
+                foreach (var command in _cmdList[folder])
+                {
+                    if (command.Hint != "-")
+                    {
+                        PluginUtils.AppendText(GetItemTemplate(folder, command.Name, command.Hint));
+                        PluginUtils.NewLine();
+                        countItem++;
+                    }
+                }
+            }
+            PluginUtils.AppendText(GetItemTemplate());
+            PluginUtils.NewLine();
+            /*
+            for (int i = 0; i < PluginUtils._funcItems.Items.Count; i++)
+            {
+                PluginUtils.AppendText(GetItemTemplate(PluginUtils._funcItems.Items[i]._itemName));
+                PluginUtils.NewLine();
+            }
+            */
+            PluginUtils.SetLang(LangType.L_XML);
+        }
+        #endregion
+
     }
 }
