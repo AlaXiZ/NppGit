@@ -2,11 +2,11 @@
 cd .\NppGitPlugin
 
 # Clear folder before build
-if((Test-Path -Path .\bin\Release)) {
-    Remove-Item .\bin\Release -Force -Recurse
-}
+#if((Test-Path -Path .\bin\Release)) {
+#    Remove-Item .\bin\Release -Force -Recurse
+#}
 # build project
-Start-Process -FilePath "MSBuild" -ArgumentList ('NppGit.csproj /t:Clean;Compile;Build /property:Configuration=Release /property:Platform=AnyCPU /property:DevEnvDir="D:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE"') -Wait -RedirectStandardOutput ..\build.log
+#Start-Process -FilePath "MSBuild" -ArgumentList ('NppGit.csproj /t:Clean;Compile;Build /property:Configuration=Release /property:Platform=AnyCPU /property:DevEnvDir="D:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE"') -Wait -RedirectStandardOutput ..\build.log
 # goto 
 cd .\bin\Release
 
