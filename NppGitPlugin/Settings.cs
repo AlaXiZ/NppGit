@@ -50,6 +50,12 @@ namespace NppGit
                 set { Set(value); }
             }
 
+            public static bool ShowRepoName
+            {
+                get { return Get(false); }
+                set { Set(value); }
+            }
+
             public static byte SHACount
             {
                 get { return Get((byte)6); }

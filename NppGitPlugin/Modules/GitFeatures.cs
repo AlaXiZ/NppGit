@@ -14,38 +14,60 @@ namespace NppGit
         private static Logger logger = LogManager.GetCurrentClassLogger();
         private IModuleManager _manager;
         private int showBranchCmdID = -1;
+        private int showRepoCmdID = -1;
 
         private void ShowBranch()
         {
             Settings.Functions.ShowBranch = !Settings.Functions.ShowBranch;
             _manager.SetCheckedMenu(showBranchCmdID, Settings.Functions.ShowBranch);
-            DoShowBranch(Settings.Functions.ShowBranch);
+            DoShowBranch();
         }
 
-        private void DoShowBranch(bool isShow = true)
+        private void ShowRepoName()
         {
+            Settings.Functions.ShowRepoName = !Settings.Functions.ShowRepoName;
+            _manager.SetCheckedMenu(showRepoCmdID, Settings.Functions.ShowRepoName);
+            DoShowBranch();
+        }
+
+        private void DoShowBranch()
+        {
+            bool isShowBranch = Settings.Functions.ShowBranch,
+                 isShowRepo = Settings.Functions.ShowRepoName;
             var repoDir = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
             if (!string.IsNullOrEmpty(repoDir) && LibGit2Sharp.Repository.IsValid(repoDir))
             {
                 using (var repo = new LibGit2Sharp.Repository(repoDir))
                 {
-                    var branch = " [Branch: " + repo.Head.Name + "]";
-                    if (isShow)
+                    var title = PluginUtils.WindowTitle;
+                    title = title.Substring(0, title.LastIndexOf("++") + 2);
+                    var strBuild = new StringBuilder();
+                    if (isShowRepo)
                     {
-                        PluginUtils.WindowTitle += branch;
+                        string remote = "";
+                        var remoteUrl = repo.Network.Remotes.First()?.Url;
+                        if (!string.IsNullOrEmpty(remoteUrl))
+                        {
+                            remote = remoteUrl.Substring(remoteUrl.LastIndexOf('/') + 1, remoteUrl.Length - remoteUrl.LastIndexOf('/') - 1).Replace(".git", "");
+                        }
+                        strBuild.Append(remote);
                     }
-                    else
+                    if (isShowBranch)
                     {
-                        var title = PluginUtils.WindowTitle;
-                        PluginUtils.WindowTitle = title.Replace(branch, "");
+                        if (strBuild.Length > 0)
+                            strBuild.Append(" / ");
+                        strBuild.Append(repo.Head.Name);
                     }
+                    if (strBuild.Length > 0)
+                        title += " [ " + strBuild.ToString() + " ]";
+                    PluginUtils.WindowTitle = title;
                 }
             }
         }
 
         public void ChangeContext(TabEventArgs args)
         {
-            if (Settings.Functions.ShowBranch)
+            if (Settings.Functions.ShowBranch || Settings.Functions.ShowRepoName)
                 DoShowBranch();
         }
 
@@ -65,6 +87,15 @@ namespace NppGit
                 ShortcutKey = new ShortcutKey { _isCtrl = 1, _isAlt = 1, _isShift = 1, _key = (byte)System.Windows.Forms.Keys.R },
                 Action = ShowBranch,
                 Checked = Settings.Functions.ShowBranch
+            });
+
+            showRepoCmdID = _manager.RegisterMenuItem(new MenuItem
+            {
+                Name = "Repository in title",
+                Hint = "Repository in title",
+                ShortcutKey = new ShortcutKey {  },
+                Action = ShowRepoName,
+                Checked = Settings.Functions.ShowRepoName
             });
 
             _manager.RegisterMenuItem(new MenuItem
