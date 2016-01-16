@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.IO;
+using System.Runtime.CompilerServices;
 
 namespace NppGit
 {
@@ -11,6 +12,7 @@ namespace NppGit
         #region "Get/Set"
         // Загрузка/сохранение происходит по имени класса и свойства
         // Имена получаются через стек и рефлексию
+        [MethodImpl(MethodImplOptions.NoInlining)]
         private static void Set<T>(T value)
         {
             var mth = new StackTrace().GetFrame(1).GetMethod();
@@ -19,6 +21,7 @@ namespace NppGit
             logger.Debug("Save: Section={0}, Key={1}, Value={2}", className, propName, value);
             _file.SetValue(className, propName, value);
         }
+        [MethodImpl(MethodImplOptions.NoInlining)]
         private static T Get<T>(T defaultValue)
         {
             var mth = new StackTrace().GetFrame(1).GetMethod();
@@ -46,25 +49,33 @@ namespace NppGit
         {
             public static bool ShowBranch
             {
+                [MethodImpl(MethodImplOptions.NoInlining)]
                 get { return Get(false); }
+                [MethodImpl(MethodImplOptions.NoInlining)]
                 set { Set(value); }
             }
 
             public static bool ShowRepoName
             {
+                [MethodImpl(MethodImplOptions.NoInlining)]
                 get { return Get(false); }
+                [MethodImpl(MethodImplOptions.NoInlining)]
                 set { Set(value); }
             }
 
             public static byte SHACount
             {
+                [MethodImpl(MethodImplOptions.NoInlining)]
                 get { return Get((byte)6); }
+                [MethodImpl(MethodImplOptions.NoInlining)]
                 set { Set(value); }
             }
 
             public static bool OpenFileInOtherView
             {
+                [MethodImpl(MethodImplOptions.NoInlining)]
                 get { return Get(false); }
+                [MethodImpl(MethodImplOptions.NoInlining)]
                 set { Set(value); }
             }
         }
@@ -73,7 +84,9 @@ namespace NppGit
         {
             public static bool StatusPanelVisible
             {
+                [MethodImpl(MethodImplOptions.NoInlining)]
                 get { return Get(false); }
+                [MethodImpl(MethodImplOptions.NoInlining)]
                 set { Set(value); }
             }
         }
@@ -82,17 +95,23 @@ namespace NppGit
         {
             public static string Path
             {
+                [MethodImpl(MethodImplOptions.NoInlining)]
                 get { return Get(""); }
+                [MethodImpl(MethodImplOptions.NoInlining)]
                 set { Set(value); }
             }
             public static bool ShowToolbar
             {
+                [MethodImpl(MethodImplOptions.NoInlining)]
                 get { return Get(false); }
+                [MethodImpl(MethodImplOptions.NoInlining)]
                 set { Set(value); }
             }
             public static uint ButtonMask
             {
+                [MethodImpl(MethodImplOptions.NoInlining)]
                 get { return Get(0u); }
+                [MethodImpl(MethodImplOptions.NoInlining)]
                 set { Set(value); }
             }
         }
@@ -100,8 +119,10 @@ namespace NppGit
         public static class InnerSettings
         {
             public static bool IsSetDefaultShortcut
-            {
+            { 
+                [MethodImpl(MethodImplOptions.NoInlining)]
                 get { return Get(false); }
+                [MethodImpl(MethodImplOptions.NoInlining)]
                 set { Set(value); }
             }
         }
