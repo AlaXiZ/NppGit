@@ -1,0 +1,1 @@
+& .\BuildDeploy.ps1 -build 0 -deploy 1 -clearAfterDeploy 1 -addVersion "a"
