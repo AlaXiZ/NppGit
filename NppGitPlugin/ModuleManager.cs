@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -26,6 +27,7 @@ namespace NppGit
 
     public class ModuleManager : IModuleManager
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
 
         private LinkedList<IModule> _modules;
         private Dictionary<int, DockForm> _forms;
@@ -98,6 +100,7 @@ namespace NppGit
             if (!Settings.InnerSettings.IsSetDefaultShortcut)
                 menuItem.ShortcutKey = null;
 
+            logger.Debug("Register menu item: {0}, {1}, {2}", menuItem.Name == "-" ? "Separator" : menuItem.Name, menuItem.ShortcutKey == null ? "<null>" : menuItem.ShortcutKey.Value.ToString(), menuItem.Checked);
             var mth = new StackTrace().GetFrame(1).GetMethod();
             var className = mth.ReflectedType.Name;
             if (!_cmdList.ContainsKey(className))
@@ -111,6 +114,7 @@ namespace NppGit
 
         public void RegisterDockForm(Type formClass, int cmdId, bool updateWithChangeContext)
         {
+            logger.Debug("Reigister form: Class={0} CmdID = {1} UpdateWithChangeContext={2}", formClass.Name, cmdId, updateWithChangeContext);
             if (!_forms.ContainsKey(cmdId))
             {
                 _forms.Add(cmdId, new DockForm
@@ -124,6 +128,7 @@ namespace NppGit
 
         public bool ToogleFormState(int cmdId)
         {
+            logger.Debug("Toogle form state: CmdID={0}", cmdId);
             if (_forms.ContainsKey(cmdId))
             {
                 var form = _forms[cmdId];
@@ -160,7 +165,8 @@ namespace NppGit
             }
             else
             {
-                throw new Exception(string.Format("Form with command ID = {0} not found", cmdId));
+                logger.Error("Form with command ID = {0} not found", cmdId);
+                return false;
             }
         }
 
@@ -176,6 +182,7 @@ namespace NppGit
 
         public void SetCheckedMenu(int cmdId, bool isChecked)
         {
+            logger.Debug("Menu cmdId={0}, state={1}", cmdId, isChecked);
             Win32.SendMessage(PluginUtils.NppHandle, NppMsg.NPPM_SETMENUITEMCHECK, PluginUtils.GetCmdId(cmdId), isChecked ? 1 : 0);
         }
 

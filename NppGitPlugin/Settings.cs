@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
 
@@ -7,8 +8,9 @@ namespace NppGit
     public static class Settings
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-        private static IniFile _file;
-
+        private static Dictionary<string, Dictionary<string, object>> _cache = new Dictionary<string, Dictionary<string, object>>();
+        private static IniFile _file = new IniFile(Path.Combine(PluginUtils.ConfigDir, Properties.Resources.PluginName + ".ini"));
+        
         #region "Get/Set"
         // Загрузка/сохранение происходит по имени класса и свойства
         // Имена получаются через стек и рефлексию
@@ -18,8 +20,21 @@ namespace NppGit
             var mth = new StackTrace().GetFrame(1).GetMethod();
             var className = mth.ReflectedType.Name;
             var propName = mth.Name.Replace("set_", "");
-            logger.Debug("Save: Section={0}, Key={1}, Value={2}", className, propName, value);
+            try
+            {
+                logger.Debug("Save: Section={0}, Key={1}, Value={2}", className, propName, value);
+            }
+            finally { }
             _file.SetValue(className, propName, value);
+            if (!_cache.ContainsKey(className))
+            {
+                _cache.Add(className, new Dictionary<string, object>());
+            }
+            if (!_cache[className].ContainsKey(propName))
+            {
+                _cache[className].Add(propName, null);
+            }
+            _cache[className][propName] = value;
         }
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static T Get<T>(T defaultValue)
@@ -27,23 +42,34 @@ namespace NppGit
             var mth = new StackTrace().GetFrame(1).GetMethod();
             var className = mth.ReflectedType.Name;
             var propName = mth.Name.Replace("get_", "");
-            T value = _file.GetValue(className, propName, defaultValue);
-            logger.Debug("Load: Section={0}, Key={1}, Value={2}", className, propName, value);
+            T value;
+            if (_cache.ContainsKey(className) && _cache[className].ContainsKey(propName))
+            {
+                value = (T)_cache[className][propName];
+            }
+            else
+            {
+                value = _file.GetValue(className, propName, defaultValue);
+                try
+                {
+                    logger.Debug("Load: Section={0}, Key={1}, Value={2}", className, propName, value);
+                }
+                finally { }
+                if (!_cache.ContainsKey(className))
+                {
+                    _cache.Add(className, new Dictionary<string, object>());
+                }
+                if (!_cache[className].ContainsKey(propName))
+                {
+                    _cache[className].Add(propName, null);
+                }
+                _cache[className][propName] = value;
+            }
+
             return value;
         }
         #endregion
-
-        #region "Common"
-
-        public static void Init()
-        {
-            logger.Debug("Init settings");
-            var iniPath = Path.Combine(PluginUtils.ConfigDir, Properties.Resources.PluginName + ".ini");
-            logger.Debug("Plugin setting file: {0}", iniPath);
-            _file = new IniFile(iniPath);
-        }
-        #endregion
-
+        
         #region "Settings classes"
         public static class Functions
         {
@@ -124,6 +150,17 @@ namespace NppGit
                 get { return Get(false); }
                 [MethodImpl(MethodImplOptions.NoInlining)]
                 set { Set(value); }
+            }
+            public static string LogLevel
+            {
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                get { return Get("Off"); }
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                set
+                {
+                    Set(value);
+                    AssemblyLoader.ReConfigLog();
+                }
             }
         }
         #endregion

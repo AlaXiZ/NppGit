@@ -17,7 +17,6 @@ namespace NppGit
         {
             PluginUtils.NppData = notepadPlusData;
             AssemblyLoader.Init();
-            Settings.Init();
 
             Plugin.Init();
         }

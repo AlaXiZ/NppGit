@@ -12,18 +12,29 @@ namespace NppGit
         public static void Init()
         {
             AppDomain.CurrentDomain.AssemblyResolve += AssemblyResolve;
-            InitLog();
+            ReConfigLog();
         }
 
-        private static void InitLog()
+        public static void ReConfigLog()
         {
-            var console = new DebuggerTarget
+            var layout = "[${level:uppercase=true}][${logger}][${longdate}][${processid}] ${message}";
+#if DEBUG
+            var logTarget = new DebuggerTarget
             {
-                Layout = "[${longdate}][${level:uppercase=true}][${processid}] ${message}"
+                Layout = layout
             };
-            SimpleConfigurator.ConfigureForTargetLogging(console, LogLevel.Trace);
-
-            LogManager.GetCurrentClassLogger().Debug("Logger initialized");            
+#else
+            var logTarget = new FileTarget
+            {
+                Layout = layout,
+                AutoFlush = true,
+                DeleteOldFileOnStartup = true,
+                CreateDirs = true,
+                FileName = Path.Combine(PluginUtils.ConfigDir, Properties.Resources.PluginName, Properties.Resources.PluginName + ".log")
+            };
+#endif
+            SimpleConfigurator.ConfigureForTargetLogging(logTarget, LogLevel.FromString(Settings.InnerSettings.LogLevel));
+            LogManager.GetCurrentClassLogger().Info("Logger initialized");
         }
 
         private static Assembly AssemblyResolve(object sender, ResolveEventArgs args)
@@ -40,7 +51,10 @@ namespace NppGit
                     return Assembly.LoadFrom(Path.Combine(pluginDir, @"NppGit\NLog.dll"));
                 }
             }
-            catch { }
+            catch (Exception e)
+            {
+                System.Windows.Forms.MessageBox.Show(e.Message + "\r\n" + e.StackTrace, "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+            }
             return null;
         }
     }

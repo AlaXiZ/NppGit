@@ -1,10 +1,22 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace NppGit.Forms
 {
     public partial class SettingsDialog : Form
     {
+        private static List<NLog.LogLevel> _logLevel = new List<NLog.LogLevel>
+        {
+            NLog.LogLevel.Off,
+            NLog.LogLevel.Fatal,
+            NLog.LogLevel.Error,
+            NLog.LogLevel.Warn,
+            NLog.LogLevel.Info,
+            NLog.LogLevel.Debug,
+            NLog.LogLevel.Trace
+        };
+
         public SettingsDialog()
         {
             InitializeComponent();
@@ -23,6 +35,10 @@ namespace NppGit.Forms
             chbDefaultShortcut.Checked = Settings.InnerSettings.IsSetDefaultShortcut;
             mtxbSHACount.Text = Settings.Functions.SHACount.ToString();
             chbFileInOtherView.Checked = Settings.Functions.OpenFileInOtherView;
+
+            cbLogLevel.Items.Clear();
+            cbLogLevel.Items.AddRange(_logLevel.ToArray());
+            cbLogLevel.Text = Settings.InnerSettings.LogLevel;
         }
 
         private uint GetButtonMask()
@@ -47,6 +63,7 @@ namespace NppGit.Forms
             Settings.InnerSettings.IsSetDefaultShortcut = chbDefaultShortcut.Checked;
             Settings.Functions.SHACount = byte.Parse(mtxbSHACount.Text);
             Settings.Functions.OpenFileInOtherView = chbFileInOtherView.Checked;
+            Settings.InnerSettings.LogLevel = cbLogLevel.Text;
         }
 
         private void bOk_Click(object sender, EventArgs e)
