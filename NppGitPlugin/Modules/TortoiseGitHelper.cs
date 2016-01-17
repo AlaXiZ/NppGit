@@ -39,11 +39,11 @@ namespace NppGit
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private static readonly string EXE = "TortoiseGitProc.exe";
-        private static readonly string PARAM = "/command:{0} {2} /path:\"{1}\"";
-        private static readonly string LOG_MSG = "/logmsg:\"{0}\"";
-        private static readonly string CLOSE = "/closeonend:{0}";
-        private static readonly string TORTOISEGITBIN = "TortoiseGit\\bin\\";
+        private const string EXE = "TortoiseGitProc.exe";
+        private const string PARAM = "/command:{0} {2} /path:\"{1}\"";
+        private const string LOG_MSG = "/logmsg:\"{0}\"";
+        private const string CLOSE = "/closeonend:{0}";
+        private const string TORTOISEGITBIN = "TortoiseGit\\bin\\";
 
         private static string tortoiseGitPath = "";
         private static string tortoiseGitProc = "";
@@ -60,7 +60,7 @@ namespace NppGit
         {
             string tortoisePath = Settings.TortoiseGitProc.Path;
             // Path not set
-            if (tortoisePath == "")
+            if (string.IsNullOrEmpty(tortoisePath))
             {
                 // x64
                 if (8 == IntPtr.Size || (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("PROCESSOR_ARCHITEW6432"))))
@@ -71,7 +71,7 @@ namespace NppGit
                         tortoisePath = System.IO.Path.Combine(path, TORTOISEGITBIN);
                     }
                 }
-                if (tortoisePath == "")
+                if (string.IsNullOrEmpty(tortoisePath))
                 {
                     var path = Environment.GetEnvironmentVariable("ProgramFiles").Replace(" (x86)", "");
                     if (ExistsTortoiseGit(path))
@@ -79,7 +79,7 @@ namespace NppGit
                         tortoisePath = System.IO.Path.Combine(path, TORTOISEGITBIN);
                     }
                 }
-                if (tortoisePath == "")
+                if (string.IsNullOrEmpty(tortoisePath))
                 {
                     var dlg = new FolderBrowserDialog();
                     dlg.Description = "Select folder with TortoiseGitProc.exe";
@@ -89,7 +89,7 @@ namespace NppGit
                         tortoisePath = dlg.SelectedPath;
                     }
                 }
-                if (tortoisePath != "")
+                if (!string.IsNullOrEmpty(tortoisePath))
                 {
                     Settings.TortoiseGitProc.Path = tortoisePath;
                 }

@@ -5,9 +5,9 @@ namespace NppGit
 {
     partial class GitStatus : FormDockable
     {
-        private static readonly string RS_CURREPO = "Current repo: {0}";
-        private static readonly string RS_CURBRANCH = "Current branch: {0}";
-        private static readonly string RS_NOREPO = "File \"{0}\" not in git";
+        private const string RS_CURREPO = "Current repo: {0}";
+        private const string RS_CURBRANCH = "Current branch: {0}";
+        private const string RS_NOREPO = "File \"{0}\" not in git";
         /// <summary>
         /// Required designer variable.
         /// </summary>
