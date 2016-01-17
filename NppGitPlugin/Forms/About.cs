@@ -23,5 +23,18 @@ namespace NppGit.Forms
             lVersion.Text = this.GetType().Assembly.GetName().Version.ToString();
             tbChangeLog.Text = Properties.Resources.ChangeLog;
         }
+
+        private void llMail_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            llMail.LinkVisited = true; 
+            System.Diagnostics.Process.Start("mailto:" + llMail.Text + "?subject=NppGit");
+        }
+
+        private void llIssue_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            llIssue.LinkVisited = true;
+            System.Diagnostics.Process.Start("https://bitbucket.org/AlaXiZ/nppgitplugin/issues?status=new&status=open");
+
+        }
     }
 }

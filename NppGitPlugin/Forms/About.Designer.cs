@@ -35,6 +35,8 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.llMail = new System.Windows.Forms.LinkLabel();
             this.tbChangeLog = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.llIssue = new System.Windows.Forms.LinkLabel();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -70,7 +72,7 @@
             this.pictureBox1.Image = global::NppGit.Properties.Resources.NppGit_Logo;
             this.pictureBox1.Location = new System.Drawing.Point(12, 12);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(124, 124);
+            this.pictureBox1.Size = new System.Drawing.Size(124, 202);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 3;
             this.pictureBox1.TabStop = false;
@@ -84,24 +86,47 @@
             this.llMail.TabIndex = 4;
             this.llMail.TabStop = true;
             this.llMail.Text = "schadin@gmail.com";
+            this.llMail.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.llMail_LinkClicked);
             // 
             // tbChangeLog
             // 
             this.tbChangeLog.BackColor = System.Drawing.Color.White;
-            this.tbChangeLog.Location = new System.Drawing.Point(145, 54);
+            this.tbChangeLog.Location = new System.Drawing.Point(145, 71);
             this.tbChangeLog.Multiline = true;
             this.tbChangeLog.Name = "tbChangeLog";
             this.tbChangeLog.ReadOnly = true;
             this.tbChangeLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbChangeLog.Size = new System.Drawing.Size(283, 82);
+            this.tbChangeLog.Size = new System.Drawing.Size(306, 143);
             this.tbChangeLog.TabIndex = 5;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(142, 51);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(85, 13);
+            this.label1.TabIndex = 6;
+            this.label1.Text = "Трекер задача:";
+            // 
+            // llIssue
+            // 
+            this.llIssue.AutoSize = true;
+            this.llIssue.Location = new System.Drawing.Point(228, 51);
+            this.llIssue.Name = "llIssue";
+            this.llIssue.Size = new System.Drawing.Size(201, 13);
+            this.llIssue.TabIndex = 7;
+            this.llIssue.TabStop = true;
+            this.llIssue.Text = "bitbucket.org/AlaXiZ/nppgitplugin/issues";
+            this.llIssue.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.llIssue_LinkClicked);
             // 
             // About
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(440, 149);
+            this.ClientSize = new System.Drawing.Size(463, 226);
+            this.Controls.Add(this.llIssue);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.tbChangeLog);
             this.Controls.Add(this.llMail);
             this.Controls.Add(this.pictureBox1);
@@ -115,7 +140,7 @@
             this.Name = "About";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "About";
+            this.Text = "О программе...";
             this.Load += new System.EventHandler(this.About_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
@@ -131,5 +156,7 @@
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.LinkLabel llMail;
         private System.Windows.Forms.TextBox tbChangeLog;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.LinkLabel llIssue;
     }
 }

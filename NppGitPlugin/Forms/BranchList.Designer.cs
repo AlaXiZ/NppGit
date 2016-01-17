@@ -41,7 +41,7 @@
             this.lbItems.FormattingEnabled = true;
             this.lbItems.Location = new System.Drawing.Point(8, 8);
             this.lbItems.Name = "lbItems";
-            this.lbItems.Size = new System.Drawing.Size(360, 251);
+            this.lbItems.Size = new System.Drawing.Size(380, 251);
             this.lbItems.TabIndex = 0;
             this.lbItems.DoubleClick += new System.EventHandler(this.lbItems_DoubleClick);
             this.lbItems.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lbItems_KeyDown);
@@ -52,10 +52,10 @@
             this.rbAll.Checked = true;
             this.rbAll.Location = new System.Drawing.Point(12, 269);
             this.rbAll.Name = "rbAll";
-            this.rbAll.Size = new System.Drawing.Size(36, 17);
+            this.rbAll.Size = new System.Drawing.Size(44, 17);
             this.rbAll.TabIndex = 1;
             this.rbAll.TabStop = true;
-            this.rbAll.Text = "All";
+            this.rbAll.Text = "Все";
             this.rbAll.UseVisualStyleBackColor = true;
             this.rbAll.CheckedChanged += new System.EventHandler(this.CheckedChanged);
             // 
@@ -64,26 +64,26 @@
             this.rbLocal.AutoSize = true;
             this.rbLocal.Location = new System.Drawing.Point(54, 269);
             this.rbLocal.Name = "rbLocal";
-            this.rbLocal.Size = new System.Drawing.Size(51, 17);
+            this.rbLocal.Size = new System.Drawing.Size(83, 17);
             this.rbLocal.TabIndex = 2;
-            this.rbLocal.Text = "Local";
+            this.rbLocal.Text = "Локальные";
             this.rbLocal.UseVisualStyleBackColor = true;
             this.rbLocal.CheckedChanged += new System.EventHandler(this.CheckedChanged);
             // 
             // rbRemote
             // 
             this.rbRemote.AutoSize = true;
-            this.rbRemote.Location = new System.Drawing.Point(111, 269);
+            this.rbRemote.Location = new System.Drawing.Point(143, 269);
             this.rbRemote.Name = "rbRemote";
-            this.rbRemote.Size = new System.Drawing.Size(62, 17);
+            this.rbRemote.Size = new System.Drawing.Size(83, 17);
             this.rbRemote.TabIndex = 3;
-            this.rbRemote.Text = "Remote";
+            this.rbRemote.Text = "Удаленные";
             this.rbRemote.UseVisualStyleBackColor = true;
             this.rbRemote.CheckedChanged += new System.EventHandler(this.CheckedChanged);
             // 
             // bOk
             // 
-            this.bOk.Location = new System.Drawing.Point(290, 269);
+            this.bOk.Location = new System.Drawing.Point(313, 266);
             this.bOk.Name = "bOk";
             this.bOk.Size = new System.Drawing.Size(75, 23);
             this.bOk.TabIndex = 4;
@@ -94,11 +94,11 @@
             // bCancel
             // 
             this.bCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.bCancel.Location = new System.Drawing.Point(209, 269);
+            this.bCancel.Location = new System.Drawing.Point(232, 266);
             this.bCancel.Name = "bCancel";
             this.bCancel.Size = new System.Drawing.Size(75, 23);
             this.bCancel.TabIndex = 5;
-            this.bCancel.Text = "Cancel";
+            this.bCancel.Text = "Отмена";
             this.bCancel.UseVisualStyleBackColor = true;
             this.bCancel.Click += new System.EventHandler(this.bCancel_Click);
             // 
@@ -108,7 +108,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.bCancel;
-            this.ClientSize = new System.Drawing.Size(376, 297);
+            this.ClientSize = new System.Drawing.Size(395, 297);
             this.Controls.Add(this.bCancel);
             this.Controls.Add(this.bOk);
             this.Controls.Add(this.rbRemote);
@@ -120,7 +120,7 @@
             this.MinimizeBox = false;
             this.Name = "BranchList";
             this.ShowInTaskbar = false;
-            this.Text = "Select branch";
+            this.Text = "Список веток";
             this.ResumeLayout(false);
             this.PerformLayout();
 
