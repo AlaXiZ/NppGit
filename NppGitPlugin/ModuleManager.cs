@@ -45,7 +45,7 @@ namespace NppGit
 
         public void MessageProc(SCNotification sn)
         {           
-            if (sn.nmhdr.code == (uint)NppMsg.NPPN_BUFFERACTIVATED)
+            if (sn.nmhdr.code == (uint)NppMsg.NPPN_BUFFERACTIVATED || sn.nmhdr.code == (uint)NppMsg.NPPN_FILEOPENED)
             {
                 if (OnTabChangeEvent != null)
                 {
