@@ -45,10 +45,16 @@ namespace NppGit
                     if (isShowRepo)
                     {
                         string remote = "";
-                        var remoteUrl = repo.Network.Remotes.First()?.Url;
-                        if (!string.IsNullOrEmpty(remoteUrl))
+                        if (repo.Network.Remotes.Count() > 0)
                         {
-                            remote = remoteUrl.Substring(remoteUrl.LastIndexOf('/') + 1, remoteUrl.Length - remoteUrl.LastIndexOf('/') - 1).Replace(".git", "");
+                            var remoteUrl = repo.Network.Remotes.First().Url;
+                            if (!string.IsNullOrEmpty(remoteUrl))
+                            {
+                                remote = remoteUrl.Substring(remoteUrl.LastIndexOf('/') + 1, remoteUrl.Length - remoteUrl.LastIndexOf('/') - 1).Replace(".git", "");
+                            }
+                        } else
+                        {
+                            remote = new DirectoryInfo(repoDir).Name;
                         }
                         strBuild.Append(remote);
                     }
