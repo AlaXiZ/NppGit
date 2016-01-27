@@ -180,9 +180,23 @@ namespace NppGit
                 return title.ToString();
             }
             set
-            {
+            {   
                 var title = new StringBuilder(value);
-                Win32.SendMessage(nppData._nppHandle, (int)WinMsg.WM_SETTEXT, 0, title);
+                Win32.SendMessage(nppData._nppHandle, (int)WinMsg.WM_SETTEXT, (int)WinMsg.WM_SETTEXT, title);
+            }
+        }
+
+        public static int NppPID
+        {
+            get
+            {
+                var pid = 0;
+                foreach (var p in System.Diagnostics.Process.GetProcessesByName("notepad++"))
+                {
+                    pid = p.Id;
+                    break;
+                }
+                return pid;
             }
         }
     }

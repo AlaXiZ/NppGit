@@ -43,7 +43,7 @@
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\plugins\</OutputPath>
     <PlatformTarget>x86</PlatformTarget>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <Prefer32Bit>false</Prefer32Bit>
     <RunCodeAnalysis>false</RunCodeAnalysis>
     <CodeAnalysisIgnoreGeneratedCode>false</CodeAnalysisIgnoreGeneratedCode>
@@ -64,6 +64,7 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Accessibility" />
     <Reference Include="LibGit2Sharp, Version=0.21.0.176, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\LibGit2Sharp.0.21.0.176\lib\net40\LibGit2Sharp.dll</HintPath>
       <Private>True</Private>
@@ -108,6 +109,8 @@
     </Compile>
     <Compile Include="Interfaces.cs" />
     <Compile Include="Interop\IniFile.cs" />
+    <Compile Include="Interop\LocalWindowsHook.cs" />
+    <Compile Include="Interop\Win32.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Interop\NppPluginNETBase.cs" />
     <Compile Include="Interop\NppPluginNETHelper.cs" />

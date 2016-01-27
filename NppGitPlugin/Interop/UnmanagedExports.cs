@@ -31,6 +31,10 @@ namespace NppGit
         [DllExport(CallingConvention = CallingConvention.Cdecl)]
         static uint messageProc(uint Message, IntPtr wParam, IntPtr lParam)
         {
+            if (Message == (uint)WinMsg.WM_SETTEXT)
+            {
+                System.Diagnostics.Debug.WriteLine("WM_SETTEXT");
+            }
             return 1;
         }
 

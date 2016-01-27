@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace NppGit
@@ -15,6 +16,7 @@ namespace NppGit
         private IModuleManager _manager;
         private int showBranchCmdID = -1;
         private int showRepoCmdID = -1;
+        private static string _ending = "";
 
         private void ShowBranch()
         {
@@ -35,12 +37,17 @@ namespace NppGit
             bool isShowBranch = Settings.Functions.ShowBranch,
                  isShowRepo = Settings.Functions.ShowRepoName;
             var repoDir = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
-            if (!string.IsNullOrEmpty(repoDir) && LibGit2Sharp.Repository.IsValid(repoDir))
+            if (!string.IsNullOrEmpty(repoDir) && Repository.IsValid(repoDir))
             {
-                using (var repo = new LibGit2Sharp.Repository(repoDir))
+                using (var repo = new Repository(repoDir))
                 {
                     var title = PluginUtils.WindowTitle;
-                    title = title.Substring(0, title.LastIndexOf("++") + 2);
+                    if (string.IsNullOrEmpty(_ending))
+                    {
+                        var pos = title.LastIndexOf(" - ") + 3;
+                        _ending = title.Substring(pos, title.Length - pos);
+                    }
+                    title = title.Substring(0, title.LastIndexOf(_ending) + _ending.Length);
                     var strBuild = new StringBuilder();
                     if (isShowRepo)
                     {
@@ -71,12 +78,6 @@ namespace NppGit
             }
         }
 
-        public void ChangeContext(TabEventArgs args)
-        {
-            if (Settings.Functions.ShowBranch || Settings.Functions.ShowRepoName)
-                DoShowBranch();
-        }
-
         public void Final()
         {
         }
@@ -84,7 +85,7 @@ namespace NppGit
         public void Init(IModuleManager manager)
         {
             _manager = manager;
-            _manager.OnTabChangeEvent += ChangeContext;
+            _manager.OnTitleChangingEvent += TitleChanging;
 
             showBranchCmdID = _manager.RegisterMenuItem(new MenuItem
             {
@@ -112,6 +113,12 @@ namespace NppGit
                 Action = OpenFileInOtherBranch
             });
 
+        }
+
+        private void TitleChanging()
+        {
+            if (Settings.Functions.ShowBranch || Settings.Functions.ShowRepoName)
+                DoShowBranch();
         }
 
         private async void OpenFileInOtherBranch()

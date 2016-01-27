@@ -1,4 +1,5 @@
 ﻿using NLog;
+using NppGit.Interop;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -32,9 +33,12 @@ namespace NppGit
         private LinkedList<IModule> _modules;
         private Dictionary<int, DockForm> _forms;
         private Dictionary<string, List<MenuItem>> _cmdList;
+
+        private LocalWindowsHook winHookProcRet;
         
         public event Action OnToolbarRegisterEvent;
         public event TabChange OnTabChangeEvent;
+        public event Action OnTitleChangingEvent;
 
         public ModuleManager()
         {
@@ -44,18 +48,27 @@ namespace NppGit
         }
 
         public void MessageProc(SCNotification sn)
-        {           
-            if (sn.nmhdr.code == (uint)NppMsg.NPPN_BUFFERACTIVATED || sn.nmhdr.code == (uint)NppMsg.NPPN_FILEOPENED)
+        {  
+            switch(sn.nmhdr.code)
             {
-                if (OnTabChangeEvent != null)
-                {
-                    OnTabChangeEvent(new TabEventArgs(sn.nmhdr.idFrom));
-                }
+                case (uint)NppMsg.NPPN_BUFFERACTIVATED:
+                case (uint)NppMsg.NPPN_FILEOPENED:
+                    {
+                        if (OnTabChangeEvent != null)
+                        {
+                            OnTabChangeEvent(new TabEventArgs(sn.nmhdr.idFrom));
+                        }
+                        break;
+                    }
             }
+            //logger.Debug("sn.nmhdr.code={0}", sn.nmhdr.code);
         }
 
         public void Final()
         {
+            if (winHookProcRet != null && winHookProcRet.IsInstalled)
+                winHookProcRet.Uninstall();
+
             foreach (var m in _modules)
                 m.Final();
         }
@@ -77,6 +90,22 @@ namespace NppGit
                 Hint = "Sample context menu",
                 Action = ContextMenu
             });
+
+            winHookProcRet = new LocalWindowsHook(HookType.WH_CALLWNDPROCRET);
+            winHookProcRet.HookInvoked += WinHookHookInvoked;
+            winHookProcRet.Install();
+        }
+
+        private void WinHookHookInvoked(object sender, HookEventArgs e)
+        {
+            CWPRETSTRUCT msg = (CWPRETSTRUCT)Marshal.PtrToStructure(e.lParam, typeof(CWPRETSTRUCT));
+            if (msg.message == (uint)WinMsg.WM_SETTEXT && (uint)msg.wParam != (uint)WinMsg.WM_SETTEXT)
+            {
+                if (OnTitleChangingEvent != null)
+                {
+                    OnTitleChangingEvent();
+                }
+            }
         }
 
         public void ToolBarInit()

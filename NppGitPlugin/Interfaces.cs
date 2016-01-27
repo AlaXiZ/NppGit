@@ -33,6 +33,7 @@ namespace NppGit
     {
         event Action OnToolbarRegisterEvent;
         event TabChange OnTabChangeEvent;
+        event Action OnTitleChangingEvent;
 
         int RegisterMenuItem(MenuItem menuItem);
         void RegisterDockForm(Type formClass, int cmdId, bool updateWithChangeContext);

@@ -258,7 +258,7 @@ namespace NppGit
     }
 
     [Flags]
-    public enum WinMsg : int
+    public enum WinMsg : uint
     {
         WM_COMMAND = 0x111  ,
         WM_SETTEXT = 0x000C,
