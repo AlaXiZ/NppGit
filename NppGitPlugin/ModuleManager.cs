@@ -18,12 +18,12 @@ namespace NppGit
         public bool Checked;
     }
 
-    struct DockForm
+    class DockForm
     {
-        public Type Type;
-        public Form Form;
-        public bool UpdateWithChangeContext;
-        public Icon TabIcon;
+        public Type Type { get; set; }
+        public Form Form { get; set; }
+        public bool UpdateWithChangeContext { get; set; }
+        public Icon TabIcon { get; set; }
     }
 
     public class ModuleManager : IModuleManager
