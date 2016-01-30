@@ -123,6 +123,13 @@ namespace NppGit
                 [MethodImpl(MethodImplOptions.NoInlining)]
                 set { Set(value); }
             }
+            public static bool FileStatusPanelVisible
+            {
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                get { return Get(false); }
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                set { Set(value); }
+            }
         }
 
         public static class TortoiseGitProc

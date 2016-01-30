@@ -1,5 +1,6 @@
 ﻿using LibGit2Sharp;
 using NLog;
+using NppGit.Forms;
 using System;
 using System.IO;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace NppGit
         private int _showBranchCmdID = -1;
         private int _showRepoCmdID = -1;
         private int _showStatusFileCmdID = -1;
+        private int _statusPanelCmdID = -1;
         private static string _ending = "";
 
         private void ShowBranch()
@@ -97,6 +99,11 @@ namespace NppGit
             }
         }
 
+        private void DoShowStatus()
+        {
+            _manager.ToogleFormState(_statusPanelCmdID);
+        }
+
         public void Final()
         {
         }
@@ -132,7 +139,7 @@ namespace NppGit
                 Action = OpenFileInOtherBranch
             });
 
-            _manager.RegisterMenuItem(new MenuItem
+            _showStatusFileCmdID = _manager.RegisterMenuItem(new MenuItem
             {
                 Name = "File status in title",
                 Hint = "File status in title",
@@ -141,6 +148,21 @@ namespace NppGit
                 Checked =Settings.Functions.ShowStatusFile
             });
 
+            _statusPanelCmdID = _manager.RegisterMenuItem(new MenuItem
+            {
+                Name = "Status panel",
+                Hint = "Status panel",
+                ShortcutKey = null,
+                Action = DoShowStatus,
+                Checked = Settings.Panels.FileStatusPanelVisible
+            });
+
+            _manager.RegisterDockForm(typeof(Status), _statusPanelCmdID, true);
+
+            if (Settings.Panels.FileStatusPanelVisible)
+            {
+                DoShowStatus();
+            }
         }
 
         private void TitleChanging()

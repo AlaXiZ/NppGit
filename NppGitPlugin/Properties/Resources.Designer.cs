@@ -71,7 +71,20 @@ namespace NppGit.Properties {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на .
+        ///   Ищет локализованную строку, похожую на * Версия 0.2.5
+        ///#9 Функция &quot;Ветка в заголовке&quot; не отрабатывает после смены вкладки/файла
+        ///* Версия 0.2.4
+        ///Имя репозитория при отсутсвии удаленных репозиториев
+        ///#12 Перевод на русский
+        ///#11 В заголовке не появляется информация
+        ///#7 Логгирование в файл
+        ///#8 Не работает сохранение настроек
+        ///#10 Имя репозитория в заголовке
+        ///* Версия 0.2.3
+        ///Настройка &quot;Set default shortcut&quot; - установка горячих кнопок.
+        ///#4 Просмотреть файл из другой ветки
+        ///Добавлена группа настроек &quot;Open file in other branch&quot;
+        ///  - &quot;Size SHA in name t [остаток строки не уместился]&quot;;.
         /// </summary>
         internal static string ChangeLog {
             get {
@@ -178,6 +191,16 @@ namespace NppGit.Properties {
         internal static System.Drawing.Bitmap push {
             get {
                 object obj = ResourceManager.GetObject("push", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap refresh {
+            get {
+                object obj = ResourceManager.GetObject("refresh", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
