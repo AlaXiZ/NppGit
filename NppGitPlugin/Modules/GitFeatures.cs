@@ -1,12 +1,9 @@
 ﻿using LibGit2Sharp;
 using NLog;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace NppGit
 {
@@ -14,39 +11,55 @@ namespace NppGit
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
         private IModuleManager _manager;
-        private int showBranchCmdID = -1;
-        private int showRepoCmdID = -1;
+        private int _showBranchCmdID = -1;
+        private int _showRepoCmdID = -1;
+        private int _showStatusFileCmdID = -1;
         private static string _ending = "";
 
         private void ShowBranch()
         {
             Settings.Functions.ShowBranch = !Settings.Functions.ShowBranch;
-            _manager.SetCheckedMenu(showBranchCmdID, Settings.Functions.ShowBranch);
-            DoShowBranch();
+            _manager.SetCheckedMenu(_showBranchCmdID, Settings.Functions.ShowBranch);
+            DoTitleUpdate();
         }
 
         private void ShowRepoName()
         {
             Settings.Functions.ShowRepoName = !Settings.Functions.ShowRepoName;
-            _manager.SetCheckedMenu(showRepoCmdID, Settings.Functions.ShowRepoName);
-            DoShowBranch();
+            _manager.SetCheckedMenu(_showRepoCmdID, Settings.Functions.ShowRepoName);
+            DoTitleUpdate();
         }
 
-        private void DoShowBranch()
+        private void ShowFileStatus()
+        {
+            Settings.Functions.ShowStatusFile = !Settings.Functions.ShowStatusFile;
+            _manager.SetCheckedMenu(_showStatusFileCmdID, Settings.Functions.ShowStatusFile);
+            DoTitleUpdate();
+        }
+
+        private void DoTitleUpdate()
         {
             bool isShowBranch = Settings.Functions.ShowBranch,
-                 isShowRepo = Settings.Functions.ShowRepoName;
+                 isShowRepo = Settings.Functions.ShowRepoName,
+                 isShowStatus = Settings.Functions.ShowStatusFile;
+
             var repoDir = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
             if (!string.IsNullOrEmpty(repoDir) && Repository.IsValid(repoDir))
             {
                 using (var repo = new Repository(repoDir))
                 {
                     var title = PluginUtils.WindowTitle;
+                    // Заголовок может заканчиваться на Notepad++ или на [Administrator]
+                    // но всегда есть разделительный дефис между имененем файла и Notepad++
                     if (string.IsNullOrEmpty(_ending))
                     {
+                        // Ищем последний дефис
                         var pos = title.LastIndexOf(" - ") + 3;
+                        // Получаем окончание для заголовка
                         _ending = title.Substring(pos, title.Length - pos);
                     }
+                    // Вдруг на пришел заголовок с нашими дописками,
+                    // сначала их порежем
                     title = title.Substring(0, title.LastIndexOf(_ending) + _ending.Length);
                     var strBuild = new StringBuilder();
                     if (isShowRepo)
@@ -71,6 +84,12 @@ namespace NppGit
                             strBuild.Append(" / ");
                         strBuild.Append(repo.Head.Name);
                     }
+                    if (isShowStatus)
+                    {
+                        if (strBuild.Length > 0)
+                            strBuild.Append(" / ");
+                        strBuild.Append(repo.RetrieveStatus(PluginUtils.CurrentFilePath).ToString());
+                    }
                     if (strBuild.Length > 0)
                         title += " [ " + strBuild.ToString() + " ]";
                     PluginUtils.WindowTitle = title;
@@ -87,7 +106,7 @@ namespace NppGit
             _manager = manager;
             _manager.OnTitleChangingEvent += TitleChanging;
 
-            showBranchCmdID = _manager.RegisterMenuItem(new MenuItem
+            _showBranchCmdID = _manager.RegisterMenuItem(new MenuItem
             {
                 Name = "Branch in title",
                 Hint = "Branch in title",
@@ -96,7 +115,7 @@ namespace NppGit
                 Checked = Settings.Functions.ShowBranch
             });
 
-            showRepoCmdID = _manager.RegisterMenuItem(new MenuItem
+            _showRepoCmdID = _manager.RegisterMenuItem(new MenuItem
             {
                 Name = "Repository in title",
                 Hint = "Repository in title",
@@ -113,12 +132,21 @@ namespace NppGit
                 Action = OpenFileInOtherBranch
             });
 
+            _manager.RegisterMenuItem(new MenuItem
+            {
+                Name = "File status in title",
+                Hint = "File status in title",
+                ShortcutKey = null,
+                Action = ShowFileStatus,
+                Checked =Settings.Functions.ShowStatusFile
+            });
+
         }
 
         private void TitleChanging()
         {
-            if (Settings.Functions.ShowBranch || Settings.Functions.ShowRepoName)
-                DoShowBranch();
+            if (Settings.Functions.ShowBranch || Settings.Functions.ShowRepoName || Settings.Functions.ShowStatusFile)
+                DoTitleUpdate();
         }
 
         private async void OpenFileInOtherBranch()

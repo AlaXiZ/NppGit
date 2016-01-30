@@ -89,6 +89,14 @@ namespace NppGit
                 set { Set(value); }
             }
 
+            public static bool ShowStatusFile
+            {
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                get { return Get(false); }
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                set { Set(value); }
+            }
+
             public static byte SHACount
             {
                 [MethodImpl(MethodImplOptions.NoInlining)]
