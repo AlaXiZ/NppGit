@@ -33,6 +33,7 @@ namespace NppGit
         private LinkedList<IModule> _modules;
         private Dictionary<int, DockForm> _forms;
         private Dictionary<string, List<MenuItem>> _cmdList;
+        private bool _canEvent = false;
 
         private LocalWindowsHook winHookProcRet;
         
@@ -48,7 +49,10 @@ namespace NppGit
         }
 
         public void MessageProc(SCNotification sn)
-        {  
+        {
+            if (!_canEvent)
+                return;
+
             switch(sn.nmhdr.code)
             {
                 case (uint)NppMsg.NPPN_BUFFERACTIVATED:
@@ -66,6 +70,8 @@ namespace NppGit
 
         public void Final()
         {
+            _canEvent = false;
+
             if (winHookProcRet != null && winHookProcRet.IsInstalled)
                 winHookProcRet.Uninstall();
 
@@ -94,10 +100,15 @@ namespace NppGit
             winHookProcRet = new LocalWindowsHook(HookType.WH_CALLWNDPROCRET);
             winHookProcRet.HookInvoked += WinHookHookInvoked;
             winHookProcRet.Install();
+
+            _canEvent = true;
         }
 
         private void WinHookHookInvoked(object sender, HookEventArgs e)
         {
+            if (!_canEvent)
+                return;
+
             CWPRETSTRUCT msg = (CWPRETSTRUCT)Marshal.PtrToStructure(e.lParam, typeof(CWPRETSTRUCT));
             if (msg.message == (uint)WinMsg.WM_SETTEXT && (uint)msg.wParam != (uint)WinMsg.WM_SETTEXT)
             {
@@ -152,6 +163,16 @@ namespace NppGit
                                             Form = null,
                                             UpdateWithChangeContext = updateWithChangeContext
                                         });
+                if (updateWithChangeContext)
+                {
+                    OnTabChangeEvent += (a) =>
+                    {
+                        if (_forms[cmdId].Form != null)
+                        {
+                            (_forms[cmdId].Form as FormDockable).ChangeContext();
+                        }
+                    };
+                }
             }
         }
 
@@ -164,6 +185,10 @@ namespace NppGit
                 if (form.Form == null)
                 {
                     form.Form = Activator.CreateInstance(form.Type) as Form;
+                    form.Form.VisibleChanged += (o, e) => 
+                    {
+                        PluginUtils.SetCheckedMenu(PluginUtils.GetCmdId(cmdId), false);
+                    };
                     form.TabIcon = PluginUtils.NppBitmapToIcon((form.Form as FormDockable).TabIcon);
 
                     NppTbData _nppTbData = new NppTbData();
@@ -189,7 +214,7 @@ namespace NppGit
                         Win32.SendMessage(PluginUtils.NppHandle, NppMsg.NPPM_DMMSHOW, 0, form.Form.Handle);
                     }
                 }
-                Win32.SendMessage(PluginUtils.NppHandle, NppMsg.NPPM_SETMENUITEMCHECK, cmdId, form.Form.Visible ? 1 : 0);
+                PluginUtils.SetCheckedMenu(PluginUtils.GetCmdId(cmdId), form.Form.Visible);
                 return form.Form.Visible;
             }
             else
