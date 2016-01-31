@@ -9,13 +9,14 @@ using System.Windows.Forms;
 
 namespace NppGit
 {
-    public struct MenuItem
+    public class MenuItem
     {
-        public string Name;
-        public string Hint;
-        public ShortcutKey? ShortcutKey;
-        public Action Action;
-        public bool Checked;
+        public string Name { get; set; }
+        public string Hint { get; set; }
+        public ShortcutKey? ShortcutKey { get; set; }
+        public Action Action { get; set; }
+        public bool Checked { get; set; }
+        public bool Selected { get; set; }
     }
 
     class DockForm
@@ -99,7 +100,7 @@ namespace NppGit
             RegisterMenuItem(new MenuItem {
                 Name = "Sample context menu",
                 Hint = "Sample context menu",
-                Action = ContextMenu
+                Action = DoContextMenu
             });
 
             winHookProcRet = new LocalWindowsHook(HookType.WH_CALLWNDPROCRET);
@@ -147,6 +148,8 @@ namespace NppGit
 
         public int RegisterMenuItem(MenuItem menuItem)
         {
+            menuItem.Selected = false;
+
             if (!Settings.InnerSettings.IsSetDefaultShortcut)
                 menuItem.ShortcutKey = null;
 
@@ -266,41 +269,46 @@ namespace NppGit
                 return string.Format(ItemTemplate, folder, Properties.Resources.PluginName, itemName, itemNameAs);
         }
 
-        public void ContextMenu()
+        public void DoContextMenu()
         {
-            PluginUtils.NewFile();
-            PluginUtils.AppendText("\t\t<!--Sample menu -->");
-            PluginUtils.NewLine();
-
-            var countItem = 1;
-            foreach (var folder in _cmdList.Keys)
+            var dlg = new Forms.CommandList();
+            dlg.Commands = _cmdList;
+            if (dlg.ShowDialog() == DialogResult.OK)
             {
-                if (countItem > 0)
+                PluginUtils.NewFile();
+                PluginUtils.AppendText("\t\t<!--Sample menu -->");
+                PluginUtils.NewLine();
+
+                var countItem = 1;
+                foreach (var folder in dlg.Commands.Keys)
                 {
-                    PluginUtils.AppendText(GetItemTemplate());
-                    PluginUtils.NewLine();
-                    countItem = 0;
-                }
-                foreach (var command in _cmdList[folder])
-                {
-                    if (command.Hint != "-")
+                    if (countItem > 0)
                     {
-                        PluginUtils.AppendText(GetItemTemplate(folder, command.Name, command.Hint));
+                        PluginUtils.AppendText(GetItemTemplate());
                         PluginUtils.NewLine();
-                        countItem++;
+                        countItem = 0;
+                    }
+                    foreach (var command in dlg.Commands[folder])
+                    {
+                        if (command.Hint != "-" && command.Selected)
+                        {
+                            PluginUtils.AppendText(GetItemTemplate(folder, command.Name, command.Hint));
+                            PluginUtils.NewLine();
+                            countItem++;
+                        }
                     }
                 }
-            }
-            PluginUtils.AppendText(GetItemTemplate());
-            PluginUtils.NewLine();
-            /*
-            for (int i = 0; i < PluginUtils._funcItems.Items.Count; i++)
-            {
-                PluginUtils.AppendText(GetItemTemplate(PluginUtils._funcItems.Items[i]._itemName));
+                PluginUtils.AppendText(GetItemTemplate());
                 PluginUtils.NewLine();
+                /*
+                for (int i = 0; i < PluginUtils._funcItems.Items.Count; i++)
+                {
+                    PluginUtils.AppendText(GetItemTemplate(PluginUtils._funcItems.Items[i]._itemName));
+                    PluginUtils.NewLine();
+                }
+                */
+                PluginUtils.SetLang(LangType.L_XML);
             }
-            */
-            PluginUtils.SetLang(LangType.L_XML);
         }
         #endregion
 
