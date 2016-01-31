@@ -57,15 +57,20 @@ namespace NppGit
             {
                 case (uint)NppMsg.NPPN_BUFFERACTIVATED:
                 case (uint)NppMsg.NPPN_FILEOPENED:
+                case (uint)NppMsg.NPPN_FILESAVED:
                     {
-                        if (OnTabChangeEvent != null)
-                        {
-                            OnTabChangeEvent(new TabEventArgs(sn.nmhdr.idFrom));
-                        }
+                        DoTabChangeEvent(sn.nmhdr.idFrom);
                         break;
                     }
             }
-            //logger.Debug("sn.nmhdr.code={0}", sn.nmhdr.code);
+        }
+
+        private void DoTabChangeEvent(uint idFormChanged)
+        {
+            if (OnTabChangeEvent != null)
+            {
+                OnTabChangeEvent(new TabEventArgs(idFormChanged));
+            }
         }
 
         public void Final()
@@ -112,10 +117,15 @@ namespace NppGit
             CWPRETSTRUCT msg = (CWPRETSTRUCT)Marshal.PtrToStructure(e.lParam, typeof(CWPRETSTRUCT));
             if (msg.message == (uint)WinMsg.WM_SETTEXT && (uint)msg.wParam != (uint)WinMsg.WM_SETTEXT)
             {
-                if (OnTitleChangingEvent != null)
-                {
-                    OnTitleChangingEvent();
-                }
+                DoTitleChangingEvent();
+            }
+        }
+
+        private void DoTitleChangingEvent()
+        {
+            if (OnTitleChangingEvent != null)
+            {
+                OnTitleChangingEvent();
             }
         }
 
@@ -195,7 +205,7 @@ namespace NppGit
                     _nppTbData.hClient = form.Form.Handle;
                     _nppTbData.pszName = (form.Form as FormDockable).Title;
                     _nppTbData.dlgID = cmdId;
-                    _nppTbData.uMask = NppTbMsg.DWS_DF_CONT_RIGHT | NppTbMsg.DWS_ICONTAB | NppTbMsg.DWS_ICONBAR;
+                    _nppTbData.uMask = NppTbMsg.DWS_DF_FLOATING | NppTbMsg.DWS_ICONTAB | NppTbMsg.DWS_ICONBAR;
                     _nppTbData.hIconTab = (uint)form.TabIcon.Handle;
                     _nppTbData.pszModuleName = Properties.Resources.PluginName;
                     IntPtr _ptrNppTbData = Marshal.AllocHGlobal(Marshal.SizeOf(_nppTbData));
