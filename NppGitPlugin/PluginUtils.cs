@@ -193,8 +193,14 @@ namespace NppGit
                 }
             } else
             {
-                buf.Append(text);
                 Win32.SendMessage(CurrentScintilla, SciMsg.SCI_REPLACESEL, buf.Length, buf);
+                foreach (var str in text.Replace(GetEOL(), "\n").Split('\n'))
+                {
+                    buf.Clear();
+                    buf.Append(str);
+                    Win32.SendMessage(CurrentScintilla, SciMsg.SCI_ADDTEXT, buf.Length, buf);
+                    NewLine();
+                }
             }
             execute(SciMsg.SCI_ENDUNDOACTION, 0);
         }

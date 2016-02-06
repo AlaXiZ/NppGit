@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace NppGit.Modules
@@ -26,9 +27,16 @@ namespace NppGit.Modules
             _manager = manager;
             _manager.RegisterMenuItem(new MenuItem
             {
-                Name = "Swap expression",
-                Hint = "Swap expression",
+                Name = "Swap",
+                Hint = "Swap",
                 Action = DoSwap
+            });
+
+            _manager.RegisterMenuItem(new MenuItem
+            {
+                Name = "Align columns",
+                Hint = "Align columns",
+                Action = DoAlign
             });
 
             // -----------------------------------------------------------------
@@ -43,37 +51,31 @@ namespace NppGit.Modules
 
         private void DoSwap()
         {
-            var src = PluginUtils.GetSelectedText().Trim();
-            var eol = PluginUtils.GetEOL();
-            var origin_eol = eol;
-            // replace end of line
-            if (eol == "\r\n")
-            {
-                src = src.Replace(eol, "\n");
-                eol = "\n";
-            }
+            var eol = PluginUtils.GetEOL();;
+            var src = Regex.Replace(PluginUtils.GetSelectedText().Trim().Replace('\t', ' '), @"[ ]{2,}", " ").Replace(eol, "\n");
 
-            var list = (from item in src.Split(eol[0])
-                       select SwapInLine(item)).ToArray<string>();
+            var list = (from item in src.Split('\n')
+                       select SwapInLine(item.Trim())).ToArray();
             
             AlignColumn(ref list);
 
-            var result = string.Join(origin_eol, list);
+            PluginUtils.ReplaceSelectedText(string.Join(eol, list));
+        }
 
-            PluginUtils.ReplaceSelectedText(result);
+        private void DoAlign()
+        {
+            var eol = PluginUtils.GetEOL(); ;
+            var src = Regex.Replace(PluginUtils.GetSelectedText().Trim().Replace('\t', ' ').Replace(",", " , "), @"[ ]{2,}", " ").Replace(eol, "\n");
+            var list = src.Split('\n');
+
+            AlignColumn(ref list);
+
+            PluginUtils.ReplaceSelectedText(string.Join(eol, list));
         }
 
         private static string SwapInLine(string src)
         {
-            var src_copy = src.Trim().Replace('\t', ' ') ;
-            var tmp = src_copy.Replace("  ", " ");
-            while (src_copy != tmp)
-            {
-                src_copy = tmp;
-                tmp = src_copy.Replace("  ", " ");
-            }
-
-            var srcArr = src_copy.Split(' ');
+            var srcArr = src.Split(' ');
 
             if (srcArr.Length == 3)
             {
@@ -90,7 +92,7 @@ namespace NppGit.Modules
             var lens = new List<int>();
             foreach(var line in lines)
             {
-                var items = line.Split(' ');
+                var items = line.Trim().Split(' ');
                 var lenCount = lens.Count;
                 for (int i = 0; i < items.Length - lenCount; i++)
                 {
