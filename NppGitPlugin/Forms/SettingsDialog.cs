@@ -6,7 +6,7 @@ namespace NppGit.Forms
 {
     public partial class SettingsDialog : Form
     {
-        private static List<NLog.LogLevel> _logLevel = new List<NLog.LogLevel>
+        private static readonly List<NLog.LogLevel> _logLevel = new List<NLog.LogLevel>
         {
             NLog.LogLevel.Off,
             NLog.LogLevel.Fatal,
@@ -39,6 +39,10 @@ namespace NppGit.Forms
             cbLogLevel.Items.Clear();
             cbLogLevel.Items.AddRange(_logLevel.ToArray());
             cbLogLevel.Text = Settings.InnerSettings.LogLevel;
+
+            chlModules.SetItemChecked(0, Settings.Modules.TortoiseGit);
+            chlModules.SetItemChecked(1, Settings.Modules.Git);
+            chlModules.SetItemChecked(2, Settings.Modules.SQLIDE);
         }
 
         private uint GetButtonMask()
@@ -64,6 +68,10 @@ namespace NppGit.Forms
             Settings.Functions.SHACount = byte.Parse(mtxbSHACount.Text);
             Settings.Functions.OpenFileInOtherView = chbFileInOtherView.Checked;
             Settings.InnerSettings.LogLevel = cbLogLevel.Text;
+
+            Settings.Modules.TortoiseGit = chlModules.GetItemChecked(0);
+            Settings.Modules.Git = chlModules.GetItemChecked(1);
+            Settings.Modules.SQLIDE = chlModules.GetItemChecked(2);
         }
 
         private void bOk_Click(object sender, EventArgs e)
@@ -79,6 +87,11 @@ namespace NppGit.Forms
                 MessageBox.Show("Value in [1..20]", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 mtxbSHACount.Focus();
             }
+        }
+
+        private void chlModules_SelectedValueChanged(object sender, EventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine(sender);
         }
     }
 }

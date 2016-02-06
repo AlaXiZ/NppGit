@@ -18,6 +18,11 @@ namespace NppGit
         private int _statusPanelCmdID = -1;
         private static string _ending = "";
 
+        public bool IsNeedRun
+        {
+            get { return Settings.Modules.Git; }
+        }
+
         private void ShowBranch()
         {
             Settings.Functions.ShowBranch = !Settings.Functions.ShowBranch;
@@ -163,6 +168,13 @@ namespace NppGit
             {
                 DoShowStatus();
             }
+            //------------------------------------------------------------------
+            _manager.RegisterMenuItem(new MenuItem
+            {
+                Name = "-",
+                Hint = "-",
+                Action = null
+            });
         }
 
         private void TitleChanging()

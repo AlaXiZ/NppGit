@@ -82,21 +82,18 @@ namespace NppGit
                 winHookProcRet.Uninstall();
 
             foreach (var m in _modules)
-                m.Final();
+                if (m.IsNeedRun)
+                    m.Final();
         }
 
         public void Init()
         {
             foreach (var m in _modules)
             {
-                m.Init(this);
-                this.RegisterMenuItem(new MenuItem
-                {
-                    Name = "-",
-                    Hint = "-",
-                    Action = null
-                });
+                if (m.IsNeedRun)
+                    m.Init(this);
             }
+
             RegisterMenuItem(new MenuItem {
                 Name = "Sample context menu",
                 Hint = "Sample context menu",
@@ -273,6 +270,11 @@ namespace NppGit
         {
             var dlg = new Forms.CommandList();
             dlg.Commands = _cmdList;
+            if (dlg.Commands.Count == 0)
+            {
+                MessageBox.Show("Нет доступных команд", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             if (dlg.ShowDialog() == DialogResult.OK)
             {
                 PluginUtils.NewFile();

@@ -50,13 +50,18 @@ namespace NppGit
 
         private Dictionary<int, Bitmap> _icons;
         private IModuleManager _manager;
-        
+
+        public bool IsNeedRun
+        {
+            get { return Settings.Modules.TortoiseGit; }
+        }
+
         private static bool ExistsTortoiseGit(string programPath)
         {
             return System.IO.Directory.Exists(System.IO.Path.Combine(programPath, TORTOISEGITBIN));
         }
 
-        private bool InitTG()
+        private bool SearchTortoiseGit()
         {
             string tortoisePath = Settings.TortoiseGitProc.Path;
             // Path not set
@@ -233,7 +238,7 @@ namespace NppGit
 
             logger.Debug("Create menu");
             _icons = new Dictionary<int, Bitmap>();
-            if (InitTG())
+            if (SearchTortoiseGit())
             {
                 var btnMask = Settings.TortoiseGitProc.ButtonMask;
                 logger.Info("TortoiseGit found");
@@ -361,6 +366,13 @@ namespace NppGit
                 });
                 if ((btnMask & (uint)TortoiseGitCommand.RepoStatus) > 0)
                     _icons.Add(cmdID, Properties.Resources.repo);
+
+                _manager.RegisterMenuItem(new MenuItem
+                {
+                    Name = "-",
+                    Hint = "-",
+                    Action = null
+                });
             }
             else
             {
@@ -375,7 +387,7 @@ namespace NppGit
         }
 
         public void ToolBarInit()
-        { 
+        {
             logger.Debug("Create toolbar");
 
             if (Settings.TortoiseGitProc.ShowToolbar)

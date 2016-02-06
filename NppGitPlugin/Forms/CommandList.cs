@@ -19,6 +19,7 @@ namespace NppGit.Forms
             set
             {
                 _cmdList = value;
+                _cmdList.Remove("ModuleManager");
                 RefreshCommands();
             }
         }
@@ -29,24 +30,21 @@ namespace NppGit.Forms
             tvCommands.Nodes.Clear();
             foreach(var k in _cmdList.Keys)
             {
-                if ("ModuleManager" != k)
+                var item = tvCommands.Nodes.Add(k);
+                item.Checked = true;
+                item.Name = k;
+                foreach (var i in _cmdList[k])
                 {
-                    var item = tvCommands.Nodes.Add(k);
-                    item.Checked = true;
-                    item.Name = k;
-                    foreach (var i in _cmdList[k])
+                    if (i.Name != "-")
                     {
-                        if (i.Name != "-")
-                        {
-                            var subitem = item.Nodes.Add(i.Hint);
-                            subitem.Name = i.Name;
-                            subitem.Checked = true;
-                        }
+                        var subitem = item.Nodes.Add(i.Hint);
+                        subitem.Name = i.Name;
+                        subitem.Checked = true;
                     }
-                    if (item.Nodes.Count == 0)
-                    {
-                        tvCommands.Nodes.Remove(item);
-                    }
+                }
+                if (item.Nodes.Count == 0)
+                {
+                    tvCommands.Nodes.Remove(item);
                 }
             }
             tvCommands.EndUpdate();

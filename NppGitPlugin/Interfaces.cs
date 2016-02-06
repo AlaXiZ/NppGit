@@ -46,5 +46,6 @@ namespace NppGit
     {
         void Init(IModuleManager manager);
         void Final();
+        bool IsNeedRun { get; }
     }
 }

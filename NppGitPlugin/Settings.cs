@@ -71,6 +71,32 @@ namespace NppGit
         #endregion
         
         #region "Settings classes"
+        public static class Modules
+        {
+
+            public static bool TortoiseGit
+            {
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                get { return Get(true); }
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                set { Set(value); }
+            }
+            public static bool Git
+            {
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                get { return Get(true); }
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                set { Set(value); }
+            }
+            public static bool SQLIDE
+            {
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                get { return Get(true); }
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                set { Set(value); }
+            }
+        }
+
         public static class Functions
         {
             public static bool ShowBranch
