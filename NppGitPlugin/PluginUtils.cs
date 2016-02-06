@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NppGit.Interop;
+using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;

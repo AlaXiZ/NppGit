@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace NppGit.Modules
 {
@@ -38,6 +39,16 @@ namespace NppGit.Modules
                 Hint = "Align columns",
                 Action = DoAlign
             });
+
+            for (int i = 1; i <= 10; i++)
+            {
+                _manager.RegisterMenuItem(new MenuItem
+                {
+                    Name = "Snippet " + i,
+                    Hint = "Snippet " + i,
+                    Action = () => { }
+                });
+            }
 
             // -----------------------------------------------------------------
             _manager.RegisterMenuItem(new MenuItem

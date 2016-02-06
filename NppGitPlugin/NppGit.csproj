@@ -114,6 +114,7 @@
     <Compile Include="Interfaces.cs" />
     <Compile Include="Interop\IniFile.cs" />
     <Compile Include="Interop\LocalWindowsHook.cs" />
+    <Compile Include="Interop\LocalWinEventHook.cs" />
     <Compile Include="Interop\Win32.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Interop\NppPluginNETBase.cs" />
