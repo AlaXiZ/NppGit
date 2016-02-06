@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NppGit.Modules;
+using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
 
@@ -20,6 +21,7 @@ namespace NppGit
         {
             mm.AddModule(new TortoiseGitHelper());
             mm.AddModule(new GitFeatures());
+            mm.AddModule(new SqlIde());
 
             mm.Init();
             var isVisiblePanel = Settings.Panels.StatusPanelVisible;

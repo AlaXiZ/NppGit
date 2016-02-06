@@ -140,7 +140,71 @@ namespace NppGit
         {
             Win32.SendMessage(CurrentScintilla, SciMsg.SCI_NEWLINE, 0, 0);
         }
+
+        public static string GetEOL()
+        {
+           switch(execute(SciMsg.SCI_GETEOLMODE, 0))
+            {
+                case (int)SciMsg.SC_EOL_CRLF: return "\r\n";
+                case (int)SciMsg.SC_EOL_CR: return "\r";
+                case (int)SciMsg.SC_EOL_LF: return "\n";
+                default: return "\r\n";
+            }
+        }
+
+        static public string GetTextBetween(int start, int end = -1)
+        {
+            IntPtr sci = CurrentScintilla;
+
+            if (end == -1)
+                end = (int)Win32.SendMessage(sci, SciMsg.SCI_GETLENGTH, 0, 0);
+
+            using (var tr = new Sci_TextRange(start, end, end - start + 1)) //+1 for null termination
+            {
+                Win32.SendMessage(sci, SciMsg.SCI_GETTEXTRANGE, 0, tr.NativePointer);
+                return tr.lpstrText;
+            }
+        }
+
+
+        public static string GetSelectedText()
+        {
+            var result = new StringBuilder(execute(SciMsg.SCI_GETSELTEXT, 0));
+            Win32.SendMessage(CurrentScintilla, SciMsg.SCI_GETSELTEXT, 0, result);
+            return result.ToString();
+        }
+
+        public static void ReplaceSelectedText(string text)
+        {
+            StringBuilder buf = new StringBuilder("");
+            execute(SciMsg.SCI_BEGINUNDOACTION, 0);
+            if (execute(SciMsg.SCI_GETSELECTIONMODE, 0) > 0)
+            {
+                var startPos = execute(SciMsg.SCI_GETSELECTIONNSTART, 0);
+                var line = execute(SciMsg.SCI_LINEFROMPOSITION, startPos);
+                Win32.SendMessage(CurrentScintilla, SciMsg.SCI_REPLACESEL, buf.Length, buf);
+                foreach (var str in text.Replace(GetEOL(), "\n").Split('\n'))
+                {
+                    var linePos = execute(SciMsg.SCI_GETLINEENDPOSITION, line);
+                    line++;
+                    buf.Clear();
+                    buf.Append(str);
+                    Win32.SendMessage(CurrentScintilla, SciMsg.SCI_INSERTTEXT, linePos, buf);
+                }
+            } else
+            {
+                buf.Append(text);
+                Win32.SendMessage(CurrentScintilla, SciMsg.SCI_REPLACESEL, buf.Length, buf);
+            }
+            execute(SciMsg.SCI_ENDUNDOACTION, 0);
+        }
         #endregion
+
+        static int execute(SciMsg msg, int wParam, int lParam = 0)
+        {
+            IntPtr sci = CurrentScintilla;
+            return (int)Win32.SendMessage(sci, msg, wParam, lParam);
+        }
 
         public static string GetRootDir(string path)
         {

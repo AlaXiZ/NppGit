@@ -120,6 +120,7 @@
     <Compile Include="Interop\NppPluginNETHelper.cs" />
     <Compile Include="ModuleManager.cs" />
     <Compile Include="Modules\GitFeatures.cs" />
+    <Compile Include="Modules\SqlIde.cs" />
     <Compile Include="PluginUtils.cs" />
     <Compile Include="PluginCommands.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
