@@ -26,7 +26,7 @@ namespace NppGit.Forms
         private void llIssue_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             llIssue.LinkVisited = true;
-            System.Diagnostics.Process.Start("https://bitbucket.org/AlaXiZ/nppgitplugin/issues?status=new&status=open");
+            System.Diagnostics.Process.Start("https://bitbucket.org/AlaXiZ/nppgit/issues?status=new&status=open");
 
         }
     }

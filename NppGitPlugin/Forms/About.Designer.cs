@@ -113,10 +113,10 @@
             this.llIssue.AutoSize = true;
             this.llIssue.Location = new System.Drawing.Point(228, 51);
             this.llIssue.Name = "llIssue";
-            this.llIssue.Size = new System.Drawing.Size(201, 13);
+            this.llIssue.Size = new System.Drawing.Size(173, 13);
             this.llIssue.TabIndex = 7;
             this.llIssue.TabStop = true;
-            this.llIssue.Text = "bitbucket.org/AlaXiZ/nppgitplugin/issues";
+            this.llIssue.Text = "bitbucket.org/AlaXiZ/nppgit/issues";
             this.llIssue.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.llIssue_LinkClicked);
             // 
             // About

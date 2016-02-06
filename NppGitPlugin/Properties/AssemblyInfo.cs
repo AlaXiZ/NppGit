@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("NppGit")]
-[assembly: AssemblyDescription("Плагин для Notepad++ реализующий доступ к функциям СКВ Git \r\n по средством вызова функциональных возможностей TortoiseGit")]
+[assembly: AssemblyDescription("Плагин для Notepad++")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("NppGit")]
@@ -31,5 +31,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.2.5.*")]
-[assembly: AssemblyFileVersion("0.2.5.1")]
+[assembly: AssemblyVersion("0.3.6.*")]
+[assembly: AssemblyFileVersion("0.3.6.1")]
