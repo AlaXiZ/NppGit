@@ -9,7 +9,7 @@ namespace NppGit.Utils
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
-        public async static Task<string> SaveStreamToFileAsync(Stream input, string fileName, string directory = null)
+        public static string SaveStreamToFile(Stream input, string fileName, string directory = null)
         {
             if (string.IsNullOrEmpty(directory))
             {
@@ -21,7 +21,7 @@ namespace NppGit.Utils
                 using (var outFile = File.Create(result))
                 {
                     input.Seek(0, SeekOrigin.Begin);
-                    await input.CopyToAsync(outFile);
+                    input.CopyTo(outFile);
                 }
             }
             catch (Exception e)

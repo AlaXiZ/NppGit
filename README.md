@@ -1,6 +1,8 @@
 # NppGit #
 Плагин для Notepad++, который позволяет работать с Git.
 ## Changelog ##
+### Версия 0.3.7 ###
+Перенос на версию .NET Framework 4
 ### Версия 0.3.6 ###
 Issue #19 Функция Align Columns
 Issue #18 Функция SWAP

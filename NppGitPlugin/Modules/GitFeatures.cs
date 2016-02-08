@@ -183,7 +183,7 @@ namespace NppGit
                 DoTitleUpdate();
         }
 
-        private async void OpenFileInOtherBranch()
+        private void OpenFileInOtherBranch()
         {
             var repoDir = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
             try
@@ -212,7 +212,7 @@ namespace NppGit
                             var blob = (Blob)commit[fileInRepo].Target;
                             var fileName = commit.Sha.Substring(1, Settings.Functions.SHACount) + "_" + PluginUtils.CurrentFileName;
                             var contentStream = blob.GetContentStream();
-                            var outFile = await Utils.Git.SaveStreamToFileAsync(contentStream, fileName);
+                            var outFile = Utils.Git.SaveStreamToFile(contentStream, fileName);
                             if (outFile != null)
                             {
                                 var curFile = PluginUtils.CurrentFilePath;
