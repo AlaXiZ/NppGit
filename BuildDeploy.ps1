@@ -15,12 +15,13 @@ cd .\bin\Release
 if((Test-Path -Path NppGit.dll)) {
 
     $cloud_folder = "d:\Clouds\YandexDisk\Apps\NppGit\"
+	$net = "net4_0"
     $version = (Get-Item NppGit.dll).VersionInfo.FileVersion
     $version = $version.Substring(0,$version.LastIndexOf('.')) + $addVersion
 
     $plugin = '.\plugins'
-    $zip = 'NppGit-release-' + $version + '.zip'
-    $release = '.\' + $version
+    $zip = 'NppGit-release-' + $version + '-' + $net + '.zip'
+    $release = '.\' + $version + '-' + $net
 
     $dll = $plugin + '\NppGit\'
 	
