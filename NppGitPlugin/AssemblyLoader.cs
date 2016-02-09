@@ -14,9 +14,7 @@ namespace NppGit
     {
         [DllImport("shlwapi.dll")]
         private static extern bool PathIsNetworkPath(string pszPath);
-
-        private static bool isTrustedInit = false;
-
+        
         public static void Init()
         {
             AppDomain.CurrentDomain.AssemblyResolve += AssemblyResolve;
