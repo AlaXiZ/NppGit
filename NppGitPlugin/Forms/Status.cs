@@ -1,18 +1,15 @@
 ﻿using LibGit2Sharp;
+using NLog;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace NppGit.Forms
 {
     public partial class Status : Form, FormDockable
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         public Status()
         {
             InitializeComponent();
@@ -105,7 +102,6 @@ namespace NppGit.Forms
 
         private void Status_VisibleChanged(object sender, EventArgs e)
         {
-            Settings.Panels.FileStatusPanelVisible = Visible;
             if (Visible)
             {
                 ChangeContext();

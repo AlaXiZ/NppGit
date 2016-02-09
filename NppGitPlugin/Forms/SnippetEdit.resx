@@ -117,77 +117,70 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Git" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Git.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="bOk.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABYAAAAWCAYAAADEtGw7AAAABGdBTUEAALGPC/xhBQAAAztJREFUSEtj
+        +P//P00wVkFK8I+/XxlufDlAfYMzbwtEZN3m98QqSS7Ovi2skHaV71XWbQF9rArIwblXpbhjD/GcjN7L
+        fa/1vhUzVkWk4qorZsxxR3hXe8/m/J90hq8SJIZVISl4xo0UxtiDPFO8gIaGrOd+nXpaRBAkjlUxsXjN
+        nWbG6L08rb4Luf57z+X6H7OfNwcmh6GYWFx33JkpfBtPu/9Szn8g14Zu5D6feUiJDSaPoYEYnLdTnyV0
+        A/fUgGVc/0GuDVjO9Tt8M68tsho4I2gV15yw1ULCyJLYcPhqIRGg2u2BK4EGrgAb+j9oNXf395+fUNTB
+        Gf7LuI4DXXA6cImAFLICZOy/iNcWaND94LVc/4PXATGQBuq5HL1GkgNdLZzhM4+rLmQDN8gVb73ncFX4
+        z+FXbNgRyJS+0pDFdzaPie98riVBa7j+hm3h/g/DQEu++C3g0UE2EIbhDL/ZAqL+i7lfxO4W+B++jRvo
+        Pa4/QNe8BWp+H7KO61/kTu7/UbshOHaPwP/Q9Tz/vGZwpSAbhoxROO4TuTzj18v9zD+h+T/tiNT/uIN8
+        /4FpFI5B/JzjKv8z9iv995jKubBrVwojsn5kjCHg3ssXV7Dd/HfnVZ//7Ve9/jdddvxff8kWjFuvuP5v
+        vujy33cG/znvfhEedL3IGKuga5uAV9EGh49z7mX+n/cAgefeT/8fs1jpjVMrtwo2fcgYqyAIO9TxqMbN
+        0Ds8/ULW/80v28G4cof7b9saTg9s6tExVkEQnjNnDqNPmRarbQVPWuYi6ye9B5P/21byVoWGBzPFxsYy
+        1dfXM86YMYPx3r17WPUzHDt2jMHV1ZVZXl6eXUhIiJeHh0eYk5NTkp2dXY6NjU0ZiDX4JFhNVDxZM9g4
+        WAxYWFh0WFlZNYHiKkA18kC1Utzc3CKCgoJ8MjIyHLa2tsy7d+9mYDh48CCDtbU1s7S0NAc/EAAViXJw
+        cEgDNSoCsTrIICAGGWgMxCZAbAjEukDDNYDySkC1slxcXGJ8fHwCEhISnMbGxizr16/HHhSbN29mLC8v
+        Z4yKimLy8PBgtrOzYzYzM2MBYRAb5MPIyEimgoICxk2bNmFJcv8ZAKh/jAih9JHzAAAAAElFTkSuQmCC
+</value>
   </data>
-  <data name="NLog" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\nlog.config;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
-  </data>
-  <data name="NppGit_Logo" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\NppGit-Logo.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="repo" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\repo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="commit" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\commit.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="pull" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\pull.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="push" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\push.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="log" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\log.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="checkout" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\switch.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ChangeLog" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ChangeLog.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
-  </data>
-  <data name="snippets" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\snippets.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="PluginName" xml:space="preserve">
-    <value>NppGit</value>
-  </data>
-  <data name="stashsave" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\stashsave.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="stashpop" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\stashpop.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="blame" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\blame.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="refresh" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\view-refresh.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="button_cancel_8865" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\button_cancel_8865.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="button_ok_7197" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\button_ok_7197.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="edit_4515" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\edit_4515.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="remove_4075" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\remove_4075.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="edit_add_6387" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\edit_add_6387.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="insert-text_7102" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\insert-text_7102.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="SnippetsXml" xml:space="preserve">
-    <value>snippets.xml</value>
-  </data>
-  <data name="snippets_bar" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\snippets_bar.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        AAABAAEAGBgAAAEAIACICQAAFgAAACgAAAAYAAAAMAAAAAEAIAAAAAAAAAkAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAZGBZOWtkW2FrZFtha2RbYWtk
+        W2FrZFphX1xXNwAAAAAAAAAAAAAAAGJeVx9qY1leamNZYWpjWWFqY1lhamJYXlRUVBIAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAq5JxsNKtfv7SrX3/0ax7/tGrev7JpXf1YV1XNgAAAAAAAAAAAAAAAGxj
+        VxTDoHDozqdy/s6mcf/NpnD+y6Ru/FVVVC0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAq5JzsNOu
+        gP/Srn//0q19/9GtfP+kjG3GUVFQCQAAAAAAAAAAAAAAAAAAAACfiGiYz6h0/86ncv/Op3H/y6Vw/FVV
+        VC0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAArJN0sNOwgv7Tr4H/0q5//tKufv6ii27JUlJSDQAA
+        AAAAAAAAAAAAAAAAAACbhWeYz6l1/s+odP/OqHP+zKZy/FVVVC0AAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAArJR1sNSxhP7UsIP/06+C/tOvgP7Ipnv1W1lWTEhISAIAAAAAAAAAAFlXVRrBoHTl0Kp3/s+p
+        dv/PqXX+zKdz/FVVVC0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAArZV3sNWyhv/UsYX/1LCE/9Ow
+        gv/Tr4H/t5t25GxlXHBWVVQ1aWNbVbGVcc/Rq3r/0Kt5/9CqeP/Qqnf/zah1/FVVVDFUVFQbVFRUKlRU
+        VBRBQUEBAAAAAAAAAAAAAAAArZZ5sNCvh/S8oH3SzKuC7dSxhP7UsIP/07CC/tOvgf7RrX/90q5//tKt
+        ff7RrHz/0ax7/tGrev/Qq3n+zqh3/It6Y63CoHLuyqVz+aeNatRfW1ZPSUlJAgAAAAAAAAAAjH1sX2Fd
+        WRxQTUoCYl1WCqSOc4rVsYX/1LGE/tSwg/7Tr4L/06+B/tKuf/7Srn7/0q19/tGsfP/RrHv+0Kt6/tCq
+        ef/Qqnf+z6l2/s+pdf6zlW3iVFRUIgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFZSTQK5nnzD1bKG/9Sx
+        hf/UsYT/1LCD/9Ovgf/Tr4D/0q5//9Ktfv/SrX3/0ax8/9Gsev/Qq3n/0Kp4/9Cqd//PqXb/ZWBYVgAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACdinKC1rSJ/tWziP7Vsob/1LGF/tSwg/7TsIL/06+B/tOv
+        gP/Srn/+0q1+/tKtfP/RrHv+0at6/tCref7Qqnj+ZWBZTQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBA
+        PwGijnae17WM/ta0iv7Ws4n/1bKH/tWyhv7UsYT/1LCD/tOwgv/Tr4H+066A/tKufv/SrX3+0ax8/tGs
+        e/61mHHVVVRUEgAAAAAAAAAAXVtYJlJSUg0AAAAAREREAmZhXDvQso3y2LeP/9e2jf/XtYz/1rSK/9Wz
+        iP/Vsof/1LGF/9SxhP/UsIP/0a6B/I59aJfGpXvlzap99auRcLlkX1koAAAAAAAAAAAAAAAAq5mCq5qL
+        ebd+dGmAkYRzm86ykPDZupT/2bmS/ti4kP7Yt4//17aN/ta1i/7WtIr/1bOI/tWyhv/UsYX+0q+D/FhX
+        VS1WU00DU1BNB0lHRQIAAAAAAAAAAAAAAAAAAAAAsp+IsN3Anv/cv5z/276a/9u9mf/avJf/2ruV/9m6
+        k//ZuZL/2LiQ/9e3jv/Xtoz/1rWL/9a0if/Vs4f/0rCF/FVVVC0AAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAs6CKsN7Cof7dwZ//3cCe/ty/nP7bvpr/27yY/tq7lv7aupX/2bmT/ti4kf7Yt4//17aO/te1
+        jP/WtIr+07KI/FVVVC0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAtKGMsN/EpP7ew6P/3sKh/t3A
+        n/7cv53/3L6b/tu9mf7bvJj/2ruW/tm6lP7ZuZL/2LiR/ti3j//Xto3+1LOL/FVVVCwAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAkoZ5UJmMfXqZjHx6mYt7epiLenqUh3d+yLCT5Ny/nf/cvpv/272Z/8qw
+        j/OPgXGSlYZzepaGcnqVhXF6lYRwd1lYVg0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAB1bmdA3sKh/t3BoP7dwJ7/3L+c/tu+mv54cGZ9RUVFAQAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACWint238Sl/t7D
+        o/7ewqH/3cGf/tzAnf6ZinmrPj4+AwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACQhXhY4Mao/t/Fpv7fxKT/3sOi/t7Bof6Kf3KJPDw8AQAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AABkX1oIybOcy+DHqf/gxaf/38Sm/8ixl99cWlgfAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcWtkDqeYh3u1o4+sn5GBiGRh
+        XR0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD///8AgOA/AIDgPwCA8D8AgPA/AIBgPwCAAAMAgAABAIAA
+        AQD4AAEA/AABAPgAAQCQAAMAgAAHAIAAPwCAAD8AgAA/AIAAPwD8A/8A/AP/APwD/wD8B/8A/g//AP//
+        /wA=
+</value>
   </data>
 </root>

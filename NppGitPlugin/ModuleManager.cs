@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Windows.Forms;
 
 namespace NppGit
@@ -34,19 +35,24 @@ namespace NppGit
         private LinkedList<IModule> _modules;
         private Dictionary<int, DockForm> _forms;
         private Dictionary<string, List<MenuItem>> _cmdList;
+        private Dictionary<uint, string> _menuCache;
         private bool _canEvent = false;
 
         private LocalWindowsHook winHookProcRet;
+        private LocalWindowsHook winHookProc;
         
         public event Action OnToolbarRegisterEvent;
         public event TabChange OnTabChangeEvent;
         public event Action OnTitleChangingEvent;
+        public event MenuItemClick OnMenuItemClick;
+        public event Action OnSystemInit;
 
         public ModuleManager()
         {
             _modules = new LinkedList<IModule>();
             _forms = new Dictionary<int, DockForm>();
             _cmdList = new Dictionary<string, List<MenuItem>>();
+            _menuCache = new Dictionary<uint, string>();
         }
 
         public void MessageProc(SCNotification sn)
@@ -63,6 +69,24 @@ namespace NppGit
                         DoTabChangeEvent(sn.nmhdr.idFrom);
                         break;
                     }
+                case (uint)NppMsg.NPPN_READY:
+                    {
+                        DoSystemInit();
+                        break;
+                    }
+                case (uint)NppMsg.NPPN_SHUTDOWN:
+                    {
+                        logger.Debug("Notepad++ is shutdown");
+                        break;
+                    }
+            }
+        }
+
+        private void DoSystemInit()
+        {
+            if (OnSystemInit != null)
+            {
+                OnSystemInit();
             }
         }
 
@@ -80,6 +104,8 @@ namespace NppGit
 
             if (winHookProcRet != null && winHookProcRet.IsInstalled)
                 winHookProcRet.Uninstall();
+            if (winHookProc != null && winHookProc.IsInstalled)
+                winHookProc.Uninstall();
 
             foreach (var m in _modules)
                 if (m.IsNeedRun)
@@ -104,7 +130,26 @@ namespace NppGit
             winHookProcRet.HookInvoked += WinHookHookInvoked;
             winHookProcRet.Install();
 
+            winHookProc = new LocalWindowsHook(HookType.WH_GETMESSAGE);
+            winHookProc.HookInvoked += WinHookHookInvoked_GetMsg;
+            winHookProc.Install();
+
             _canEvent = true;
+        }
+
+        private void WinHookHookInvoked_GetMsg(object sender, HookEventArgs e)
+        {
+            if (!_canEvent)
+                return;
+            MSG msg = (MSG)Marshal.PtrToStructure(e.lParam, typeof(MSG));
+            if (msg.message == (uint)WinMsg.WM_COMMAND)
+            {
+                // Item click
+                if ((uint)msg.lParam == 0 && (uint)msg.wParam >> 16 == 0)
+                {
+                    DoMenuItem((uint)msg.wParam & ushort.MaxValue);
+                }
+            }
         }
 
         private void WinHookHookInvoked(object sender, HookEventArgs e)
@@ -116,6 +161,40 @@ namespace NppGit
             if (msg.message == (uint)WinMsg.WM_SETTEXT && (uint)msg.wParam != (uint)WinMsg.WM_SETTEXT)
             {
                 DoTitleChangingEvent();
+            }
+            if (msg.message == (uint)WinMsg.WM_COMMAND)
+            {
+                // Shortcut
+                if ((uint)msg.lParam == 0 && (uint)msg.wParam >> 16 == 1)
+                {
+                    DoMenuItem((uint)msg.wParam & ushort.MaxValue);
+                }
+            }
+        }
+
+        private void DoMenuItem(uint menuId)
+        {
+            string menuName = "";
+            if (!_menuCache.ContainsKey(menuId))
+            {
+                foreach (var item in PluginUtils._funcItems.Items)
+                {
+                    if (item._cmdID == menuId)
+                    {
+                        menuName = item._itemName;
+                        break;
+                    }
+                }
+                _menuCache.Add(menuId, menuName);
+            }
+            else
+            {
+                menuName = _menuCache[menuId];
+            }
+            logger.Debug("MenuID = {0}, MenuName = {1}", menuId, menuName);
+            if (!string.IsNullOrEmpty(menuName) && OnMenuItemClick != null)
+            {
+                OnMenuItemClick(new MenuItemClickEventArgs(menuName));
             }
         }
 
@@ -195,10 +274,6 @@ namespace NppGit
                 if (form.Form == null)
                 {
                     form.Form = Activator.CreateInstance(form.Type) as Form;
-                    form.Form.VisibleChanged += (o, e) => 
-                    {
-                        PluginUtils.SetCheckedMenu(PluginUtils.GetCmdId(cmdId), false);
-                    };
                     form.TabIcon = PluginUtils.NppBitmapToIcon((form.Form as FormDockable).TabIcon);
 
                     NppTbData _nppTbData = new NppTbData();

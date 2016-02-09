@@ -106,7 +106,7 @@ namespace NppGit
 
         private void DoShowStatus()
         {
-            _manager.ToogleFormState(_statusPanelCmdID);
+            Settings.Panels.FileStatusPanelVisible = _manager.ToogleFormState(_statusPanelCmdID);
         }
 
         public void Final()
@@ -150,7 +150,7 @@ namespace NppGit
                 Hint = "File status in title",
                 ShortcutKey = null,
                 Action = ShowFileStatus,
-                Checked =Settings.Functions.ShowStatusFile
+                Checked = Settings.Functions.ShowStatusFile
             });
 
             _statusPanelCmdID = _manager.RegisterMenuItem(new MenuItem

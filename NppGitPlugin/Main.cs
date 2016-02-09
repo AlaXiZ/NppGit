@@ -23,6 +23,7 @@ namespace NppGit
             mm.AddModule(new TortoiseGitHelper());
             mm.AddModule(new GitFeatures());
             mm.AddModule(new SqlIde());
+            mm.AddModule(new Snippets());
 
             mm.Init();
             var isVisiblePanel = Settings.Panels.StatusPanelVisible;

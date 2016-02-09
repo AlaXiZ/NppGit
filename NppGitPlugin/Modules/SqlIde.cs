@@ -40,16 +40,6 @@ namespace NppGit.Modules
                 Action = DoAlign
             });
 
-            for (int i = 1; i <= 10; i++)
-            {
-                _manager.RegisterMenuItem(new MenuItem
-                {
-                    Name = "Snippet " + i,
-                    Hint = "Snippet " + i,
-                    Action = () => { }
-                });
-            }
-
             // -----------------------------------------------------------------
             _manager.RegisterMenuItem(new MenuItem
             {
@@ -70,7 +60,7 @@ namespace NppGit.Modules
             
             AlignColumn(ref list);
 
-            PluginUtils.ReplaceSelectedText(string.Join(eol, list));
+            PluginUtils.ReplaceSelectedText(list);
         }
 
         private void DoAlign()
@@ -81,7 +71,7 @@ namespace NppGit.Modules
 
             AlignColumn(ref list);
 
-            PluginUtils.ReplaceSelectedText(string.Join(eol, list));
+            PluginUtils.ReplaceSelectedText(list);
         }
 
         private static string SwapInLine(string src)

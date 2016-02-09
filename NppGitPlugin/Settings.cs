@@ -95,6 +95,13 @@ namespace NppGit
                 [MethodImpl(MethodImplOptions.NoInlining)]
                 set { Set(value); }
             }
+            public static bool Snippets
+            {
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                get { return Get(true); }
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                set { Set(value); }
+            }
         }
 
         public static class Functions
@@ -150,6 +157,13 @@ namespace NppGit
                 set { Set(value); }
             }
             public static bool FileStatusPanelVisible
+            {
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                get { return Get(false); }
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                set { Set(value); }
+            }
+            public static bool SnippetsPanelVisible
             {
                 [MethodImpl(MethodImplOptions.NoInlining)]
                 get { return Get(false); }

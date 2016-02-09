@@ -26,14 +26,29 @@ namespace NppGit
         }
     }
 
+    public class MenuItemClickEventArgs : EventArgs
+    {
+        public string MenuName { get; protected set; }
+
+        public MenuItemClickEventArgs(string menuName)
+        {
+            MenuName = menuName;
+        }
+    }
+
     public delegate void WndProc(MessageEventArgs args);
     public delegate void TabChange(TabEventArgs args);
+    public delegate void MenuItemClick(MenuItemClickEventArgs args);
+
+    public delegate void EventHandler<T>(object sender, T e);
 
     public interface IModuleManager
     {
         event Action OnToolbarRegisterEvent;
         event TabChange OnTabChangeEvent;
         event Action OnTitleChangingEvent;
+        event MenuItemClick OnMenuItemClick;
+        event Action OnSystemInit;
 
         int RegisterMenuItem(MenuItem menuItem);
         void RegisterDockForm(Type formClass, int cmdId, bool updateWithChangeContext);

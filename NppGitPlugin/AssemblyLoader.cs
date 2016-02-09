@@ -1,6 +1,7 @@
 ﻿using NLog;
 using NLog.Config;
 using NLog.Targets;
+using NLog.Targets.Wrappers;
 using System;
 using System.IO;
 using System.Reflection;
@@ -39,7 +40,16 @@ namespace NppGit
                 FileName = Path.Combine(PluginUtils.ConfigDir, Properties.Resources.PluginName, Properties.Resources.PluginName + ".log")
             };
 #endif
-            SimpleConfigurator.ConfigureForTargetLogging(logTarget, LogLevel.FromString(Settings.InnerSettings.LogLevel));
+            var asyncWrapper = new AsyncTargetWrapper
+            {
+                WrappedTarget = logTarget,
+                QueueLimit = 5000,
+                OverflowAction = AsyncTargetWrapperOverflowAction.Discard,
+                Name = "NppGit.AsyncTarget",
+                BatchSize = 10
+            };
+
+            SimpleConfigurator.ConfigureForTargetLogging(asyncWrapper, LogLevel.FromString(Settings.InnerSettings.LogLevel));
             LogManager.GetCurrentClassLogger().Info("Logger initialized");
         }
 

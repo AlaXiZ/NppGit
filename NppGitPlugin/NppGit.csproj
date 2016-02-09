@@ -44,6 +44,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisIgnoreGeneratedCode>false</CodeAnalysisIgnoreGeneratedCode>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\Release\</OutputPath>
@@ -70,6 +71,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyLoader.cs" />
@@ -105,6 +107,18 @@
     <Compile Include="Forms\SettingsDialog.Designer.cs">
       <DependentUpon>SettingsDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\SnippetEdit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SnippetEdit.Designer.cs">
+      <DependentUpon>SnippetEdit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\SnippetsManagerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SnippetsManagerForm.Designer.cs">
+      <DependentUpon>SnippetsManagerForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Status.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -121,6 +135,7 @@
     <Compile Include="Interop\NppPluginNETHelper.cs" />
     <Compile Include="ModuleManager.cs" />
     <Compile Include="Modules\GitFeatures.cs" />
+    <Compile Include="Modules\Snippets.cs" />
     <Compile Include="Modules\SqlIde.cs" />
     <Compile Include="PluginUtils.cs" />
     <Compile Include="PluginCommands.cs" />
@@ -134,6 +149,8 @@
     <Compile Include="Modules\TortoiseGitHelper.cs" />
     <Compile Include="Interop\UnmanagedExports.cs" />
     <Compile Include="Utils\Git.cs" />
+    <Compile Include="Utils\Snippet.cs" />
+    <Compile Include="Utils\SnippetManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Forms\About.resx">
@@ -150,6 +167,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\SettingsDialog.resx">
       <DependentUpon>SettingsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\SnippetEdit.resx">
+      <DependentUpon>SnippetEdit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\SnippetsManagerForm.resx">
+      <DependentUpon>SnippetsManagerForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Status.resx">
       <DependentUpon>Status.cs</DependentUpon>
@@ -176,10 +199,19 @@
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\snippets_bar.png" />
+    <None Include="Resources\button_cancel_8865.png" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Resources\insert-text_7102.png" />
+    <None Include="Resources\edit_add_6387.png" />
+    <None Include="Resources\remove_4075.png" />
+    <None Include="Resources\edit_4515.png" />
+    <None Include="Resources\button_ok_7197.png" />
+    <None Include="Resources\snippets.bmp" />
+    <None Include="Resources\snippets.ico" />
     <None Include="Resources\view-refresh.ico" />
     <None Include="Resources\NppGit-Logo.jpg" />
     <None Include="Resources\ChangeLog.txt" />

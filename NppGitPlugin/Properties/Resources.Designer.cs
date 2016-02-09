@@ -71,7 +71,29 @@ namespace NppGit.Properties {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на * Версия 0.2.6
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap button_cancel_8865 {
+            get {
+                object obj = ResourceManager.GetObject("button_cancel_8865", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap button_ok_7197 {
+            get {
+                object obj = ResourceManager.GetObject("button_ok_7197", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на * Версия 0.3.7
+        ///Перенос на версию .NET Framework 4
+        ///* Версия 0.3.6
         ///#19 Функция Align Columns
         ///#18 Функция SWAP
         ///#16 Включение отдельных модулей
@@ -85,8 +107,7 @@ namespace NppGit.Properties {
         ///#12 Перевод на русский
         ///#11 В заголовке не появляется информация
         ///#7 Логгирование в файл
-        ///#8 Не работает сохранение настроек
-        ///#10 Имя репозитория в  [остаток строки не уместился]&quot;;.
+        ///#8 Не  [остаток строки не уместился]&quot;;.
         /// </summary>
         internal static string ChangeLog {
             get {
@@ -117,9 +138,39 @@ namespace NppGit.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap edit_4515 {
+            get {
+                object obj = ResourceManager.GetObject("edit_4515", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap edit_add_6387 {
+            get {
+                object obj = ResourceManager.GetObject("edit_add_6387", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Git {
             get {
                 object obj = ResourceManager.GetObject("Git", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap insert_text_7102 {
+            get {
+                object obj = ResourceManager.GetObject("insert-text_7102", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -210,10 +261,49 @@ namespace NppGit.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap remove_4075 {
+            get {
+                object obj = ResourceManager.GetObject("remove_4075", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap repo {
             get {
                 object obj = ResourceManager.GetObject("repo", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap snippets {
+            get {
+                object obj = ResourceManager.GetObject("snippets", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap snippets_bar {
+            get {
+                object obj = ResourceManager.GetObject("snippets_bar", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на snippets.xml.
+        /// </summary>
+        internal static string SnippetsXml {
+            get {
+                return ResourceManager.GetString("SnippetsXml", resourceCulture);
             }
         }
         
