@@ -214,7 +214,8 @@ namespace NppGit
 
         public static string GetRootDir(string path)
         {
-            if (Directory.Exists(Path.Combine(path, ".git")))
+            var search = Path.Combine(path, ".git");
+            if (Directory.Exists(search) || File.Exists(search))
             {
                 return path;
             }
