@@ -64,7 +64,9 @@ namespace NppGit.Interop
                     IntPtr.Zero,
                     _hookProc,
                     0,
+#pragma warning disable CS0618 // Тип или член устарел
                     (uint)AppDomain.GetCurrentThreadId(),
+#pragma warning restore CS0618 // Тип или член устарел
                     (uint)WinEventContext.WINEVENT_INCONTEXT | (uint)WinEventContext.WINEVENT_SKIPOWNPROCESS
                     );
             }
