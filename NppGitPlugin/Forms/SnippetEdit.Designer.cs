@@ -29,30 +29,30 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SnippetEdit));
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.pTop = new System.Windows.Forms.Panel();
             this.lSnippet = new System.Windows.Forms.Label();
             this.lName = new System.Windows.Forms.Label();
             this.tbName = new System.Windows.Forms.TextBox();
-            this.panel2 = new System.Windows.Forms.Panel();
+            this.pMiddle = new System.Windows.Forms.Panel();
             this.tbSnippet = new System.Windows.Forms.TextBox();
             this.pBottom = new System.Windows.Forms.Panel();
             this.bCancel = new System.Windows.Forms.Button();
             this.bOk = new System.Windows.Forms.Button();
-            this.panel1.SuspendLayout();
-            this.panel2.SuspendLayout();
+            this.pTop.SuspendLayout();
+            this.pMiddle.SuspendLayout();
             this.pBottom.SuspendLayout();
             this.SuspendLayout();
             // 
-            // panel1
+            // pTop
             // 
-            this.panel1.Controls.Add(this.lSnippet);
-            this.panel1.Controls.Add(this.lName);
-            this.panel1.Controls.Add(this.tbName);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(521, 68);
-            this.panel1.TabIndex = 0;
+            this.pTop.Controls.Add(this.lSnippet);
+            this.pTop.Controls.Add(this.lName);
+            this.pTop.Controls.Add(this.tbName);
+            this.pTop.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pTop.Location = new System.Drawing.Point(0, 0);
+            this.pTop.Name = "pTop";
+            this.pTop.Size = new System.Drawing.Size(534, 68);
+            this.pTop.TabIndex = 0;
             // 
             // lSnippet
             // 
@@ -76,27 +76,29 @@
             // 
             this.tbName.Location = new System.Drawing.Point(6, 28);
             this.tbName.Name = "tbName";
-            this.tbName.Size = new System.Drawing.Size(512, 20);
+            this.tbName.Size = new System.Drawing.Size(525, 20);
             this.tbName.TabIndex = 0;
             // 
-            // panel2
+            // pMiddle
             // 
-            this.panel2.Controls.Add(this.tbSnippet);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(0, 68);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(521, 193);
-            this.panel2.TabIndex = 1;
+            this.pMiddle.Controls.Add(this.tbSnippet);
+            this.pMiddle.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pMiddle.Location = new System.Drawing.Point(0, 68);
+            this.pMiddle.Name = "pMiddle";
+            this.pMiddle.Size = new System.Drawing.Size(534, 167);
+            this.pMiddle.TabIndex = 1;
             // 
             // tbSnippet
             // 
             this.tbSnippet.AcceptsReturn = true;
             this.tbSnippet.AcceptsTab = true;
             this.tbSnippet.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tbSnippet.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tbSnippet.Location = new System.Drawing.Point(0, 0);
             this.tbSnippet.Multiline = true;
             this.tbSnippet.Name = "tbSnippet";
-            this.tbSnippet.Size = new System.Drawing.Size(521, 193);
+            this.tbSnippet.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.tbSnippet.Size = new System.Drawing.Size(534, 167);
             this.tbSnippet.TabIndex = 1;
             // 
             // pBottom
@@ -106,7 +108,7 @@
             this.pBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.pBottom.Location = new System.Drawing.Point(0, 235);
             this.pBottom.Name = "pBottom";
-            this.pBottom.Size = new System.Drawing.Size(521, 26);
+            this.pBottom.Size = new System.Drawing.Size(534, 26);
             this.pBottom.TabIndex = 2;
             // 
             // bCancel
@@ -115,7 +117,7 @@
             this.bCancel.Dock = System.Windows.Forms.DockStyle.Right;
             this.bCancel.Image = global::NppGit.Properties.Resources.button_cancel_8865;
             this.bCancel.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.bCancel.Location = new System.Drawing.Point(371, 0);
+            this.bCancel.Location = new System.Drawing.Point(384, 0);
             this.bCancel.Name = "bCancel";
             this.bCancel.Size = new System.Drawing.Size(75, 26);
             this.bCancel.TabIndex = 4;
@@ -129,7 +131,7 @@
             this.bOk.Dock = System.Windows.Forms.DockStyle.Right;
             this.bOk.Image = ((System.Drawing.Image)(resources.GetObject("bOk.Image")));
             this.bOk.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.bOk.Location = new System.Drawing.Point(446, 0);
+            this.bOk.Location = new System.Drawing.Point(459, 0);
             this.bOk.Name = "bOk";
             this.bOk.Size = new System.Drawing.Size(75, 26);
             this.bOk.TabIndex = 3;
@@ -143,18 +145,18 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.bCancel;
-            this.ClientSize = new System.Drawing.Size(521, 261);
+            this.ClientSize = new System.Drawing.Size(534, 261);
+            this.Controls.Add(this.pMiddle);
             this.Controls.Add(this.pBottom);
-            this.Controls.Add(this.panel2);
-            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.pTop);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "SnippetEdit";
             this.ShowInTaskbar = false;
-            this.Text = "SnippetEdit";
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
-            this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
+            this.Text = "Snippet Editor";
+            this.pTop.ResumeLayout(false);
+            this.pTop.PerformLayout();
+            this.pMiddle.ResumeLayout(false);
+            this.pMiddle.PerformLayout();
             this.pBottom.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -162,9 +164,9 @@
 
         #endregion
 
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel pTop;
         private System.Windows.Forms.TextBox tbName;
-        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Panel pMiddle;
         private System.Windows.Forms.TextBox tbSnippet;
         private System.Windows.Forms.Panel pBottom;
         private System.Windows.Forms.Label lSnippet;
