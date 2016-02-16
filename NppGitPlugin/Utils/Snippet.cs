@@ -1,11 +1,7 @@
 ﻿using NLog;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace NppGit.Utils
 {
@@ -43,26 +39,37 @@ namespace NppGit.Utils
             if (ParamCount > 0)
             {
                 param = Regex.Replace(param.Trim(), @"(\s+)|(\s*[,\.:;]\s*)", " ");
-                uint count = 0;
-                var args = param.Split(' ');
                 var formatArgs = new string[ParamCount];
                 var outStrings = new List<string>();
-                for (int i = 0; i < args.Length; i++)
+                if (string.IsNullOrEmpty(param))
                 {
-                    formatArgs[count] = args[i];
-                    count++;
-                    if (i + 1 == args.Length)
+                    for (int i = 0; i < formatArgs.Length; i++)
                     {
-                        for (uint j = count; j < ParamCount; j++)
-                        {
-                            formatArgs[j] = "EMPTY_PARAM";
-                        }
-                        count = ParamCount;
+                        formatArgs[i] = "EMPTY_PARAM";
                     }
-                    if (count == ParamCount)
+                    outStrings.Add(string.Format(_snippetText, formatArgs));
+                }
+                else
+                {
+                    uint count = 0;
+                    var args = param.Split(' ');
+                    for (int i = 0; i < args.Length; i++)
                     {
-                        outStrings.Add(string.Format(_snippetText, formatArgs));
-                        count = 0;
+                        formatArgs[count] = args[i];
+                        count++;
+                        if (i + 1 == args.Length)
+                        {
+                            for (uint j = count; j < ParamCount; j++)
+                            {
+                                formatArgs[j] = "EMPTY_PARAM";
+                            }
+                            count = ParamCount;
+                        }
+                        if (count == ParamCount)
+                        {
+                            outStrings.Add(string.Format(_snippetText, formatArgs));
+                            count = 0;
+                        }
                     }
                 }
                 return outStrings.ToArray();

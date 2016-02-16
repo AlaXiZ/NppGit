@@ -228,11 +228,16 @@ namespace NppGit
         static string GetText(SciMsg msg)
         {
             int length = execute(msg, 0) + 1;
+            if (length == 1)
+            {
+                return "";
+            }
+
             byte[] buffer = new byte[length];
             IntPtr ptr = Marshal.AllocHGlobal(length);
             try
             {
-                Win32.SendMessage(CurrentScintilla, msg, length, ptr);
+                Win32.SendMessage(CurrentScintilla, msg,     length, ptr);
                 Marshal.Copy(ptr, buffer, 0, length);
             }
             finally
