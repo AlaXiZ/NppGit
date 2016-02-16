@@ -41,7 +41,7 @@ namespace NppGit.Forms
         {
             var s = SnippetManager.Instance.Snippets[_snippet];
             tbName.Text = s.Name;
-            tbSnippet.Text = s.SnippetText;
+            tbSnippet.Text = s.SnippetText.Replace("\n", "\r\n");
         }
 
         private string _snippet;
