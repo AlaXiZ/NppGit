@@ -44,6 +44,7 @@ namespace NppGit.Forms
             chlModules.SetItemChecked(1, Settings.Modules.Git);
             chlModules.SetItemChecked(2, Settings.Modules.SQLIDE);
             chlModules.SetItemChecked(3, Settings.Modules.Snippets);
+            chlModules.SetItemChecked(4, Settings.Modules.PSSE);
         }
 
         private uint GetButtonMask()
@@ -63,6 +64,10 @@ namespace NppGit.Forms
 
         private void SettingsDialog_FormClosed(object sender, FormClosedEventArgs e)
         {
+        }
+
+        private void SaveSettings()
+        {
             Settings.TortoiseGitProc.ShowToolbar = chbTGToolbar.Checked;
             Settings.TortoiseGitProc.ButtonMask = GetButtonMask();
             Settings.InnerSettings.IsSetDefaultShortcut = chbDefaultShortcut.Checked;
@@ -70,15 +75,26 @@ namespace NppGit.Forms
             Settings.Functions.OpenFileInOtherView = chbFileInOtherView.Checked;
             Settings.InnerSettings.LogLevel = cbLogLevel.Text;
 
+            // Modules state
             Settings.Modules.TortoiseGit = chlModules.GetItemChecked(0);
             Settings.Modules.Git = chlModules.GetItemChecked(1);
             Settings.Modules.SQLIDE = chlModules.GetItemChecked(2);
             Settings.Modules.Snippets = chlModules.GetItemChecked(3);
+            Settings.Modules.PSSE = chlModules.GetItemChecked(4);
         }
 
         private void bOk_Click(object sender, EventArgs e)
         {
-            Close();
+            SaveSettings();
+            if (chbRestartNpp.Checked)
+            {
+                // TODO: Restart app
+                PluginUtils.Shutdown();
+            }
+            else
+            {
+                Close();
+            }
         }
 
         private void mtxbSHACount_Leave(object sender, EventArgs e)

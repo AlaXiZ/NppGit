@@ -124,6 +124,12 @@ namespace NppGit
             Win32.SendMessage(NppHandle, NppMsg.NPPM_SETMENUITEMCHECK, cmdId, isChecked ? 1 : 0);
         }
 
+        public static void Shutdown()
+        {
+            AssemblyLoader.StopLogging();
+            Win32.PostMessage(NppHandle, (int)WinMsg.WM_CLOSE, 0, 0);
+        }
+
         #endregion
 
         #region SCI Command

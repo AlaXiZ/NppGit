@@ -135,6 +135,7 @@
     <Compile Include="Interop\NppPluginNETHelper.cs" />
     <Compile Include="ModuleManager.cs" />
     <Compile Include="Modules\GitFeatures.cs" />
+    <Compile Include="Modules\PowerShellScriptEngine.cs" />
     <Compile Include="Modules\Snippets.cs" />
     <Compile Include="Modules\SqlIde.cs" />
     <Compile Include="PluginUtils.cs" />

@@ -15,7 +15,10 @@ namespace NppGit
     {
         [DllImport("shlwapi.dll")]
         private static extern bool PathIsNetworkPath(string pszPath);
-        
+
+        private static Object asyncWrapper = null;
+
+
         public static void Init()
         {
             AppDomain.CurrentDomain.AssemblyResolve += AssemblyResolve;
@@ -25,11 +28,13 @@ namespace NppGit
         public static void ReConfigLog()
         {
             var layout = "[${level:uppercase=true}][${logger}][${longdate}][${processid}] ${message}";
-#if DEBUG
-            var logTarget = new DebuggerTarget
+            if (asyncWrapper == null)
             {
-                Layout = layout
-            };
+#if DEBUG
+                var logTarget = new DebuggerTarget
+                {
+                    Layout = layout
+                };
 #else
             var logTarget = new FileTarget
             {
@@ -40,17 +45,24 @@ namespace NppGit
                 FileName = Path.Combine(PluginUtils.ConfigDir, Properties.Resources.PluginName, Properties.Resources.PluginName + ".log")
             };
 #endif
-            var asyncWrapper = new AsyncTargetWrapper
-            {
-                WrappedTarget = logTarget,
-                QueueLimit = 5000,
-                OverflowAction = AsyncTargetWrapperOverflowAction.Discard,
-                Name = "NppGit.AsyncTarget",
-                BatchSize = 10
-            };
+                asyncWrapper = new AsyncTargetWrapper
+                {
+                    WrappedTarget = logTarget,
+                    QueueLimit = 5000,
+                    OverflowAction = AsyncTargetWrapperOverflowAction.Discard,
+                    Name = "NppGit.AsyncTarget",
+                    BatchSize = 10
+                };
+            }
+            LogManager.Configuration.RemoveTarget("NppGit.AsyncTarget");
 
-            SimpleConfigurator.ConfigureForTargetLogging(asyncWrapper, LogLevel.FromString(Settings.InnerSettings.LogLevel));
+            SimpleConfigurator.ConfigureForTargetLogging((AsyncTargetWrapper)asyncWrapper, LogLevel.FromString(Settings.InnerSettings.LogLevel));
             LogManager.GetCurrentClassLogger().Info("Logger initialized");
+        }
+
+        public static void StopLogging()
+        {
+            LogManager.DisableLogging();
         }
 
         private static Assembly AssemblyResolve(object sender, ResolveEventArgs args)

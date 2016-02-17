@@ -256,6 +256,11 @@ namespace NppGit.Interop
             return retval;
         }
 
+        [return: MarshalAs(UnmanagedType.Bool)]
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern bool PostMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
+
+
         [DllImport("Shell32.dll")]
         public extern static int ExtractIconEx(string libName, int iconIndex, IntPtr[] largeIcon, IntPtr[] smallIcon, int nIcons);
 

@@ -47,6 +47,7 @@
             this.chbFileInOtherView = new System.Windows.Forms.CheckBox();
             this.mtxbSHACount = new System.Windows.Forms.MaskedTextBox();
             this.pBottom = new System.Windows.Forms.Panel();
+            this.chbRestartNpp = new System.Windows.Forms.CheckBox();
             this.pMain = new System.Windows.Forms.Panel();
             this.tabControl1.SuspendLayout();
             this.tpCommon.SuspendLayout();
@@ -157,7 +158,8 @@
             "Tortoise Git",
             "Git Features",
             "SQL IDE",
-            "Snippets"});
+            "Snippets",
+            "PowerShell Scripts"});
             this.chlModules.Location = new System.Drawing.Point(3, 16);
             this.chlModules.MultiColumn = true;
             this.chlModules.Name = "chlModules";
@@ -257,6 +259,7 @@
             // 
             // pBottom
             // 
+            this.pBottom.Controls.Add(this.chbRestartNpp);
             this.pBottom.Controls.Add(this.label1);
             this.pBottom.Controls.Add(this.bOk);
             this.pBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -265,6 +268,17 @@
             this.pBottom.Padding = new System.Windows.Forms.Padding(3);
             this.pBottom.Size = new System.Drawing.Size(408, 31);
             this.pBottom.TabIndex = 5;
+            // 
+            // chbRestartNpp
+            // 
+            this.chbRestartNpp.AutoSize = true;
+            this.chbRestartNpp.Location = new System.Drawing.Point(206, 8);
+            this.chbRestartNpp.Name = "chbRestartNpp";
+            this.chbRestartNpp.Size = new System.Drawing.Size(116, 17);
+            this.chbRestartNpp.TabIndex = 4;
+            this.chbRestartNpp.Text = "Restart Notepad++";
+            this.chbRestartNpp.UseVisualStyleBackColor = true;
+            this.chbRestartNpp.Visible = false;
             // 
             // pMain
             // 
@@ -292,7 +306,6 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Настройки";
             this.TopMost = true;
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.SettingsDialog_FormClosed);
             this.tabControl1.ResumeLayout(false);
             this.tpCommon.ResumeLayout(false);
             this.tpCommon.PerformLayout();
@@ -330,5 +343,6 @@
         private System.Windows.Forms.GroupBox gbFileInBranch;
         private System.Windows.Forms.GroupBox gbUsingModules;
         private System.Windows.Forms.CheckedListBox chlModules;
+        private System.Windows.Forms.CheckBox chbRestartNpp;
     }
 }
