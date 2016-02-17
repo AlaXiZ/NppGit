@@ -89,7 +89,7 @@ namespace NppGit.Forms
             if (chbRestartNpp.Checked)
             {
                 // TODO: Restart app
-                PluginUtils.Shutdown();
+                PluginUtils.Restart();
             }
             else
             {

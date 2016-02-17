@@ -1,5 +1,6 @@
 ﻿using NppGit.Interop;
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -129,7 +130,7 @@ namespace NppGit
             AssemblyLoader.StopLogging();
             Win32.PostMessage(NppHandle, (int)WinMsg.WM_CLOSE, 0, 0);
         }
-
+        
         #endregion
 
         #region SCI Command
@@ -310,13 +311,36 @@ namespace NppGit
             get
             {
                 var pid = 0;
-                foreach (var p in System.Diagnostics.Process.GetProcessesByName("notepad++"))
+                foreach (var p in Process.GetProcessesByName("notepad++"))
                 {
                     pid = p.Id;
                     break;
                 }
                 return pid;
             }
+        }
+
+
+        public static void Restart()
+        {
+            var path = Path.Combine(PluginDir, "restart.exe");
+            var proc = Process.GetCurrentProcess();
+            ProcessModule npp = null;
+            foreach(ProcessModule m in proc.Modules)
+            {
+                if (m.ModuleName.Contains("notepad++.exe"))
+                {
+                    npp = m;
+                    break;
+                }
+            }
+            if (proc != null && npp != null)
+            {
+                ProcessStartInfo psi = new ProcessStartInfo(path, string.Format("-name \"{0}\" -path \"{1}\"", proc.ProcessName, npp.FileName));
+                psi.CreateNoWindow = true;
+                Process.Start(psi);
+            }
+            Shutdown();
         }
     }
 }

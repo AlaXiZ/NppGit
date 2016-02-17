@@ -27,7 +27,7 @@ namespace NppGit
 
             mm.Init();
             var isVisiblePanel = Settings.Panels.StatusPanelVisible;
-            
+
             // PluginUtils.SetCommand("-", null);
             // gitStatusId = PluginUtils.SetCommand("Status panel", GitStatusDialog, isVisiblePanel);
             // PluginCommands.ShowBranchID = PluginUtils.SetCommand("Branch in title", PluginCommands.ShowBranch, Settings.Instance.FuncSet.ShowBranch); 
@@ -36,6 +36,7 @@ namespace NppGit
             //     GitStatusDialog();
             //PluginUtils.SetCommand("-", null);
             //PluginUtils.SetCommand("Sample context menu", mm.ContextMenu);
+            PluginUtils.SetCommand("Restart Notepad++", PluginUtils.Restart);
             PluginUtils.SetCommand("Settings", DoSettings);
             PluginUtils.SetCommand("About", DoAbout);
         }

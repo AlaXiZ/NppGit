@@ -278,7 +278,6 @@
             this.chbRestartNpp.TabIndex = 4;
             this.chbRestartNpp.Text = "Restart Notepad++";
             this.chbRestartNpp.UseVisualStyleBackColor = true;
-            this.chbRestartNpp.Visible = false;
             // 
             // pMain
             // 
