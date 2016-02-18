@@ -123,6 +123,7 @@ namespace NppGit.Modules
         {
             _manager = manager;
             _manager.OnTitleChangingEvent += TitleChanging;
+            _manager.OnSystemInit += ManagerOnSystemInit;
 
             _showBranchCmdID = _manager.RegisteCommandItem(new CommandItem
             {
@@ -170,10 +171,6 @@ namespace NppGit.Modules
 
             _manager.RegisterDockForm(typeof(Status), _statusPanelCmdID, true);
 
-            if (Settings.Panels.FileStatusPanelVisible)
-            {
-                DoShowStatus();
-            }
             //------------------------------------------------------------------
             _manager.RegisteCommandItem(new CommandItem
             {
@@ -181,6 +178,14 @@ namespace NppGit.Modules
                 Hint = "-",
                 Action = null
             });
+        }
+
+        private void ManagerOnSystemInit()
+        {
+            if (Settings.Panels.FileStatusPanelVisible)
+            {
+                DoShowStatus();
+            }
         }
 
         private void TitleChanging()
