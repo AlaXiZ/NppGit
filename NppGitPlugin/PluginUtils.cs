@@ -182,12 +182,16 @@ namespace NppGit
             execute(SciMsg.SCI_BEGINUNDOACTION, 0);
             if (execute(SciMsg.SCI_GETSELECTIONMODE, 0) > 0)
             {
+                var selcount = execute(SciMsg.SCI_GETSELECTIONS, 0);
                 var startPos = execute(SciMsg.SCI_GETSELECTIONNSTART, 0);
+                var startPos_e = execute(SciMsg.SCI_GETSELECTIONNSTART, selcount - 1);
+                startPos = Math.Min(startPos, startPos_e);
                 var line = execute(SciMsg.SCI_LINEFROMPOSITION, startPos);
+                var col = execute(SciMsg.SCI_GETCOLUMN, startPos);
                 Win32.SendMessage(CurrentScintilla, SciMsg.SCI_REPLACESEL, buf.Length, buf);
                 foreach (var str in lines)
                 {
-                    var linePos = execute(SciMsg.SCI_GETLINEENDPOSITION, line);
+                    var linePos = execute(SciMsg.SCI_FINDCOLUMN, line, col);
                     line++;
                     SendText(SciMsg.SCI_INSERTTEXT, str, linePos);
                 }
