@@ -49,10 +49,11 @@ namespace NppGit.Forms
             try
             {
                 lbSnippets.Items.Clear();
-                foreach(var s in SnippetManager.Instance.Snippets)
+                foreach(var s in SnippetManager.Instance.Snippets.Values)
                 {
-                    lbSnippets.Items.Add(s.Value.Name);
+                    lbSnippets.Items.Add(s.Name);
                 }
+                lbSnippets.Sorted = true;
             }
             finally
             {
