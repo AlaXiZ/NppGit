@@ -1,11 +1,12 @@
 ﻿using NLog;
+using NppGit.Common;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
-namespace NppGit
+namespace NppGit.Modules.GitFeatures
 {
     public enum TortoiseGitCommand : uint
     {
@@ -243,7 +244,7 @@ namespace NppGit
                 var btnMask = Settings.TortoiseGitProc.ButtonMask;
                 logger.Info("TortoiseGit found");
 
-                _manager.RegisterMenuItem(new MenuItem
+                _manager.RegisteCommandItem(new CommandItem
                 {
                     Name = "TGit Log file",
                     Hint = "Log file",
@@ -251,7 +252,7 @@ namespace NppGit
                     Action = TGitLogFile
                 });
 
-                _manager.RegisterMenuItem(new MenuItem
+                _manager.RegisteCommandItem(new CommandItem
                 {
                     Name = "TGit Log path",
                     Hint = "Log path",
@@ -259,7 +260,7 @@ namespace NppGit
                     Action = TGitLogPath
                 });
 
-                var cmdID = _manager.RegisterMenuItem(new MenuItem
+                var cmdID = _manager.RegisteCommandItem(new CommandItem
                 {
                     Name = "TGit Log repo",
                     Hint = "Log repo",
@@ -269,7 +270,7 @@ namespace NppGit
                 if ((btnMask & (uint)TortoiseGitCommand.Log) > 0)
                     _icons.Add(cmdID, Properties.Resources.log);
 
-                cmdID = _manager.RegisterMenuItem(new MenuItem
+                cmdID = _manager.RegisteCommandItem(new CommandItem
                 {
                     Name = "TGit Fetch",
                     Hint = "Fetch",
@@ -279,7 +280,7 @@ namespace NppGit
                 if ((btnMask & (uint)TortoiseGitCommand.Fetch) > 0)
                     _icons.Add(cmdID, Properties.Resources.pull);
 
-                cmdID = _manager.RegisterMenuItem(new MenuItem
+                cmdID = _manager.RegisteCommandItem(new CommandItem
                 {
                     Name = "TGit Pull",
                     Hint = "Pull",
@@ -289,7 +290,7 @@ namespace NppGit
                 if ((btnMask & (uint)TortoiseGitCommand.Pull) > 0)
                     _icons.Add(cmdID, Properties.Resources.pull);
 
-                cmdID = _manager.RegisterMenuItem(new MenuItem
+                cmdID = _manager.RegisteCommandItem(new CommandItem
                 {
                     Name = "TGit Push",
                     Hint = "Push",
@@ -299,7 +300,7 @@ namespace NppGit
                 if ((btnMask & (uint)TortoiseGitCommand.Push) > 0)
                     _icons.Add(cmdID, Properties.Resources.push);
 
-                cmdID = _manager.RegisterMenuItem(new MenuItem
+                cmdID = _manager.RegisteCommandItem(new CommandItem
                 {
                     Name = "TGit Commit",
                     Hint = "Commit",
@@ -309,7 +310,7 @@ namespace NppGit
                 if ((btnMask & (uint)TortoiseGitCommand.Commit) > 0)
                     _icons.Add(cmdID, Properties.Resources.commit);
 
-                cmdID = _manager.RegisterMenuItem(new MenuItem
+                cmdID = _manager.RegisteCommandItem(new CommandItem
                 {
                     Name = "TGit Blame",
                     Hint = "Blame",
@@ -319,7 +320,7 @@ namespace NppGit
                 if ((btnMask & (uint)TortoiseGitCommand.Blame) > 0)
                     _icons.Add(cmdID, Properties.Resources.blame);
 
-                _manager.RegisterMenuItem(new MenuItem
+                _manager.RegisteCommandItem(new CommandItem
                 {
                     Name = "TGit Blame line",
                     Hint = "Blame line",
@@ -327,7 +328,7 @@ namespace NppGit
                     Action = TGitBlameCurrentLine
                 });
 
-                cmdID = _manager.RegisterMenuItem(new MenuItem
+                cmdID = _manager.RegisteCommandItem(new CommandItem
                 {
                     Name = "TGit Switch",
                     Hint = "Switch",
@@ -337,7 +338,7 @@ namespace NppGit
                 if ((btnMask & (uint)TortoiseGitCommand.Switch) > 0)
                     _icons.Add(cmdID, Properties.Resources.checkout);
 
-                cmdID = _manager.RegisterMenuItem(new MenuItem
+                cmdID = _manager.RegisteCommandItem(new CommandItem
                 {
                     Name = "TGit Stash save",
                     Hint = "Stash save",
@@ -347,7 +348,7 @@ namespace NppGit
                 if ((btnMask & (uint)TortoiseGitCommand.StashSave) > 0)
                     _icons.Add(cmdID, Properties.Resources.stashsave);
 
-                cmdID = _manager.RegisterMenuItem(new MenuItem
+                cmdID = _manager.RegisteCommandItem(new CommandItem
                 {
                     Name = "TGit Stash pop",
                     Hint = "Stash pop",
@@ -357,7 +358,7 @@ namespace NppGit
                 if ((btnMask & (uint)TortoiseGitCommand.StashPop) > 0)
                     _icons.Add(cmdID, Properties.Resources.stashpop);
 
-                cmdID = _manager.RegisterMenuItem(new MenuItem
+                cmdID = _manager.RegisteCommandItem(new CommandItem
                 {
                     Name = "TGit Repo stastus",
                     Hint = "Repo stastus",
@@ -367,7 +368,7 @@ namespace NppGit
                 if ((btnMask & (uint)TortoiseGitCommand.RepoStatus) > 0)
                     _icons.Add(cmdID, Properties.Resources.repo);
 
-                _manager.RegisterMenuItem(new MenuItem
+                _manager.RegisteCommandItem(new CommandItem
                 {
                     Name = "-",
                     Hint = "-",
@@ -377,7 +378,7 @@ namespace NppGit
             else
             {
                 logger.Info("TortoiseGit not found");
-                _manager.RegisterMenuItem(new MenuItem
+                _manager.RegisteCommandItem(new CommandItem
                 {
                     Name = "TortoiseGit not found",
                     Hint = "-",

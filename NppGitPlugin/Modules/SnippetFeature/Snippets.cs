@@ -1,7 +1,7 @@
 ﻿using NLog;
-using NppGit.Utils;
+using NppGit.Common;
 
-namespace NppGit.Modules
+namespace NppGit.Modules.SnippetFeature
 {
     delegate void InsertSnippet(string snippetName);
 
@@ -27,7 +27,7 @@ namespace NppGit.Modules
             // Load snippets ---------------------------------------------------
             foreach(var i in SnippetManager.Instance.Snippets)
             {
-                _snipManagerId = _manager.RegisterMenuItem(new MenuItem
+                _snipManagerId = _manager.RegisteCommandItem(new CommandItem
                 {
                     Name = i.Value.Name,
                     Hint = i.Value.Name,
@@ -35,7 +35,7 @@ namespace NppGit.Modules
                 });
             }
             // -----------------------------------------------------------------
-            _snipManagerId = _manager.RegisterMenuItem(new MenuItem
+            _snipManagerId = _manager.RegisteCommandItem(new CommandItem
             {
                 Name = "Snippet manager",
                 Hint = "Snippet manager",
@@ -46,7 +46,7 @@ namespace NppGit.Modules
             _manager.RegisterDockForm(typeof(Forms.SnippetsManagerForm), _snipManagerId, false);
 
             // -----------------------------------------------------------------
-            _manager.RegisterMenuItem(new MenuItem
+            _manager.RegisteCommandItem(new CommandItem
             {
                 Name = "-",
                 Hint = "-",
@@ -54,7 +54,7 @@ namespace NppGit.Modules
             });
 
             _manager.OnToolbarRegisterEvent += ToolbarRegister;
-            _manager.OnMenuItemClick += ManagerOnMenuItemClick;
+            _manager.OnCommandItemClick += ManagerOnMenuItemClick;
             _manager.OnSystemInit += ManagerOnSystemInit;
             InsertSnippetEvent += SnippetsOnInsertSnippetEvent;
         }
@@ -72,9 +72,9 @@ namespace NppGit.Modules
             _manager.AddToolbarButton(_snipManagerId, Properties.Resources.snippets_bar);
         }
 
-        private void ManagerOnMenuItemClick(MenuItemClickEventArgs args)
+        private void ManagerOnMenuItemClick(object sender, CommandItemClickEventArgs args)
         {
-            SnippetsOnInsertSnippetEvent(args.MenuName);
+            SnippetsOnInsertSnippetEvent(args.CommandName);
         }
 
         private void SnippetsOnInsertSnippetEvent(string snippetName)

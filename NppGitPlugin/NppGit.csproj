@@ -74,9 +74,9 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyLoader.cs" />
+    <Compile Include="Common\AssemblyLoader.cs" />
     <Compile Include="DllExport\DllExportAttribute.cs" />
-    <Compile Include="FormDockable.cs" />
+    <Compile Include="Forms\FormDockable.cs" />
     <Compile Include="Forms\About.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -125,7 +125,10 @@
     <Compile Include="Forms\Status.Designer.cs">
       <DependentUpon>Status.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interfaces.cs" />
+    <Compile Include="Common\CommandItemClickEventArgs.cs" />
+    <Compile Include="Common\IModule.cs" />
+    <Compile Include="Common\IModuleManager.cs" />
+    <Compile Include="Common\EventHandler.cs" />
     <Compile Include="Interop\IniFile.cs" />
     <Compile Include="Interop\LocalWindowsHook.cs" />
     <Compile Include="Interop\LocalWinEventHook.cs" />
@@ -133,11 +136,12 @@
     <Compile Include="Main.cs" />
     <Compile Include="Interop\NppPluginNETBase.cs" />
     <Compile Include="Interop\NppPluginNETHelper.cs" />
-    <Compile Include="ModuleManager.cs" />
-    <Compile Include="Modules\GitFeatures.cs" />
-    <Compile Include="Modules\PowerShellScriptEngine.cs" />
-    <Compile Include="Modules\Snippets.cs" />
-    <Compile Include="Modules\SqlIde.cs" />
+    <Compile Include="Common\MessageEventArgs.cs" />
+    <Compile Include="Common\ModuleManager.cs" />
+    <Compile Include="Modules\GitFeatures\GitFeatures.cs" />
+    <Compile Include="Modules\PSSEFeatures\PowerShellScriptEngine.cs" />
+    <Compile Include="Modules\SnippetFeature\Snippets.cs" />
+    <Compile Include="Modules\IdeFeatures\SqlIde.cs" />
     <Compile Include="PluginUtils.cs" />
     <Compile Include="PluginCommands.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -147,11 +151,12 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
-    <Compile Include="Modules\TortoiseGitHelper.cs" />
+    <Compile Include="Modules\TortoiseGitFeatures\TortoiseGitHelper.cs" />
     <Compile Include="Interop\UnmanagedExports.cs" />
-    <Compile Include="Utils\Git.cs" />
-    <Compile Include="Utils\Snippet.cs" />
-    <Compile Include="Utils\SnippetManager.cs" />
+    <Compile Include="Modules\GitFeatures\Git.cs" />
+    <Compile Include="Modules\SnippetFeature\Snippet.cs" />
+    <Compile Include="Modules\SnippetFeature\SnippetManager.cs" />
+    <Compile Include="Common\TabEventArgs.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Forms\About.resx">

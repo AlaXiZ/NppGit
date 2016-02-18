@@ -1,19 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace NppGit.Forms
 {
     public partial class CommandList : Form
     {
-        private Dictionary<string, List<MenuItem>> _cmdList;
-        public Dictionary<string, List<MenuItem>> Commands
+        private Dictionary<string, List<Common.CommandItem>> _cmdList;
+        public Dictionary<string, List<Common.CommandItem>> Commands
         {
             get { return _cmdList; }
             set

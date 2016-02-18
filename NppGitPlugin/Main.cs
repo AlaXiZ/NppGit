@@ -1,8 +1,13 @@
 ﻿using NppGit.Interop;
 using NppGit.Modules;
+using NppGit.Modules.GitFeatures;
+using NppGit.Modules.IdeFeatures;
+using NppGit.Modules.SnippetFeature;
+using NppGit.Common;
 using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
+using NppGit.Forms;
 
 namespace NppGit
 {
@@ -21,7 +26,7 @@ namespace NppGit
         internal static void Init()
         {
             mm.AddModule(new TortoiseGitHelper());
-            mm.AddModule(new GitFeatures());
+            mm.AddModule(new Git());
             mm.AddModule(new SqlIde());
             mm.AddModule(new Snippets());
 

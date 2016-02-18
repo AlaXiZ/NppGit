@@ -1,16 +1,16 @@
 ﻿using NLog;
+using NppGit.Forms;
 using NppGit.Interop;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Windows.Forms;
 
-namespace NppGit
+namespace NppGit.Common
 {
-    public class MenuItem
+    public class CommandItem
     {
         public string Name { get; set; }
         public string Hint { get; set; }
@@ -23,7 +23,7 @@ namespace NppGit
     class DockForm
     {
         public Type Type { get; set; }
-        public Form Form { get; set; }
+        public System.Windows.Forms.Form Form { get; set; }
         public bool UpdateWithChangeContext { get; set; }
         public Icon TabIcon { get; set; }
     }
@@ -34,7 +34,7 @@ namespace NppGit
 
         private LinkedList<IModule> _modules;
         private Dictionary<int, DockForm> _forms;
-        private Dictionary<string, List<MenuItem>> _cmdList;
+        private Dictionary<string, List<CommandItem>> _cmdList;
         private Dictionary<uint, string> _menuCache;
         private bool _canEvent = false;
 
@@ -42,16 +42,16 @@ namespace NppGit
         private LocalWindowsHook winHookProc;
         
         public event Action OnToolbarRegisterEvent;
-        public event TabChange OnTabChangeEvent;
         public event Action OnTitleChangingEvent;
-        public event MenuItemClick OnMenuItemClick;
         public event Action OnSystemInit;
+        public event EventHandler<TabEventArgs> OnTabChangeEvent;
+        public event EventHandler<CommandItemClickEventArgs> OnCommandItemClick;
 
         public ModuleManager()
         {
             _modules = new LinkedList<IModule>();
             _forms = new Dictionary<int, DockForm>();
-            _cmdList = new Dictionary<string, List<MenuItem>>();
+            _cmdList = new Dictionary<string, List<CommandItem>>();
             _menuCache = new Dictionary<uint, string>();
         }
 
@@ -94,7 +94,7 @@ namespace NppGit
         {
             if (OnTabChangeEvent != null)
             {
-                OnTabChangeEvent(new TabEventArgs(idFormChanged));
+                OnTabChangeEvent(this, new TabEventArgs(idFormChanged));
             }
         }
 
@@ -120,7 +120,7 @@ namespace NppGit
                     m.Init(this);
             }
 
-            RegisterMenuItem(new MenuItem {
+            RegisteCommandItem(new CommandItem {
                 Name = "Sample context menu",
                 Hint = "Sample context menu",
                 Action = DoContextMenu
@@ -192,9 +192,9 @@ namespace NppGit
                 menuName = _menuCache[menuId];
             }
             logger.Debug("MenuID = {0}, MenuName = {1}", menuId, menuName);
-            if (!string.IsNullOrEmpty(menuName) && OnMenuItemClick != null)
+            if (!string.IsNullOrEmpty(menuName) && OnCommandItemClick != null)
             {
-                OnMenuItemClick(new MenuItemClickEventArgs(menuName));
+                OnCommandItemClick(this, new CommandItemClickEventArgs(menuName));
             }
         }
 
@@ -222,7 +222,7 @@ namespace NppGit
             }
         }
 
-        public int RegisterMenuItem(MenuItem menuItem)
+        public int RegisteCommandItem(CommandItem menuItem)
         {
             menuItem.Selected = false;
 
@@ -234,7 +234,7 @@ namespace NppGit
             var className = mth.ReflectedType.Name;
             if (!_cmdList.ContainsKey(className))
             {
-                _cmdList.Add(className, new List<MenuItem>());
+                _cmdList.Add(className, new List<CommandItem>());
             }
             _cmdList[className].Add(menuItem);
 
@@ -254,7 +254,7 @@ namespace NppGit
                                         });
                 if (updateWithChangeContext)
                 {
-                    OnTabChangeEvent += (a) =>
+                    OnTabChangeEvent += (o, a) =>
                     {
                         if (_forms[cmdId].Form != null)
                         {
@@ -273,7 +273,7 @@ namespace NppGit
                 var form = _forms[cmdId];
                 if (form.Form == null)
                 {
-                    form.Form = Activator.CreateInstance(form.Type) as Form;
+                    form.Form = Activator.CreateInstance(form.Type) as System.Windows.Forms.Form;
                     form.TabIcon = PluginUtils.NppBitmapToIcon((form.Form as FormDockable).TabIcon);
 
                     NppTbData _nppTbData = new NppTbData();

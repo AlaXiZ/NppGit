@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using NppGit.Common;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;

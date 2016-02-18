@@ -1,6 +1,6 @@
-﻿using System;
+﻿using NppGit.Common;
 
-namespace NppGit.Modules
+namespace NppGit.Modules.PSSEFeatures
 {
     public class PowerShellScriptEngine : IModule
     {

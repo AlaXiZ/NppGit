@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace NppGit
+namespace NppGit.Forms
 {
     public interface FormDockable
     {

@@ -6,10 +6,8 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Security;
-using System.Security.Permissions;
 
-namespace NppGit
+namespace NppGit.Common
 {
     public static class AssemblyLoader
     {

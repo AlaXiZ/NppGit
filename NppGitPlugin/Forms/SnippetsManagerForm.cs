@@ -1,4 +1,4 @@
-﻿using NppGit.Utils;
+﻿using NppGit.Modules.SnippetFeature;
 using System;
 using System.ComponentModel;
 using System.Drawing;
@@ -82,7 +82,7 @@ namespace NppGit.Forms
         private void miEdit_Click(object sender, EventArgs e)
         {
             var dlg = new SnippetEdit();
-            dlg.Snippet = lbSnippets.SelectedItem as string;
+            dlg.SnippetText = lbSnippets.SelectedItem as string;
             if (dlg.ShowDialog() == DialogResult.OK)
             {
                 reloadSnippets();
@@ -107,7 +107,7 @@ namespace NppGit.Forms
 
         private void InsertSnippet(string snippet)
         {
-            Modules.Snippets.SetSnippet(snippet);
+            Snippets.SetSnippet(snippet);
         }
     }
 }

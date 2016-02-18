@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using NppPlugin.DllExport;
+using NppGit.Common;
 
 namespace NppGit
 {

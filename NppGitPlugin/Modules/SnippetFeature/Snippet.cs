@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-namespace NppGit.Utils
+namespace NppGit.Modules.SnippetFeature
 {
     public class Snippet
     {

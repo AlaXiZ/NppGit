@@ -1,13 +1,11 @@
-﻿using System;
+﻿using NppGit.Common;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
-namespace NppGit.Modules
+namespace NppGit.Modules.IdeFeatures
 {
     public class SqlIde : IModule
     {
@@ -26,14 +24,14 @@ namespace NppGit.Modules
         public void Init(IModuleManager manager)
         {
             _manager = manager;
-            _manager.RegisterMenuItem(new MenuItem
+            _manager.RegisteCommandItem(new CommandItem
             {
                 Name = "Swap",
                 Hint = "Swap",
                 Action = DoSwap
             });
 
-            _manager.RegisterMenuItem(new MenuItem
+            _manager.RegisteCommandItem(new CommandItem
             {
                 Name = "Align columns",
                 Hint = "Align columns",
@@ -41,7 +39,7 @@ namespace NppGit.Modules
             });
 
             // -----------------------------------------------------------------
-            _manager.RegisterMenuItem(new MenuItem
+            _manager.RegisteCommandItem(new CommandItem
             {
                 Name = "-",
                 Hint = "-",

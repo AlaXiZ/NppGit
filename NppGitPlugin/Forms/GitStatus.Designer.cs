@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NppGit.Forms;
+using System;
 using System.Drawing;
 
 namespace NppGit

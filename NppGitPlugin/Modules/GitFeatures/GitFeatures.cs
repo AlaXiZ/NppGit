@@ -1,14 +1,15 @@
 ﻿using LibGit2Sharp;
 using NLog;
 using NppGit.Forms;
+using NppGit.Common;
 using System;
 using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace NppGit
+namespace NppGit.Modules
 {
-    public class GitFeatures : IModule
+    public class Git : IModule
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
         private IModuleManager _manager;
@@ -123,7 +124,7 @@ namespace NppGit
             _manager = manager;
             _manager.OnTitleChangingEvent += TitleChanging;
 
-            _showBranchCmdID = _manager.RegisterMenuItem(new MenuItem
+            _showBranchCmdID = _manager.RegisteCommandItem(new CommandItem
             {
                 Name = "Branch in title",
                 Hint = "Branch in title",
@@ -132,7 +133,7 @@ namespace NppGit
                 Checked = Settings.Functions.ShowBranch
             });
 
-            _showRepoCmdID = _manager.RegisterMenuItem(new MenuItem
+            _showRepoCmdID = _manager.RegisteCommandItem(new CommandItem
             {
                 Name = "Repository in title",
                 Hint = "Repository in title",
@@ -141,7 +142,7 @@ namespace NppGit
                 Checked = Settings.Functions.ShowRepoName
             });
 
-            _manager.RegisterMenuItem(new MenuItem
+            _manager.RegisteCommandItem(new CommandItem
             {
                 Name = "File in other branch",
                 Hint = "File in other branch",
@@ -149,7 +150,7 @@ namespace NppGit
                 Action = OpenFileInOtherBranch
             });
 
-            _showStatusFileCmdID = _manager.RegisterMenuItem(new MenuItem
+            _showStatusFileCmdID = _manager.RegisteCommandItem(new CommandItem
             {
                 Name = "File status in title",
                 Hint = "File status in title",
@@ -158,7 +159,7 @@ namespace NppGit
                 Checked = Settings.Functions.ShowStatusFile
             });
 
-            _statusPanelCmdID = _manager.RegisterMenuItem(new MenuItem
+            _statusPanelCmdID = _manager.RegisteCommandItem(new CommandItem
             {
                 Name = "Status panel",
                 Hint = "Status panel",
@@ -174,7 +175,7 @@ namespace NppGit
                 DoShowStatus();
             }
             //------------------------------------------------------------------
-            _manager.RegisterMenuItem(new MenuItem
+            _manager.RegisteCommandItem(new CommandItem
             {
                 Name = "-",
                 Hint = "-",
@@ -217,7 +218,7 @@ namespace NppGit
                             var blob = (Blob)commit[fileInRepo].Target;
                             var fileName = commit.Sha.Substring(1, Settings.Functions.SHACount) + "_" + PluginUtils.CurrentFileName;
                             var contentStream = blob.GetContentStream();
-                            var outFile = Utils.Git.SaveStreamToFile(contentStream, fileName);
+                            var outFile = Common.GitHelper.SaveStreamToFile(contentStream, fileName);
                             if (outFile != null)
                             {
                                 var curFile = PluginUtils.CurrentFilePath;

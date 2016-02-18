@@ -1,4 +1,4 @@
-﻿using NppGit.Utils;
+﻿using NppGit.Modules.SnippetFeature;
 using System;
 using System.Windows.Forms;
 
@@ -13,7 +13,7 @@ namespace NppGit.Forms
 
         private void bOk_Click(object sender, EventArgs e)
         {
-            if (!Utils.Snippet.CheckCorrectSnippet(tbSnippet.Text))
+            if (!Modules.SnippetFeature.Snippet.CheckCorrectSnippet(tbSnippet.Text))
             {
                 MessageBox.Show("Snippet is bad!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 DialogResult = DialogResult.None;
@@ -23,11 +23,11 @@ namespace NppGit.Forms
             {
                 if (string.IsNullOrEmpty(_snippet))
                 {
-                    SnippetManager.Instance.AddSnippet(new Snippet(tbName.Text, tbSnippet.Text));
+                    Modules.SnippetFeature.SnippetManager.Instance.AddSnippet(new Snippet(tbName.Text, tbSnippet.Text));
                 }
                 else
                 {
-                    SnippetManager.Instance.UpdateSnippet(_snippet, new Snippet(tbName.Text, tbSnippet.Text));
+                    Modules.SnippetFeature.SnippetManager.Instance.UpdateSnippet(_snippet, new Snippet(tbName.Text, tbSnippet.Text));
                 }
             }
             catch(Exception ex)
@@ -45,7 +45,7 @@ namespace NppGit.Forms
         }
 
         private string _snippet;
-        public string Snippet
+        public string SnippetText
         {
             get { return _snippet; }
             set

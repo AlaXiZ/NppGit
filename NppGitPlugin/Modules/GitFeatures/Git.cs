@@ -1,11 +1,10 @@
 ﻿using NLog;
 using System;
 using System.IO;
-using System.Threading.Tasks;
 
-namespace NppGit.Utils
+namespace NppGit.Common
 {
-    public static class Git
+    public static class GitHelper
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
