@@ -2,7 +2,7 @@
 
 namespace NppGit.Modules.PSSEFeatures
 {
-    public class PowerShellScriptEngine : IModule
+    public class POSHFeatures : IModule
     {
         private IModuleManager _manager;
 

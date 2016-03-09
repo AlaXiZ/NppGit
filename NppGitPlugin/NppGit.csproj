@@ -139,7 +139,9 @@
     <Compile Include="Common\MessageEventArgs.cs" />
     <Compile Include="Common\ModuleManager.cs" />
     <Compile Include="Modules\GitFeatures\GitFeatures.cs" />
-    <Compile Include="Modules\PSSEFeatures\PowerShellScriptEngine.cs" />
+    <Compile Include="Modules\PSSEFeatures\POSHExecutor.cs" />
+    <Compile Include="Modules\PSSEFeatures\POSHFeatures.cs" />
+    <Compile Include="Modules\PSSEFeatures\POSHObject.cs" />
     <Compile Include="Modules\SnippetFeature\Snippets.cs" />
     <Compile Include="Modules\IdeFeatures\SqlIde.cs" />
     <Compile Include="PluginUtils.cs" />
@@ -248,6 +250,7 @@
   <ItemGroup>
     <FilesToMove Include="$(OutputPath)NLog.*" />
     <FilesToMove Include="$(OutputPath)LibGit2Sharp.*" />
+    <!--<FilesToMove Include="$(OutputPath)System.Management.Automation.dll" />-->
     <DirToMove Include="$(OutputPath)NativeBinaries\**\*.*" />
   </ItemGroup>
   <Target Name="AfterBuild" Condition=" '$(Configuration)' == 'Debug' ">
