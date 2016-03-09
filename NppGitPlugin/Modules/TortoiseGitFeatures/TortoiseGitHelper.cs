@@ -10,18 +10,21 @@ namespace NppGit.Modules.GitFeatures
 {
     public enum TortoiseGitCommand : uint
     {
-        Fetch      = 0x001,
-        Log        = 0x020,
-        Commit     = 0x004,
+        Fetch      =  0x0001,
+        Log        =  0x0020,
+        Commit     =  0x0004,
         Add        ,
         Revert     ,
-        Switch     = 0x200,
-        Blame      = 0x010,
-        Pull       = 0x002,
-        Push       = 0x008,
-        StashSave  = 0x040,
-        StashPop   = 0x080,
-        RepoStatus = 0x100
+        Switch     =  0x0200,
+        Blame      =  0x0010,
+        Pull       =  0x0002,
+        Push       =  0x0008,
+        StashSave  =  0x0040,
+        StashPop   =  0x0080,
+        RepoStatus =  0x0100,
+        Diff       =  0x0400,
+        Rebase     =  0x0800,
+        ShowCompare = 0x1000
     }
     /*
     Fetch
@@ -226,6 +229,24 @@ namespace NppGit.Modules.GitFeatures
             StartCommand(CreateCommand(TortoiseGitCommand.RepoStatus, dirPath));
         }
 
+        private void TGitDiff()
+        {
+            string path = PluginUtils.CurrentFilePath;
+            StartCommand(CreateCommand(TortoiseGitCommand.Diff, path));
+        }
+
+        private void TGitCompare()
+        {
+            string path = PluginUtils.CurrentFilePath;
+            StartCommand(CreateCommand(TortoiseGitCommand.ShowCompare, path));
+        }
+
+        private void TGitRebase()
+        {
+            string path = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
+            StartCommand(CreateCommand(TortoiseGitCommand.Rebase, path));
+        }
+
         private void ReadmeFunc()
         {
             string text = "Не установлен TortoiseGit или не найдена папка с установленной программой!";
@@ -367,6 +388,32 @@ namespace NppGit.Modules.GitFeatures
                 });
                 if ((btnMask & (uint)TortoiseGitCommand.RepoStatus) > 0)
                     _icons.Add(cmdID, Properties.Resources.repo);
+
+                _manager.RegisteCommandItem(new CommandItem
+                {
+                    Name = "TGit Diff",
+                    Hint = "Diff",
+                    ShortcutKey = null,
+                    Action = TGitDiff
+                });
+
+                /*
+                _manager.RegisteCommandItem(new CommandItem
+                {
+                    Name = "TGit Compare",
+                    Hint = "Compare",
+                    ShortcutKey = null,
+                    Action = TGitCompare
+                });
+                */
+
+                _manager.RegisteCommandItem(new CommandItem
+                {
+                    Name = "TGit Rebase",
+                    Hint = "Rebase",
+                    ShortcutKey = null,
+                    Action = TGitRebase
+                });
 
                 _manager.RegisteCommandItem(new CommandItem
                 {
