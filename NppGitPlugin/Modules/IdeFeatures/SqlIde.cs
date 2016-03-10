@@ -115,7 +115,7 @@ namespace NppGit.Modules.IdeFeatures
                         Append(items[j]).
                         Append(new string(' ', lens[j] - items[j].Length));
                 }
-                lines[i] = buf.ToString().TrimStart(' ');
+                lines[i] = buf.ToString().Trim();
             }
         }
     }
