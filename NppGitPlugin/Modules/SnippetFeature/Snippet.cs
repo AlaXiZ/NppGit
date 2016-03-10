@@ -38,7 +38,7 @@ namespace NppGit.Modules.SnippetFeature
         {
             if (ParamCount > 0)
             {
-                param = Regex.Replace(param.Trim(), @"(\s+)|(\s*[,\.:;]\s*)", " ");
+                param = Regex.Replace(param.Trim(), @"(\s+)|(\s*[,;]\s*)", " ");
                 var formatArgs = new string[ParamCount];
                 var outStrings = new List<string>();
                 if (string.IsNullOrEmpty(param))
