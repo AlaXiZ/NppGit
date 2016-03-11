@@ -52,7 +52,11 @@ namespace NppGit.Common
                     BatchSize = 10
                 };
             }
-            LogManager.Configuration.RemoveTarget("NppGit.AsyncTarget");
+            try
+            {
+                LogManager.Configuration.RemoveTarget("NppGit.AsyncTarget");
+            }
+            catch { }
 
             SimpleConfigurator.ConfigureForTargetLogging((AsyncTargetWrapper)asyncWrapper, LogLevel.FromString(Settings.InnerSettings.LogLevel));
             LogManager.GetCurrentClassLogger().Info("Logger initialized");

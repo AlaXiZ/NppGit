@@ -181,7 +181,7 @@
   <data name="edit_add_6387" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\edit_add_6387.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="insert-text_7102" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="insert_snippet" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\insert-text_7102.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="SnippetsXml" xml:space="preserve">

@@ -158,8 +158,7 @@
             "Tortoise Git",
             "Git Features",
             "SQL IDE",
-            "Snippets",
-            "PowerShell Scripts"});
+            "Snippets"});
             this.chlModules.Location = new System.Drawing.Point(3, 16);
             this.chlModules.MultiColumn = true;
             this.chlModules.Name = "chlModules";

@@ -44,7 +44,7 @@ namespace NppGit.Forms
             chlModules.SetItemChecked(1, Settings.Modules.Git);
             chlModules.SetItemChecked(2, Settings.Modules.SQLIDE);
             chlModules.SetItemChecked(3, Settings.Modules.Snippets);
-            chlModules.SetItemChecked(4, Settings.Modules.PSSE);
+            //chlModules.SetItemChecked(4, Settings.Modules.PSSE);
         }
 
         private uint GetButtonMask()
@@ -80,7 +80,7 @@ namespace NppGit.Forms
             Settings.Modules.Git = chlModules.GetItemChecked(1);
             Settings.Modules.SQLIDE = chlModules.GetItemChecked(2);
             Settings.Modules.Snippets = chlModules.GetItemChecked(3);
-            Settings.Modules.PSSE = chlModules.GetItemChecked(4);
+            //Settings.Modules.PSSE = chlModules.GetItemChecked(4);
         }
 
         private void bOk_Click(object sender, EventArgs e)

@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("NppGit")]
-[assembly: AssemblyCopyright("Copyright © Schadin Alexey")]
+[assembly: AssemblyCopyright("Copyright © 2015-2016 Schadin Alexey")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
