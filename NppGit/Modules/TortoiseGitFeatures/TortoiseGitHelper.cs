@@ -1,29 +1,29 @@
-﻿using NLog;
-using NppGit.Common;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using NLog;
+using NppGit.Common;
 
-namespace NppGit.Modules.GitFeatures
+namespace NppGit.Modules.TortoiseGitFeatures
 {
     public enum TortoiseGitCommand : uint
     {
-        Fetch      =  0x0001,
-        Log        =  0x0020,
-        Commit     =  0x0004,
-        Add        ,
-        Revert     ,
-        Switch     =  0x0200,
-        Blame      =  0x0010,
-        Pull       =  0x0002,
-        Push       =  0x0008,
-        StashSave  =  0x0040,
-        StashPop   =  0x0080,
-        RepoStatus =  0x0100,
-        Diff       =  0x0400,
-        Rebase     =  0x0800,
+        Fetch       =  0x0001,
+        Log         =  0x0020,
+        Commit      =  0x0004,
+        Add         ,
+        Revert      ,
+        Switch      =  0x0200,
+        Blame       =  0x0010,
+        Pull        =  0x0002,
+        Push        =  0x0008,
+        StashSave   =  0x0040,
+        StashPop    =  0x0080,
+        RepoStatus  =  0x0100,
+        Diff        =  0x0400,
+        Rebase      =  0x0800,
         ShowCompare = 0x1000
     }
     /*
@@ -49,25 +49,22 @@ namespace NppGit.Modules.GitFeatures
         private const string CLOSE = "/closeonend:{0}";
         private const string TORTOISEGITBIN = "TortoiseGit\\bin\\";
 
-        private static string tortoiseGitPath = "";
-        private static string tortoiseGitProc = "";
+        private static string _tortoiseGitPath = "";
+        private static string _tortoiseGitProc = "";
 
         private Dictionary<int, Bitmap> _icons;
         private IModuleManager _manager;
 
-        public bool IsNeedRun
-        {
-            get { return Settings.Modules.TortoiseGit; }
-        }
+        public bool IsNeedRun => Settings.Modules.TortoiseGit;
 
-        private static bool ExistsTortoiseGit(string programPath)
+      private static bool ExistsTortoiseGit(string programPath)
         {
             return System.IO.Directory.Exists(System.IO.Path.Combine(programPath, TORTOISEGITBIN));
         }
 
-        private bool SearchTortoiseGit()
+        private static bool SearchTortoiseGit()
         {
-            string tortoisePath = Settings.TortoiseGitProc.Path;
+            var tortoisePath = Settings.TortoiseGitProc.Path;
             // Path not set
             if (string.IsNullOrEmpty(tortoisePath))
             {
@@ -90,10 +87,12 @@ namespace NppGit.Modules.GitFeatures
                 }
                 if (string.IsNullOrEmpty(tortoisePath))
                 {
-                    var dlg = new FolderBrowserDialog();
-                    dlg.Description = "Select folder with TortoiseGitProc.exe";
-                    dlg.ShowNewFolderButton = false;
-                    if (dlg.ShowDialog() == DialogResult.OK)
+                  var dlg = new FolderBrowserDialog
+                  {
+                    Description = "Select folder with TortoiseGitProc.exe",
+                    ShowNewFolderButton = false
+                  };
+                  if (dlg.ShowDialog() == DialogResult.OK)
                     {
                         tortoisePath = dlg.SelectedPath;
                     }
@@ -103,10 +102,10 @@ namespace NppGit.Modules.GitFeatures
                     Settings.TortoiseGitProc.Path = tortoisePath;
                 }
             }
-            tortoiseGitPath = tortoisePath;
-            tortoiseGitProc = System.IO.Path.Combine(tortoiseGitPath, EXE);
+            _tortoiseGitPath = tortoisePath;
+            _tortoiseGitProc = System.IO.Path.Combine(_tortoiseGitPath, EXE);
 
-            return !string.IsNullOrEmpty(tortoiseGitPath);
+            return !string.IsNullOrEmpty(_tortoiseGitPath);
         }
 
         private static string GetCommandName(TortoiseGitCommand command)
@@ -116,7 +115,7 @@ namespace NppGit.Modules.GitFeatures
 
         private static void StartCommand(string param)
         {
-            System.Diagnostics.Process.Start(tortoiseGitProc, param);
+            System.Diagnostics.Process.Start(_tortoiseGitProc, param);
         }
 
         private static string CreateCommand(TortoiseGitCommand command, string path, string logMsg = null, byte? closeParam = null, string additionalParam = null)
@@ -149,111 +148,113 @@ namespace NppGit.Modules.GitFeatures
             return builder.ToString();
         }
 
-        private void TGitLogFile()
+        private static void TGitLogFile()
         {
             string filePath = PluginUtils.CurrentFilePath;
             StartCommand(CreateCommand(TortoiseGitCommand.Log, filePath));
         }
 
-        private void TGitLogPath()
+        private static void TGitLogPath()
         {
             string dirPath = PluginUtils.CurrentFileDir;
             StartCommand(CreateCommand(TortoiseGitCommand.Log, dirPath));
         }
 
-        private void TGitLogRepo()
+        private static void TGitLogRepo()
         {
             string dirPath = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
             StartCommand(CreateCommand(TortoiseGitCommand.Log, dirPath));
         }
 
-        private void TGitFetch()
+        private static void TGitFetch()
         {
             string dirPath = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
             StartCommand(CreateCommand(TortoiseGitCommand.Fetch, dirPath));
         }
 
-        private void TGitPull()
+        private static void TGitPull()
         {
             string dirPath = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
             StartCommand(CreateCommand(TortoiseGitCommand.Pull, dirPath));
         }
 
-        private void TGitPush()
+        private static void TGitPush()
         {
             string dirPath = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
             StartCommand(CreateCommand(TortoiseGitCommand.Push, dirPath));
         }
 
-        private void TGitCommit()
+        private static void TGitCommit()
         {
             string dirPath = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
             StartCommand(CreateCommand(TortoiseGitCommand.Commit, dirPath));
         }
 
-        private void TGitBlame()
+        private static void TGitBlame()
         {
             string filePath = PluginUtils.CurrentFilePath;
             StartCommand(CreateCommand(TortoiseGitCommand.Blame, filePath));
         }
 
-        private void TGitBlameCurrentLine()
+        private static void TGitBlameCurrentLine()
         {
             string filePath = PluginUtils.CurrentFilePath;
             string param = string.Format("/line:{0}", PluginUtils.CurrentLine);
             StartCommand(CreateCommand(TortoiseGitCommand.Blame, filePath, additionalParam: param));
         }
 
-        private void TGitSwitch()
+        private static void TGitSwitch()
         {
             string dirPath = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
             StartCommand(CreateCommand(TortoiseGitCommand.Switch, dirPath));
         }
 
-        private void TGitStashSave()
+        private static void TGitStashSave()
         {
             string dirPath = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
             string msg = "/msg:" + DateTime.Now.ToString();
             StartCommand(CreateCommand(TortoiseGitCommand.StashSave, dirPath, additionalParam: msg));
         }
 
-        private void TGitStashPop()
+        private static void TGitStashPop()
         {
             string dirPath = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
             StartCommand(CreateCommand(TortoiseGitCommand.StashPop, dirPath));
         }
     
-        private void TGitRepoStatus()
+        private static void TGitRepoStatus()
         {
             string dirPath = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
             StartCommand(CreateCommand(TortoiseGitCommand.RepoStatus, dirPath));
         }
 
-        private void TGitDiff()
+        private static void TGitDiff()
         {
             string path = PluginUtils.CurrentFilePath;
             StartCommand(CreateCommand(TortoiseGitCommand.Diff, path));
         }
 
+/*
         private void TGitCompare()
         {
             string path = PluginUtils.CurrentFilePath;
             StartCommand(CreateCommand(TortoiseGitCommand.ShowCompare, path));
         }
+*/
 
-        private void TGitRebase()
+        private static void TGitRebase()
         {
             string path = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
             StartCommand(CreateCommand(TortoiseGitCommand.Rebase, path));
         }
 
-        private void ReadmeFunc()
+        private static void ReadmeFunc()
         {
-            string text = "Не установлен TortoiseGit или не найдена папка с установленной программой!";
-            MessageBox.Show(text, "Ошибка настройки", MessageBoxButtons.OK, MessageBoxIcon.Information);
+          const string text = "Не установлен TortoiseGit или не найдена папка с установленной программой!";
+          MessageBox.Show(text, "Ошибка настройки", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        void IModule.Init(IModuleManager manager)
+      void IModule.Init(IModuleManager manager)
         {
             _manager = manager;
             _manager.OnToolbarRegisterEvent += ToolBarInit;
@@ -281,7 +282,7 @@ namespace NppGit.Modules.GitFeatures
                     Action = TGitLogPath
                 });
 
-                var cmdID = _manager.RegisteCommandItem(new CommandItem
+                var cmdId = _manager.RegisteCommandItem(new CommandItem
                 {
                     Name = "TGit Log repo",
                     Hint = "Log repo",
@@ -289,9 +290,9 @@ namespace NppGit.Modules.GitFeatures
                     Action = TGitLogRepo
                 });
                 if ((btnMask & (uint)TortoiseGitCommand.Log) > 0)
-                    _icons.Add(cmdID, Properties.Resources.log);
+                    _icons.Add(cmdId, Properties.Resources.log);
 
-                cmdID = _manager.RegisteCommandItem(new CommandItem
+                cmdId = _manager.RegisteCommandItem(new CommandItem
                 {
                     Name = "TGit Fetch",
                     Hint = "Fetch",
@@ -299,9 +300,9 @@ namespace NppGit.Modules.GitFeatures
                     Action = TGitFetch
                 });
                 if ((btnMask & (uint)TortoiseGitCommand.Fetch) > 0)
-                    _icons.Add(cmdID, Properties.Resources.pull);
+                    _icons.Add(cmdId, Properties.Resources.pull);
 
-                cmdID = _manager.RegisteCommandItem(new CommandItem
+                cmdId = _manager.RegisteCommandItem(new CommandItem
                 {
                     Name = "TGit Pull",
                     Hint = "Pull",
@@ -309,9 +310,9 @@ namespace NppGit.Modules.GitFeatures
                     Action = TGitPull
                 });
                 if ((btnMask & (uint)TortoiseGitCommand.Pull) > 0)
-                    _icons.Add(cmdID, Properties.Resources.pull);
+                    _icons.Add(cmdId, Properties.Resources.pull);
 
-                cmdID = _manager.RegisteCommandItem(new CommandItem
+                cmdId = _manager.RegisteCommandItem(new CommandItem
                 {
                     Name = "TGit Push",
                     Hint = "Push",
@@ -319,9 +320,9 @@ namespace NppGit.Modules.GitFeatures
                     Action = TGitPush
                 });
                 if ((btnMask & (uint)TortoiseGitCommand.Push) > 0)
-                    _icons.Add(cmdID, Properties.Resources.push);
+                    _icons.Add(cmdId, Properties.Resources.push);
 
-                cmdID = _manager.RegisteCommandItem(new CommandItem
+                cmdId = _manager.RegisteCommandItem(new CommandItem
                 {
                     Name = "TGit Commit",
                     Hint = "Commit",
@@ -329,9 +330,9 @@ namespace NppGit.Modules.GitFeatures
                     Action = TGitCommit
                 });
                 if ((btnMask & (uint)TortoiseGitCommand.Commit) > 0)
-                    _icons.Add(cmdID, Properties.Resources.commit);
+                    _icons.Add(cmdId, Properties.Resources.commit);
 
-                cmdID = _manager.RegisteCommandItem(new CommandItem
+                cmdId = _manager.RegisteCommandItem(new CommandItem
                 {
                     Name = "TGit Blame",
                     Hint = "Blame",
@@ -339,7 +340,7 @@ namespace NppGit.Modules.GitFeatures
                     Action = TGitBlame
                 });
                 if ((btnMask & (uint)TortoiseGitCommand.Blame) > 0)
-                    _icons.Add(cmdID, Properties.Resources.blame);
+                    _icons.Add(cmdId, Properties.Resources.blame);
 
                 _manager.RegisteCommandItem(new CommandItem
                 {
@@ -349,7 +350,7 @@ namespace NppGit.Modules.GitFeatures
                     Action = TGitBlameCurrentLine
                 });
 
-                cmdID = _manager.RegisteCommandItem(new CommandItem
+                cmdId = _manager.RegisteCommandItem(new CommandItem
                 {
                     Name = "TGit Switch",
                     Hint = "Switch",
@@ -357,9 +358,9 @@ namespace NppGit.Modules.GitFeatures
                     Action = TGitSwitch
                 });
                 if ((btnMask & (uint)TortoiseGitCommand.Switch) > 0)
-                    _icons.Add(cmdID, Properties.Resources.checkout);
+                    _icons.Add(cmdId, Properties.Resources.checkout);
 
-                cmdID = _manager.RegisteCommandItem(new CommandItem
+                cmdId = _manager.RegisteCommandItem(new CommandItem
                 {
                     Name = "TGit Stash save",
                     Hint = "Stash save",
@@ -367,9 +368,9 @@ namespace NppGit.Modules.GitFeatures
                     Action = TGitStashSave
                 });
                 if ((btnMask & (uint)TortoiseGitCommand.StashSave) > 0)
-                    _icons.Add(cmdID, Properties.Resources.stashsave);
+                    _icons.Add(cmdId, Properties.Resources.stashsave);
 
-                cmdID = _manager.RegisteCommandItem(new CommandItem
+                cmdId = _manager.RegisteCommandItem(new CommandItem
                 {
                     Name = "TGit Stash pop",
                     Hint = "Stash pop",
@@ -377,9 +378,9 @@ namespace NppGit.Modules.GitFeatures
                     Action = TGitStashPop
                 });
                 if ((btnMask & (uint)TortoiseGitCommand.StashPop) > 0)
-                    _icons.Add(cmdID, Properties.Resources.stashpop);
+                    _icons.Add(cmdId, Properties.Resources.stashpop);
 
-                cmdID = _manager.RegisteCommandItem(new CommandItem
+                cmdId = _manager.RegisteCommandItem(new CommandItem
                 {
                     Name = "TGit Repo stastus",
                     Hint = "Repo stastus",
@@ -387,7 +388,7 @@ namespace NppGit.Modules.GitFeatures
                     Action = TGitRepoStatus
                 });
                 if ((btnMask & (uint)TortoiseGitCommand.RepoStatus) > 0)
-                    _icons.Add(cmdID, Properties.Resources.repo);
+                    _icons.Add(cmdId, Properties.Resources.repo);
 
                 _manager.RegisteCommandItem(new CommandItem
                 {

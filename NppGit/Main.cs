@@ -1,6 +1,5 @@
 ﻿using NppGit.Interop;
 using NppGit.Modules;
-using NppGit.Modules.GitFeatures;
 using NppGit.Modules.IdeFeatures;
 using NppGit.Modules.SnippetFeature;
 using NppGit.Common;
@@ -8,6 +7,7 @@ using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using NppGit.Forms;
+using NppGit.Modules.TortoiseGitFeatures;
 
 namespace NppGit
 {
