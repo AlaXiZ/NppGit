@@ -64,6 +64,7 @@ namespace NppGit.Forms
             this.tbChangeLog = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.llIssue = new System.Windows.Forms.LinkLabel();
+            this.tbLicense = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -123,7 +124,7 @@ namespace NppGit.Forms
             this.tbChangeLog.Name = "tbChangeLog";
             this.tbChangeLog.ReadOnly = true;
             this.tbChangeLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbChangeLog.Size = new System.Drawing.Size(306, 143);
+            this.tbChangeLog.Size = new System.Drawing.Size(307, 143);
             this.tbChangeLog.TabIndex = 5;
             // 
             // label1
@@ -140,18 +141,30 @@ namespace NppGit.Forms
             this.llIssue.AutoSize = true;
             this.llIssue.Location = new System.Drawing.Point(228, 51);
             this.llIssue.Name = "llIssue";
-            this.llIssue.Size = new System.Drawing.Size(173, 13);
+            this.llIssue.Size = new System.Drawing.Size(167, 13);
             this.llIssue.TabIndex = 7;
             this.llIssue.TabStop = true;
-            this.llIssue.Text = "bitbucket.org/AlaXiZ/nppgit/issues";
+            this.llIssue.Text = "github.com/AlaXiZ/NppGit/issues";
             this.llIssue.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.llIssue_LinkClicked);
+            // 
+            // tbLicense
+            // 
+            this.tbLicense.BackColor = System.Drawing.Color.White;
+            this.tbLicense.Location = new System.Drawing.Point(12, 220);
+            this.tbLicense.Multiline = true;
+            this.tbLicense.Name = "tbLicense";
+            this.tbLicense.ReadOnly = true;
+            this.tbLicense.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.tbLicense.Size = new System.Drawing.Size(440, 210);
+            this.tbLicense.TabIndex = 8;
             // 
             // About
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(463, 226);
+            this.ClientSize = new System.Drawing.Size(464, 442);
+            this.Controls.Add(this.tbLicense);
             this.Controls.Add(this.llIssue);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.tbChangeLog);
@@ -165,9 +178,9 @@ namespace NppGit.Forms
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "About";
-            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "О программе...";
+            this.TopMost = true;
             this.Load += new System.EventHandler(this.About_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
@@ -185,5 +198,6 @@ namespace NppGit.Forms
         private System.Windows.Forms.TextBox tbChangeLog;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.LinkLabel llIssue;
+        private System.Windows.Forms.TextBox tbLicense;
     }
 }

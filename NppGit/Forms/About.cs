@@ -42,6 +42,7 @@ namespace NppGit.Forms
             lPluginName.Text = Properties.Resources.PluginName;
             lVersion.Text = this.GetType().Assembly.GetName().Version.ToString();
             tbChangeLog.Text = Properties.Resources.ChangeLog;
+            tbLicense.Text = Properties.Resources.LICENSE;
         }
 
         private void llMail_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -53,7 +54,7 @@ namespace NppGit.Forms
         private void llIssue_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             llIssue.LinkVisited = true;
-            System.Diagnostics.Process.Start("https://bitbucket.org/AlaXiZ/nppgit/issues?status=new&status=open");
+            System.Diagnostics.Process.Start("https://github.com/AlaXiZ/NppGit/issues");
 
         }
     }
