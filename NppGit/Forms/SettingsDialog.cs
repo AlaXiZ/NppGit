@@ -59,6 +59,7 @@ namespace NppGit.Forms
             {
                 chlButtons.SetItemChecked(i, (mask & (1u << i)) > 0);
             }
+            tbTGProcPath.Text = Settings.TortoiseGitProc.Path;
             chbDefaultShortcut.Checked = Settings.InnerSettings.IsSetDefaultShortcut;
             mtxbSHACount.Text = Settings.Functions.SHACount.ToString();
             chbFileInOtherView.Checked = Settings.Functions.OpenFileInOtherView;
@@ -97,6 +98,7 @@ namespace NppGit.Forms
         {
             Settings.TortoiseGitProc.ShowToolbar = chbTGToolbar.Checked;
             Settings.TortoiseGitProc.ButtonMask = GetButtonMask();
+            Settings.TortoiseGitProc.Path = tbTGProcPath.Text;
             Settings.InnerSettings.IsSetDefaultShortcut = chbDefaultShortcut.Checked;
             Settings.Functions.SHACount = byte.Parse(mtxbSHACount.Text);
             Settings.Functions.OpenFileInOtherView = chbFileInOtherView.Checked;
@@ -115,7 +117,6 @@ namespace NppGit.Forms
             SaveSettings();
             if (chbRestartNpp.Checked)
             {
-                // TODO: Restart app
                 PluginUtils.Restart();
             }
             else
@@ -129,7 +130,7 @@ namespace NppGit.Forms
             byte result;
             if (!byte.TryParse(mtxbSHACount.Text, out result) || result > 20 || result == 0)
             {
-                MessageBox.Show("Value in [1..20]", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Значение должно быть в интервале [1..20]", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 mtxbSHACount.Focus();
             }
         }
@@ -137,6 +138,20 @@ namespace NppGit.Forms
         private void chlModules_SelectedValueChanged(object sender, EventArgs e)
         {
             System.Diagnostics.Debug.WriteLine(sender);
+        }
+
+        private void bSelectFolder_Click(object sender, EventArgs e)
+        {
+            var dlg = new FolderBrowserDialog
+            {
+                Description = "Выберите папку с TortoiseGitProc.exe",
+                ShowNewFolderButton = false,
+                SelectedPath = tbTGProcPath.Text
+            };
+            if (dlg.ShowDialog() == DialogResult.OK)
+            {
+                tbTGProcPath.Text = dlg.SelectedPath;
+            }
         }
     }
 }

@@ -76,6 +76,9 @@ namespace NppGit.Forms
             this.pBottom = new System.Windows.Forms.Panel();
             this.chbRestartNpp = new System.Windows.Forms.CheckBox();
             this.pMain = new System.Windows.Forms.Panel();
+            this.label3 = new System.Windows.Forms.Label();
+            this.tbTGProcPath = new System.Windows.Forms.TextBox();
+            this.bSelectFolder = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tpCommon.SuspendLayout();
             this.gbUsingModules.SuspendLayout();
@@ -115,7 +118,7 @@ namespace NppGit.Forms
             this.chlButtons.Location = new System.Drawing.Point(6, 29);
             this.chlButtons.MultiColumn = true;
             this.chlButtons.Name = "chlButtons";
-            this.chlButtons.Size = new System.Drawing.Size(378, 64);
+            this.chlButtons.Size = new System.Drawing.Size(391, 64);
             this.chlButtons.TabIndex = 1;
             // 
             // label1
@@ -223,6 +226,9 @@ namespace NppGit.Forms
             // 
             // tpTortoise
             // 
+            this.tpTortoise.Controls.Add(this.bSelectFolder);
+            this.tpTortoise.Controls.Add(this.tbTGProcPath);
+            this.tpTortoise.Controls.Add(this.label3);
             this.tpTortoise.Controls.Add(this.chbTGToolbar);
             this.tpTortoise.Controls.Add(this.chlButtons);
             this.tpTortoise.Location = new System.Drawing.Point(4, 22);
@@ -282,6 +288,7 @@ namespace NppGit.Forms
             this.mtxbSHACount.Name = "mtxbSHACount";
             this.mtxbSHACount.Size = new System.Drawing.Size(29, 20);
             this.mtxbSHACount.TabIndex = 3;
+            this.mtxbSHACount.Leave += new System.EventHandler(this.mtxbSHACount_Leave);
             // 
             // pBottom
             // 
@@ -313,6 +320,33 @@ namespace NppGit.Forms
             this.pMain.Name = "pMain";
             this.pMain.Size = new System.Drawing.Size(408, 196);
             this.pMain.TabIndex = 6;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(3, 96);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(146, 13);
+            this.label3.TabIndex = 2;
+            this.label3.Text = "Путь до TortoiseGitProc.exe*";
+            // 
+            // tbTGProcPath
+            // 
+            this.tbTGProcPath.Location = new System.Drawing.Point(6, 112);
+            this.tbTGProcPath.Name = "tbTGProcPath";
+            this.tbTGProcPath.ReadOnly = true;
+            this.tbTGProcPath.Size = new System.Drawing.Size(357, 20);
+            this.tbTGProcPath.TabIndex = 3;
+            // 
+            // bSelectFolder
+            // 
+            this.bSelectFolder.Location = new System.Drawing.Point(369, 110);
+            this.bSelectFolder.Name = "bSelectFolder";
+            this.bSelectFolder.Size = new System.Drawing.Size(28, 23);
+            this.bSelectFolder.TabIndex = 4;
+            this.bSelectFolder.Text = "...";
+            this.bSelectFolder.UseVisualStyleBackColor = true;
+            this.bSelectFolder.Click += new System.EventHandler(this.bSelectFolder_Click);
             // 
             // SettingsDialog
             // 
@@ -369,5 +403,8 @@ namespace NppGit.Forms
         private System.Windows.Forms.GroupBox gbUsingModules;
         private System.Windows.Forms.CheckedListBox chlModules;
         private System.Windows.Forms.CheckBox chbRestartNpp;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button bSelectFolder;
+        private System.Windows.Forms.TextBox tbTGProcPath;
     }
 }

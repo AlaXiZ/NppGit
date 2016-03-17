@@ -93,7 +93,7 @@ namespace NppGit.Modules.TortoiseGitFeatures
         {
             var tortoisePath = Settings.TortoiseGitProc.Path;
             // Path not set
-            if (string.IsNullOrEmpty(tortoisePath))
+            if (string.IsNullOrEmpty(tortoisePath) && Settings.TortoiseGitProc.IsFirstSearch)
             {
                 // x64
                 if (8 == IntPtr.Size || (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("PROCESSOR_ARCHITEW6432"))))
@@ -114,12 +114,12 @@ namespace NppGit.Modules.TortoiseGitFeatures
                 }
                 if (string.IsNullOrEmpty(tortoisePath))
                 {
-                  var dlg = new FolderBrowserDialog
-                  {
-                    Description = "Select folder with TortoiseGitProc.exe",
-                    ShowNewFolderButton = false
-                  };
-                  if (dlg.ShowDialog() == DialogResult.OK)
+                    var dlg = new FolderBrowserDialog
+                    {
+                        Description = "Выберите папку с TortoiseGitProc.exe",
+                        ShowNewFolderButton = false
+                    };
+                    if (dlg.ShowDialog() == DialogResult.OK)
                     {
                         tortoisePath = dlg.SelectedPath;
                     }
@@ -128,6 +128,7 @@ namespace NppGit.Modules.TortoiseGitFeatures
                 {
                     Settings.TortoiseGitProc.Path = tortoisePath;
                 }
+                Settings.TortoiseGitProc.IsFirstSearch = false;
             }
             _tortoiseGitPath = tortoisePath;
             _tortoiseGitProc = System.IO.Path.Combine(_tortoiseGitPath, EXE);

@@ -208,7 +208,7 @@ namespace NppGit
         }
 
         public static class TortoiseGitProc
-        {
+        {            
             public static string Path
             {
                 [MethodImpl(MethodImplOptions.NoInlining)]
@@ -227,6 +227,13 @@ namespace NppGit
             {
                 [MethodImpl(MethodImplOptions.NoInlining)]
                 get { return Get(0u); }
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                set { Set(value); }
+            }
+            public static bool IsFirstSearch
+            {
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                get { return Get(true); }
                 [MethodImpl(MethodImplOptions.NoInlining)]
                 set { Set(value); }
             }
