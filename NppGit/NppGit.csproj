@@ -148,12 +148,14 @@
     <Compile Include="Interop\NppPluginNETHelper.cs" />
     <Compile Include="Common\MessageEventArgs.cs" />
     <Compile Include="Common\ModuleManager.cs" />
+    <Compile Include="Modules\GitCore\Repository.cs" />
     <Compile Include="Modules\GitFeatures\GitFeatures.cs" />
     <Compile Include="Modules\PSSEFeatures\POSHExecutor.cs" />
     <Compile Include="Modules\PSSEFeatures\POSHFeatures.cs" />
     <Compile Include="Modules\PSSEFeatures\POSHObject.cs" />
     <Compile Include="Modules\SnippetFeature\Snippets.cs" />
     <Compile Include="Modules\IdeFeatures\SqlIde.cs" />
+    <Compile Include="Modules\GitCore\IGitCore.cs" />
     <Compile Include="PluginUtils.cs" />
     <Compile Include="PluginCommands.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -169,6 +171,7 @@
     <Compile Include="Modules\SnippetFeature\Snippet.cs" />
     <Compile Include="Modules\SnippetFeature\SnippetManager.cs" />
     <Compile Include="Common\TabEventArgs.cs" />
+    <Compile Include="Modules\GitCore\GitCore.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Forms\About.resx">
