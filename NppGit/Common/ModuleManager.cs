@@ -50,9 +50,15 @@ namespace NppGit.Common
     class DockForm
     {
         public Type Type { get; set; }
-        public System.Windows.Forms.Form Form { get; set; }
+        public Form Form { get; set; }
         public bool UpdateWithChangeContext { get; set; }
         public Icon TabIcon { get; set; }
+        public NppTbMsg uMask { get; set; }
+
+        public DockForm()
+        {
+            uMask = NppTbMsg.DWS_PARAMSALL | NppTbMsg.DWS_DF_CONT_RIGHT;
+        }
     }
 
     public class ModuleManager : IModuleManager
@@ -300,14 +306,14 @@ namespace NppGit.Common
                 var form = _forms[cmdId];
                 if (form.Form == null)
                 {
-                    form.Form = Activator.CreateInstance(form.Type) as System.Windows.Forms.Form;
+                    form.Form = Activator.CreateInstance(form.Type) as Form;
                     form.TabIcon = PluginUtils.NppBitmapToIcon((form.Form as FormDockable).TabIcon);
 
                     NppTbData _nppTbData = new NppTbData();
                     _nppTbData.hClient = form.Form.Handle;
                     _nppTbData.pszName = (form.Form as FormDockable).Title;
                     _nppTbData.dlgID = cmdId;
-                    _nppTbData.uMask = NppTbMsg.DWS_DF_FLOATING | NppTbMsg.DWS_ICONTAB | NppTbMsg.DWS_ICONBAR;
+                    _nppTbData.uMask = form.uMask;
                     _nppTbData.hIconTab = (uint)form.TabIcon.Handle;
                     _nppTbData.pszModuleName = Properties.Resources.PluginName;
                     IntPtr _ptrNppTbData = Marshal.AllocHGlobal(Marshal.SizeOf(_nppTbData));
