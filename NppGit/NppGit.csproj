@@ -49,7 +49,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>..\bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
@@ -58,7 +58,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Prod|x86'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\Prod\</OutputPath>
+    <OutputPath>..\bin\Debug\plugins\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DebugType>full</DebugType>
@@ -85,6 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\AssemblyLoader.cs" />
+    <Compile Include="Common\TitleChangedEventArgs.cs" />
     <Compile Include="DllExport\DllExportAttribute.cs" />
     <Compile Include="Forms\FormDockable.cs" />
     <Compile Include="Forms\About.cs">
@@ -148,7 +149,13 @@
     <Compile Include="Interop\NppPluginNETHelper.cs" />
     <Compile Include="Common\MessageEventArgs.cs" />
     <Compile Include="Common\ModuleManager.cs" />
-    <Compile Include="Modules\GitCore\Repository.cs" />
+    <Compile Include="Modules\GitCore\RepoBrowser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Modules\GitCore\RepoBrowser.Designer.cs">
+      <DependentUpon>RepoBrowser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Modules\GitCore\RepositoryLink.cs" />
     <Compile Include="Modules\GitFeatures\GitFeatures.cs" />
     <Compile Include="Modules\PSSEFeatures\POSHExecutor.cs" />
     <Compile Include="Modules\PSSEFeatures\POSHFeatures.cs" />
@@ -198,6 +205,9 @@
     <EmbeddedResource Include="Forms\Status.resx">
       <DependentUpon>Status.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Modules\GitCore\RepoBrowser.resx">
+      <DependentUpon>RepoBrowser.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
@@ -220,6 +230,7 @@
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\bookmark-new-list.png" />
     <None Include="Resources\LICENSE" />
     <None Include="Resources\snippets_bar.png" />
     <None Include="Resources\button_cancel_8865.png" />

@@ -26,6 +26,7 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 using System;
+using System.Collections.Generic;
 
 namespace NppGit.Modules.GitCore
 {
@@ -34,8 +35,10 @@ namespace NppGit.Modules.GitCore
         // Event
         event Action OnActiveRepositoryChanged;
         // Properties
-        Repository ActiveRepository { get; }
+        RepositoryLink ActiveRepository { get; }
+        List<RepositoryLink> Repositories { get; }
         // Method
-        void UpdateCurrentPath(string path);
+        bool SwitchByPath(string path);
+        bool SwitchByName(string name);
     }
 }

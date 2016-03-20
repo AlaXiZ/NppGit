@@ -29,19 +29,61 @@ using System;
 using NppGit.Common;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Xml.Linq;
+using System.Diagnostics;
 
 namespace NppGit.Modules.GitCore
 {
     public class GitCore : IModule, IGitCore
     {
         #region IModule
-        IModuleManager _manager = null;
+        private IModuleManager _manager = null;
+        private int _browserCmdId;
 
         public void Final() { }
+
+        private void DoBrowser()
+        {
+            Settings.Panels.RepoBrowserPanelVisible = _manager.ToogleFormState(_browserCmdId);
+        }
 
         public void Init(IModuleManager manager)
         {
             _manager = manager;
+
+            manager.OnTabChangeEvent += ManagerOnTabChangeEvent;
+            manager.OnSystemInit += ManagerOnSystemInit;
+
+            _browserCmdId = manager.RegisteCommandItem(new CommandItem
+            {
+                Name = "Repository browser",
+                Hint = "Repository browser",
+                Action = DoBrowser,
+                Checked = Settings.Panels.RepoBrowserPanelVisible
+            });
+
+            manager.RegisterDockForm(typeof(RepoBrowser), _browserCmdId, false);
+
+            manager.RegisteCommandItem(new CommandItem
+            {
+                Name = "-",
+                Hint = "-",
+                Action = null
+            });
+        }
+
+        private void ManagerOnSystemInit()
+        {
+            if (Settings.Panels.RepoBrowserPanelVisible)
+            {
+                DoBrowser();
+            }
+        }
+
+        private void ManagerOnTabChangeEvent(object sender, TabEventArgs e)
+        {
+            SwitchByPath(PluginUtils.CurrentFilePath);
         }
 
         public bool IsNeedRun
@@ -50,57 +92,147 @@ namespace NppGit.Modules.GitCore
         }
         #endregion
 
+        private XDocument _doc;
+        private string _filename;
+
+        #region Singletone
         private static GitCore _instance;
         private static object _objLock = new object();
-        
         public static IGitCore Instance
         {
             get
             {
-                if (_instance == null)
-                    lock(_objLock)
-                        if (_instance == null)
-                            _instance = new GitCore();
-                
+                ctor();
                 return _instance;
             }
         }
 
-        private GitCore()
-        {
-            // TODO: load repo list
-        }
-
-        #region IGitCore
-        private string _currentRepoName = null;
-        private string _currentRepoPath = null;
-        private Dictionary<string, Repository> _repos = new Dictionary<string, Repository>();
-
-        public event Action OnActiveRepositoryChanged;
-        
-        public Repository ActiveRepository
+        public static IModule Module
         {
             get
             {
-                if (_currentRepoName != null && _repos.ContainsKey(_currentRepoName))
-                    return _repos[_currentRepoName];
-                else
-                    return null;                
+                var mth = new StackTrace().GetFrame(1).GetMethod();
+                var type = mth.ReflectedType;
+                if (!type.Equals(typeof(Plugin)))
+                {
+                    throw new FieldAccessException("Property Module using only in Plugin class");
+                }
+                ctor();
+                return _instance;
             }
         }
 
-        public void UpdateCurrentPath(string path)
+        private static void ctor()
         {
-            string newPath = GetRootDir(path);
-            if (string.IsNullOrWhiteSpace(newPath))
-            {
-                return;
-            }
-            // TODO: Check newPath
-            // if exists in repo-list, switch to branch
-            // else add to list and switch to...
+            if (_instance == null)
+                lock (_objLock)
+                    if (_instance == null)
+                        _instance = new GitCore();
         }
         #endregion
+
+        #region GitCore
+        private GitCore()
+        {
+            string fileName = Path.Combine(PluginUtils.ConfigDir, Properties.Resources.PluginName, Properties.Resources.RepositoriesXml);
+            if (File.Exists(fileName))
+            {
+                _doc = XDocument.Load(fileName);
+                _repos = (from e in _doc.Descendants("Repository")
+                             select e).ToDictionary(e => e.Attribute("Name").Value, (e) => { return new RepositoryLink(e.Value); });
+                if (_repos.ContainsKey(Settings.GitCore.LastActiveRepository))
+                {
+                    _currentRepo = _repos[Settings.GitCore.LastActiveRepository];
+                }
+            }
+            else
+            {
+                if (!Directory.Exists(Path.GetDirectoryName(fileName)))
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(fileName));
+                }
+                _doc = new XDocument();
+                _doc.Add(new XElement("Repositories"));
+                _doc.Save(fileName);
+            }
+            _filename = fileName;
+        }
+
+        #endregion
+
+        #region IGitCore
+        private RepositoryLink _currentRepo = null;
+        private Dictionary<string, RepositoryLink> _repos = new Dictionary<string, RepositoryLink>();
+
+        public event Action OnActiveRepositoryChanged;
+        
+        public RepositoryLink ActiveRepository
+        {
+            get { return _currentRepo; }
+        }
+
+        public List<RepositoryLink> Repositories
+        {
+            get { return _repos.Values.ToList(); }
+        }
+
+        public bool SwitchByPath(string path)
+        {
+            string newPath = GetRootDir(path);
+            if (string.IsNullOrWhiteSpace(newPath) || !LibGit2Sharp.Repository.IsValid(newPath))
+            {
+                return false;
+            }
+            var newRepo = new RepositoryLink(newPath);
+            if (_currentRepo != null)
+            {
+                if (_currentRepo.Name.Equals(newRepo.Name, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return false;
+                }
+            }
+            if (SwitchByName(newRepo.Name))
+            {
+                return true;
+            }
+            _currentRepo = newRepo;
+            SaveRepo(newRepo);
+            DoActiveRepository();
+            return true;
+        }
+
+        public bool SwitchByName(string name)
+        {
+            if (_repos.ContainsKey(name))
+            {
+                _currentRepo = _repos[name];
+                DoActiveRepository();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private void DoActiveRepository()
+        {
+            Settings.GitCore.LastActiveRepository = _currentRepo.Name;
+            if (OnActiveRepositoryChanged != null)
+            {
+                OnActiveRepositoryChanged();
+            }
+        }
+        #endregion
+
+        private void SaveRepo(RepositoryLink repoLink) 
+        {
+            _repos.Add(repoLink.Name, repoLink);
+            var root = _doc.Root;
+            var element = new XElement("Repository", repoLink.Path, new XAttribute("Name", repoLink.Name));
+            root.Add(element);
+            _doc.Save(_filename);
+        }
 
         private static string GetRootDir(string path)
         {
@@ -111,7 +243,7 @@ namespace NppGit.Modules.GitCore
             }
             else
             {
-                if (!string.IsNullOrEmpty(path) && Directory.GetParent(path) != null)
+                if (!string.IsNullOrEmpty(path) && Directory.GetParent(path) != null && Path.IsPathRooted(path))
                 {
                     return GetRootDir(Directory.GetParent(path).FullName);
                 }

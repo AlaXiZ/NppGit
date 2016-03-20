@@ -99,6 +99,16 @@ namespace NppGit
         #endregion
         
         #region "Settings classes"
+        public static class GitCore
+        {
+            public static string LastActiveRepository
+            {
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                get { return Get(""); }
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                set { Set(value); }
+            }
+        }
         public static class Modules
         {
 
@@ -199,6 +209,13 @@ namespace NppGit
                 set { Set(value); }
             }
             public static bool SnippetsPanelVisible
+            {
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                get { return Get(false); }
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                set { Set(value); }
+            }
+            public static bool RepoBrowserPanelVisible
             {
                 [MethodImpl(MethodImplOptions.NoInlining)]
                 get { return Get(false); }

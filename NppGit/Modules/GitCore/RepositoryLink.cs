@@ -25,9 +25,13 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+using LibGit2Sharp;
+using System.IO;
+using System.Linq;
+
 namespace NppGit.Modules.GitCore
 {
-    public class Repository
+    public class RepositoryLink
     {
         public string Name
         {
@@ -41,12 +45,51 @@ namespace NppGit.Modules.GitCore
 
         public string Branch
         {
-            get;
+            get
+            {
+                using (var repo = new Repository(Path))
+                {
+                    return repo.Head.Name;
+                }
+            }
         }
 
-        public Repository(string path)
+        public RepositoryLink(string path)
         {
-            // TODO: Init repo
+            Path = path;
+            Name = GetRepoName(path);
+        }
+
+        public static string GetRepoName(string repoDir)
+        {
+            string remote = "";
+            using (var repo = new Repository(repoDir))
+            {
+                if (repo.Network.Remotes.Count() > 0)
+                {
+                    var remoteUrl = repo.Network.Remotes.First().Url;
+                    if (!string.IsNullOrEmpty(remoteUrl))
+                    {
+                        remote = remoteUrl.Substring(remoteUrl.LastIndexOf('/') + 1, remoteUrl.Length - remoteUrl.LastIndexOf('/') - 1).Replace(".git", "");
+                    }
+                }
+                else
+                {
+                    remote = new DirectoryInfo(repoDir).Name;
+                }
+                return remote;
+            }
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(this, obj)) return true;
+            return obj != null && obj is RepositoryLink && (obj as RepositoryLink).Path.Equals(Name);
+        }
+
+        public override int GetHashCode()
+        {
+            return Path.GetHashCode();
         }
     }
 }
