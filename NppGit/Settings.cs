@@ -108,10 +108,16 @@ namespace NppGit
                 [MethodImpl(MethodImplOptions.NoInlining)]
                 set { Set(value); }
             }
+            public static bool ActiveRepoInTitle
+            {
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                get { return Get(true); }
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                set { Set(value); }
+            }
         }
         public static class Modules
         {
-
             public static bool TortoiseGit
             {
                 [MethodImpl(MethodImplOptions.NoInlining)]

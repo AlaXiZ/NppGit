@@ -54,6 +54,7 @@ namespace NppGit.Modules.GitCore
 
             manager.OnTabChangeEvent += ManagerOnTabChangeEvent;
             manager.OnSystemInit += ManagerOnSystemInit;
+            manager.OnTitleChangedEvent += ManagerOnTitleChangedEvent;
 
             _browserCmdId = manager.RegisteCommandItem(new CommandItem
             {
@@ -62,6 +63,7 @@ namespace NppGit.Modules.GitCore
                 Action = DoBrowser,
                 Checked = Settings.Panels.RepoBrowserPanelVisible
             });
+            // TODO: Register item
 
             manager.RegisterDockForm(typeof(RepoBrowser), _browserCmdId, false);
 
@@ -71,6 +73,14 @@ namespace NppGit.Modules.GitCore
                 Hint = "-",
                 Action = null
             });
+        }
+
+        private void ManagerOnTitleChangedEvent(object sender, TitleChangedEventArgs e)
+        {
+            if (_currentRepo != null)
+            {
+                e.AddTitleItem("Active repo: " + _currentRepo.Name + ":" + _currentRepo.Branch);
+            }
         }
 
         private void ManagerOnSystemInit()
@@ -221,6 +231,7 @@ namespace NppGit.Modules.GitCore
             if (OnActiveRepositoryChanged != null)
             {
                 OnActiveRepositoryChanged();
+                _manager.ManualTitleUpdate();
             }
         }
         #endregion

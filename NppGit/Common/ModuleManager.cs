@@ -79,6 +79,7 @@ namespace NppGit.Common
         public event Action OnSystemInit;
         public event EventHandler<TabEventArgs> OnTabChangeEvent;
         public event EventHandler<CommandItemClickEventArgs> OnCommandItemClick;
+        public event EventHandler<TitleChangedEventArgs> OnTitleChangedEvent;
 
         public ModuleManager()
         {
@@ -193,7 +194,8 @@ namespace NppGit.Common
             CWPRETSTRUCT msg = (CWPRETSTRUCT)Marshal.PtrToStructure(e.lParam, typeof(CWPRETSTRUCT));
             if (msg.message == (uint)WinMsg.WM_SETTEXT && (uint)msg.wParam != (uint)WinMsg.WM_SETTEXT)
             {
-                DoTitleChangingEvent();
+                DoTitleChangedEvent();
+                //DoTitleChangingEvent();
             }
             if (msg.message == (uint)WinMsg.WM_COMMAND)
             {
@@ -236,6 +238,32 @@ namespace NppGit.Common
             if (OnTitleChangingEvent != null)
             {
                 OnTitleChangingEvent();
+            }
+        }
+
+        private string _ending = null;
+
+        private void DoTitleChangedEvent()
+        {
+            if (OnTitleChangedEvent != null)
+            {
+                var args = new TitleChangedEventArgs();
+                OnTitleChangedEvent(this, args);
+                //
+                var title = PluginUtils.WindowTitle;
+                // Заголовок может заканчиваться на Notepad++ или на [Administrator]
+                // но всегда есть разделительный дефис между имененем файла и Notepad++
+                if (string.IsNullOrEmpty(_ending))
+                {
+                    // Ищем последний дефис
+                    var pos = title.LastIndexOf(" - ") + 3;
+                    // Получаем окончание для заголовка
+                    _ending = title.Substring(pos, title.Length - pos);
+                }
+                // Вдруг на пришел заголовок с нашими дописками,
+                // сначала их порежем
+                title = title.Substring(0, title.LastIndexOf(_ending) + _ending.Length) + args.GetTitle();
+                PluginUtils.WindowTitle = title;
             }
         }
 
@@ -419,6 +447,11 @@ namespace NppGit.Common
                 */
                 PluginUtils.SetLang(LangType.L_XML);
             }
+        }
+
+        public void ManualTitleUpdate()
+        {
+            DoTitleChangedEvent();
         }
         #endregion
 
