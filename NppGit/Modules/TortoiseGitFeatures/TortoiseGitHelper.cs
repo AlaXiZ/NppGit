@@ -37,21 +37,30 @@ namespace NppGit.Modules.TortoiseGitFeatures
 {
     public enum TortoiseGitCommand : uint
     {
-        Fetch       =  0x0001,
-        Log         =  0x0020,
-        Commit      =  0x0004,
-        Add         ,
-        Revert      ,
-        Switch      =  0x0200,
-        Blame       =  0x0010,
-        Pull        =  0x0002,
-        Push        =  0x0008,
-        StashSave   =  0x0040,
-        StashPop    =  0x0080,
-        RepoStatus  =  0x0100,
-        Diff        =  0x0400,
-        Rebase      =  0x0800,
-        ShowCompare = 0x1000
+        Fetch = 0x0001,
+        Log = 0x0020,
+        Commit = 0x0004,
+        Add,
+        Revert,
+        Switch = 0x0200,
+        Blame = 0x0010,
+        Pull = 0x0002,
+        Push = 0x0008,
+        StashSave = 0x0040,
+        StashPop = 0x0080,
+        RepoStatus = 0x0100,
+        Diff = 0x0400,
+        Rebase = 0x0800,
+        ShowCompare = 0x1000,
+        RepoBrowser,
+        StashApply,
+        RefBrowse,
+        Ignore,
+        CleanUp,
+        Resolve,
+        RepoCreate,
+        Export,
+        Merge
     }
     /*
     Fetch
@@ -84,7 +93,7 @@ namespace NppGit.Modules.TortoiseGitFeatures
 
         public bool IsNeedRun => Settings.Modules.TortoiseGit;
 
-      private static bool ExistsTortoiseGit(string programPath)
+        private static bool ExistsTortoiseGit(string programPath)
         {
             return System.IO.Directory.Exists(System.IO.Path.Combine(programPath, TORTOISEGITBIN));
         }
@@ -153,7 +162,8 @@ namespace NppGit.Modules.TortoiseGitFeatures
             if (string.IsNullOrEmpty(additionalParam) || string.IsNullOrWhiteSpace(additionalParam))
             {
                 addParam = "";
-            } else
+            }
+            else
             {
                 addParam = additionalParam;
             }
@@ -168,12 +178,22 @@ namespace NppGit.Modules.TortoiseGitFeatures
             if (closeParam == null || closeParam > 2)
             {
                 builder.Append(" ").AppendFormat(CLOSE, 0);
-            } else
+            }
+            else
             {
                 builder.Append(" ").AppendFormat(CLOSE, closeParam);
             }
 
             return builder.ToString();
+        }
+
+        private static bool CheckRepoAndShowError()
+        {
+            if (GitCore.GitCore.Instance.ActiveRepository == null)
+            {
+                MessageBox.Show("Нет активного репозитория!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            return GitCore.GitCore.Instance.ActiveRepository != null;
         }
 
         private static void TGitLogFile()
@@ -190,32 +210,47 @@ namespace NppGit.Modules.TortoiseGitFeatures
 
         private static void TGitLogRepo()
         {
-            string dirPath = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
-            StartCommand(CreateCommand(TortoiseGitCommand.Log, dirPath));
+            if (CheckRepoAndShowError())
+            {
+                string dirPath = GitCore.GitCore.Instance.ActiveRepository.Path;
+                StartCommand(CreateCommand(TortoiseGitCommand.Log, dirPath));
+            }
         }
 
         private static void TGitFetch()
         {
-            string dirPath = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
-            StartCommand(CreateCommand(TortoiseGitCommand.Fetch, dirPath));
+            if (CheckRepoAndShowError())
+            {
+                string dirPath = GitCore.GitCore.Instance.ActiveRepository.Path;
+                StartCommand(CreateCommand(TortoiseGitCommand.Fetch, dirPath));
+            }
         }
 
         private static void TGitPull()
         {
-            string dirPath = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
-            StartCommand(CreateCommand(TortoiseGitCommand.Pull, dirPath));
+            if (CheckRepoAndShowError())
+            {
+                string dirPath = GitCore.GitCore.Instance.ActiveRepository.Path;
+                StartCommand(CreateCommand(TortoiseGitCommand.Pull, dirPath));
+            }
         }
 
         private static void TGitPush()
         {
-            string dirPath = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
-            StartCommand(CreateCommand(TortoiseGitCommand.Push, dirPath));
+            if (CheckRepoAndShowError())
+            {
+                string dirPath = GitCore.GitCore.Instance.ActiveRepository.Path;
+                StartCommand(CreateCommand(TortoiseGitCommand.Push, dirPath));
+            }
         }
 
         private static void TGitCommit()
         {
-            string dirPath = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
-            StartCommand(CreateCommand(TortoiseGitCommand.Commit, dirPath));
+            if (CheckRepoAndShowError())
+            {
+                string dirPath = GitCore.GitCore.Instance.ActiveRepository.Path;
+                StartCommand(CreateCommand(TortoiseGitCommand.Commit, dirPath));
+            }
         }
 
         private static void TGitBlame()
@@ -233,27 +268,39 @@ namespace NppGit.Modules.TortoiseGitFeatures
 
         private static void TGitSwitch()
         {
-            string dirPath = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
-            StartCommand(CreateCommand(TortoiseGitCommand.Switch, dirPath));
+            if (CheckRepoAndShowError())
+            {
+                string dirPath = GitCore.GitCore.Instance.ActiveRepository.Path;
+                StartCommand(CreateCommand(TortoiseGitCommand.Switch, dirPath));
+            }
         }
 
         private static void TGitStashSave()
         {
-            string dirPath = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
-            string msg = "/msg:" + DateTime.Now.ToString();
-            StartCommand(CreateCommand(TortoiseGitCommand.StashSave, dirPath, additionalParam: msg));
+            if (CheckRepoAndShowError())
+            {
+                string dirPath = GitCore.GitCore.Instance.ActiveRepository.Path;
+                string msg = "/msg:" + DateTime.Now.ToString();
+                StartCommand(CreateCommand(TortoiseGitCommand.StashSave, dirPath, additionalParam: msg));
+            }
         }
 
         private static void TGitStashPop()
         {
-            string dirPath = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
-            StartCommand(CreateCommand(TortoiseGitCommand.StashPop, dirPath));
+            if (CheckRepoAndShowError())
+            {
+                string dirPath = GitCore.GitCore.Instance.ActiveRepository.Path;
+                StartCommand(CreateCommand(TortoiseGitCommand.StashPop, dirPath));
+            }
         }
-    
+
         private static void TGitRepoStatus()
         {
-            string dirPath = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
-            StartCommand(CreateCommand(TortoiseGitCommand.RepoStatus, dirPath));
+            if (CheckRepoAndShowError())
+            {
+                string dirPath = GitCore.GitCore.Instance.ActiveRepository.Path;
+                StartCommand(CreateCommand(TortoiseGitCommand.RepoStatus, dirPath));
+            }
         }
 
         private static void TGitDiff()
@@ -262,27 +309,133 @@ namespace NppGit.Modules.TortoiseGitFeatures
             StartCommand(CreateCommand(TortoiseGitCommand.Diff, path));
         }
 
-/*
-        private void TGitCompare()
-        {
-            string path = PluginUtils.CurrentFilePath;
-            StartCommand(CreateCommand(TortoiseGitCommand.ShowCompare, path));
-        }
-*/
+        /*
+                private void TGitCompare()
+                {
+                    string path = PluginUtils.CurrentFilePath;
+                    StartCommand(CreateCommand(TortoiseGitCommand.ShowCompare, path));
+                }
+        */
 
         private static void TGitRebase()
         {
-            string path = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
-            StartCommand(CreateCommand(TortoiseGitCommand.Rebase, path));
+            if (CheckRepoAndShowError())
+            {
+                string path = GitCore.GitCore.Instance.ActiveRepository.Path;
+                StartCommand(CreateCommand(TortoiseGitCommand.Rebase, path));
+            }
+        }
+
+        private static void TGitAddFile()
+        {
+            // TODO: В какой репозиторий добавляется файл?
+            if (CheckRepoAndShowError())
+            {
+                string path = PluginUtils.CurrentFilePath;
+                StartCommand(CreateCommand(TortoiseGitCommand.Add, path));
+            }
+        }
+
+        private static void TGitRevertFile()
+        {
+            string path = PluginUtils.CurrentFilePath;
+            StartCommand(CreateCommand(TortoiseGitCommand.Revert, path));
+        }
+
+        private static void TGitRepoBrowser()
+        {
+            if (CheckRepoAndShowError())
+            {
+                string path = GitCore.GitCore.Instance.ActiveRepository.Path;
+                StartCommand(CreateCommand(TortoiseGitCommand.RepoBrowser, path));
+            }
+        }
+
+        private static void TGitStashApply()
+        {
+            if (CheckRepoAndShowError())
+            {
+                string path = GitCore.GitCore.Instance.ActiveRepository.Path;
+                StartCommand(CreateCommand(TortoiseGitCommand.StashApply, path));
+            }
+        }
+
+        private static void TGitRefBrowse()
+        {
+            if (CheckRepoAndShowError())
+            {
+                string path = GitCore.GitCore.Instance.ActiveRepository.Path;
+                StartCommand(CreateCommand(TortoiseGitCommand.RefBrowse, path));
+            }
+        }
+
+        private static void TGitIgnore()
+        {
+            if (CheckRepoAndShowError())
+            {
+                string path = PluginUtils.CurrentFilePath;
+                StartCommand(CreateCommand(TortoiseGitCommand.Ignore, path));
+            }
+        }
+
+        private static void TGitExport()
+        {
+
+            if (CheckRepoAndShowError())
+            {
+                string path = GitCore.GitCore.Instance.ActiveRepository.Path;
+                StartCommand(CreateCommand(TortoiseGitCommand.Export, path));
+            }
+        }
+
+        private static void TGitMerge()
+        {
+
+            if (CheckRepoAndShowError())
+            {
+                string path = GitCore.GitCore.Instance.ActiveRepository.Path;
+                StartCommand(CreateCommand(TortoiseGitCommand.Merge, path));
+            }
+        }
+
+        private static void TGitCleanup()
+        {
+
+            if (CheckRepoAndShowError())
+            {
+                string path = GitCore.GitCore.Instance.ActiveRepository.Path;
+                StartCommand(CreateCommand(TortoiseGitCommand.CleanUp, path));
+            }
+        }
+
+        // TODO: Patch Serial
+
+        private static void TGitApplyPathSerial()
+        {
+            /*
+                /command:importpatch 
+                /pathfile:"C:\Users\ASHCHA~1\AppData\Local\Temp\TortoiseGit\git1105.tmp" 
+                /deletepathfile 
+                /hwnd:0000000000020338
+            */
+        }
+
+        private static void TGitCreatePathSerial()
+        {
+            /*
+                /command:formatpatch 
+                /path:"D:\src\NppGit" 
+                /hwnd:0000000000020338
+            */
         }
 
         private static void ReadmeFunc()
         {
-          const string text = "Не установлен TortoiseGit или не найдена папка с установленной программой!";
-          MessageBox.Show(text, "Ошибка настройки", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            const string text = "Не установлен TortoiseGit или не найдена папка с установленной программой!";
+            MessageBox.Show(text, "Ошибка настройки", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-      void IModule.Init(IModuleManager manager)
+        void IModule.Init(IModuleManager manager)
         {
             _manager = manager;
             _manager.OnToolbarRegisterEvent += ToolBarInit;
@@ -398,6 +551,14 @@ namespace NppGit.Modules.TortoiseGitFeatures
                 if ((btnMask & (uint)TortoiseGitCommand.StashSave) > 0)
                     _icons.Add(cmdId, Properties.Resources.stashsave);
 
+                _manager.RegisteCommandItem(new CommandItem
+                {
+                    Name = "TGit Stash apply",
+                    Hint = "Stash apply",
+                    ShortcutKey = null,
+                    Action = TGitStashApply
+                });
+
                 cmdId = _manager.RegisteCommandItem(new CommandItem
                 {
                     Name = "TGit Stash pop",
@@ -443,6 +604,80 @@ namespace NppGit.Modules.TortoiseGitFeatures
                     ShortcutKey = null,
                     Action = TGitRebase
                 });
+
+                _manager.RegisteCommandItem(new CommandItem
+                {
+                    Name = "TGit Add file",
+                    Hint = "Add file",
+                    ShortcutKey = null,
+                    Action = TGitAddFile
+                });
+
+                _manager.RegisteCommandItem(new CommandItem
+                {
+                    Name = "TGit Revert file",
+                    Hint = "Revert file",
+                    ShortcutKey = null,
+                    Action = TGitRevertFile
+                });
+
+                _manager.RegisteCommandItem(new CommandItem
+                {
+                    Name = "TGit Repobrowser",
+                    Hint = "Repobrowser",
+                    ShortcutKey = null,
+                    Action = TGitRepoBrowser
+                });
+
+                _manager.RegisteCommandItem(new CommandItem
+                {
+                    Name = "TGit RefBrowse",
+                    Hint = "RefBrowse",
+                    ShortcutKey = null,
+                    Action = TGitRefBrowse
+                });
+
+                _manager.RegisteCommandItem(new CommandItem
+                {
+                    Name = "TGit Ignore",
+                    Hint = "Ignore",
+                    ShortcutKey = null,
+                    Action = TGitIgnore
+                });
+
+                _manager.RegisteCommandItem(new CommandItem
+                {
+                    Name = "TGit Export",
+                    Hint = "Export",
+                    ShortcutKey = null,
+                    Action = TGitExport
+                });
+
+                _manager.RegisteCommandItem(new CommandItem
+                {
+                    Name = "TGit Merge",
+                    Hint = "Merge",
+                    ShortcutKey = null,
+                    Action = TGitMerge
+                });
+
+                _manager.RegisteCommandItem(new CommandItem
+                {
+                    Name = "TGit CleanUp",
+                    Hint = "CleanUp",
+                    ShortcutKey = null,
+                    Action = TGitCleanup
+                });
+
+                /*
+                _manager.RegisteCommandItem(new CommandItem
+                {
+                    Name = "TGit ",
+                    Hint = "",
+                    ShortcutKey = null,
+                    Action = null
+                });
+                */
 
                 _manager.RegisteCommandItem(new CommandItem
                 {
