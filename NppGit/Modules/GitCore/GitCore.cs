@@ -40,12 +40,20 @@ namespace NppGit.Modules.GitCore
         #region IModule
         private IModuleManager _manager = null;
         private int _browserCmdId;
+        private int _showInTitleCmdId;
 
         public void Final() { }
 
         private void DoBrowser()
         {
             Settings.Panels.RepoBrowserPanelVisible = _manager.ToogleFormState(_browserCmdId);
+        }
+
+        private void DoShowInTitle()
+        {
+            Settings.GitCore.ActiveRepoInTitle = !Settings.GitCore.ActiveRepoInTitle;
+            _manager.SetCheckedMenu(_showInTitleCmdId, Settings.GitCore.ActiveRepoInTitle);
+            _manager.ManualTitleUpdate();
         }
 
         public void Init(IModuleManager manager)
@@ -63,7 +71,14 @@ namespace NppGit.Modules.GitCore
                 Action = DoBrowser,
                 Checked = Settings.Panels.RepoBrowserPanelVisible
             });
-            // TODO: Register item
+
+            _showInTitleCmdId = manager.RegisteCommandItem(new CommandItem
+            {
+                Name = "Active repo in title",
+                Hint = "Active repo in title",
+                Action = DoShowInTitle,
+                Checked = Settings.GitCore.ActiveRepoInTitle
+            });
 
             manager.RegisterDockForm(typeof(RepoBrowser), _browserCmdId, false);
 
@@ -77,7 +92,7 @@ namespace NppGit.Modules.GitCore
 
         private void ManagerOnTitleChangedEvent(object sender, TitleChangedEventArgs e)
         {
-            if (_currentRepo != null)
+            if (_currentRepo != null && Settings.GitCore.ActiveRepoInTitle)
             {
                 e.AddTitleItem("Active repo: " + _currentRepo.Name + ":" + _currentRepo.Branch);
             }

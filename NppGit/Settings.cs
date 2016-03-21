@@ -111,7 +111,7 @@ namespace NppGit
             public static bool ActiveRepoInTitle
             {
                 [MethodImpl(MethodImplOptions.NoInlining)]
-                get { return Get(true); }
+                get { return Get(false); }
                 [MethodImpl(MethodImplOptions.NoInlining)]
                 set { Set(value); }
             }
