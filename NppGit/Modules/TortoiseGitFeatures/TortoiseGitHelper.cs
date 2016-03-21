@@ -60,7 +60,15 @@ namespace NppGit.Modules.TortoiseGitFeatures
         Resolve,
         RepoCreate,
         Export,
-        Merge
+        Merge,
+        Remove,
+        Rename,
+        ConflictEditor,
+        RefLog,
+        RevisionGraph,
+        Tag,
+        Daemon,
+        PGPfp
     }
     /*
     Fetch
@@ -408,6 +416,97 @@ namespace NppGit.Modules.TortoiseGitFeatures
             }
         }
 
+        private static void TGitRemove()
+        {
+
+            if (CheckRepoAndShowError())
+            {
+                string path = PluginUtils.CurrentFilePath;
+                StartCommand(CreateCommand(TortoiseGitCommand.Remove, path));
+            }
+        }
+
+        private static void TGitRename()
+        {
+
+            if (CheckRepoAndShowError())
+            {
+                string path = PluginUtils.CurrentFilePath;
+                StartCommand(CreateCommand(TortoiseGitCommand.Rename, path));
+            }
+        }
+
+        private static void TGitConflictEditor()
+        {
+            // TODO: Когда вызывается?
+            if (CheckRepoAndShowError())
+            {
+                string path = PluginUtils.CurrentFilePath;
+                StartCommand(CreateCommand(TortoiseGitCommand.ConflictEditor, path));
+            }
+        }
+
+        private static void TGitRefLog()
+        {
+
+            if (CheckRepoAndShowError())
+            {
+                string path = GitCore.GitCore.Instance.ActiveRepository.Path;
+                StartCommand(CreateCommand(TortoiseGitCommand.RefLog, path));
+            }
+        }
+
+        private static void TGitRevisionGraph()
+        {
+
+            if (CheckRepoAndShowError())
+            {
+                string path = GitCore.GitCore.Instance.ActiveRepository.Path;
+                StartCommand(CreateCommand(TortoiseGitCommand.RevisionGraph, path));
+            }
+        }
+
+        private static void TGitTag()
+        {
+
+            if (CheckRepoAndShowError())
+            {
+                string path = GitCore.GitCore.Instance.ActiveRepository.Path;
+                StartCommand(CreateCommand(TortoiseGitCommand.Tag, path));
+            }
+        }
+
+        private static void TGitDaemon()
+        {
+
+            if (CheckRepoAndShowError())
+            {
+                string path = GitCore.GitCore.Instance.ActiveRepository.Path;
+                StartCommand(CreateCommand(TortoiseGitCommand.Daemon, path));
+            }
+        }
+
+        private static void TGitPGPfp()
+        {
+
+            if (CheckRepoAndShowError())
+            {
+                string path = GitCore.GitCore.Instance.ActiveRepository.Path;
+                StartCommand(CreateCommand(TortoiseGitCommand.PGPfp, path));
+            }
+        }
+        /*
+        private static void TGit()
+        {
+
+            if (CheckRepoAndShowError())
+            {
+                string path = GitCore.GitCore.Instance.ActiveRepository.Path;
+                StartCommand(CreateCommand(TortoiseGitCommand., path));
+            }
+        }
+        */
+
         // TODO: Patch Serial
 
         private static void TGitApplyPathSerial()
@@ -624,7 +723,7 @@ namespace NppGit.Modules.TortoiseGitFeatures
                 _manager.RegisteCommandItem(new CommandItem
                 {
                     Name = "TGit Repobrowser",
-                    Hint = "Repobrowser",
+                    Hint = "Repo browser",
                     ShortcutKey = null,
                     Action = TGitRepoBrowser
                 });
@@ -669,6 +768,69 @@ namespace NppGit.Modules.TortoiseGitFeatures
                     Action = TGitCleanup
                 });
 
+                _manager.RegisteCommandItem(new CommandItem
+                {
+                    Name = "TGit Remove",
+                    Hint = "Remove",
+                    ShortcutKey = null,
+                    Action = TGitRemove
+                });
+
+                _manager.RegisteCommandItem(new CommandItem
+                {
+                    Name = "TGit Rename",
+                    Hint = "Rename",
+                    ShortcutKey = null,
+                    Action = TGitRename
+                });
+
+                _manager.RegisteCommandItem(new CommandItem
+                {
+                    Name = "TGit ConflictEditor",
+                    Hint = "Conflict Editor",
+                    ShortcutKey = null,
+                    Action = TGitConflictEditor
+                });
+
+                _manager.RegisteCommandItem(new CommandItem
+                {
+                    Name = "TGit RefLog",
+                    Hint = "Ref log",
+                    ShortcutKey = null,
+                    Action = TGitRefLog
+                });
+
+                _manager.RegisteCommandItem(new CommandItem
+                {
+                    Name = "TGit Revision Graph",
+                    Hint = "Revision Graph",
+                    ShortcutKey = null,
+                    Action = TGitRevisionGraph
+                });
+
+                _manager.RegisteCommandItem(new CommandItem
+                {
+                    Name = "TGit Tag",
+                    Hint = "Tag",
+                    ShortcutKey = null,
+                    Action = TGitTag
+                });
+
+                _manager.RegisteCommandItem(new CommandItem
+                {
+                    Name = "TGit Daemon",
+                    Hint = "Daemon",
+                    ShortcutKey = null,
+                    Action = TGitDaemon
+                });
+
+                _manager.RegisteCommandItem(new CommandItem
+                {
+                    Name = "TGit Signing Key fingerprint",
+                    Hint = "Signing Key fingerprint",
+                    ShortcutKey = null,
+                    Action =  TGitPGPfp
+                });
                 /*
                 _manager.RegisteCommandItem(new CommandItem
                 {
