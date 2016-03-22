@@ -1,4 +1,4 @@
-/*
+﻿/*
 Copyright (c) 2015-2016, Schadin Alexey (schadin@gmail.com)
 All rights reserved.
 
@@ -26,24 +26,19 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 using System;
-using System.Drawing;
+using System.Collections.Generic;
 
-namespace NppGit.Common
+namespace NppGit.Modules.GitCore
 {
-    public interface IModuleManager
+    public interface IGitCore
     {
-        event Action OnToolbarRegisterEvent;
-        event Action OnTitleChangingEvent;
-        event Action OnSystemInit;
-        event EventHandler<TabEventArgs> OnTabChangeEvent;
-        event EventHandler<CommandItemClickEventArgs> OnCommandItemClick;
-        event EventHandler<TitleChangedEventArgs> OnTitleChangedEvent;
-
-        int RegisteCommandItem(CommandItem menuItem);
-        void RegisterDockForm(Type formClass, int cmdId, bool updateWithChangeContext);
-        void AddToolbarButton(int cmdId, Bitmap icon);
-        bool ToogleFormState(int cmdId);
-        void SetCheckedMenu(int cmdId, bool isChecked);
-        void ManualTitleUpdate();
+        // Event
+        event Action OnActiveRepositoryChanged;
+        // Properties
+        RepositoryLink ActiveRepository { get; }
+        List<RepositoryLink> Repositories { get; }
+        // Method
+        bool SwitchByPath(string path);
+        bool SwitchByName(string name);
     }
 }

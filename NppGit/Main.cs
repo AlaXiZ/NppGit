@@ -35,6 +35,7 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using NppGit.Forms;
 using NppGit.Modules.TortoiseGitFeatures;
+using NppGit.Modules.GitCore;
 
 namespace NppGit
 {
@@ -56,6 +57,7 @@ namespace NppGit
             mm.AddModule(new Git());
             mm.AddModule(new SqlIde());
             mm.AddModule(new Snippets());
+            mm.AddModule(GitCore.Module);
 
             mm.Init();
             var isVisiblePanel = Settings.Panels.StatusPanelVisible;

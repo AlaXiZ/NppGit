@@ -1,4 +1,4 @@
-/*
+﻿/*
 Copyright (c) 2015-2016, Schadin Alexey (schadin@gmail.com)
 All rights reserved.
 
@@ -26,24 +26,29 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 using System;
-using System.Drawing;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace NppGit.Common
 {
-    public interface IModuleManager
+    public class TitleChangedEventArgs: EventArgs
     {
-        event Action OnToolbarRegisterEvent;
-        event Action OnTitleChangingEvent;
-        event Action OnSystemInit;
-        event EventHandler<TabEventArgs> OnTabChangeEvent;
-        event EventHandler<CommandItemClickEventArgs> OnCommandItemClick;
-        event EventHandler<TitleChangedEventArgs> OnTitleChangedEvent;
+        private List<string> _items = new List<string>();
 
-        int RegisteCommandItem(CommandItem menuItem);
-        void RegisterDockForm(Type formClass, int cmdId, bool updateWithChangeContext);
-        void AddToolbarButton(int cmdId, Bitmap icon);
-        bool ToogleFormState(int cmdId);
-        void SetCheckedMenu(int cmdId, bool isChecked);
-        void ManualTitleUpdate();
+        public void AddTitleItem(string titleItem)
+        {
+            _items.Add(titleItem);
+        }
+
+        public List<string> Items { get { return _items; } }
+
+        public string GetTitle(string delimiter = " / ", string beginString = " [", string endString = "]")
+        {
+            if (_items.Count > 0)
+                return beginString + _items.Aggregate((a, b) => a + delimiter + b) + endString;
+            else
+                return "";
+        }
     }
 }

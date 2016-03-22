@@ -74,67 +74,7 @@ namespace NppGit.Modules
 
         private void DoTitleUpdate()
         {
-            bool isShowBranch = Settings.Functions.ShowBranch,
-                 isShowRepo = Settings.Functions.ShowRepoName,
-                 isShowStatus = Settings.Functions.ShowStatusFile;
-
-            var repoDir = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
-            if (!string.IsNullOrEmpty(repoDir) && Repository.IsValid(repoDir))
-            {
-                using (var repo = new Repository(repoDir))
-                {
-                    var status = repo.RetrieveStatus(PluginUtils.CurrentFilePath);
-                    if (status != FileStatus.Ignored)
-                    {
-                        var title = PluginUtils.WindowTitle;
-                        // Заголовок может заканчиваться на Notepad++ или на [Administrator]
-                        // но всегда есть разделительный дефис между имененем файла и Notepad++
-                        if (string.IsNullOrEmpty(_ending))
-                        {
-                            // Ищем последний дефис
-                            var pos = title.LastIndexOf(" - ") + 3;
-                            // Получаем окончание для заголовка
-                            _ending = title.Substring(pos, title.Length - pos);
-                        }
-                        // Вдруг на пришел заголовок с нашими дописками,
-                        // сначала их порежем
-                        title = title.Substring(0, title.LastIndexOf(_ending) + _ending.Length);
-                        var strBuild = new StringBuilder();
-                        if (isShowRepo)
-                        {
-                            string remote = "";
-                            if (repo.Network.Remotes.Count() > 0)
-                            {
-                                var remoteUrl = repo.Network.Remotes.First().Url;
-                                if (!string.IsNullOrEmpty(remoteUrl))
-                                {
-                                    remote = remoteUrl.Substring(remoteUrl.LastIndexOf('/') + 1, remoteUrl.Length - remoteUrl.LastIndexOf('/') - 1).Replace(".git", "");
-                                }
-                            }
-                            else
-                            {
-                                remote = new DirectoryInfo(repoDir).Name;
-                            }
-                            strBuild.Append(remote);
-                        }
-                        if (isShowBranch)
-                        {
-                            if (strBuild.Length > 0)
-                                strBuild.Append(" / ");
-                            strBuild.Append(repo.Head.Name);
-                        }
-                        if (isShowStatus)
-                        {
-                            if (strBuild.Length > 0)
-                                strBuild.Append(" / ");
-                            strBuild.Append(repo.RetrieveStatus(PluginUtils.CurrentFilePath).ToString());
-                        }
-                        if (strBuild.Length > 0)
-                            title += " [ " + strBuild.ToString() + " ]";
-                        PluginUtils.WindowTitle = title;
-                    }
-                }
-            }
+            _manager.ManualTitleUpdate();
         }
 
         private void DoShowStatus()
@@ -149,7 +89,7 @@ namespace NppGit.Modules
         public void Init(IModuleManager manager)
         {
             _manager = manager;
-            _manager.OnTitleChangingEvent += TitleChanging;
+            _manager.OnTitleChangedEvent += OnTitleChangedEvent;
             _manager.OnSystemInit += ManagerOnSystemInit;
 
             _showBranchCmdID = _manager.RegisteCommandItem(new CommandItem
@@ -207,6 +147,60 @@ namespace NppGit.Modules
             });
         }
 
+        private void OnTitleChangedEvent(object sender, TitleChangedEventArgs e)
+        {
+            if (Settings.Functions.ShowBranch || Settings.Functions.ShowRepoName || Settings.Functions.ShowStatusFile)
+            {
+                bool isShowBranch = Settings.Functions.ShowBranch,
+                 isShowRepo = Settings.Functions.ShowRepoName,
+                 isShowStatus = Settings.Functions.ShowStatusFile;
+
+                var repoDir = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
+                if (!string.IsNullOrEmpty(repoDir) && Repository.IsValid(repoDir))
+                {
+                    using (var repo = new Repository(repoDir))
+                    {
+                        var status = repo.RetrieveStatus(PluginUtils.CurrentFilePath);
+                        if (status != FileStatus.Ignored)
+                        {
+                            var title = new StringBuilder();
+
+                            if (isShowRepo)
+                            {
+                                string remote = "";
+                                if (repo.Network.Remotes.Count() > 0)
+                                {
+                                    var remoteUrl = repo.Network.Remotes.First().Url;
+                                    if (!string.IsNullOrEmpty(remoteUrl))
+                                    {
+                                        remote = remoteUrl.Substring(remoteUrl.LastIndexOf('/') + 1, remoteUrl.Length - remoteUrl.LastIndexOf('/') - 1).Replace(".git", "");
+                                    }
+                                }
+                                else
+                                {
+                                    remote = new DirectoryInfo(repoDir).Name;
+                                }
+                                title.Append(remote);
+                            }
+                            if (isShowBranch)
+                            {
+                                if (title.Length > 0)
+                                    title.Append(":");
+                                title.Append(repo.Head.Name);
+                            }
+                            if (isShowStatus)
+                            {
+                                if (title.Length > 0)
+                                    title.Append(":");
+                                title.Append(repo.RetrieveStatus(PluginUtils.CurrentFilePath).ToString());
+                            }
+                            e.AddTitleItem("File in repo: " + title.ToString());
+                        }
+                    }
+                }
+            }
+        }
+
         private void ManagerOnSystemInit()
         {
             if (Settings.Panels.FileStatusPanelVisible)
@@ -214,13 +208,7 @@ namespace NppGit.Modules
                 DoShowStatus();
             }
         }
-
-        private void TitleChanging()
-        {
-            if (Settings.Functions.ShowBranch || Settings.Functions.ShowRepoName || Settings.Functions.ShowStatusFile)
-                DoTitleUpdate();
-        }
-
+        
         private void OpenFileInOtherBranch()
         {
             var repoDir = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);

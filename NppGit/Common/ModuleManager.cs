@@ -50,9 +50,15 @@ namespace NppGit.Common
     class DockForm
     {
         public Type Type { get; set; }
-        public System.Windows.Forms.Form Form { get; set; }
+        public Form Form { get; set; }
         public bool UpdateWithChangeContext { get; set; }
         public Icon TabIcon { get; set; }
+        public NppTbMsg uMask { get; set; }
+
+        public DockForm()
+        {
+            uMask = NppTbMsg.DWS_PARAMSALL | NppTbMsg.DWS_DF_CONT_RIGHT;
+        }
     }
 
     public class ModuleManager : IModuleManager
@@ -73,6 +79,7 @@ namespace NppGit.Common
         public event Action OnSystemInit;
         public event EventHandler<TabEventArgs> OnTabChangeEvent;
         public event EventHandler<CommandItemClickEventArgs> OnCommandItemClick;
+        public event EventHandler<TitleChangedEventArgs> OnTitleChangedEvent;
 
         public ModuleManager()
         {
@@ -187,7 +194,8 @@ namespace NppGit.Common
             CWPRETSTRUCT msg = (CWPRETSTRUCT)Marshal.PtrToStructure(e.lParam, typeof(CWPRETSTRUCT));
             if (msg.message == (uint)WinMsg.WM_SETTEXT && (uint)msg.wParam != (uint)WinMsg.WM_SETTEXT)
             {
-                DoTitleChangingEvent();
+                DoTitleChangedEvent();
+                //DoTitleChangingEvent();
             }
             if (msg.message == (uint)WinMsg.WM_COMMAND)
             {
@@ -230,6 +238,32 @@ namespace NppGit.Common
             if (OnTitleChangingEvent != null)
             {
                 OnTitleChangingEvent();
+            }
+        }
+
+        private string _ending = null;
+
+        private void DoTitleChangedEvent()
+        {
+            if (OnTitleChangedEvent != null)
+            {
+                var args = new TitleChangedEventArgs();
+                OnTitleChangedEvent(this, args);
+                //
+                var title = PluginUtils.WindowTitle;
+                // Заголовок может заканчиваться на Notepad++ или на [Administrator]
+                // но всегда есть разделительный дефис между имененем файла и Notepad++
+                if (string.IsNullOrEmpty(_ending))
+                {
+                    // Ищем последний дефис
+                    var pos = title.LastIndexOf(" - ") + 3;
+                    // Получаем окончание для заголовка
+                    _ending = title.Substring(pos, title.Length - pos);
+                }
+                // Вдруг на пришел заголовок с нашими дописками,
+                // сначала их порежем
+                title = title.Substring(0, title.LastIndexOf(_ending) + _ending.Length) + args.GetTitle();
+                PluginUtils.WindowTitle = title;
             }
         }
 
@@ -300,14 +334,14 @@ namespace NppGit.Common
                 var form = _forms[cmdId];
                 if (form.Form == null)
                 {
-                    form.Form = Activator.CreateInstance(form.Type) as System.Windows.Forms.Form;
+                    form.Form = Activator.CreateInstance(form.Type) as Form;
                     form.TabIcon = PluginUtils.NppBitmapToIcon((form.Form as FormDockable).TabIcon);
 
                     NppTbData _nppTbData = new NppTbData();
                     _nppTbData.hClient = form.Form.Handle;
                     _nppTbData.pszName = (form.Form as FormDockable).Title;
                     _nppTbData.dlgID = cmdId;
-                    _nppTbData.uMask = NppTbMsg.DWS_DF_FLOATING | NppTbMsg.DWS_ICONTAB | NppTbMsg.DWS_ICONBAR;
+                    _nppTbData.uMask = form.uMask;
                     _nppTbData.hIconTab = (uint)form.TabIcon.Handle;
                     _nppTbData.pszModuleName = Properties.Resources.PluginName;
                     IntPtr _ptrNppTbData = Marshal.AllocHGlobal(Marshal.SizeOf(_nppTbData));
@@ -413,6 +447,11 @@ namespace NppGit.Common
                 */
                 PluginUtils.SetLang(LangType.L_XML);
             }
+        }
+
+        public void ManualTitleUpdate()
+        {
+            DoTitleChangedEvent();
         }
         #endregion
 
