@@ -33,6 +33,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace NppGit.Common
@@ -70,10 +71,11 @@ namespace NppGit.Common
         private Dictionary<string, List<CommandItem>> _cmdList;
         private Dictionary<uint, string> _menuCache;
         private bool _canEvent = false;
+        private ulong _currentFormId = ulong.MaxValue;
 
         private LocalWindowsHook winHookProcRet;
         private LocalWindowsHook winHookProc;
-        
+
         public event Action OnToolbarRegisterEvent;
         public event Action OnTitleChangingEvent;
         public event Action OnSystemInit;
@@ -94,13 +96,17 @@ namespace NppGit.Common
             if (!_canEvent)
                 return;
 
-            switch(sn.nmhdr.code)
+            switch (sn.nmhdr.code)
             {
                 case (uint)NppMsg.NPPN_BUFFERACTIVATED:
                 case (uint)NppMsg.NPPN_FILEOPENED:
                 case (uint)NppMsg.NPPN_FILESAVED:
                     {
-                        DoTabChangeEvent(sn.nmhdr.idFrom);
+                        if (sn.nmhdr.idFrom != _currentFormId)
+                        {
+                            _currentFormId = sn.nmhdr.idFrom;
+                            DoTabChangeEvent(sn.nmhdr.idFrom);
+                        }
                         break;
                     }
                 case (uint)NppMsg.NPPN_READY:
@@ -126,6 +132,8 @@ namespace NppGit.Common
 
         private void DoTabChangeEvent(uint idFormChanged)
         {
+            if (!_canEvent) return;
+
             if (OnTabChangeEvent != null)
             {
                 OnTabChangeEvent(this, new TabEventArgs(idFormChanged));
@@ -154,7 +162,8 @@ namespace NppGit.Common
                     m.Init(this);
             }
 
-            RegisteCommandItem(new CommandItem {
+            RegisteCommandItem(new CommandItem
+            {
                 Name = "Sample context menu",
                 Hint = "Sample context menu",
                 Action = DoContextMenu
@@ -235,6 +244,8 @@ namespace NppGit.Common
 
         private void DoTitleChangingEvent()
         {
+            if (!_canEvent) return;
+
             if (OnTitleChangingEvent != null)
             {
                 OnTitleChangingEvent();
@@ -245,25 +256,33 @@ namespace NppGit.Common
 
         private void DoTitleChangedEvent()
         {
+            if (!_canEvent) return;
+
             if (OnTitleChangedEvent != null)
             {
-                var args = new TitleChangedEventArgs();
-                OnTitleChangedEvent(this, args);
-                //
-                var title = PluginUtils.WindowTitle;
-                // Заголовок может заканчиваться на Notepad++ или на [Administrator]
-                // но всегда есть разделительный дефис между имененем файла и Notepad++
-                if (string.IsNullOrEmpty(_ending))
+                Task task = new Task(() =>
                 {
-                    // Ищем последний дефис
-                    var pos = title.LastIndexOf(" - ") + 3;
-                    // Получаем окончание для заголовка
-                    _ending = title.Substring(pos, title.Length - pos);
-                }
-                // Вдруг на пришел заголовок с нашими дописками,
-                // сначала их порежем
-                title = title.Substring(0, title.LastIndexOf(_ending) + _ending.Length) + args.GetTitle();
-                PluginUtils.WindowTitle = title;
+                    var title = PluginUtils.WindowTitle;
+                    if (string.IsNullOrEmpty(title))
+                        return;
+                    var args = new TitleChangedEventArgs();
+                    OnTitleChangedEvent(this, args);
+                    //
+                    // Заголовок может заканчиваться на Notepad++ или на [Administrator]
+                    // но всегда есть разделительный дефис между имененем файла и Notepad++
+                    if (string.IsNullOrEmpty(_ending))
+                    {
+                        // Ищем последний дефис
+                        var pos = title.LastIndexOf(" - ") + 3;
+                        // Получаем окончание для заголовка
+                        _ending = title.Substring(pos, title.Length - pos);
+                    }
+                    // Вдруг на пришел заголовок с нашими дописками,
+                    // сначала их порежем
+                    title = title.Substring(0, title.LastIndexOf(_ending) + _ending.Length) + args.GetTitle();
+                    PluginUtils.WindowTitle = title;
+                });
+                task.Start();
             }
         }
 
@@ -274,7 +293,7 @@ namespace NppGit.Common
                 OnToolbarRegisterEvent();
             }
         }
-        
+
         public void AddModule(IModule item)
         {
             if (!_modules.Contains(item))
@@ -308,11 +327,11 @@ namespace NppGit.Common
             if (!_forms.ContainsKey(cmdId))
             {
                 _forms.Add(cmdId, new DockForm
-                                        {
-                                            Type = formClass,
-                                            Form = null,
-                                            UpdateWithChangeContext = updateWithChangeContext
-                                        });
+                {
+                    Type = formClass,
+                    Form = null,
+                    UpdateWithChangeContext = updateWithChangeContext
+                });
                 if (updateWithChangeContext)
                 {
                     OnTabChangeEvent += (o, a) =>

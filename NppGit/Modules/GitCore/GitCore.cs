@@ -32,6 +32,7 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using System.Diagnostics;
+using LibGit2Sharp;
 
 namespace NppGit.Modules.GitCore
 {
@@ -41,8 +42,15 @@ namespace NppGit.Modules.GitCore
         private IModuleManager _manager = null;
         private int _browserCmdId;
         private int _showInTitleCmdId;
+        private Repository _currRepo = null;
 
-        public void Final() { }
+        public void Final()
+        {
+            if (_currRepo != null)
+            {
+                _currRepo.Dispose();
+            }
+        }
 
         private void DoBrowser()
         {
@@ -92,9 +100,9 @@ namespace NppGit.Modules.GitCore
 
         private void ManagerOnTitleChangedEvent(object sender, TitleChangedEventArgs e)
         {
-            if (_currentRepo != null && Settings.GitCore.ActiveRepoInTitle)
+            if (_currRepo != null && Settings.GitCore.ActiveRepoInTitle)
             {
-                e.AddTitleItem("Active repo: " + _currentRepo.Name + ":" + _currentRepo.Branch);
+                e.AddTitleItem("Active repo: " + _currentRepo.Name + ":" + _currRepo.Head.Name);
             }
         }
 
@@ -181,6 +189,8 @@ namespace NppGit.Modules.GitCore
                 _doc.Save(fileName);
             }
             _filename = fileName;
+
+            SwitchByName(Settings.GitCore.LastActiveRepository);
         }
 
         #endregion
@@ -199,6 +209,11 @@ namespace NppGit.Modules.GitCore
         public List<RepositoryLink> Repositories
         {
             get { return _repos.Values.ToList(); }
+        }
+
+        public string CurrentBranch
+        {
+            get { return _currRepo?.Head.Name ?? ""; }
         }
 
         public bool SwitchByPath(string path)
@@ -242,6 +257,12 @@ namespace NppGit.Modules.GitCore
 
         private void DoActiveRepository()
         {
+            if (_currRepo != null)
+            {
+                _currRepo.Dispose();
+            }
+            _currRepo = new Repository(_currentRepo.Path);
+
             Settings.GitCore.LastActiveRepository = _currentRepo.Name;
             if (OnActiveRepositoryChanged != null)
             {
@@ -249,6 +270,19 @@ namespace NppGit.Modules.GitCore
                 _manager.ManualTitleUpdate();
             }
         }
+
+        public FileStatus GetFileStatus(string filePath)
+        {
+            var repoPath = GetRootDir(filePath);
+            if (repoPath != _currentRepo?.Path)
+            {
+                return FileStatus.Nonexistent;
+            } else
+            {
+                return _currRepo?.RetrieveStatus(filePath) ?? FileStatus.Nonexistent;
+            }
+        }
+
         #endregion
 
         private void SaveRepo(RepositoryLink repoLink) 
@@ -260,7 +294,13 @@ namespace NppGit.Modules.GitCore
             _doc.Save(_filename);
         }
 
-        private static string GetRootDir(string path)
+        public static bool IsValidGitRepo(string path)
+        {
+            var repoDir = PluginUtils.GetRootDir(path);
+            return !string.IsNullOrEmpty(repoDir) && Repository.IsValid(repoDir);
+        }
+
+        public static string GetRootDir(string path)
         {
             var search = Path.Combine(path, ".git");
             if (Directory.Exists(search) || File.Exists(search))
@@ -276,6 +316,27 @@ namespace NppGit.Modules.GitCore
                 else {
                     return null;
                 }
+            }
+        }
+
+        public static string GetRepoName(string repoDir)
+        {
+            string remote = "";
+            using (var repo = new Repository(repoDir))
+            {
+                if (repo.Network.Remotes.Count() > 0)
+                {
+                    var remoteUrl = repo.Network.Remotes.First().Url;
+                    if (!string.IsNullOrEmpty(remoteUrl))
+                    {
+                        remote = remoteUrl.Substring(remoteUrl.LastIndexOf('/') + 1, remoteUrl.Length - remoteUrl.LastIndexOf('/') - 1).Replace(".git", "");
+                    }
+                }
+                else
+                {
+                    remote = new DirectoryInfo(repoDir).Name;
+                }
+                return remote;
             }
         }
     }

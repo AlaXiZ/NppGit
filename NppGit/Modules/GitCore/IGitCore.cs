@@ -25,6 +25,7 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+using LibGit2Sharp;
 using System;
 using System.Collections.Generic;
 
@@ -37,8 +38,10 @@ namespace NppGit.Modules.GitCore
         // Properties
         RepositoryLink ActiveRepository { get; }
         List<RepositoryLink> Repositories { get; }
+        string CurrentBranch { get; }
         // Method
         bool SwitchByPath(string path);
         bool SwitchByName(string name);
+        FileStatus GetFileStatus(string filePath);
     }
 }

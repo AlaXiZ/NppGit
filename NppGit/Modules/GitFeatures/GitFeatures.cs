@@ -105,7 +105,7 @@ namespace NppGit.Modules
             {
                 Name = "Repository in title",
                 Hint = "Repository in title",
-                ShortcutKey = new ShortcutKey {  },
+                ShortcutKey = new ShortcutKey { },
                 Action = ShowRepoName,
                 Checked = Settings.Functions.ShowRepoName
             });
@@ -152,10 +152,32 @@ namespace NppGit.Modules
             if (Settings.Functions.ShowBranch || Settings.Functions.ShowRepoName || Settings.Functions.ShowStatusFile)
             {
                 bool isShowBranch = Settings.Functions.ShowBranch,
-                 isShowRepo = Settings.Functions.ShowRepoName,
-                 isShowStatus = Settings.Functions.ShowStatusFile;
+                     isShowRepo = Settings.Functions.ShowRepoName,
+                     isShowStatus = Settings.Functions.ShowStatusFile;
 
-                var repoDir = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
+                if (GitCore.GitCore.IsValidGitRepo(PluginUtils.CurrentFileDir))
+                {
+                    var title = new StringBuilder();
+                    var gitCore = GitCore.GitCore.Instance;
+                    if (isShowRepo)
+                    {
+                        title.Append(gitCore.ActiveRepository.Name);
+                    }
+                    if (isShowBranch)
+                    {
+                        if (title.Length > 0)
+                            title.Append(":");
+                        title.Append(gitCore.CurrentBranch);
+                    }
+                    if (isShowStatus)
+                    {
+                        if (title.Length > 0)
+                            title.Append(":");
+                        title.Append(gitCore.GetFileStatus(PluginUtils.CurrentFilePath));
+                    }
+                    e.AddTitleItem("File in repo: " + title.ToString());
+                }
+                /* var repoDir = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
                 if (!string.IsNullOrEmpty(repoDir) && Repository.IsValid(repoDir))
                 {
                     using (var repo = new Repository(repoDir))
@@ -197,7 +219,7 @@ namespace NppGit.Modules
                             e.AddTitleItem("File in repo: " + title.ToString());
                         }
                     }
-                }
+                }*/
             }
         }
 
@@ -208,7 +230,7 @@ namespace NppGit.Modules
                 DoShowStatus();
             }
         }
-        
+
         private void OpenFileInOtherBranch()
         {
             var repoDir = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
@@ -253,7 +275,7 @@ namespace NppGit.Modules
                     }
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 logger.Debug(e, "Directory {0} isn't git repository!", repoDir);
             }

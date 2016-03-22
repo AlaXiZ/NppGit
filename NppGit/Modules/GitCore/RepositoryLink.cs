@@ -43,42 +43,10 @@ namespace NppGit.Modules.GitCore
             get; protected set;
         }
 
-        public string Branch
-        {
-            get
-            {
-                using (var repo = new Repository(Path))
-                {
-                    return repo.Head.Name;
-                }
-            }
-        }
-
         public RepositoryLink(string path)
         {
             Path = path;
-            Name = GetRepoName(path);
-        }
-
-        public static string GetRepoName(string repoDir)
-        {
-            string remote = "";
-            using (var repo = new Repository(repoDir))
-            {
-                if (repo.Network.Remotes.Count() > 0)
-                {
-                    var remoteUrl = repo.Network.Remotes.First().Url;
-                    if (!string.IsNullOrEmpty(remoteUrl))
-                    {
-                        remote = remoteUrl.Substring(remoteUrl.LastIndexOf('/') + 1, remoteUrl.Length - remoteUrl.LastIndexOf('/') - 1).Replace(".git", "");
-                    }
-                }
-                else
-                {
-                    remote = new DirectoryInfo(repoDir).Name;
-                }
-                return remote;
-            }
+            Name = GitCore.GetRepoName(path);
         }
 
         public override bool Equals(object obj)
