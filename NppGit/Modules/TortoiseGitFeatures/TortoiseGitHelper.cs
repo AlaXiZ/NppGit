@@ -68,7 +68,8 @@ namespace NppGit.Modules.TortoiseGitFeatures
         RevisionGraph,
         Tag,
         Daemon,
-        PGPfp
+        PGPfp,
+        Clone
     }
     /*
     Fetch
@@ -317,6 +318,12 @@ namespace NppGit.Modules.TortoiseGitFeatures
             StartCommand(CreateCommand(TortoiseGitCommand.Diff, path));
         }
 
+        private static void TGitDiffUnified()
+        {
+            string path = PluginUtils.CurrentFilePath;
+            StartCommand(CreateCommand(TortoiseGitCommand.Diff, path, additionalParam: "/unified"));
+        }
+
         /*
                 private void TGitCompare()
                 {
@@ -388,7 +395,6 @@ namespace NppGit.Modules.TortoiseGitFeatures
 
         private static void TGitExport()
         {
-
             if (CheckRepoAndShowError())
             {
                 string path = GitCore.GitCore.Instance.ActiveRepository.Path;
@@ -398,7 +404,6 @@ namespace NppGit.Modules.TortoiseGitFeatures
 
         private static void TGitMerge()
         {
-
             if (CheckRepoAndShowError())
             {
                 string path = GitCore.GitCore.Instance.ActiveRepository.Path;
@@ -408,7 +413,6 @@ namespace NppGit.Modules.TortoiseGitFeatures
 
         private static void TGitCleanup()
         {
-
             if (CheckRepoAndShowError())
             {
                 string path = GitCore.GitCore.Instance.ActiveRepository.Path;
@@ -418,7 +422,6 @@ namespace NppGit.Modules.TortoiseGitFeatures
 
         private static void TGitRemove()
         {
-
             if (CheckRepoAndShowError())
             {
                 string path = PluginUtils.CurrentFilePath;
@@ -428,7 +431,6 @@ namespace NppGit.Modules.TortoiseGitFeatures
 
         private static void TGitRename()
         {
-
             if (CheckRepoAndShowError())
             {
                 string path = PluginUtils.CurrentFilePath;
@@ -448,7 +450,6 @@ namespace NppGit.Modules.TortoiseGitFeatures
 
         private static void TGitRefLog()
         {
-
             if (CheckRepoAndShowError())
             {
                 string path = GitCore.GitCore.Instance.ActiveRepository.Path;
@@ -458,7 +459,6 @@ namespace NppGit.Modules.TortoiseGitFeatures
 
         private static void TGitRevisionGraph()
         {
-
             if (CheckRepoAndShowError())
             {
                 string path = GitCore.GitCore.Instance.ActiveRepository.Path;
@@ -468,7 +468,6 @@ namespace NppGit.Modules.TortoiseGitFeatures
 
         private static void TGitTag()
         {
-
             if (CheckRepoAndShowError())
             {
                 string path = GitCore.GitCore.Instance.ActiveRepository.Path;
@@ -478,7 +477,6 @@ namespace NppGit.Modules.TortoiseGitFeatures
 
         private static void TGitDaemon()
         {
-
             if (CheckRepoAndShowError())
             {
                 string path = GitCore.GitCore.Instance.ActiveRepository.Path;
@@ -488,11 +486,54 @@ namespace NppGit.Modules.TortoiseGitFeatures
 
         private static void TGitPGPfp()
         {
-
             if (CheckRepoAndShowError())
             {
                 string path = GitCore.GitCore.Instance.ActiveRepository.Path;
                 StartCommand(CreateCommand(TortoiseGitCommand.PGPfp, path));
+            }
+        }
+
+        private static string SelectFolder(string title)
+        {
+            var dlg = new FolderBrowserDialog
+            {
+                ShowNewFolderButton = true,
+                Description = title
+            };
+            if (dlg.ShowDialog() == DialogResult.OK)
+            {
+                return dlg.SelectedPath;
+            }
+            else
+            {
+                return "";
+            }
+        }
+
+        private static void TGitClone()
+        {
+            var path = SelectFolder("Папка назначения");
+            if (!string.IsNullOrEmpty(path))
+            {
+                StartCommand(CreateCommand(TortoiseGitCommand.Clone, path));
+            }
+        }
+
+        private static void TGitRepoCreate()
+        {
+            var path = SelectFolder("Папка назначения");
+            if (!string.IsNullOrEmpty(path))
+            {
+                StartCommand(CreateCommand(TortoiseGitCommand.RepoCreate, path));
+            }
+        }
+
+        private static void TGitResolve()
+        {
+            if (CheckRepoAndShowError())
+            {
+                string path = GitCore.GitCore.Instance.ActiveRepository.Path;
+                StartCommand(CreateCommand(TortoiseGitCommand.Resolve, path));
             }
         }
         /*
@@ -546,43 +587,7 @@ namespace NppGit.Modules.TortoiseGitFeatures
                 var btnMask = Settings.TortoiseGitProc.ButtonMask;
                 logger.Info("TortoiseGit found");
 
-                _manager.RegisteCommandItem(new CommandItem
-                {
-                    Name = "TGit Log file",
-                    Hint = "Log file",
-                    ShortcutKey = new ShortcutKey { _isCtrl = 1, _isShift = 1, _key = (byte)Keys.L },
-                    Action = TGitLogFile
-                });
-
-                _manager.RegisteCommandItem(new CommandItem
-                {
-                    Name = "TGit Log path",
-                    Hint = "Log path",
-                    ShortcutKey = new ShortcutKey { },
-                    Action = TGitLogPath
-                });
-
                 var cmdId = _manager.RegisteCommandItem(new CommandItem
-                {
-                    Name = "TGit Log repo",
-                    Hint = "Log repo",
-                    ShortcutKey = new ShortcutKey { _isAlt = 1, _isCtrl = 1, _isShift = 1, _key = (byte)Keys.L },
-                    Action = TGitLogRepo
-                });
-                if ((btnMask & (uint)TortoiseGitCommand.Log) > 0)
-                    _icons.Add(cmdId, Properties.Resources.log);
-
-                cmdId = _manager.RegisteCommandItem(new CommandItem
-                {
-                    Name = "TGit Fetch",
-                    Hint = "Fetch",
-                    ShortcutKey = new ShortcutKey { _isAlt = 1, _isCtrl = 1, _isShift = 1, _key = (byte)Keys.F },
-                    Action = TGitFetch
-                });
-                if ((btnMask & (uint)TortoiseGitCommand.Fetch) > 0)
-                    _icons.Add(cmdId, Properties.Resources.pull);
-
-                cmdId = _manager.RegisteCommandItem(new CommandItem
                 {
                     Name = "TGit Pull",
                     Hint = "Pull",
@@ -614,6 +619,72 @@ namespace NppGit.Modules.TortoiseGitFeatures
 
                 cmdId = _manager.RegisteCommandItem(new CommandItem
                 {
+                    Name = "TGit Fetch",
+                    Hint = "Fetch",
+                    ShortcutKey = new ShortcutKey { _isAlt = 1, _isCtrl = 1, _isShift = 1, _key = (byte)Keys.F },
+                    Action = TGitFetch
+                });
+                if ((btnMask & (uint)TortoiseGitCommand.Fetch) > 0)
+                    _icons.Add(cmdId, Properties.Resources.pull);
+                
+                /**********************************************************************************/
+                _manager.RegisteCommandItem(new CommandItem { Name = "-", Hint = "-", Action = null });
+
+                _manager.RegisteCommandItem(new CommandItem
+                {
+                    Name = "TGit Diff",
+                    Hint = "Diff",
+                    ShortcutKey = null,
+                    Action = TGitDiffUnified
+                });
+
+                _manager.RegisteCommandItem(new CommandItem
+                {
+                    Name = "TGit Compare",
+                    Hint = "Compare",
+                    ShortcutKey = null,
+                    Action = TGitDiff
+                });
+
+                /**********************************************************************************/
+                _manager.RegisteCommandItem(new CommandItem { Name = "-", Hint = "-", Action = null });
+
+                _manager.RegisteCommandItem(new CommandItem
+                {
+                    Name = "TGit Log file",
+                    Hint = "Log file",
+                    ShortcutKey = new ShortcutKey { _isCtrl = 1, _isShift = 1, _key = (byte)Keys.L },
+                    Action = TGitLogFile
+                });
+
+                _manager.RegisteCommandItem(new CommandItem
+                {
+                    Name = "TGit Log path",
+                    Hint = "Log path",
+                    ShortcutKey = new ShortcutKey { },
+                    Action = TGitLogPath
+                });
+
+                cmdId = _manager.RegisteCommandItem(new CommandItem
+                {
+                    Name = "TGit Log repo",
+                    Hint = "Log repo",
+                    ShortcutKey = new ShortcutKey { _isAlt = 1, _isCtrl = 1, _isShift = 1, _key = (byte)Keys.L },
+                    Action = TGitLogRepo
+                });
+                if ((btnMask & (uint)TortoiseGitCommand.Log) > 0)
+                    _icons.Add(cmdId, Properties.Resources.log);
+
+                _manager.RegisteCommandItem(new CommandItem
+                {
+                    Name = "TGit Show RefLog",
+                    Hint = "Show Reflog",
+                    ShortcutKey = null,
+                    Action = TGitRefLog
+                });
+
+                cmdId = _manager.RegisteCommandItem(new CommandItem
+                {
                     Name = "TGit Blame",
                     Hint = "Blame",
                     ShortcutKey = new ShortcutKey { _isAlt = 1, _isCtrl = 1, _key = (byte)Keys.B },
@@ -629,45 +700,7 @@ namespace NppGit.Modules.TortoiseGitFeatures
                     ShortcutKey = new ShortcutKey { _isAlt = 1, _key = (byte)Keys.B },
                     Action = TGitBlameCurrentLine
                 });
-
-                cmdId = _manager.RegisteCommandItem(new CommandItem
-                {
-                    Name = "TGit Switch",
-                    Hint = "Switch",
-                    ShortcutKey = new ShortcutKey { _isCtrl = 1, _isAlt = 1, _key = (byte)Keys.S },
-                    Action = TGitSwitch
-                });
-                if ((btnMask & (uint)TortoiseGitCommand.Switch) > 0)
-                    _icons.Add(cmdId, Properties.Resources.checkout);
-
-                cmdId = _manager.RegisteCommandItem(new CommandItem
-                {
-                    Name = "TGit Stash save",
-                    Hint = "Stash save",
-                    ShortcutKey = null,
-                    Action = TGitStashSave
-                });
-                if ((btnMask & (uint)TortoiseGitCommand.StashSave) > 0)
-                    _icons.Add(cmdId, Properties.Resources.stashsave);
-
-                _manager.RegisteCommandItem(new CommandItem
-                {
-                    Name = "TGit Stash apply",
-                    Hint = "Stash apply",
-                    ShortcutKey = null,
-                    Action = TGitStashApply
-                });
-
-                cmdId = _manager.RegisteCommandItem(new CommandItem
-                {
-                    Name = "TGit Stash pop",
-                    Hint = "Stash pop",
-                    ShortcutKey = null,
-                    Action = TGitStashPop
-                });
-                if ((btnMask & (uint)TortoiseGitCommand.StashPop) > 0)
-                    _icons.Add(cmdId, Properties.Resources.stashpop);
-
+                                
                 cmdId = _manager.RegisteCommandItem(new CommandItem
                 {
                     Name = "TGit Repo stastus",
@@ -680,44 +713,10 @@ namespace NppGit.Modules.TortoiseGitFeatures
 
                 _manager.RegisteCommandItem(new CommandItem
                 {
-                    Name = "TGit Diff",
-                    Hint = "Diff",
-                    ShortcutKey = null,
-                    Action = TGitDiff
-                });
-
-                /*
-                _manager.RegisteCommandItem(new CommandItem
-                {
-                    Name = "TGit Compare",
-                    Hint = "Compare",
-                    ShortcutKey = null,
-                    Action = TGitCompare
-                });
-                */
-
-                _manager.RegisteCommandItem(new CommandItem
-                {
                     Name = "TGit Rebase",
                     Hint = "Rebase",
                     ShortcutKey = null,
                     Action = TGitRebase
-                });
-
-                _manager.RegisteCommandItem(new CommandItem
-                {
-                    Name = "TGit Add file",
-                    Hint = "Add file",
-                    ShortcutKey = null,
-                    Action = TGitAddFile
-                });
-
-                _manager.RegisteCommandItem(new CommandItem
-                {
-                    Name = "TGit Revert file",
-                    Hint = "Revert file",
-                    ShortcutKey = null,
-                    Action = TGitRevertFile
                 });
 
                 _manager.RegisteCommandItem(new CommandItem
@@ -730,74 +729,10 @@ namespace NppGit.Modules.TortoiseGitFeatures
 
                 _manager.RegisteCommandItem(new CommandItem
                 {
-                    Name = "TGit RefBrowse",
-                    Hint = "RefBrowse",
+                    Name = "TGit Reference browser",
+                    Hint = "Reference browser",
                     ShortcutKey = null,
                     Action = TGitRefBrowse
-                });
-
-                _manager.RegisteCommandItem(new CommandItem
-                {
-                    Name = "TGit Ignore",
-                    Hint = "Ignore",
-                    ShortcutKey = null,
-                    Action = TGitIgnore
-                });
-
-                _manager.RegisteCommandItem(new CommandItem
-                {
-                    Name = "TGit Export",
-                    Hint = "Export",
-                    ShortcutKey = null,
-                    Action = TGitExport
-                });
-
-                _manager.RegisteCommandItem(new CommandItem
-                {
-                    Name = "TGit Merge",
-                    Hint = "Merge",
-                    ShortcutKey = null,
-                    Action = TGitMerge
-                });
-
-                _manager.RegisteCommandItem(new CommandItem
-                {
-                    Name = "TGit CleanUp",
-                    Hint = "CleanUp",
-                    ShortcutKey = null,
-                    Action = TGitCleanup
-                });
-
-                _manager.RegisteCommandItem(new CommandItem
-                {
-                    Name = "TGit Remove",
-                    Hint = "Remove",
-                    ShortcutKey = null,
-                    Action = TGitRemove
-                });
-
-                _manager.RegisteCommandItem(new CommandItem
-                {
-                    Name = "TGit Rename",
-                    Hint = "Rename",
-                    ShortcutKey = null,
-                    Action = TGitRename
-                });
-
-                _manager.RegisteCommandItem(new CommandItem
-                {
-                    Name = "TGit ConflictEditor",
-                    Hint = "Conflict Editor",
-                    ShortcutKey = null,
-                    Action = TGitConflictEditor
-                });
-
-                _manager.RegisteCommandItem(new CommandItem
-                {
-                    Name = "TGit RefLog",
-                    Hint = "Ref log",
-                    ShortcutKey = null,
-                    Action = TGitRefLog
                 });
 
                 _manager.RegisteCommandItem(new CommandItem
@@ -810,6 +745,130 @@ namespace NppGit.Modules.TortoiseGitFeatures
 
                 _manager.RegisteCommandItem(new CommandItem
                 {
+                    Name = "TGit Daemon",
+                    Hint = "Daemon",
+                    ShortcutKey = null,
+                    Action = TGitDaemon
+                });
+
+                cmdId = _manager.RegisteCommandItem(new CommandItem
+                {
+                    Name = "TGit Stash save",
+                    Hint = "Stash save",
+                    ShortcutKey = null,
+                    Action = TGitStashSave
+                });
+                if ((btnMask & (uint)TortoiseGitCommand.StashSave) > 0)
+                    _icons.Add(cmdId, Properties.Resources.stashsave);
+
+                cmdId = _manager.RegisteCommandItem(new CommandItem
+                {
+                    Name = "TGit Stash pop",
+                    Hint = "Stash pop",
+                    ShortcutKey = null,
+                    Action = TGitStashPop
+                });
+                if ((btnMask & (uint)TortoiseGitCommand.StashPop) > 0)
+                    _icons.Add(cmdId, Properties.Resources.stashpop);
+
+                _manager.RegisteCommandItem(new CommandItem
+                {
+                    Name = "TGit Stash apply",
+                    Hint = "Stash apply",
+                    ShortcutKey = null,
+                    Action = TGitStashApply
+                });
+
+                /**********************************************************************************/
+                _manager.RegisteCommandItem(new CommandItem { Name = "-", Hint = "-", Action = null });
+
+                _manager.RegisteCommandItem(new CommandItem
+                {
+                    Name = "TGit Conflict editor",
+                    Hint = "Conflict editor",
+                    ShortcutKey = null,
+                    Action = TGitConflictEditor
+                });
+
+                _manager.RegisteCommandItem(new CommandItem
+                {
+                    Name = "TGit Resolve",
+                    Hint = "Resolve",
+                    ShortcutKey = null,
+                    Action = TGitResolve
+                });
+
+                _manager.RegisteCommandItem(new CommandItem
+                {
+                    Name = "TGit Add file",
+                    Hint = "Add file",
+                    ShortcutKey = null,
+                    Action = TGitAddFile
+                });
+
+                _manager.RegisteCommandItem(new CommandItem
+                {
+                    Name = "TGit Ignore",
+                    Hint = "Ignore",
+                    ShortcutKey = null,
+                    Action = TGitIgnore
+                });
+
+                _manager.RegisteCommandItem(new CommandItem
+                {
+                    Name = "TGit Rename",
+                    Hint = "Rename",
+                    ShortcutKey = null,
+                    Action = TGitRename
+                });
+
+                _manager.RegisteCommandItem(new CommandItem
+                {
+                    Name = "TGit Remove",
+                    Hint = "Remove",
+                    ShortcutKey = null,
+                    Action = TGitRemove
+                });
+
+                _manager.RegisteCommandItem(new CommandItem
+                {
+                    Name = "TGit Revert file",
+                    Hint = "Revert file",
+                    ShortcutKey = null,
+                    Action = TGitRevertFile
+                });
+
+                _manager.RegisteCommandItem(new CommandItem
+                {
+                    Name = "TGit Clean up",
+                    Hint = "Clean up",
+                    ShortcutKey = null,
+                    Action = TGitCleanup
+                });
+
+                /**********************************************************************************/
+                _manager.RegisteCommandItem(new CommandItem { Name = "-", Hint = "-", Action = null });
+
+                cmdId = _manager.RegisteCommandItem(new CommandItem
+                {
+                    Name = "TGit Switch",
+                    Hint = "Switch",
+                    ShortcutKey = new ShortcutKey { _isCtrl = 1, _isAlt = 1, _key = (byte)Keys.S },
+                    Action = TGitSwitch
+                });
+                if ((btnMask & (uint)TortoiseGitCommand.Switch) > 0)
+                    _icons.Add(cmdId, Properties.Resources.checkout);
+
+                _manager.RegisteCommandItem(new CommandItem
+                {
+                    Name = "TGit Merge",
+                    Hint = "Merge",
+                    ShortcutKey = null,
+                    Action = TGitMerge
+                });
+
+                _manager.RegisteCommandItem(new CommandItem
+                {
                     Name = "TGit Tag",
                     Hint = "Tag",
                     ShortcutKey = null,
@@ -818,12 +877,15 @@ namespace NppGit.Modules.TortoiseGitFeatures
 
                 _manager.RegisteCommandItem(new CommandItem
                 {
-                    Name = "TGit Daemon",
-                    Hint = "Daemon",
+                    Name = "TGit Export",
+                    Hint = "Export",
                     ShortcutKey = null,
-                    Action = TGitDaemon
+                    Action = TGitExport
                 });
 
+                /**********************************************************************************/
+                _manager.RegisteCommandItem(new CommandItem { Name = "-", Hint = "-", Action = null });
+                /*
                 _manager.RegisteCommandItem(new CommandItem
                 {
                     Name = "TGit Signing Key fingerprint",
@@ -831,22 +893,25 @@ namespace NppGit.Modules.TortoiseGitFeatures
                     ShortcutKey = null,
                     Action =  TGitPGPfp
                 });
-                /*
-                _manager.RegisteCommandItem(new CommandItem
-                {
-                    Name = "TGit ",
-                    Hint = "",
-                    ShortcutKey = null,
-                    Action = null
-                });
                 */
 
                 _manager.RegisteCommandItem(new CommandItem
                 {
-                    Name = "-",
-                    Hint = "-",
-                    Action = null
+                    Name = "TGit Clone",
+                    Hint = "Clone",
+                    ShortcutKey = null,
+                    Action = TGitClone
                 });
+
+                _manager.RegisteCommandItem(new CommandItem
+                {
+                    Name = "TGit Repo create",
+                    Hint = "Repository create",
+                    ShortcutKey = null,
+                    Action = TGitRepoCreate
+                });
+                
+                _manager.RegisteCommandItem(new CommandItem { Name = "-", Hint = "-", Action = null });
             }
             else
             {
