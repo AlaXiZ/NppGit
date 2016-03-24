@@ -154,7 +154,7 @@ namespace NppGit.Modules
                 bool isShowBranch = Settings.Functions.ShowBranch,
                      isShowRepo = Settings.Functions.ShowRepoName,
                      isShowStatus = Settings.Functions.ShowStatusFile;
-
+                /*
                 if (GitCore.GitCore.IsValidGitRepo(PluginUtils.CurrentFileDir))
                 {
                     var title = new StringBuilder();
@@ -177,7 +177,8 @@ namespace NppGit.Modules
                     }
                     e.AddTitleItem("File in repo: " + title.ToString());
                 }
-                /* var repoDir = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
+                */
+                var repoDir = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
                 if (!string.IsNullOrEmpty(repoDir) && Repository.IsValid(repoDir))
                 {
                     using (var repo = new Repository(repoDir))
@@ -186,22 +187,9 @@ namespace NppGit.Modules
                         if (status != FileStatus.Ignored)
                         {
                             var title = new StringBuilder();
-
                             if (isShowRepo)
-                            {
-                                string remote = "";
-                                if (repo.Network.Remotes.Count() > 0)
-                                {
-                                    var remoteUrl = repo.Network.Remotes.First().Url;
-                                    if (!string.IsNullOrEmpty(remoteUrl))
-                                    {
-                                        remote = remoteUrl.Substring(remoteUrl.LastIndexOf('/') + 1, remoteUrl.Length - remoteUrl.LastIndexOf('/') - 1).Replace(".git", "");
-                                    }
-                                }
-                                else
-                                {
-                                    remote = new DirectoryInfo(repoDir).Name;
-                                }
+                            {                                
+                                string remote = GitCore.GitCore.GetRepoName(repoDir);
                                 title.Append(remote);
                             }
                             if (isShowBranch)
@@ -219,7 +207,7 @@ namespace NppGit.Modules
                             e.AddTitleItem("File in repo: " + title.ToString());
                         }
                     }
-                }*/
+                }
             }
         }
 

@@ -98,9 +98,14 @@ namespace NppGit.Common
 
             switch (sn.nmhdr.code)
             {
-                case (uint)NppMsg.NPPN_BUFFERACTIVATED:
                 case (uint)NppMsg.NPPN_FILEOPENED:
                 case (uint)NppMsg.NPPN_FILESAVED:
+                    {
+                        _currentFormId = 0;
+                        DoTabChangeEvent(sn.nmhdr.idFrom);
+                        break;
+                    }                  
+                case (uint)NppMsg.NPPN_BUFFERACTIVATED:
                     {
                         if (sn.nmhdr.idFrom != _currentFormId)
                         {

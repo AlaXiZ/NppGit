@@ -110,7 +110,7 @@ namespace NppGit
             {
                 var buffer = new StringBuilder(Win32.MAX_PATH);
                 Win32.SendMessage(NppHandle, NppMsg.NPPM_GETFULLCURRENTPATH, Win32.MAX_PATH, buffer);
-                return Path.GetDirectoryName(buffer.ToString());
+                return buffer.Length > 0 ? Path.GetDirectoryName(buffer.ToString()) : "";
             }
         }
 
