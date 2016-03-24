@@ -60,7 +60,7 @@ namespace NppGit.Forms
             this.chlButtons = new System.Windows.Forms.CheckedListBox();
             this.label1 = new System.Windows.Forms.Label();
             this.bOk = new System.Windows.Forms.Button();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tbSettings = new System.Windows.Forms.TabControl();
             this.tpCommon = new System.Windows.Forms.TabPage();
             this.gbUsingModules = new System.Windows.Forms.GroupBox();
             this.chlModules = new System.Windows.Forms.CheckedListBox();
@@ -68,6 +68,9 @@ namespace NppGit.Forms
             this.cbLogLevel = new System.Windows.Forms.ComboBox();
             this.chbDefaultShortcut = new System.Windows.Forms.CheckBox();
             this.tpTortoise = new System.Windows.Forms.TabPage();
+            this.bSelectFolder = new System.Windows.Forms.Button();
+            this.tbTGProcPath = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.tpGitFeatures = new System.Windows.Forms.TabPage();
             this.gbFileInBranch = new System.Windows.Forms.GroupBox();
             this.lSHACount = new System.Windows.Forms.Label();
@@ -76,10 +79,12 @@ namespace NppGit.Forms
             this.pBottom = new System.Windows.Forms.Panel();
             this.chbRestartNpp = new System.Windows.Forms.CheckBox();
             this.pMain = new System.Windows.Forms.Panel();
-            this.label3 = new System.Windows.Forms.Label();
-            this.tbTGProcPath = new System.Windows.Forms.TextBox();
-            this.bSelectFolder = new System.Windows.Forms.Button();
-            this.tabControl1.SuspendLayout();
+            this.chbRepoInTitle = new System.Windows.Forms.CheckBox();
+            this.chbBranchInTitle = new System.Windows.Forms.CheckBox();
+            this.chbStatusInTitle = new System.Windows.Forms.CheckBox();
+            this.tpGitCore = new System.Windows.Forms.TabPage();
+            this.chbActiveRepoInTitle = new System.Windows.Forms.CheckBox();
+            this.tbSettings.SuspendLayout();
             this.tpCommon.SuspendLayout();
             this.gbUsingModules.SuspendLayout();
             this.tpTortoise.SuspendLayout();
@@ -87,6 +92,7 @@ namespace NppGit.Forms
             this.gbFileInBranch.SuspendLayout();
             this.pBottom.SuspendLayout();
             this.pMain.SuspendLayout();
+            this.tpGitCore.SuspendLayout();
             this.SuspendLayout();
             // 
             // chbTGToolbar
@@ -144,17 +150,18 @@ namespace NppGit.Forms
             this.bOk.UseVisualStyleBackColor = true;
             this.bOk.Click += new System.EventHandler(this.bOk_Click);
             // 
-            // tabControl1
+            // tbSettings
             // 
-            this.tabControl1.Controls.Add(this.tpCommon);
-            this.tabControl1.Controls.Add(this.tpTortoise);
-            this.tabControl1.Controls.Add(this.tpGitFeatures);
-            this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl1.Location = new System.Drawing.Point(0, 0);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(408, 196);
-            this.tabControl1.TabIndex = 4;
+            this.tbSettings.Controls.Add(this.tpCommon);
+            this.tbSettings.Controls.Add(this.tpTortoise);
+            this.tbSettings.Controls.Add(this.tpGitFeatures);
+            this.tbSettings.Controls.Add(this.tpGitCore);
+            this.tbSettings.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tbSettings.Location = new System.Drawing.Point(0, 0);
+            this.tbSettings.Name = "tbSettings";
+            this.tbSettings.SelectedIndex = 0;
+            this.tbSettings.Size = new System.Drawing.Size(408, 196);
+            this.tbSettings.TabIndex = 4;
             // 
             // tpCommon
             // 
@@ -239,8 +246,38 @@ namespace NppGit.Forms
             this.tpTortoise.Text = "TortoiseGit";
             this.tpTortoise.UseVisualStyleBackColor = true;
             // 
+            // bSelectFolder
+            // 
+            this.bSelectFolder.Location = new System.Drawing.Point(369, 110);
+            this.bSelectFolder.Name = "bSelectFolder";
+            this.bSelectFolder.Size = new System.Drawing.Size(28, 23);
+            this.bSelectFolder.TabIndex = 4;
+            this.bSelectFolder.Text = "...";
+            this.bSelectFolder.UseVisualStyleBackColor = true;
+            this.bSelectFolder.Click += new System.EventHandler(this.bSelectFolder_Click);
+            // 
+            // tbTGProcPath
+            // 
+            this.tbTGProcPath.Location = new System.Drawing.Point(6, 112);
+            this.tbTGProcPath.Name = "tbTGProcPath";
+            this.tbTGProcPath.ReadOnly = true;
+            this.tbTGProcPath.Size = new System.Drawing.Size(357, 20);
+            this.tbTGProcPath.TabIndex = 3;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(3, 96);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(146, 13);
+            this.label3.TabIndex = 2;
+            this.label3.Text = "Путь до TortoiseGitProc.exe*";
+            // 
             // tpGitFeatures
             // 
+            this.tpGitFeatures.Controls.Add(this.chbStatusInTitle);
+            this.tpGitFeatures.Controls.Add(this.chbBranchInTitle);
+            this.tpGitFeatures.Controls.Add(this.chbRepoInTitle);
             this.tpGitFeatures.Controls.Add(this.gbFileInBranch);
             this.tpGitFeatures.Location = new System.Drawing.Point(4, 22);
             this.tpGitFeatures.Name = "tpGitFeatures";
@@ -314,39 +351,63 @@ namespace NppGit.Forms
             // 
             // pMain
             // 
-            this.pMain.Controls.Add(this.tabControl1);
+            this.pMain.Controls.Add(this.tbSettings);
             this.pMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pMain.Location = new System.Drawing.Point(0, 0);
             this.pMain.Name = "pMain";
             this.pMain.Size = new System.Drawing.Size(408, 196);
             this.pMain.TabIndex = 6;
             // 
-            // label3
+            // chbRepoInTitle
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(3, 96);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(146, 13);
-            this.label3.TabIndex = 2;
-            this.label3.Text = "Путь до TortoiseGitProc.exe*";
+            this.chbRepoInTitle.AutoSize = true;
+            this.chbRepoInTitle.Location = new System.Drawing.Point(6, 77);
+            this.chbRepoInTitle.Name = "chbRepoInTitle";
+            this.chbRepoInTitle.Size = new System.Drawing.Size(209, 17);
+            this.chbRepoInTitle.TabIndex = 7;
+            this.chbRepoInTitle.Text = "Название репозитория в заголовке";
+            this.chbRepoInTitle.UseVisualStyleBackColor = true;
             // 
-            // tbTGProcPath
+            // chbBranchInTitle
             // 
-            this.tbTGProcPath.Location = new System.Drawing.Point(6, 112);
-            this.tbTGProcPath.Name = "tbTGProcPath";
-            this.tbTGProcPath.ReadOnly = true;
-            this.tbTGProcPath.Size = new System.Drawing.Size(357, 20);
-            this.tbTGProcPath.TabIndex = 3;
+            this.chbBranchInTitle.AutoSize = true;
+            this.chbBranchInTitle.Location = new System.Drawing.Point(6, 100);
+            this.chbBranchInTitle.Name = "chbBranchInTitle";
+            this.chbBranchInTitle.Size = new System.Drawing.Size(173, 17);
+            this.chbBranchInTitle.TabIndex = 8;
+            this.chbBranchInTitle.Text = "Название ветки в заголовке";
+            this.chbBranchInTitle.UseVisualStyleBackColor = true;
             // 
-            // bSelectFolder
+            // chbStatusInTitle
             // 
-            this.bSelectFolder.Location = new System.Drawing.Point(369, 110);
-            this.bSelectFolder.Name = "bSelectFolder";
-            this.bSelectFolder.Size = new System.Drawing.Size(28, 23);
-            this.bSelectFolder.TabIndex = 4;
-            this.bSelectFolder.Text = "...";
-            this.bSelectFolder.UseVisualStyleBackColor = true;
-            this.bSelectFolder.Click += new System.EventHandler(this.bSelectFolder_Click);
+            this.chbStatusInTitle.AutoSize = true;
+            this.chbStatusInTitle.Location = new System.Drawing.Point(6, 123);
+            this.chbStatusInTitle.Name = "chbStatusInTitle";
+            this.chbStatusInTitle.Size = new System.Drawing.Size(160, 17);
+            this.chbStatusInTitle.TabIndex = 9;
+            this.chbStatusInTitle.Text = "Статус файла в заголовке";
+            this.chbStatusInTitle.UseVisualStyleBackColor = true;
+            // 
+            // tpGitCore
+            // 
+            this.tpGitCore.Controls.Add(this.chbActiveRepoInTitle);
+            this.tpGitCore.Location = new System.Drawing.Point(4, 22);
+            this.tpGitCore.Name = "tpGitCore";
+            this.tpGitCore.Padding = new System.Windows.Forms.Padding(3);
+            this.tpGitCore.Size = new System.Drawing.Size(400, 170);
+            this.tpGitCore.TabIndex = 3;
+            this.tpGitCore.Text = "GitCore";
+            this.tpGitCore.UseVisualStyleBackColor = true;
+            // 
+            // chbActiveRepoInTitle
+            // 
+            this.chbActiveRepoInTitle.AutoSize = true;
+            this.chbActiveRepoInTitle.Location = new System.Drawing.Point(8, 6);
+            this.chbActiveRepoInTitle.Name = "chbActiveRepoInTitle";
+            this.chbActiveRepoInTitle.Size = new System.Drawing.Size(209, 17);
+            this.chbActiveRepoInTitle.TabIndex = 0;
+            this.chbActiveRepoInTitle.Text = "Активный репозиторий в заголовке";
+            this.chbActiveRepoInTitle.UseVisualStyleBackColor = true;
             // 
             // SettingsDialog
             // 
@@ -365,18 +426,21 @@ namespace NppGit.Forms
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Настройки";
             this.TopMost = true;
-            this.tabControl1.ResumeLayout(false);
+            this.tbSettings.ResumeLayout(false);
             this.tpCommon.ResumeLayout(false);
             this.tpCommon.PerformLayout();
             this.gbUsingModules.ResumeLayout(false);
             this.tpTortoise.ResumeLayout(false);
             this.tpTortoise.PerformLayout();
             this.tpGitFeatures.ResumeLayout(false);
+            this.tpGitFeatures.PerformLayout();
             this.gbFileInBranch.ResumeLayout(false);
             this.gbFileInBranch.PerformLayout();
             this.pBottom.ResumeLayout(false);
             this.pBottom.PerformLayout();
             this.pMain.ResumeLayout(false);
+            this.tpGitCore.ResumeLayout(false);
+            this.tpGitCore.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -387,7 +451,7 @@ namespace NppGit.Forms
         private System.Windows.Forms.CheckedListBox chlButtons;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button bOk;
-        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabControl tbSettings;
         private System.Windows.Forms.TabPage tpCommon;
         private System.Windows.Forms.TabPage tpTortoise;
         private System.Windows.Forms.CheckBox chbDefaultShortcut;
@@ -406,5 +470,10 @@ namespace NppGit.Forms
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button bSelectFolder;
         private System.Windows.Forms.TextBox tbTGProcPath;
+        private System.Windows.Forms.CheckBox chbStatusInTitle;
+        private System.Windows.Forms.CheckBox chbBranchInTitle;
+        private System.Windows.Forms.CheckBox chbRepoInTitle;
+        private System.Windows.Forms.TabPage tpGitCore;
+        private System.Windows.Forms.CheckBox chbActiveRepoInTitle;
     }
 }

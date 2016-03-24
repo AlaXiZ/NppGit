@@ -40,36 +40,11 @@ namespace NppGit.Modules
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
         private IModuleManager _manager;
-        private int _showBranchCmdID = -1;
-        private int _showRepoCmdID = -1;
-        private int _showStatusFileCmdID = -1;
         private int _statusPanelCmdID = -1;
-        private static string _ending = "";
 
         public bool IsNeedRun
         {
             get { return Settings.Modules.Git; }
-        }
-
-        private void ShowBranch()
-        {
-            Settings.Functions.ShowBranch = !Settings.Functions.ShowBranch;
-            _manager.SetCheckedMenu(_showBranchCmdID, Settings.Functions.ShowBranch);
-            DoTitleUpdate();
-        }
-
-        private void ShowRepoName()
-        {
-            Settings.Functions.ShowRepoName = !Settings.Functions.ShowRepoName;
-            _manager.SetCheckedMenu(_showRepoCmdID, Settings.Functions.ShowRepoName);
-            DoTitleUpdate();
-        }
-
-        private void ShowFileStatus()
-        {
-            Settings.Functions.ShowStatusFile = !Settings.Functions.ShowStatusFile;
-            _manager.SetCheckedMenu(_showStatusFileCmdID, Settings.Functions.ShowStatusFile);
-            DoTitleUpdate();
         }
 
         private void DoTitleUpdate()
@@ -92,39 +67,12 @@ namespace NppGit.Modules
             _manager.OnTitleChangedEvent += OnTitleChangedEvent;
             _manager.OnSystemInit += ManagerOnSystemInit;
 
-            _showBranchCmdID = _manager.RegisteCommandItem(new CommandItem
-            {
-                Name = "Branch in title",
-                Hint = "Branch in title",
-                ShortcutKey = new ShortcutKey { _isCtrl = 1, _isAlt = 1, _isShift = 1, _key = (byte)System.Windows.Forms.Keys.R },
-                Action = ShowBranch,
-                Checked = Settings.Functions.ShowBranch
-            });
-
-            _showRepoCmdID = _manager.RegisteCommandItem(new CommandItem
-            {
-                Name = "Repository in title",
-                Hint = "Repository in title",
-                ShortcutKey = new ShortcutKey { },
-                Action = ShowRepoName,
-                Checked = Settings.Functions.ShowRepoName
-            });
-
             _manager.RegisteCommandItem(new CommandItem
             {
                 Name = "File in other branch",
                 Hint = "File in other branch",
                 ShortcutKey = null,
                 Action = OpenFileInOtherBranch
-            });
-
-            _showStatusFileCmdID = _manager.RegisteCommandItem(new CommandItem
-            {
-                Name = "File status in title",
-                Hint = "File status in title",
-                ShortcutKey = null,
-                Action = ShowFileStatus,
-                Checked = Settings.Functions.ShowStatusFile
             });
 
             _statusPanelCmdID = _manager.RegisteCommandItem(new CommandItem
@@ -154,30 +102,7 @@ namespace NppGit.Modules
                 bool isShowBranch = Settings.Functions.ShowBranch,
                      isShowRepo = Settings.Functions.ShowRepoName,
                      isShowStatus = Settings.Functions.ShowStatusFile;
-                /*
-                if (GitCore.GitCore.IsValidGitRepo(PluginUtils.CurrentFileDir))
-                {
-                    var title = new StringBuilder();
-                    var gitCore = GitCore.GitCore.Instance;
-                    if (isShowRepo)
-                    {
-                        title.Append(gitCore.ActiveRepository.Name);
-                    }
-                    if (isShowBranch)
-                    {
-                        if (title.Length > 0)
-                            title.Append(":");
-                        title.Append(gitCore.CurrentBranch);
-                    }
-                    if (isShowStatus)
-                    {
-                        if (title.Length > 0)
-                            title.Append(":");
-                        title.Append(gitCore.GetFileStatus(PluginUtils.CurrentFilePath));
-                    }
-                    e.AddTitleItem("File in repo: " + title.ToString());
-                }
-                */
+
                 var repoDir = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
                 if (!string.IsNullOrEmpty(repoDir) && Repository.IsValid(repoDir))
                 {

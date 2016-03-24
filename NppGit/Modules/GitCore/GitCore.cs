@@ -41,7 +41,6 @@ namespace NppGit.Modules.GitCore
         #region IModule
         private IModuleManager _manager = null;
         private int _browserCmdId;
-        private int _showInTitleCmdId;
         private Repository _currRepo = null;
 
         public void Final()
@@ -55,13 +54,6 @@ namespace NppGit.Modules.GitCore
         private void DoBrowser()
         {
             Settings.Panels.RepoBrowserPanelVisible = _manager.ToogleFormState(_browserCmdId);
-        }
-
-        private void DoShowInTitle()
-        {
-            Settings.GitCore.ActiveRepoInTitle = !Settings.GitCore.ActiveRepoInTitle;
-            _manager.SetCheckedMenu(_showInTitleCmdId, Settings.GitCore.ActiveRepoInTitle);
-            _manager.ManualTitleUpdate();
         }
 
         public void Init(IModuleManager manager)
@@ -78,14 +70,6 @@ namespace NppGit.Modules.GitCore
                 Hint = "Repository browser",
                 Action = DoBrowser,
                 Checked = Settings.Panels.RepoBrowserPanelVisible
-            });
-
-            _showInTitleCmdId = manager.RegisteCommandItem(new CommandItem
-            {
-                Name = "Active repo in title",
-                Hint = "Active repo in title",
-                Action = DoShowInTitle,
-                Checked = Settings.GitCore.ActiveRepoInTitle
             });
 
             manager.RegisterDockForm(typeof(RepoBrowser), _browserCmdId, false);

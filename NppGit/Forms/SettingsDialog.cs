@@ -72,6 +72,11 @@ namespace NppGit.Forms
             chlModules.SetItemChecked(1, Settings.Modules.Git);
             chlModules.SetItemChecked(2, Settings.Modules.SQLIDE);
             chlModules.SetItemChecked(3, Settings.Modules.Snippets);
+
+            chbRepoInTitle.Checked = Settings.Functions.ShowRepoName;
+            chbBranchInTitle.Checked = Settings.Functions.ShowBranch;
+            chbStatusInTitle.Checked = Settings.Functions.ShowStatusFile;
+            chbActiveRepoInTitle.Checked = Settings.GitCore.ActiveRepoInTitle;
             //chlModules.SetItemChecked(4, Settings.Modules.PSSE);
         }
 
@@ -110,6 +115,11 @@ namespace NppGit.Forms
             Settings.Modules.SQLIDE = chlModules.GetItemChecked(2);
             Settings.Modules.Snippets = chlModules.GetItemChecked(3);
             //Settings.Modules.PSSE = chlModules.GetItemChecked(4);
+
+            Settings.Functions.ShowRepoName = chbRepoInTitle.Checked;
+            Settings.Functions.ShowBranch = chbBranchInTitle.Checked;
+            Settings.Functions.ShowStatusFile = chbStatusInTitle.Checked;
+            Settings.GitCore.ActiveRepoInTitle = chbActiveRepoInTitle.Checked;
         }
 
         private void bOk_Click(object sender, EventArgs e)

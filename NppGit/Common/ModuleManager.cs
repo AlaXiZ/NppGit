@@ -271,6 +271,7 @@ namespace NppGit.Common
                     if (string.IsNullOrEmpty(title))
                         return;
                     var args = new TitleChangedEventArgs();
+                    if (!_canEvent) return;
                     OnTitleChangedEvent(this, args);
                     //
                     // Заголовок может заканчиваться на Notepad++ или на [Administrator]
