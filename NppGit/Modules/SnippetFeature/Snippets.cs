@@ -54,12 +54,15 @@ namespace NppGit.Modules.SnippetFeature
             // Load snippets ---------------------------------------------------
             foreach(var i in SnippetManager.Instance.Snippets)
             {
-                _snipManagerId = _manager.RegisteCommandItem(new CommandItem
+                if (i.Value.IsShowInMenu)
                 {
-                    Name = i.Value.Name,
-                    Hint = i.Value.Name,
-                    Action = () => { logger.Debug("Snippet clicked"); }
-                });
+                    _manager.RegisteCommandItem(new CommandItem
+                    {
+                        Name = i.Value.Name,
+                        Hint = i.Value.Name,
+                        Action = () => { logger.Debug("Snippet clicked"); }
+                    });
+                }
             }
             // -----------------------------------------------------------------
             _snipManagerId = _manager.RegisteCommandItem(new CommandItem

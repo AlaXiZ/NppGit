@@ -39,6 +39,7 @@ namespace NppGit.Modules.SnippetFeature
         private const string SNIPPETS = "Snippets";
         private const string SNIPPET = "Snippet";
         private const string NAME = "Name";
+        private const string ISSHOW = "IsShowInMenu";
 
         private static SnippetManager _instance;
         private static Logger logger = LogManager.GetCurrentClassLogger();
@@ -84,7 +85,7 @@ namespace NppGit.Modules.SnippetFeature
             {
                 _snippets.Add(snippet.Name, snippet);
                 var root = _doc.Root;
-                var element = new XElement(SNIPPET, snippet.SnippetText, new XAttribute(NAME, snippet.Name));
+                var element = new XElement(SNIPPET, snippet.SnippetText, new XAttribute(NAME, snippet.Name), new XAttribute(ISSHOW, snippet.IsShowInMenu));
                 root.Add(element);
                 Save();
             } else
@@ -142,7 +143,7 @@ namespace NppGit.Modules.SnippetFeature
         private void LoadSnippets()
         {
             _snippets = (from e in _doc.Descendants(SNIPPET)
-                         select e).ToDictionary(e => e.Attribute(NAME).Value, (e) => { return new Snippet(e.Attribute(NAME).Value, e.Value); });
+                         select e).ToDictionary(e => e.Attribute(NAME).Value, (e) => { return new Snippet(e.Attribute(NAME).Value, e.Value, bool.Parse(e.Attribute(ISSHOW)?.Value ?? "true")); });
         }
     }
 }

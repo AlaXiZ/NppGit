@@ -40,7 +40,7 @@ namespace NppGit.Forms
 
         private void bOk_Click(object sender, EventArgs e)
         {
-            if (!Modules.SnippetFeature.Snippet.CheckCorrectSnippet(tbSnippet.Text))
+            if (!Snippet.CheckCorrectSnippet(tbSnippet.Text))
             {
                 MessageBox.Show("Snippet is bad!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 DialogResult = DialogResult.None;
@@ -50,11 +50,11 @@ namespace NppGit.Forms
             {
                 if (string.IsNullOrEmpty(_snippet))
                 {
-                    Modules.SnippetFeature.SnippetManager.Instance.AddSnippet(new Snippet(tbName.Text, tbSnippet.Text));
+                    SnippetManager.Instance.AddSnippet(new Snippet(tbName.Text, tbSnippet.Text, chbIsShowInMenu.Checked));
                 }
                 else
                 {
-                    Modules.SnippetFeature.SnippetManager.Instance.UpdateSnippet(_snippet, new Snippet(tbName.Text, tbSnippet.Text));
+                    SnippetManager.Instance.UpdateSnippet(_snippet, new Snippet(tbName.Text, tbSnippet.Text, chbIsShowInMenu.Checked));
                 }
             }
             catch(Exception ex)
@@ -69,6 +69,7 @@ namespace NppGit.Forms
             var s = SnippetManager.Instance.Snippets[_snippet];
             tbName.Text = s.Name;
             tbSnippet.Text = s.SnippetText.Replace("\n", "\r\n");
+            chbIsShowInMenu.Checked = s.IsShowInMenu;
         }
 
         private string _snippet;

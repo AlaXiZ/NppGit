@@ -65,6 +65,7 @@ namespace NppGit.Forms
             this.pBottom = new System.Windows.Forms.Panel();
             this.bCancel = new System.Windows.Forms.Button();
             this.bOk = new System.Windows.Forms.Button();
+            this.chbIsShowInMenu = new System.Windows.Forms.CheckBox();
             this.pTop.SuspendLayout();
             this.pMiddle.SuspendLayout();
             this.pBottom.SuspendLayout();
@@ -72,19 +73,20 @@ namespace NppGit.Forms
             // 
             // pTop
             // 
+            this.pTop.Controls.Add(this.chbIsShowInMenu);
             this.pTop.Controls.Add(this.lSnippet);
             this.pTop.Controls.Add(this.lName);
             this.pTop.Controls.Add(this.tbName);
             this.pTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.pTop.Location = new System.Drawing.Point(0, 0);
             this.pTop.Name = "pTop";
-            this.pTop.Size = new System.Drawing.Size(534, 68);
+            this.pTop.Size = new System.Drawing.Size(534, 89);
             this.pTop.TabIndex = 0;
             // 
             // lSnippet
             // 
             this.lSnippet.AutoSize = true;
-            this.lSnippet.Location = new System.Drawing.Point(3, 51);
+            this.lSnippet.Location = new System.Drawing.Point(3, 73);
             this.lSnippet.Name = "lSnippet";
             this.lSnippet.Size = new System.Drawing.Size(46, 13);
             this.lSnippet.TabIndex = 2;
@@ -110,9 +112,9 @@ namespace NppGit.Forms
             // 
             this.pMiddle.Controls.Add(this.tbSnippet);
             this.pMiddle.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pMiddle.Location = new System.Drawing.Point(0, 68);
+            this.pMiddle.Location = new System.Drawing.Point(0, 89);
             this.pMiddle.Name = "pMiddle";
-            this.pMiddle.Size = new System.Drawing.Size(534, 167);
+            this.pMiddle.Size = new System.Drawing.Size(534, 146);
             this.pMiddle.TabIndex = 1;
             // 
             // tbSnippet
@@ -125,7 +127,7 @@ namespace NppGit.Forms
             this.tbSnippet.Multiline = true;
             this.tbSnippet.Name = "tbSnippet";
             this.tbSnippet.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbSnippet.Size = new System.Drawing.Size(534, 167);
+            this.tbSnippet.Size = new System.Drawing.Size(534, 146);
             this.tbSnippet.TabIndex = 1;
             // 
             // pBottom
@@ -166,6 +168,16 @@ namespace NppGit.Forms
             this.bOk.UseVisualStyleBackColor = true;
             this.bOk.Click += new System.EventHandler(this.bOk_Click);
             // 
+            // chbIsShowInMenu
+            // 
+            this.chbIsShowInMenu.AutoSize = true;
+            this.chbIsShowInMenu.Location = new System.Drawing.Point(6, 53);
+            this.chbIsShowInMenu.Name = "chbIsShowInMenu";
+            this.chbIsShowInMenu.Size = new System.Drawing.Size(129, 17);
+            this.chbIsShowInMenu.TabIndex = 3;
+            this.chbIsShowInMenu.Text = "Показывать в меню";
+            this.chbIsShowInMenu.UseVisualStyleBackColor = true;
+            // 
             // SnippetEdit
             // 
             this.AcceptButton = this.bOk;
@@ -200,5 +212,6 @@ namespace NppGit.Forms
         private System.Windows.Forms.Label lName;
         private System.Windows.Forms.Button bCancel;
         private System.Windows.Forms.Button bOk;
+        private System.Windows.Forms.CheckBox chbIsShowInMenu;
     }
 }

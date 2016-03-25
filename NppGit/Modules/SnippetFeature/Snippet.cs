@@ -52,14 +52,16 @@ namespace NppGit.Modules.SnippetFeature
                 ParamCount = CalcParamCount(_snippetText);
             }
         }
+        public bool IsShowInMenu { get; set; }
 
-        public Snippet(string name, string snippet)
+        public Snippet(string name, string snippet, bool isShowInMenu)
         {
             Name = name;
             SnippetText = snippet;
+            IsShowInMenu = isShowInMenu;
         }
 
-        public Snippet(string name) : this(name, "") { }
+        public Snippet(string name) : this(name, "", false) { }
 
         public string[] Assemble(string param)
         {
