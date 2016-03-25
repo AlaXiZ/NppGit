@@ -79,12 +79,12 @@ namespace NppGit.Modules.GitCore
             {
                 if (node.Name == activeRepo.Name)
                 {
-                    node.NodeFont = new Font(tvRepositories.Font, tvRepositories.Font.Style | FontStyle.Bold);
+                    node.NodeFont = new Font(tvRepositories.Font, tvRepositories.Font.Style);
                     node.Text += string.Empty;
                 }
                 else
                 {
-                    node.NodeFont = new Font(tvRepositories.Font, tvRepositories.Font.Style);
+                    node.NodeFont = new Font(tvRepositories.Font, tvRepositories.Font.Style & ~FontStyle.Bold);
                 }
             }
         }
