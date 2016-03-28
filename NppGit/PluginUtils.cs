@@ -205,36 +205,45 @@ namespace NppGit
         public static void ReplaceSelectedText(string[] lines)
         {
             StringBuilder buf = new StringBuilder("");
+            // Определяем начало выделения
+            var selcount = execute(SciMsg.SCI_GETSELECTIONS, 0);
+            var startPos = execute(SciMsg.SCI_GETSELECTIONNSTART, 0);
+            var startPos_e = execute(SciMsg.SCI_GETSELECTIONNSTART, selcount - 1);
+            startPos = Math.Min(startPos, startPos_e);
+            // Определяем начальную позицию выделения: строку:столбец
+            var line = execute(SciMsg.SCI_LINEFROMPOSITION, startPos);
+            var col = execute(SciMsg.SCI_GETCOLUMN, startPos);
 
-            execute(SciMsg.SCI_BEGINUNDOACTION, 0);
-            if (execute(SciMsg.SCI_GETSELECTIONMODE, 0) > 0)
+            execute(SciMsg.SCI_BEGINUNDOACTION, 0); // стартуем действие, чтобы выглядело отменить одним Ctrl+Z
+            try
             {
-                var selcount = execute(SciMsg.SCI_GETSELECTIONS, 0);
-                var startPos = execute(SciMsg.SCI_GETSELECTIONNSTART, 0);
-                var startPos_e = execute(SciMsg.SCI_GETSELECTIONNSTART, selcount - 1);
-                startPos = Math.Min(startPos, startPos_e);
-                var line = execute(SciMsg.SCI_LINEFROMPOSITION, startPos);
-                var col = execute(SciMsg.SCI_GETCOLUMN, startPos);
-                Win32.SendMessage(CurrentScintilla, SciMsg.SCI_REPLACESEL, buf.Length, buf);
-                foreach (var str in lines)
+                if (execute(SciMsg.SCI_GETSELECTIONMODE, 0) > 0)
                 {
-                    var linePos = execute(SciMsg.SCI_FINDCOLUMN, line, col);
-                    line++;
-                    SendText(SciMsg.SCI_INSERTTEXT, str, linePos);
+                    Win32.SendMessage(CurrentScintilla, SciMsg.SCI_REPLACESEL, buf.Length, buf);
+                    foreach (var str in lines)
+                    {
+                        var linePos = execute(SciMsg.SCI_FINDCOLUMN, line, col);
+                        line++;
+                        SendText(SciMsg.SCI_INSERTTEXT, str, linePos);
+                    }
+                }
+                else
+                {
+                    Win32.SendMessage(CurrentScintilla, SciMsg.SCI_REPLACESEL, buf.Length, buf);
+                    var count = lines.Length - 1;
+                    for (int i = 0; i <= count; i++)
+                    {
+                        //var linePos = execute(SciMsg.SCI_FINDCOLUMN, line, col);
+                        SendText(SciMsg.SCI_ADDTEXT, lines[i], 0);
+                        if (i < count)
+                            NewLine();
+                    }
                 }
             }
-            else
+            finally
             {
-                Win32.SendMessage(CurrentScintilla, SciMsg.SCI_REPLACESEL, buf.Length, buf);
-                var count = lines.Length - 1;
-                for (int i = 0; i <= count; i++)
-                {
-                    SendText(SciMsg.SCI_ADDTEXT, lines[i]);
-                    if (i < count)
-                        NewLine();
-                }
+                execute(SciMsg.SCI_ENDUNDOACTION, 0); // сообщаем об окончании действия
             }
-            execute(SciMsg.SCI_ENDUNDOACTION, 0);
         }
 
         public static void ReplaceSelectedText(string text)
@@ -273,6 +282,7 @@ namespace NppGit
             }
 
             byte[] buffer = new byte[length];
+            Array.Clear(buffer, 0, length);
             IntPtr ptr = Marshal.AllocHGlobal(length);
             try
             {
@@ -283,7 +293,13 @@ namespace NppGit
             {
                 Marshal.FreeHGlobal(ptr);
             }
-            return Encoding.UTF8.GetString(buffer).TrimEnd('\0');
+            var outStr = Encoding.UTF8.GetString(buffer).TrimEnd('\0');
+            // Корректировка последнего NUL-символа
+            if (outStr.IndexOf('\0') > -1)
+            {
+                outStr = outStr.Substring(0, (outStr.IndexOf('\0') - 1));
+            }
+            return outStr;
         }
         #endregion
 
