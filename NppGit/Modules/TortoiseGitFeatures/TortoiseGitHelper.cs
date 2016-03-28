@@ -32,6 +32,7 @@ using System.Text;
 using System.Windows.Forms;
 using NLog;
 using NppGit.Common;
+using System.IO;
 
 namespace NppGit.Modules.TortoiseGitFeatures
 {
@@ -69,7 +70,9 @@ namespace NppGit.Modules.TortoiseGitFeatures
         Tag,
         Daemon,
         PGPfp,
-        Clone
+        Clone,
+        ImportPatch,
+        FormatPatch
     }
     /*
     Fetch
@@ -548,25 +551,22 @@ namespace NppGit.Modules.TortoiseGitFeatures
         }
         */
 
-        // TODO: Patch Serial
-
-        private static void TGitApplyPathSerial()
+        private static void TGitApplyPatchSerial()
         {
-            /*
-                /command:importpatch 
-                /pathfile:"C:\Users\ASHCHA~1\AppData\Local\Temp\TortoiseGit\git1105.tmp" 
-                /deletepathfile 
-                /hwnd:0000000000020338
-            */
+            if (CheckRepoAndShowError())
+            {
+                string path = GitCore.GitCore.Instance.ActiveRepository.Path;
+                StartCommand(CreateCommand(TortoiseGitCommand.ImportPatch, path));
+            }
         }
 
-        private static void TGitCreatePathSerial()
+        private static void TGitCreatePatchSerial()
         {
-            /*
-                /command:formatpatch 
-                /path:"D:\src\NppGit" 
-                /hwnd:0000000000020338
-            */
+            if (CheckRepoAndShowError())
+            {
+                string path = GitCore.GitCore.Instance.ActiveRepository.Path;
+                StartCommand(CreateCommand(TortoiseGitCommand.FormatPatch, path));
+            }
         }
 
         private static void ReadmeFunc()
@@ -910,7 +910,25 @@ namespace NppGit.Modules.TortoiseGitFeatures
                     ShortcutKey = null,
                     Action = TGitRepoCreate
                 });
-                
+                /**********************************************************************************/
+                _manager.RegisteCommandItem(new CommandItem { Name = "-", Hint = "-", Action = null });
+
+                _manager.RegisteCommandItem(new CommandItem
+                {
+                    Name = "TGit Create patch",
+                    Hint = "Create patch",
+                    ShortcutKey = null,
+                    Action = TGitCreatePatchSerial
+                });
+
+                _manager.RegisteCommandItem(new CommandItem
+                {
+                    Name = "TGit Apply patch",
+                    Hint = "Apply patch",
+                    ShortcutKey = null,
+                    Action = TGitApplyPatchSerial
+                });
+
                 _manager.RegisteCommandItem(new CommandItem { Name = "-", Hint = "-", Action = null });
             }
             else
