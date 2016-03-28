@@ -40,7 +40,7 @@ namespace NppGit.Common
         event EventHandler<TitleChangedEventArgs> OnTitleChangedEvent;
 
         int RegisteCommandItem(CommandItem menuItem);
-        void RegisterDockForm(Type formClass, int cmdId, bool updateWithChangeContext);
+        void RegisterDockForm(Type formClass, int cmdId, bool updateWithChangeContext, NppTbMsg uMask = NppTbMsg.DWS_PARAMSALL | NppTbMsg.DWS_DF_CONT_RIGHT);
         void AddToolbarButton(int cmdId, Bitmap icon);
         bool ToogleFormState(int cmdId);
         void SetCheckedMenu(int cmdId, bool isChecked);

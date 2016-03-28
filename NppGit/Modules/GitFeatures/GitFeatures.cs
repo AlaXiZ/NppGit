@@ -75,6 +75,7 @@ namespace NppGit.Modules
                 Action = OpenFileInOtherBranch
             });
 
+            /*
             _statusPanelCmdID = _manager.RegisteCommandItem(new CommandItem
             {
                 Name = "Status panel",
@@ -83,8 +84,9 @@ namespace NppGit.Modules
                 Action = DoShowStatus,
                 Checked = Settings.Panels.FileStatusPanelVisible
             });
+            */
 
-            _manager.RegisterDockForm(typeof(Status), _statusPanelCmdID, true);
+            _manager.RegisterDockForm(typeof(Status), _statusPanelCmdID, true, NppTbMsg.DWS_PARAMSALL | NppTbMsg.DWS_DF_CONT_BOTTOM);
 
             //------------------------------------------------------------------
             _manager.RegisteCommandItem(new CommandItem

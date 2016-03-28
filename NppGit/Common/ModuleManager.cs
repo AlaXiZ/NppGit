@@ -327,7 +327,7 @@ namespace NppGit.Common
             return PluginUtils.SetCommand(menuItem.Name, menuItem.Action, (menuItem.ShortcutKey ?? new ShortcutKey()), menuItem.Checked);
         }
 
-        public void RegisterDockForm(Type formClass, int cmdId, bool updateWithChangeContext)
+        public void RegisterDockForm(Type formClass, int cmdId, bool updateWithChangeContext, NppTbMsg uMask = NppTbMsg.DWS_PARAMSALL | NppTbMsg.DWS_DF_CONT_RIGHT)
         {
             logger.Debug("Reigister form: Class={0} CmdID = {1} UpdateWithChangeContext={2}", formClass.Name, cmdId, updateWithChangeContext);
             if (!_forms.ContainsKey(cmdId))
@@ -336,7 +336,8 @@ namespace NppGit.Common
                 {
                     Type = formClass,
                     Form = null,
-                    UpdateWithChangeContext = updateWithChangeContext
+                    UpdateWithChangeContext = updateWithChangeContext,
+                    uMask = uMask
                 });
                 if (updateWithChangeContext)
                 {
