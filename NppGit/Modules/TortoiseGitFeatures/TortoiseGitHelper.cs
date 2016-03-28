@@ -667,8 +667,8 @@ namespace NppGit.Modules.TortoiseGitFeatures
 
                 cmdId = _manager.RegisteCommandItem(new CommandItem
                 {
-                    Name = "TGit Log repo",
-                    Hint = "Log repo",
+                    Name = "TGit Log repository",
+                    Hint = "Log repository",
                     ShortcutKey = new ShortcutKey { _isAlt = 1, _isCtrl = 1, _isShift = 1, _key = (byte)Keys.L },
                     Action = TGitLogRepo
                 });
@@ -677,7 +677,7 @@ namespace NppGit.Modules.TortoiseGitFeatures
 
                 _manager.RegisteCommandItem(new CommandItem
                 {
-                    Name = "TGit Show RefLog",
+                    Name = "TGit Show Reflog",
                     Hint = "Show Reflog",
                     ShortcutKey = null,
                     Action = TGitRefLog
@@ -685,8 +685,8 @@ namespace NppGit.Modules.TortoiseGitFeatures
 
                 cmdId = _manager.RegisteCommandItem(new CommandItem
                 {
-                    Name = "TGit Blame",
-                    Hint = "Blame",
+                    Name = "TGit Blame file",
+                    Hint = "Blame file",
                     ShortcutKey = new ShortcutKey { _isAlt = 1, _isCtrl = 1, _key = (byte)Keys.B },
                     Action = TGitBlame
                 });
@@ -703,8 +703,8 @@ namespace NppGit.Modules.TortoiseGitFeatures
                                 
                 cmdId = _manager.RegisteCommandItem(new CommandItem
                 {
-                    Name = "TGit Repo stastus",
-                    Hint = "Repo stastus",
+                    Name = "TGit Check for modifications",
+                    Hint = "Check for modifications",
                     ShortcutKey = null,
                     Action = TGitRepoStatus
                 });
@@ -713,16 +713,16 @@ namespace NppGit.Modules.TortoiseGitFeatures
 
                 _manager.RegisteCommandItem(new CommandItem
                 {
-                    Name = "TGit Rebase",
-                    Hint = "Rebase",
+                    Name = "TGit Rebase...",
+                    Hint = "Rebase...",
                     ShortcutKey = null,
                     Action = TGitRebase
                 });
 
                 _manager.RegisteCommandItem(new CommandItem
                 {
-                    Name = "TGit Repobrowser",
-                    Hint = "Repo browser",
+                    Name = "TGit Repo-browser",
+                    Hint = "Repo-browser",
                     ShortcutKey = null,
                     Action = TGitRepoBrowser
                 });
@@ -737,8 +737,8 @@ namespace NppGit.Modules.TortoiseGitFeatures
 
                 _manager.RegisteCommandItem(new CommandItem
                 {
-                    Name = "TGit Revision Graph",
-                    Hint = "Revision Graph",
+                    Name = "TGit Revision graph",
+                    Hint = "Revision graph",
                     ShortcutKey = null,
                     Action = TGitRevisionGraph
                 });
@@ -840,7 +840,7 @@ namespace NppGit.Modules.TortoiseGitFeatures
 
                 _manager.RegisteCommandItem(new CommandItem
                 {
-                    Name = "TGit Clean up",
+                    Name = "TGit Clean up...",
                     Hint = "Clean up",
                     ShortcutKey = null,
                     Action = TGitCleanup
@@ -905,8 +905,8 @@ namespace NppGit.Modules.TortoiseGitFeatures
 
                 _manager.RegisteCommandItem(new CommandItem
                 {
-                    Name = "TGit Repo create",
-                    Hint = "Repository create",
+                    Name = "TGit Create repository",
+                    Hint = "Create repository",
                     ShortcutKey = null,
                     Action = TGitRepoCreate
                 });
