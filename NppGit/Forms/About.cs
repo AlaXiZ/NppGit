@@ -54,7 +54,7 @@ namespace NppGit.Forms
         private void llIssue_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             llIssue.LinkVisited = true;
-            System.Diagnostics.Process.Start("https://github.com/AlaXiZ/NppGit/issues");
+            System.Diagnostics.Process.Start("https://nppgit.myjetbrains.com/youtrack/issues");
 
         }
     }

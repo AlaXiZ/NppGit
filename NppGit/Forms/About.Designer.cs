@@ -119,6 +119,7 @@ namespace NppGit.Forms
             // tbChangeLog
             // 
             this.tbChangeLog.BackColor = System.Drawing.Color.White;
+            this.tbChangeLog.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tbChangeLog.Location = new System.Drawing.Point(145, 71);
             this.tbChangeLog.Multiline = true;
             this.tbChangeLog.Name = "tbChangeLog";
@@ -141,15 +142,16 @@ namespace NppGit.Forms
             this.llIssue.AutoSize = true;
             this.llIssue.Location = new System.Drawing.Point(228, 51);
             this.llIssue.Name = "llIssue";
-            this.llIssue.Size = new System.Drawing.Size(167, 13);
+            this.llIssue.Size = new System.Drawing.Size(194, 13);
             this.llIssue.TabIndex = 7;
             this.llIssue.TabStop = true;
-            this.llIssue.Text = "github.com/AlaXiZ/NppGit/issues";
+            this.llIssue.Text = "nppgit.myjetbrains.com/youtrack/issues";
             this.llIssue.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.llIssue_LinkClicked);
             // 
             // tbLicense
             // 
             this.tbLicense.BackColor = System.Drawing.Color.White;
+            this.tbLicense.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tbLicense.Location = new System.Drawing.Point(12, 220);
             this.tbLicense.Multiline = true;
             this.tbLicense.Name = "tbLicense";
