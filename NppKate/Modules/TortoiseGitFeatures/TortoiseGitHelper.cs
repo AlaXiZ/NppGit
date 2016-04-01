@@ -569,6 +569,15 @@ namespace NppKate.Modules.TortoiseGitFeatures
             }
         }
 
+        private static void TGitStashList()
+        {
+            if (CheckRepoAndShowError())
+            {
+                string path = GitCore.GitCore.Instance.ActiveRepository.Path;
+                StartCommand(CreateCommand(TortoiseGitCommand.RefLog, path, additionalParam: @"/ref:refs/stash"));
+            }
+        }
+
         private static void ReadmeFunc()
         {
             const string text = "Не установлен TortoiseGit или не найдена папка с установленной программой!";
@@ -628,7 +637,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                     _icons.Add(cmdId, Properties.Resources.pull);
                 
                 /**********************************************************************************/
-                _manager.RegisteCommandItem(new CommandItem { Name = "-", Hint = "-", Action = null });
+            _manager.RegisteCommandItem(new CommandItem { Name = "-", Hint = "-", Action = null });
 
                 _manager.RegisteCommandItem(new CommandItem
                 {
@@ -777,6 +786,14 @@ namespace NppKate.Modules.TortoiseGitFeatures
                     Hint = "Stash apply",
                     ShortcutKey = null,
                     Action = TGitStashApply
+                });
+
+                _manager.RegisteCommandItem(new CommandItem
+                {
+                    Name = "TGit Stash list",
+                    Hint = "Stash list",
+                    ShortcutKey = null,
+                    Action = TGitStashList
                 });
 
                 /**********************************************************************************/
