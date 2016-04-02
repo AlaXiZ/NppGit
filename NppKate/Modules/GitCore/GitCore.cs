@@ -63,6 +63,7 @@ namespace NppKate.Modules.GitCore
             manager.OnTabChangeEvent += ManagerOnTabChangeEvent;
             manager.OnSystemInit += ManagerOnSystemInit;
             manager.OnTitleChangedEvent += ManagerOnTitleChangedEvent;
+            manager.OnToolbarRegisterEvent += ManagerOnToolbarRegisterEvent;
 
             _browserCmdId = manager.RegisteCommandItem(new CommandItem
             {
@@ -80,6 +81,11 @@ namespace NppKate.Modules.GitCore
                 Hint = "-",
                 Action = null
             });
+        }
+
+        private void ManagerOnToolbarRegisterEvent()
+        {
+            _manager.AddToolbarButton(_browserCmdId, Properties.Resources.bookmark_repo);
         }
 
         private void ManagerOnTitleChangedEvent(object sender, TitleChangedEventArgs e)

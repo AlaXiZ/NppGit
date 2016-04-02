@@ -230,7 +230,8 @@
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="Resources\bookmark-new-list.png" />
+    <None Include="Resources\bookmark-repo.png" />
+    <None Include="Resources\bookmark-new-list.bmp" />
     <None Include="Resources\LICENSE" />
     <None Include="Resources\snippets_bar.png" />
     <None Include="Resources\button_cancel_8865.png" />

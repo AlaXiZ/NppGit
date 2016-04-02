@@ -73,6 +73,16 @@ namespace NppKate.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap bookmark_repo {
+            get {
+                object obj = ResourceManager.GetObject("bookmark_repo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap button_cancel_8865 {
             get {
                 object obj = ResourceManager.GetObject("button_cancel_8865", resourceCulture);
