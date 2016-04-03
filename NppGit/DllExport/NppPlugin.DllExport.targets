@@ -6,7 +6,6 @@
           DependsOnTargets="GetFrameworkPaths"
           AfterTargets="Build"	  
           >
-    <Exec Command="set PATH=%PATH%;C:\Program Files (x86)\Microsoft SDKs\Windows\" />
     <DllExportTask Platform="$(Platform)"
                    PlatformTarget="$(PlatformTarget)"
                    CpuType="$(CpuType)"
@@ -21,6 +20,6 @@
                    FrameworkPath="$(TargetedFrameworkDir);$(TargetFrameworkDirectory)"
                    LibToolPath="$(DevEnvDir)..\..\VC\bin"
                    LibToolDllPath="$(DevEnvDir)"
-                   SdkPath="$(FrameworkSDKDir)"/>
+                   SdkPath="C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.6 Tools\"/>
   </Target>
 </Project>
