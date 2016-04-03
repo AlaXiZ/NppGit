@@ -92,14 +92,14 @@ namespace NppKate.Forms
                                 listItem.SubItems.Add(item.FilePath);
                                 switch (item.State)
                                 {
-                                    case FileStatus.Added: listItem.ForeColor = Color.Gray; break;
-                                    case FileStatus.Modified: listItem.ForeColor = Color.Red; break;
-                                    case FileStatus.Missing:
-                                    case FileStatus.Removed: listItem.ForeColor = Color.Silver; break;
-                                    case FileStatus.RenamedInIndex:
-                                    case FileStatus.RenamedInWorkDir: listItem.ForeColor = Color.Purple; break;
-                                    case FileStatus.Staged: listItem.ForeColor = Color.Green; break;
-                                    case FileStatus.Untracked: listItem.ForeColor = Color.RoyalBlue; break;
+                                    case FileStatus.NewInIndex:
+                                        listItem.ForeColor = Color.Gray; break;
+                                    case FileStatus.ModifiedInWorkdir: listItem.ForeColor = Color.Red; break;
+                                    case FileStatus.DeletedFromIndex:
+                                    case FileStatus.DeletedFromWorkdir: listItem.ForeColor = Color.Silver; break;
+                                    case FileStatus.RenamedInIndex: listItem.ForeColor = Color.Purple; break;
+                                    case FileStatus.ModifiedInIndex: listItem.ForeColor = Color.Green; break;
+                                    case FileStatus.NewInWorkdir: listItem.ForeColor = Color.RoyalBlue; break;
                                     default: listItem.ForeColor = Color.Black; break;
                                 }
                                 listItem.SubItems.Add(item.State.ToString());

@@ -123,7 +123,7 @@ namespace NppKate.Modules
                             {
                                 if (title.Length > 0)
                                     title.Append(":");
-                                title.Append(repo.Head.Name);
+                                title.Append(repo.Head.FriendlyName);
                             }
                             if (isShowStatus)
                             {
@@ -163,7 +163,7 @@ namespace NppKate.Modules
                         Branch branch = null;
                         foreach (var b in repo.Branches)
                         {
-                            if (b.Name == dlg.SelectedItem)
+                            if (b.FriendlyName == dlg.SelectedItem)
                             {
                                 branch = b;
                                 break;

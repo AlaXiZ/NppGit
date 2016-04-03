@@ -123,7 +123,7 @@ namespace NppKate
                     {
                         if (br.IsCurrentRepositoryHead)
                         {
-                            lBranch.Text = string.Format(RS_CURBRANCH, br.Name);
+                            lBranch.Text = string.Format(RS_CURBRANCH, br.FriendlyName);
                             break;
                         }
                     }

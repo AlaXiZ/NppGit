@@ -92,7 +92,7 @@ namespace NppKate.Modules.GitCore
         {
             if (_currRepo != null && Settings.GitCore.ActiveRepoInTitle)
             {
-                e.AddTitleItem("Active repo: " + _currentRepo.Name + ":" + _currRepo.Head.Name);
+                e.AddTitleItem("Active repo: " + _currentRepo.Name + ":" + _currRepo.Head.FriendlyName);
             }
         }
 
@@ -203,7 +203,7 @@ namespace NppKate.Modules.GitCore
 
         public string CurrentBranch
         {
-            get { return _currRepo?.Head.Name ?? ""; }
+            get { return _currRepo?.Head.FriendlyName ?? ""; }
         }
 
         public bool SwitchByPath(string path)

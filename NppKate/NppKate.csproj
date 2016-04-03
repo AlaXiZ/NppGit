@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\LibGit2Sharp.0.21.0.176\build\net40\LibGit2Sharp.props" Condition="Exists('..\packages\LibGit2Sharp.0.21.0.176\build\net40\LibGit2Sharp.props')" />
+  <Import Project="..\packages\LibGit2Sharp.NativeBinaries.1.0.129\build\LibGit2Sharp.NativeBinaries.props" Condition="Exists('..\packages\LibGit2Sharp.NativeBinaries.1.0.129\build\LibGit2Sharp.NativeBinaries.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
@@ -72,8 +72,8 @@
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="LibGit2Sharp, Version=0.21.0.176, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\LibGit2Sharp.0.21.0.176\lib\net40\LibGit2Sharp.dll</HintPath>
+    <Reference Include="LibGit2Sharp, Version=0.22.0.0, Culture=neutral, PublicKeyToken=7cbde695407f0333, processorArchitecture=MSIL">
+      <HintPath>..\packages\LibGit2Sharp.0.22.0\lib\net40\LibGit2Sharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
@@ -231,18 +231,11 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="NLog.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <None Include="Resources\bookmark-repo.png" />
     <None Include="Resources\bookmark-new-list.bmp" />
     <None Include="Resources\LICENSE" />
     <None Include="Resources\snippets_bar.png" />
     <None Include="Resources\button_cancel_8865.png" />
-    <None Include="NLog.xsd">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="Resources\insert-text_7102.png" />
     <None Include="Resources\edit_add_6387.png" />
     <None Include="Resources\remove_4075.png" />
@@ -297,6 +290,6 @@
     <PropertyGroup>
       <ErrorText>Данный проект ссылается на пакеты NuGet, отсутствующие на этом компьютере. Используйте восстановление пакетов NuGet, чтобы скачать их.  Дополнительную информацию см. по адресу: http://go.microsoft.com/fwlink/?LinkID=322105. Отсутствует следующий файл: {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\LibGit2Sharp.0.21.0.176\build\net40\LibGit2Sharp.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\LibGit2Sharp.0.21.0.176\build\net40\LibGit2Sharp.props'))" />
+    <Error Condition="!Exists('..\packages\LibGit2Sharp.NativeBinaries.1.0.129\build\LibGit2Sharp.NativeBinaries.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\LibGit2Sharp.NativeBinaries.1.0.129\build\LibGit2Sharp.NativeBinaries.props'))" />
   </Target>
 </Project>
