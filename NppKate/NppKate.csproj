@@ -74,11 +74,11 @@
   <ItemGroup>
     <Reference Include="LibGit2Sharp, Version=0.22.0.0, Culture=neutral, PublicKeyToken=7cbde695407f0333, processorArchitecture=MSIL">
       <HintPath>..\packages\LibGit2Sharp.0.22.0\lib\net40\LibGit2Sharp.dll</HintPath>
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.2.3\lib\net40\NLog.dll</HintPath>
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -274,18 +274,6 @@
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>-->
-  <ItemGroup>
-    <FilesToMove Include="$(OutputPath)NLog.*" />
-    <FilesToMove Include="$(OutputPath)LibGit2Sharp.*" />
-    <!--<FilesToMove Include="$(OutputPath)System.Management.Automation.dll" />-->
-    <DirToMove Include="$(OutputPath)NativeBinaries\**\*.*" />
-  </ItemGroup>
-  <Target Name="AfterBuild" Condition=" '$(Configuration)' == 'Debug' ">
-    <MakeDir Condition="!Exists('$(OutputPath)NppKate\')" Directories="$(OutputPath)NppKate\" />
-    <Move SourceFiles="@(FilesToMove)" DestinationFolder="$(OutputPath)NppKate\" OverwriteReadOnlyFiles="true" />
-    <Copy SourceFiles="@(DirToMove)" DestinationFolder="$(OutputPath)NppKate\NativeBinaries\%(RecursiveDir)" />
-    <RemoveDir Directories="$(OutputPath)NativeBinaries" />
-  </Target>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>Данный проект ссылается на пакеты NuGet, отсутствующие на этом компьютере. Используйте восстановление пакетов NuGet, чтобы скачать их.  Дополнительную информацию см. по адресу: http://go.microsoft.com/fwlink/?LinkID=322105. Отсутствует следующий файл: {0}.</ErrorText>
