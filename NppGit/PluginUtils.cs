@@ -297,7 +297,7 @@ namespace NppGit
             // Корректировка последнего NUL-символа
             if (outStr.IndexOf('\0') > -1)
             {
-                outStr = outStr.Substring(0, (outStr.IndexOf('\0') - 1));
+                outStr = outStr.Substring(0, outStr.IndexOf('\0'));
             }
             return outStr;
         }
