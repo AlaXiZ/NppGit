@@ -187,7 +187,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                 builder.Append(" ").AppendFormat(LOG_MSG, logMsg);
             }
 
-            if (closeParam == null || closeParam > 2)
+            if (closeParam > 2)
             {
                 builder.Append(" ").AppendFormat(CLOSE, 0);
             }
