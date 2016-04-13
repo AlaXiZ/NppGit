@@ -33,6 +33,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -206,7 +207,7 @@ namespace NppGit.Common
                 return;
 
             CWPRETSTRUCT msg = (CWPRETSTRUCT)Marshal.PtrToStructure(e.lParam, typeof(CWPRETSTRUCT));
-            if (msg.message == (uint)WinMsg.WM_SETTEXT && (uint)msg.wParam != (uint)WinMsg.WM_SETTEXT)
+            if (msg.message == (uint)WinMsg.WM_SETTEXT && (uint)msg.wParam != (uint)WinMsg.WM_SETTEXT && msg.hwnd == PluginUtils.NppHandle)
             {
                 DoTitleChangedEvent();
                 //DoTitleChangingEvent();
@@ -258,14 +259,28 @@ namespace NppGit.Common
         }
 
         private string _ending = null;
+        static private CancellationTokenSource source = null;
+        static private CancellationToken token;
+        static private Task titleTask;
 
         private void DoTitleChangedEvent()
         {
             if (!_canEvent) return;
-
             if (OnTitleChangedEvent != null)
             {
-                Task task = new Task(() =>
+                /*
+                if (source == null)
+                {
+                    source = new CancellationTokenSource();
+                    token = source.Token;
+                }
+
+                if (titleTask?.Status == TaskStatus.Running)
+                {
+                    source.Cancel();
+                }
+                */
+                titleTask = new Task(() =>
                 {
                     var title = PluginUtils.WindowTitle;
                     if (string.IsNullOrEmpty(title))
@@ -288,7 +303,8 @@ namespace NppGit.Common
                     title = title.Substring(0, title.LastIndexOf(_ending) + _ending.Length) + args.GetTitle();
                     PluginUtils.WindowTitle = title;
                 });
-                task.Start();
+                titleTask.Start();
+                titleTask.Wait();
             }
         }
 
