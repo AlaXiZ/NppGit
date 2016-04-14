@@ -36,19 +36,30 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace NppKate
+namespace NppKate.Npp
 {
-    public partial class PluginUtils
+    public static class NppUtils
     {
+        private static NppInfo _nppInfoInst = null;
+        private static NppInfo _nppInfo
+        {
+            get
+            {
+                if (_nppInfoInst == null)
+                    _nppInfoInst = NppInfo.Instance;
+                return _nppInfoInst;
+            }
+
+        }
+
         #region "Notepad++"
-        
         public static IntPtr CurrentScintilla
         {
             get
             {
                 int curScintilla;
-                Win32.SendMessage(NppHandle, NppMsg.NPPM_GETCURRENTSCINTILLA, 0, out curScintilla);
-                return (curScintilla == 0) ? nppData._scintillaMainHandle : nppData._scintillaSecondHandle;
+                Win32.SendMessage(_nppInfo.NppHandle, NppMsg.NPPM_GETCURRENTSCINTILLA, 0, out curScintilla);
+                return (curScintilla == 0) ? _nppInfo.NppData._scintillaMainHandle : _nppInfo.NppData._scintillaSecondHandle;
             }
         }
 
@@ -57,7 +68,7 @@ namespace NppKate
             get
             {
                 var buffer = new StringBuilder(Win32.MAX_PATH);
-                Win32.SendMessage(NppHandle, NppMsg.NPPM_GETPLUGINSCONFIGDIR, Win32.MAX_PATH, buffer);
+                Win32.SendMessage(NppInfo.Instance.NppHandle, NppMsg.NPPM_GETPLUGINSCONFIGDIR, Win32.MAX_PATH, buffer);
                 return buffer.ToString();
             }
         }
@@ -71,13 +82,13 @@ namespace NppKate
             }
         }
 
-        public static void SetToolbarImage(Bitmap image, int pluginId)
+        public static void SetToolbarImage(Bitmap image, int pluginIndex)
         {
             var tbIcons = new toolbarIcons();
             tbIcons.hToolbarBmp = image.GetHbitmap();
             IntPtr pTbIcons = Marshal.AllocHGlobal(Marshal.SizeOf(tbIcons));
             Marshal.StructureToPtr(tbIcons, pTbIcons, false);
-            Win32.SendMessage(NppHandle, NppMsg.NPPM_ADDTOOLBARICON, _funcItems.Items[pluginId]._cmdID, pTbIcons);
+            Win32.SendMessage(_nppInfo.NppHandle, NppMsg.NPPM_ADDTOOLBARICON, _nppInfo.SearchCmdIdByIndex(pluginIndex), pTbIcons);
             Marshal.FreeHGlobal(pTbIcons);
         }
 
@@ -86,13 +97,13 @@ namespace NppKate
             get
             {
                 var buffer = new StringBuilder(Win32.MAX_PATH);
-                Win32.SendMessage(NppHandle, NppMsg.NPPM_GETFULLCURRENTPATH, Win32.MAX_PATH, buffer);
+                Win32.SendMessage(_nppInfo.NppHandle, NppMsg.NPPM_GETFULLCURRENTPATH, Win32.MAX_PATH, buffer);
                 return buffer.ToString();
             }
             set
             {
                 var buffer = new StringBuilder(value);
-                Win32.SendMessage(NppHandle, NppMsg.NPPM_SWITCHTOFILE, 0, buffer);
+                Win32.SendMessage(_nppInfo.NppHandle, NppMsg.NPPM_SWITCHTOFILE, 0, buffer);
             }
         }
 
@@ -109,54 +120,54 @@ namespace NppKate
             get
             {
                 var buffer = new StringBuilder(Win32.MAX_PATH);
-                Win32.SendMessage(NppHandle, NppMsg.NPPM_GETFULLCURRENTPATH, Win32.MAX_PATH, buffer);
+                Win32.SendMessage(_nppInfo.NppHandle, NppMsg.NPPM_GETFULLCURRENTPATH, Win32.MAX_PATH, buffer);
                 return buffer.Length > 0 ? Path.GetDirectoryName(buffer.ToString()) : "";
             }
         }
 
         public static long CurrentLine
         {
-            get { return ((long)Win32.SendMessage(NppHandle, NppMsg.NPPM_GETCURRENTLINE, 0, 0)) + 1; }
+            get { return ((long)Win32.SendMessage(_nppInfo.NppHandle, NppMsg.NPPM_GETCURRENTLINE, 0, 0)) + 1; }
         }
 
         public static void NewFile()
         {
-            Win32.SendMessage(NppHandle, NppMsg.NPPM_MENUCOMMAND, 0, NppMenuCmd.IDM_FILE_NEW);
+            Win32.SendMessage(_nppInfo.NppHandle, NppMsg.NPPM_MENUCOMMAND, 0, NppMenuCmd.IDM_FILE_NEW);
         }
 
         public static void SetLang(LangType langType)
         {
-            Win32.SendMessage(NppHandle, NppMsg.NPPM_SETCURRENTLANGTYPE, 0, (int)langType);
+            Win32.SendMessage(_nppInfo.NppHandle, NppMsg.NPPM_SETCURRENTLANGTYPE, 0, (int)langType);
         }
 
         public static bool OpenFile(string filePath)
         {
             var buf = new StringBuilder(filePath);
-           return 1 == (int)Win32.SendMessage(NppHandle, NppMsg.NPPM_DOOPEN, 0, buf);
+           return 1 == (int)Win32.SendMessage(_nppInfo.NppHandle, NppMsg.NPPM_DOOPEN, 0, buf);
         }
 
         public static void MoveFileToOtherView()
         {
-            Win32.SendMessage(NppHandle, NppMsg.NPPM_MENUCOMMAND, 0, NppMenuCmd.IDM_VIEW_GOTO_ANOTHER_VIEW);
+            Win32.SendMessage(_nppInfo.NppHandle, NppMsg.NPPM_MENUCOMMAND, 0, NppMenuCmd.IDM_VIEW_GOTO_ANOTHER_VIEW);
         }
 
         public static int CurrentBufferId
         {
             get
             {
-                return (int)Win32.SendMessage(NppHandle, NppMsg.NPPM_GETCURRENTBUFFERID, 0, 0);
+                return (int)Win32.SendMessage(_nppInfo.NppHandle, NppMsg.NPPM_GETCURRENTBUFFERID, 0, 0);
             }
         }
 
         public static void SetCheckedMenu(int cmdId, bool isChecked)
         {
-            Win32.SendMessage(NppHandle, NppMsg.NPPM_SETMENUITEMCHECK, cmdId, isChecked ? 1 : 0);
+            Win32.SendMessage(_nppInfo.NppHandle, NppMsg.NPPM_SETMENUITEMCHECK, cmdId, isChecked ? 1 : 0);
         }
 
         public static void Shutdown()
         {
             AssemblyLoader.StopLogging();
-            Win32.PostMessage(NppHandle, (int)WinMsg.WM_CLOSE, 0, 0);
+            Win32.PostMessage(_nppInfo.NppHandle, (int)WinMsg.WM_CLOSE, 0, 0);
         }
         
         #endregion
@@ -344,13 +355,13 @@ namespace NppKate
             get
             {
                 var title = new StringBuilder(Win32.MAX_PATH);
-                Win32.SendMessage(NppHandle, (int)WinMsg.WM_GETTEXT, Win32.MAX_PATH, title);
+                Win32.SendMessage(_nppInfo.NppHandle, (int)WinMsg.WM_GETTEXT, Win32.MAX_PATH, title);
                 return title.ToString();
             }
             set
             {   
                 var title = new StringBuilder(value);
-                Win32.SendMessage(NppHandle, (int)WinMsg.WM_SETTEXT, (int)WinMsg.WM_SETTEXT, title);
+                Win32.SendMessage(_nppInfo.NppHandle, (int)WinMsg.WM_SETTEXT, (int)WinMsg.WM_SETTEXT, title);
             }
         }
 

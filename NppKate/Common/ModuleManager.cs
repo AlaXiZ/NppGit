@@ -28,12 +28,12 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using NLog;
 using NppKate.Forms;
 using NppKate.Interop;
+using NppKate.Npp;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -207,7 +207,7 @@ namespace NppKate.Common
                 return;
 
             CWPRETSTRUCT msg = (CWPRETSTRUCT)Marshal.PtrToStructure(e.lParam, typeof(CWPRETSTRUCT));
-            if (msg.message == (uint)WinMsg.WM_SETTEXT && (uint)msg.wParam != (uint)WinMsg.WM_SETTEXT && msg.hwnd == PluginUtils.NppHandle)
+            if (msg.message == (uint)WinMsg.WM_SETTEXT && (uint)msg.wParam != (uint)WinMsg.WM_SETTEXT && msg.hwnd == NppInfo.Instance.NppHandle)
             {
                 DoTitleChangedEvent();
                 //DoTitleChangingEvent();
@@ -227,7 +227,7 @@ namespace NppKate.Common
             string menuName = "";
             if (!_menuCache.ContainsKey(menuId))
             {
-                foreach (var item in PluginUtils._funcItems.Items)
+                foreach (var item in NppInfo.Instance.FuncItems.Items)
                 {
                     if (item._cmdID == menuId)
                     {
@@ -259,8 +259,8 @@ namespace NppKate.Common
         }
 
         private string _ending = null;
-        static private CancellationTokenSource source = null;
-        static private CancellationToken token;
+        //static private CancellationTokenSource source = null;
+        //static private CancellationToken token;
         static private Task titleTask;
 
         private void DoTitleChangedEvent()
@@ -282,7 +282,7 @@ namespace NppKate.Common
                 */
                 titleTask = new Task(() =>
                 {
-                    var title = PluginUtils.WindowTitle;
+                    var title = NppUtils.WindowTitle;
                     if (string.IsNullOrEmpty(title))
                         return;
                     var args = new TitleChangedEventArgs();
@@ -301,7 +301,7 @@ namespace NppKate.Common
                     // Вдруг на пришел заголовок с нашими дописками,
                     // сначала их порежем
                     title = title.Substring(0, title.LastIndexOf(_ending) + _ending.Length) + args.GetTitle();
-                    PluginUtils.WindowTitle = title;
+                    NppUtils.WindowTitle = title;
                 });
                 titleTask.Start();
                 titleTask.Wait();
@@ -340,7 +340,7 @@ namespace NppKate.Common
             }
             _cmdList[className].Add(menuItem);
 
-            return PluginUtils.SetCommand(menuItem.Name, menuItem.Action, (menuItem.ShortcutKey ?? new ShortcutKey()), menuItem.Checked);
+            return NppInfo.Instance.AddCommand(menuItem.Name, menuItem.Action, menuItem.ShortcutKey, menuItem.Checked);
         }
 
         public void RegisterDockForm(Type formClass, int cmdId, bool updateWithChangeContext, NppTbMsg uMask = NppTbMsg.DWS_PARAMSALL | NppTbMsg.DWS_DF_CONT_RIGHT)
@@ -377,7 +377,7 @@ namespace NppKate.Common
                 if (form.Form == null)
                 {
                     form.Form = Activator.CreateInstance(form.Type) as Form;
-                    form.TabIcon = PluginUtils.NppBitmapToIcon((form.Form as FormDockable).TabIcon);
+                    form.TabIcon = NppUtils.NppBitmapToIcon((form.Form as FormDockable).TabIcon);
 
                     NppTbData _nppTbData = new NppTbData();
                     _nppTbData.hClient = form.Form.Handle;
@@ -389,20 +389,20 @@ namespace NppKate.Common
                     IntPtr _ptrNppTbData = Marshal.AllocHGlobal(Marshal.SizeOf(_nppTbData));
                     Marshal.StructureToPtr(_nppTbData, _ptrNppTbData, false);
 
-                    Win32.SendMessage(PluginUtils.NppHandle, NppMsg.NPPM_DMMREGASDCKDLG, 0, _ptrNppTbData);
+                    Win32.SendMessage(NppInfo.Instance.NppHandle, NppMsg.NPPM_DMMREGASDCKDLG, 0, _ptrNppTbData);
                 }
                 else
                 {
                     if (form.Form.Visible)
                     {
-                        Win32.SendMessage(PluginUtils.NppHandle, NppMsg.NPPM_DMMHIDE, 0, form.Form.Handle);
+                        Win32.SendMessage(NppInfo.Instance.NppHandle, NppMsg.NPPM_DMMHIDE, 0, form.Form.Handle);
                     }
                     else
                     {
-                        Win32.SendMessage(PluginUtils.NppHandle, NppMsg.NPPM_DMMSHOW, 0, form.Form.Handle);
+                        Win32.SendMessage(NppInfo.Instance.NppHandle, NppMsg.NPPM_DMMSHOW, 0, form.Form.Handle);
                     }
                 }
-                PluginUtils.SetCheckedMenu(PluginUtils.GetCmdId(cmdId), form.Form.Visible);
+                NppUtils.SetCheckedMenu(NppInfo.Instance.SearchCmdIdByIndex(cmdId), form.Form.Visible);
                 return form.Form.Visible;
             }
             else
@@ -418,14 +418,14 @@ namespace NppKate.Common
             tbIcons.hToolbarBmp = icon.GetHbitmap();
             IntPtr pTbIcons = Marshal.AllocHGlobal(Marshal.SizeOf(tbIcons));
             Marshal.StructureToPtr(tbIcons, pTbIcons, false);
-            Win32.SendMessage(PluginUtils.NppHandle, NppMsg.NPPM_ADDTOOLBARICON, PluginUtils.GetCmdId(cmdId), pTbIcons);
+            Win32.SendMessage(NppInfo.Instance.NppHandle, NppMsg.NPPM_ADDTOOLBARICON, NppInfo.Instance.SearchCmdIdByIndex(cmdId), pTbIcons);
             Marshal.FreeHGlobal(pTbIcons);
         }
 
         public void SetCheckedMenu(int cmdId, bool isChecked)
         {
             logger.Debug("Menu cmdId={0}, state={1}", cmdId, isChecked);
-            Win32.SendMessage(PluginUtils.NppHandle, NppMsg.NPPM_SETMENUITEMCHECK, PluginUtils.GetCmdId(cmdId), isChecked ? 1 : 0);
+            Win32.SendMessage(NppInfo.Instance.NppHandle, NppMsg.NPPM_SETMENUITEMCHECK, NppInfo.Instance.SearchCmdIdByIndex(cmdId), isChecked ? 1 : 0);
         }
 
         #region "Context menu"
@@ -455,31 +455,31 @@ namespace NppKate.Common
             }
             if (dlg.ShowDialog() == DialogResult.OK)
             {
-                PluginUtils.NewFile();
-                PluginUtils.AppendText("\t\t<!--Sample menu -->");
-                PluginUtils.NewLine();
+                NppUtils.NewFile();
+                NppUtils.AppendText("\t\t<!--Sample menu -->");
+                NppUtils.NewLine();
 
                 var countItem = 1;
                 foreach (var folder in dlg.Commands.Keys)
                 {
                     if (countItem > 0)
                     {
-                        PluginUtils.AppendText(GetItemTemplate());
-                        PluginUtils.NewLine();
+                        NppUtils.AppendText(GetItemTemplate());
+                        NppUtils.NewLine();
                         countItem = 0;
                     }
                     foreach (var command in dlg.Commands[folder])
                     {
                         if (command.Hint != "-" && command.Selected)
                         {
-                            PluginUtils.AppendText(GetItemTemplate(folder, command.Name, command.Hint));
-                            PluginUtils.NewLine();
+                            NppUtils.AppendText(GetItemTemplate(folder, command.Name, command.Hint));
+                            NppUtils.NewLine();
                             countItem++;
                         }
                     }
                 }
-                PluginUtils.AppendText(GetItemTemplate());
-                PluginUtils.NewLine();
+                NppUtils.AppendText(GetItemTemplate());
+                NppUtils.NewLine();
                 /*
                 for (int i = 0; i < PluginUtils._funcItems.Items.Count; i++)
                 {
@@ -487,7 +487,7 @@ namespace NppKate.Common
                     PluginUtils.NewLine();
                 }
                 */
-                PluginUtils.SetLang(LangType.L_XML);
+                NppUtils.SetLang(LangType.L_XML);
             }
         }
 

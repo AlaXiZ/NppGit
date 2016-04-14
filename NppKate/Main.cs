@@ -25,21 +25,18 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-using NppKate.Interop;
+using NppKate.Common;
 using NppKate.Modules;
+using NppKate.Modules.GitCore;
 using NppKate.Modules.IdeFeatures;
 using NppKate.Modules.SnippetFeature;
-using NppKate.Common;
-using System;
-using System.Drawing;
-using System.Runtime.InteropServices;
-using NppKate.Forms;
 using NppKate.Modules.TortoiseGitFeatures;
-using NppKate.Modules.GitCore;
+using NppKate.Npp;
+using System.Drawing;
 
 namespace NppKate
 {
-    class Plugin
+    class Main
     {
         #region "Fields"
         //internal const string PluginName = "NppGit";
@@ -62,9 +59,9 @@ namespace NppKate
             mm.Init();
             var isVisiblePanel = Settings.Panels.StatusPanelVisible;
 
-            PluginUtils.SetCommand("Restart Notepad++", PluginUtils.Restart);
-            PluginUtils.SetCommand("Settings", DoSettings);
-            PluginUtils.SetCommand("About", DoAbout);
+            NppInfo.Instance.AddCommand("Restart Notepad++", NppUtils.Restart);
+            NppInfo.Instance.AddCommand("Settings", DoSettings);
+            NppInfo.Instance.AddCommand("About", DoAbout);
         }
 
         internal static void ToolBarInit()
@@ -101,6 +98,7 @@ namespace NppKate
             mm.ManualTitleUpdate();
         }
 
+        /*
         static void GitStatusDialog()
         {
             var isVisible = 0;
@@ -108,7 +106,7 @@ namespace NppKate
             {
                 gitStatusDlg = new GitStatus();
 
-                tbIcon = PluginUtils.NppBitmapToIcon(Properties.Resources.Git);
+                tbIcon = NppUtils.NppBitmapToIcon(Properties.Resources.Git);
 
                 NppTbData _nppTbData = new NppTbData();
                 _nppTbData.hClient = gitStatusDlg.Handle;
@@ -120,18 +118,18 @@ namespace NppKate
                 IntPtr _ptrNppTbData = Marshal.AllocHGlobal(Marshal.SizeOf(_nppTbData));
                 Marshal.StructureToPtr(_nppTbData, _ptrNppTbData, false);
 
-                Win32.SendMessage(PluginUtils.NppHandle, NppMsg.NPPM_DMMREGASDCKDLG, 0, _ptrNppTbData);
+                Win32.SendMessage(NppInfo.Instance.NppHandle, NppMsg.NPPM_DMMREGASDCKDLG, 0, _ptrNppTbData);
                 isVisible = 1;
             }
             else
             {
                 if (gitStatusDlg.Visible)
                 {
-                    Win32.SendMessage(PluginUtils.NppHandle, NppMsg.NPPM_DMMHIDE, 0, gitStatusDlg.Handle);
+                    Win32.SendMessage(NppInfo.Instance.NppHandle, NppMsg.NPPM_DMMHIDE, 0, gitStatusDlg.Handle);
                 }
                 else
                 {
-                    Win32.SendMessage(PluginUtils.NppHandle, NppMsg.NPPM_DMMSHOW, 0, gitStatusDlg.Handle);
+                    Win32.SendMessage(NppInfo.Instance.NppHandle, NppMsg.NPPM_DMMSHOW, 0, gitStatusDlg.Handle);
                     isVisible = 1;
                 }
             }
@@ -140,14 +138,16 @@ namespace NppKate
                 (gitStatusDlg as FormDockable).ChangeContext();
             }
 
-           Win32.SendMessage(PluginUtils.NppHandle, NppMsg.NPPM_SETMENUITEMCHECK, PluginUtils._funcItems.Items[gitStatusId]._cmdID, isVisible);
+           Win32.SendMessage(NppInfo.Instance.NppHandle, NppMsg.NPPM_SETMENUITEMCHECK, NppInfo.Instance.SearchCmdIdByIndex(gitStatusId), isVisible);
         }
-
+        */
+        /*
         public static void ChangeTabItem()
         {
             if (gitStatusDlg != null)
                 (gitStatusDlg as FormDockable).ChangeContext();
         }
+        */
         #endregion
     }
 }

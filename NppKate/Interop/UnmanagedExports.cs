@@ -2,8 +2,9 @@
 using System.Runtime.InteropServices;
 using NppPlugin.DllExport;
 using NppKate.Common;
+using NppKate.Npp;
 
-namespace NppKate
+namespace NppKate.Interop
 {
     class UnmanagedExports
     {
@@ -16,17 +17,17 @@ namespace NppKate
         [DllExport(CallingConvention = CallingConvention.Cdecl)]
         static void setInfo(NppData notepadPlusData)
         {
-            PluginUtils.NppData = notepadPlusData;
+            NppInfo.Instance.NppData = notepadPlusData;
             AssemblyLoader.Init();
 
-            Plugin.Init();
+            Main.Init();
         }
     
         [DllExport(CallingConvention = CallingConvention.Cdecl)]
         static IntPtr getFuncsArray(ref int nbF)
         {
-            nbF = PluginUtils._funcItems.Items.Count;
-            return PluginUtils._funcItems.NativePointer;
+            nbF = NppInfo.Instance.FuncItems.Items.Count;
+            return NppInfo.Instance.FuncItems.NativePointer;
         }
 
         [DllExport(CallingConvention = CallingConvention.Cdecl)]
@@ -54,17 +55,17 @@ namespace NppKate
             SCNotification nc = (SCNotification)Marshal.PtrToStructure(notifyCode, typeof(SCNotification));
             if (nc.nmhdr.code == (uint)NppMsg.NPPN_TBMODIFICATION)
             {
-                PluginUtils._funcItems.RefreshItems();
-                Plugin.ToolBarInit();
+                NppInfo.Instance.FuncItems.RefreshItems();
+                Main.ToolBarInit();
             }
             else if (nc.nmhdr.code == (uint)NppMsg.NPPN_SHUTDOWN)
             {
-                Plugin.PluginCleanUp();
+                Main.PluginCleanUp();
                 Marshal.FreeHGlobal(_ptrPluginName);
             }
             else
             {
-                Plugin.MessageProc(nc);
+                Main.MessageProc(nc);
             }
         }
     }

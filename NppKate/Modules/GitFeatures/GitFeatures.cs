@@ -30,9 +30,8 @@ using NLog;
 using NppKate.Forms;
 using NppKate.Common;
 using System;
-using System.IO;
-using System.Linq;
 using System.Text;
+using NppKate.Npp;
 
 namespace NppKate.Modules
 {
@@ -105,12 +104,12 @@ namespace NppKate.Modules
                      isShowRepo = Settings.Functions.ShowRepoName,
                      isShowStatus = Settings.Functions.ShowStatusFile;
 
-                var repoDir = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
+                var repoDir = NppUtils.GetRootDir(NppUtils.CurrentFileDir);
                 if (!string.IsNullOrEmpty(repoDir) && Repository.IsValid(repoDir))
                 {
                     using (var repo = new Repository(repoDir))
                     {
-                        var status = repo.RetrieveStatus(PluginUtils.CurrentFilePath);
+                        var status = repo.RetrieveStatus(NppUtils.CurrentFilePath);
                         if (status != FileStatus.Ignored)
                         {
                             var title = new StringBuilder();
@@ -129,7 +128,7 @@ namespace NppKate.Modules
                             {
                                 if (title.Length > 0)
                                     title.Append(":");
-                                title.Append(repo.RetrieveStatus(PluginUtils.CurrentFilePath).ToString());
+                                title.Append(repo.RetrieveStatus(NppUtils.CurrentFilePath).ToString());
                             }
                             e.AddTitleItem("File in repo: " + title.ToString());
                         }
@@ -148,7 +147,7 @@ namespace NppKate.Modules
 
         private void OpenFileInOtherBranch()
         {
-            var repoDir = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
+            var repoDir = NppUtils.GetRootDir(NppUtils.CurrentFileDir);
             try
             {
                 using (var repo = new Repository(repoDir))
@@ -156,7 +155,7 @@ namespace NppKate.Modules
                     var dlg = new Forms.BranchList();
                     dlg.RepoDirectory = repoDir;
                     // Replace "\" to "/" and delete first "/"
-                    var fileInRepo = PluginUtils.CurrentFilePath.Replace(repoDir, "").Replace("\\", "/").Remove(0, 1);
+                    var fileInRepo = NppUtils.CurrentFilePath.Replace(repoDir, "").Replace("\\", "/").Remove(0, 1);
 
                     if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                     {
@@ -173,17 +172,17 @@ namespace NppKate.Modules
                         {
                             var commit = repo.Lookup<Commit>(branch.Tip.Id);
                             var blob = (Blob)commit[fileInRepo].Target;
-                            var fileName = commit.Sha.Substring(1, Settings.Functions.SHACount) + "_" + PluginUtils.CurrentFileName;
+                            var fileName = commit.Sha.Substring(1, Settings.Functions.SHACount) + "_" + NppUtils.CurrentFileName;
                             var contentStream = blob.GetContentStream();
                             var outFile = Common.GitHelper.SaveStreamToFile(contentStream, fileName);
                             if (outFile != null)
                             {
-                                var curFile = PluginUtils.CurrentFilePath;
-                                PluginUtils.OpenFile(outFile);
+                                var curFile = NppUtils.CurrentFilePath;
+                                NppUtils.OpenFile(outFile);
                                 if (Settings.Functions.OpenFileInOtherView)
                                 {
-                                    PluginUtils.MoveFileToOtherView();
-                                    PluginUtils.CurrentFilePath = curFile;
+                                    NppUtils.MoveFileToOtherView();
+                                    NppUtils.CurrentFilePath = curFile;
                                 }
                             }
                         }

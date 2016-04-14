@@ -26,6 +26,7 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 using NLog;
+using NppKate.Npp;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -54,7 +55,7 @@ namespace NppKate.Modules.SnippetFeature
             {
                 if (_instance == null)
                 {
-                    _instance = new SnippetManager(Path.Combine(PluginUtils.ConfigDir, Properties.Resources.PluginName, Properties.Resources.SnippetsXml));
+                    _instance = new SnippetManager(Path.Combine(NppUtils.ConfigDir, Properties.Resources.PluginName, Properties.Resources.SnippetsXml));
                 }
                 return _instance;
             }

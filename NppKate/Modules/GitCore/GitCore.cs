@@ -33,6 +33,7 @@ using System.Linq;
 using System.Xml.Linq;
 using System.Diagnostics;
 using LibGit2Sharp;
+using NppKate.Npp;
 
 namespace NppKate.Modules.GitCore
 {
@@ -106,7 +107,7 @@ namespace NppKate.Modules.GitCore
 
         private void ManagerOnTabChangeEvent(object sender, TabEventArgs e)
         {
-            SwitchByPath(PluginUtils.CurrentFilePath);
+            SwitchByPath(NppUtils.CurrentFilePath);
         }
 
         public bool IsNeedRun
@@ -136,7 +137,7 @@ namespace NppKate.Modules.GitCore
             {
                 var mth = new StackTrace().GetFrame(1).GetMethod();
                 var type = mth.ReflectedType;
-                if (!type.Equals(typeof(Plugin)))
+                if (!type.Equals(typeof(Main)))
                 {
                     throw new FieldAccessException("Property Module using only in Plugin class");
                 }
@@ -157,7 +158,7 @@ namespace NppKate.Modules.GitCore
         #region GitCore
         private GitCore()
         {
-            string fileName = Path.Combine(PluginUtils.ConfigDir, Properties.Resources.PluginName, Properties.Resources.RepositoriesXml);
+            string fileName = Path.Combine(NppUtils.ConfigDir, Properties.Resources.PluginName, Properties.Resources.RepositoriesXml);
             if (File.Exists(fileName))
             {
                 _doc = XDocument.Load(fileName);
@@ -286,7 +287,7 @@ namespace NppKate.Modules.GitCore
 
         public static bool IsValidGitRepo(string path)
         {
-            var repoDir = PluginUtils.GetRootDir(path);
+            var repoDir = NppUtils.GetRootDir(path);
             return !string.IsNullOrEmpty(repoDir) && Repository.IsValid(repoDir);
         }
 

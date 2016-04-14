@@ -26,6 +26,7 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 using NppKate.Forms;
+using NppKate.Npp;
 using System;
 using System.Drawing;
 
@@ -113,7 +114,7 @@ namespace NppKate
 
         public void ChangeContext()
         {
-            var repoDir = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
+            var repoDir = NppUtils.GetRootDir(NppUtils.CurrentFileDir);
             if (!string.IsNullOrEmpty(repoDir) && LibGit2Sharp.Repository.IsValid(repoDir))
             {
                 using (var repo = new LibGit2Sharp.Repository(repoDir))
@@ -131,7 +132,7 @@ namespace NppKate
             }
             else
             { 
-                lRepo.Text = string.Format(RS_NOREPO, System.IO.Path.GetFileName(PluginUtils.CurrentFilePath));
+                lRepo.Text = string.Format(RS_NOREPO, System.IO.Path.GetFileName(NppUtils.CurrentFilePath));
                 lBranch.Text = "";
             }
         }

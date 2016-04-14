@@ -149,8 +149,8 @@
     <Compile Include="Interop\LocalWinEventHook.cs" />
     <Compile Include="Interop\Win32.cs" />
     <Compile Include="Main.cs" />
-    <Compile Include="Interop\NppPluginNETBase.cs" />
-    <Compile Include="Interop\NppPluginNETHelper.cs" />
+    <Compile Include="Npp\NppInfo.cs" />
+    <Compile Include="Interop\NppStruct.cs" />
     <Compile Include="Common\MessageEventArgs.cs" />
     <Compile Include="Common\ModuleManager.cs" />
     <Compile Include="Modules\GitCore\RepoBrowser.cs">
@@ -167,8 +167,7 @@
     <Compile Include="Modules\SnippetFeature\Snippets.cs" />
     <Compile Include="Modules\IdeFeatures\SqlIde.cs" />
     <Compile Include="Modules\GitCore\IGitCore.cs" />
-    <Compile Include="PluginUtils.cs" />
-    <Compile Include="PluginCommands.cs" />
+    <Compile Include="Npp\NppUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

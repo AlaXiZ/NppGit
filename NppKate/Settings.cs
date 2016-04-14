@@ -26,6 +26,7 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 using NppKate.Common;
+using NppKate.Npp;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -37,7 +38,7 @@ namespace NppKate
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         private static Dictionary<string, Dictionary<string, object>> _cache = new Dictionary<string, Dictionary<string, object>>();
-        private static IniFile _file = new IniFile(Path.Combine(PluginUtils.ConfigDir, Properties.Resources.PluginName + ".ini"));
+        private static IniFile _file = new IniFile(Path.Combine(NppUtils.ConfigDir, Properties.Resources.PluginName + ".ini"));
         
         #region "Get/Set"
         // Загрузка/сохранение происходит по имени класса и свойства

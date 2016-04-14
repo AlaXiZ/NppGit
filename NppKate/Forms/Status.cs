@@ -27,6 +27,7 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using LibGit2Sharp;
 using NLog;
+using NppKate.Npp;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -58,7 +59,7 @@ namespace NppKate.Forms
             try
             {
                 lvFiles.Items.Clear();
-                var root = PluginUtils.GetRootDir(PluginUtils.CurrentFileDir);
+                var root = NppUtils.GetRootDir(NppUtils.CurrentFileDir);
                 if (root != null && Repository.IsValid(root))
                 {
                     using (var repo = new Repository(root))

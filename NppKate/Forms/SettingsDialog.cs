@@ -25,6 +25,7 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+using NppKate.Npp;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
@@ -127,7 +128,7 @@ namespace NppKate.Forms
             SaveSettings();
             if (chbRestartNpp.Checked)
             {
-                PluginUtils.Restart();
+                NppUtils.Restart();
             }
             else
             {

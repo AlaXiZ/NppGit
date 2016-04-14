@@ -32,7 +32,7 @@ using System.Text;
 using System.Windows.Forms;
 using NLog;
 using NppKate.Common;
-using System.IO;
+using NppKate.Npp;
 
 namespace NppKate.Modules.TortoiseGitFeatures
 {
@@ -210,13 +210,13 @@ namespace NppKate.Modules.TortoiseGitFeatures
 
         private static void TGitLogFile()
         {
-            string filePath = PluginUtils.CurrentFilePath;
+            string filePath = NppUtils.CurrentFilePath;
             StartCommand(CreateCommand(TortoiseGitCommand.Log, filePath));
         }
 
         private static void TGitLogPath()
         {
-            string dirPath = PluginUtils.CurrentFileDir;
+            string dirPath = NppUtils.CurrentFileDir;
             StartCommand(CreateCommand(TortoiseGitCommand.Log, dirPath));
         }
 
@@ -267,14 +267,14 @@ namespace NppKate.Modules.TortoiseGitFeatures
 
         private static void TGitBlame()
         {
-            string filePath = PluginUtils.CurrentFilePath;
+            string filePath = NppUtils.CurrentFilePath;
             StartCommand(CreateCommand(TortoiseGitCommand.Blame, filePath));
         }
 
         private static void TGitBlameCurrentLine()
         {
-            string filePath = PluginUtils.CurrentFilePath;
-            string param = string.Format("/line:{0}", PluginUtils.CurrentLine);
+            string filePath = NppUtils.CurrentFilePath;
+            string param = string.Format("/line:{0}", NppUtils.CurrentLine);
             StartCommand(CreateCommand(TortoiseGitCommand.Blame, filePath, additionalParam: param));
         }
 
@@ -317,13 +317,13 @@ namespace NppKate.Modules.TortoiseGitFeatures
 
         private static void TGitDiff()
         {
-            string path = PluginUtils.CurrentFilePath;
+            string path = NppUtils.CurrentFilePath;
             StartCommand(CreateCommand(TortoiseGitCommand.Diff, path));
         }
 
         private static void TGitDiffUnified()
         {
-            string path = PluginUtils.CurrentFilePath;
+            string path = NppUtils.CurrentFilePath;
             StartCommand(CreateCommand(TortoiseGitCommand.Diff, path, additionalParam: "/unified"));
         }
 
@@ -349,14 +349,14 @@ namespace NppKate.Modules.TortoiseGitFeatures
             // TODO: В какой репозиторий добавляется файл?
             if (CheckRepoAndShowError())
             {
-                string path = PluginUtils.CurrentFilePath;
+                string path = NppUtils.CurrentFilePath;
                 StartCommand(CreateCommand(TortoiseGitCommand.Add, path));
             }
         }
 
         private static void TGitRevertFile()
         {
-            string path = PluginUtils.CurrentFilePath;
+            string path = NppUtils.CurrentFilePath;
             StartCommand(CreateCommand(TortoiseGitCommand.Revert, path));
         }
 
@@ -391,7 +391,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
         {
             if (CheckRepoAndShowError())
             {
-                string path = PluginUtils.CurrentFilePath;
+                string path = NppUtils.CurrentFilePath;
                 StartCommand(CreateCommand(TortoiseGitCommand.Ignore, path));
             }
         }
@@ -427,7 +427,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
         {
             if (CheckRepoAndShowError())
             {
-                string path = PluginUtils.CurrentFilePath;
+                string path = NppUtils.CurrentFilePath;
                 StartCommand(CreateCommand(TortoiseGitCommand.Remove, path));
             }
         }
@@ -436,7 +436,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
         {
             if (CheckRepoAndShowError())
             {
-                string path = PluginUtils.CurrentFilePath;
+                string path = NppUtils.CurrentFilePath;
                 StartCommand(CreateCommand(TortoiseGitCommand.Rename, path));
             }
         }
@@ -446,7 +446,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
             // TODO: Когда вызывается?
             if (CheckRepoAndShowError())
             {
-                string path = PluginUtils.CurrentFilePath;
+                string path = NppUtils.CurrentFilePath;
                 StartCommand(CreateCommand(TortoiseGitCommand.ConflictEditor, path));
             }
         }

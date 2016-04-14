@@ -26,6 +26,7 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 using NppKate.Common;
+using NppKate.Npp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -77,26 +78,26 @@ namespace NppKate.Modules.IdeFeatures
 
         private void DoSwap()
         {
-            var eol = PluginUtils.GetEOL();;
-            var src = Regex.Replace(PluginUtils.GetSelectedText().Trim().Replace('\t', ' '), @"[ ]{2,}", " ").Replace(eol, "\n");
+            var eol = NppUtils.GetEOL();;
+            var src = Regex.Replace(NppUtils.GetSelectedText().Trim().Replace('\t', ' '), @"[ ]{2,}", " ").Replace(eol, "\n");
 
             var list = (from item in src.Split('\n')
                        select SwapInLine(item.Trim())).ToArray();
             
             AlignColumn(ref list);
 
-            PluginUtils.ReplaceSelectedText(list);
+            NppUtils.ReplaceSelectedText(list);
         }
 
         private void DoAlign()
         {
-            var eol = PluginUtils.GetEOL(); ;
-            var src = Regex.Replace(PluginUtils.GetSelectedText().Trim().Replace('\t', ' ').Replace(",", " , "), @"[ ]{2,}", " ").Replace(eol, "\n");
+            var eol = NppUtils.GetEOL(); ;
+            var src = Regex.Replace(NppUtils.GetSelectedText().Trim().Replace('\t', ' ').Replace(",", " , "), @"[ ]{2,}", " ").Replace(eol, "\n");
             var list = src.Split('\n');
 
             AlignColumn(ref list);
 
-            PluginUtils.ReplaceSelectedText(list);
+            NppUtils.ReplaceSelectedText(list);
         }
 
         private static string SwapInLine(string src)

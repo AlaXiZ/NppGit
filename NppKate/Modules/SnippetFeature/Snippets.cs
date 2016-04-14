@@ -27,6 +27,7 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using NLog;
 using NppKate.Common;
+using NppKate.Npp;
 
 namespace NppKate.Modules.SnippetFeature
 {
@@ -114,8 +115,8 @@ namespace NppKate.Modules.SnippetFeature
             {
                 logger.Debug("Insert snippet {0}", snippetName);
                 Snippet snip = SnippetManager.Instance[snippetName];
-                var outLines = snip.Assemble(PluginUtils.GetSelectedText());
-                PluginUtils.ReplaceSelectedText(outLines);
+                var outLines = snip.Assemble(NppUtils.GetSelectedText());
+                NppUtils.ReplaceSelectedText(outLines);
             }
         }
 
