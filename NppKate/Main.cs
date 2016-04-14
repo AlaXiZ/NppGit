@@ -32,66 +32,79 @@ using NppKate.Modules.IdeFeatures;
 using NppKate.Modules.SnippetFeature;
 using NppKate.Modules.TortoiseGitFeatures;
 using NppKate.Npp;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Drawing;
+using System.Linq;
 
 namespace NppKate
 {
     class Main
     {
         #region "Fields"
-        //internal const string PluginName = "NppGit";
         private static ModuleManager mm = new ModuleManager();
-        static GitStatus gitStatusDlg = null;
-        static int gitStatusId = -1;
-
-        static Icon tbIcon = null;
+        private static readonly IList<Type> _excludedTypes = new ReadOnlyCollection<Type>(
+            new List<Type> {
+                typeof(GitCore)
+            });
         #endregion
 
         #region " StartUp/CleanUp "
-        internal static void Init()
+        public static void Init()
         {
-            mm.AddModule(new TortoiseGitHelper());
-            mm.AddModule(new Git());
-            mm.AddModule(new SqlIde());
-            mm.AddModule(new Snippets());
-            mm.AddModule(GitCore.Module);
+            LoadModules();
+            mm.AddModule(GitCore.Module); // TODO: Переделать на автоматическую загрузку
 
             mm.Init();
-            var isVisiblePanel = Settings.Panels.StatusPanelVisible;
 
             NppInfo.Instance.AddCommand("Restart Notepad++", NppUtils.Restart);
             NppInfo.Instance.AddCommand("Settings", DoSettings);
             NppInfo.Instance.AddCommand("About", DoAbout);
         }
 
-        internal static void ToolBarInit()
+        public static void ToolBarInit()
         {
-            mm.ToolBarInit();          
+            mm.ToolBarInit();
         }
 
-        internal static void PluginCleanUp()
+        public static void PluginCleanUp()
         {
             mm.Final();
-            Settings.Panels.StatusPanelVisible = gitStatusDlg != null && gitStatusDlg.Visible;
-            gitStatusDlg = null;
         }
 
-        internal static void MessageProc (SCNotification sn)
+        public static void MessageProc (SCNotification sn)
         {
             mm.MessageProc(sn);
         }
 
+        private static void LoadModules()
+        {
+            var imodule = typeof(IModule);
+            var types = AppDomain.CurrentDomain.GetAssemblies()
+                        .SelectMany(s => s.GetTypes())
+                        .Where(p => imodule.IsAssignableFrom(p))
+                        .Where(p => p.IsClass)                    // Нужны только классы
+                        .Where(p => !_excludedTypes.Contains(p))  // Исключим классы, которые по какой-то причине создаются вручную
+                        .OrderBy(p => p.Name);                    // Отсортируем по имени
+            // Создаем модули, добавляем в менеджер
+            foreach (var t in types)
+            {
+                var module = Activator.CreateInstance(t) as IModule;
+                mm.AddModule(module);
+            }
+        }
 
         #endregion
 
         #region " Menu functions "
-        internal static void DoSettings()
+        private static void DoSettings()
         {
             var dlg = new Forms.SettingsDialog();
             dlg.ShowDialog();
         }
 
-        internal static void DoAbout()
+        private static void DoAbout()
         {
             var dlg = new Forms.About();
             dlg.ShowDialog();
