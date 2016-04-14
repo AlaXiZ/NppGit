@@ -81,7 +81,7 @@ namespace NppKate.Common
             }
             try
             {
-                LogManager.Configuration.RemoveTarget("NppGit.AsyncTarget");
+                LogManager.Configuration.RemoveTarget("NppKate.AsyncTarget");
             }
             catch { }
 

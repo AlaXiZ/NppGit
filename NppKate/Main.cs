@@ -26,16 +26,11 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 using NppKate.Common;
-using NppKate.Modules;
 using NppKate.Modules.GitCore;
-using NppKate.Modules.IdeFeatures;
-using NppKate.Modules.SnippetFeature;
-using NppKate.Modules.TortoiseGitFeatures;
 using NppKate.Npp;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Drawing;
 using System.Linq;
 
 namespace NppKate
@@ -50,7 +45,7 @@ namespace NppKate
             });
         #endregion
 
-        #region " StartUp/CleanUp "
+        #region "Main"
         public static void Init()
         {
             LoadModules();
@@ -77,7 +72,9 @@ namespace NppKate
         {
             mm.MessageProc(sn);
         }
+        #endregion
 
+        #region "Utils"
         private static void LoadModules()
         {
             var imodule = typeof(IModule);
@@ -94,10 +91,9 @@ namespace NppKate
                 mm.AddModule(module);
             }
         }
-
         #endregion
 
-        #region " Menu functions "
+        #region "Menu functions"
         private static void DoSettings()
         {
             var dlg = new Forms.SettingsDialog();
@@ -110,57 +106,6 @@ namespace NppKate
             dlg.ShowDialog();
             mm.ManualTitleUpdate();
         }
-
-        /*
-        static void GitStatusDialog()
-        {
-            var isVisible = 0;
-            if (gitStatusDlg == null)
-            {
-                gitStatusDlg = new GitStatus();
-
-                tbIcon = NppUtils.NppBitmapToIcon(Properties.Resources.Git);
-
-                NppTbData _nppTbData = new NppTbData();
-                _nppTbData.hClient = gitStatusDlg.Handle;
-                _nppTbData.pszName = "Git status";
-                _nppTbData.dlgID = gitStatusId;
-                _nppTbData.uMask = NppTbMsg.DWS_DF_CONT_RIGHT | NppTbMsg.DWS_ICONTAB | NppTbMsg.DWS_ICONBAR;
-                _nppTbData.hIconTab = (uint)tbIcon.Handle;
-                _nppTbData.pszModuleName = Properties.Resources.PluginName;
-                IntPtr _ptrNppTbData = Marshal.AllocHGlobal(Marshal.SizeOf(_nppTbData));
-                Marshal.StructureToPtr(_nppTbData, _ptrNppTbData, false);
-
-                Win32.SendMessage(NppInfo.Instance.NppHandle, NppMsg.NPPM_DMMREGASDCKDLG, 0, _ptrNppTbData);
-                isVisible = 1;
-            }
-            else
-            {
-                if (gitStatusDlg.Visible)
-                {
-                    Win32.SendMessage(NppInfo.Instance.NppHandle, NppMsg.NPPM_DMMHIDE, 0, gitStatusDlg.Handle);
-                }
-                else
-                {
-                    Win32.SendMessage(NppInfo.Instance.NppHandle, NppMsg.NPPM_DMMSHOW, 0, gitStatusDlg.Handle);
-                    isVisible = 1;
-                }
-            }
-            if (gitStatusDlg != null && gitStatusDlg.Visible)
-            {
-                (gitStatusDlg as FormDockable).ChangeContext();
-            }
-
-           Win32.SendMessage(NppInfo.Instance.NppHandle, NppMsg.NPPM_SETMENUITEMCHECK, NppInfo.Instance.SearchCmdIdByIndex(gitStatusId), isVisible);
-        }
-        */
-        /*
-        public static void ChangeTabItem()
-        {
-            if (gitStatusDlg != null)
-                (gitStatusDlg as FormDockable).ChangeContext();
-        }
-        */
         #endregion
     }
 }
