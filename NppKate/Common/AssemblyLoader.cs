@@ -29,6 +29,7 @@ using NLog;
 using NLog.Config;
 using NLog.Targets;
 using NLog.Targets.Wrappers;
+using NppKate.Npp;
 using System;
 using System.IO;
 using System.Reflection;
@@ -67,7 +68,7 @@ namespace NppKate.Common
                 AutoFlush = true,
                 DeleteOldFileOnStartup = true,
                 CreateDirs = true,
-                FileName = Path.Combine(PluginUtils.ConfigDir, Properties.Resources.PluginName, Properties.Resources.PluginName + ".log")
+                FileName = Path.Combine(NppUtils.ConfigDir, Properties.Resources.PluginName, Properties.Resources.PluginName + ".log")
             };
 #endif
                 asyncWrapper = new AsyncTargetWrapper
