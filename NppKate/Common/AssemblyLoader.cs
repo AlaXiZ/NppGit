@@ -29,11 +29,13 @@ using NLog;
 using NLog.Config;
 using NLog.Targets;
 using NLog.Targets.Wrappers;
-using NppKate.Npp;
 using System;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
+#if !DEBUG
+using NppKate.Npp;
+#endif
 
 namespace NppKate.Common
 {
