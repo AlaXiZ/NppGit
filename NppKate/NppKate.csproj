@@ -176,6 +176,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Resources\ExternalResourceName.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Modules\TortoiseGitFeatures\TortoiseGitHelper.cs" />
     <Compile Include="Interop\UnmanagedExports.cs" />

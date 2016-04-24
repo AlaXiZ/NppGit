@@ -105,7 +105,29 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Resources\Icons\apply_patch.bmp" />
+    <Image Include="Resources\Icons\blame.bmp" />
+    <Image Include="Resources\Icons\cleanup.bmp" />
+    <Image Include="Resources\Icons\commit.bmp" />
+    <Image Include="Resources\Icons\compare.bmp" />
+    <Image Include="Resources\Icons\createrepos.bmp" />
+    <Image Include="Resources\Icons\create_patch.bmp" />
+    <Image Include="Resources\Icons\credential.bmp" />
+    <Image Include="Resources\Icons\daemon.bmp" />
+    <Image Include="Resources\Icons\export.bmp" />
+    <Image Include="Resources\Icons\log.bmp" />
+    <Image Include="Resources\Icons\merge.bmp" />
     <Image Include="Resources\Icons\pull.bmp" />
+    <Image Include="Resources\Icons\push.bmp" />
+    <Image Include="Resources\Icons\rebase.bmp" />
+    <Image Include="Resources\Icons\refresh.bmp" />
+    <Image Include="Resources\Icons\rename.bmp" />
+    <Image Include="Resources\Icons\repobrowse.bmp" />
+    <Image Include="Resources\Icons\repositories.bmp" />
+    <Image Include="Resources\Icons\snippets.bmp" />
+    <Image Include="Resources\Icons\stash_pop.bmp" />
+    <Image Include="Resources\Icons\stash_save.bmp" />
+    <Image Include="Resources\Icons\switch.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

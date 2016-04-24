@@ -42,7 +42,73 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Resources\Icons\apply_patch.bmp">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="Resources\Icons\blame.bmp">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="Resources\Icons\cleanup.bmp">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="Resources\Icons\commit.bmp">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="Resources\Icons\compare.bmp">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="Resources\Icons\create_patch.bmp">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="Resources\Icons\createrepos.bmp">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="Resources\Icons\credential.bmp">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="Resources\Icons\daemon.bmp">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="Resources\Icons\export.bmp">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="Resources\Icons\log.bmp">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="Resources\Icons\merge.bmp">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
     <Image Include="Resources\Icons\pull.bmp">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="Resources\Icons\push.bmp">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="Resources\Icons\rebase.bmp">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="Resources\Icons\refresh.bmp">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="Resources\Icons\rename.bmp">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="Resources\Icons\repobrowse.bmp">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="Resources\Icons\stash_pop.bmp">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="Resources\Icons\stash_save.bmp">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="Resources\Icons\switch.bmp">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="Resources\Icons\repositories.bmp">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="Resources\Icons\snippets.bmp">
       <Filter>Файлы ресурсов</Filter>
     </Image>
   </ItemGroup>

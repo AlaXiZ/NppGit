@@ -25,44 +25,32 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-using System;
-using System.IO;
-
-namespace NppKate.Common
+namespace NppKate.Resources
 {
-    public class ResourceManager : IDisposable
+    public static class ExternalResourceName
     {
-        private IntPtr _hResourceDll = IntPtr.Zero;
-
-        public ResourceManager()
-        {
-            var dllPath = Path.Combine(Npp.NppUtils.PluginDir, Properties.Resources.ExternalResourceDll);
-            if (!File.Exists(dllPath))
-            {
-                throw new Exception(string.Format("File with resources {0} not exists!", dllPath));
-            }
-            else
-            {
-                _hResourceDll = Interop.Win32.LoadLibraryEx(dllPath, IntPtr.Zero, Interop.LoadLibraryFlags.LOAD_LIBRARY_AS_DATAFILE);
-                if (_hResourceDll == IntPtr.Zero)
-                {
-                    throw new Exception(string.Format("Library {0} not loaded!", dllPath));
-                }
-            }
-        }
-
-        public void Dispose()
-        {
-            if (_hResourceDll != IntPtr.Zero)
-            {
-                Interop.Win32.FreeLibrary(_hResourceDll);
-            }
-        }
-
-        public IntPtr LoadImage(string resourceName, int width, int height)
-        {
-            return Interop.Win32.LoadImage(_hResourceDll, resourceName, Interop.Win32.IMAGE_BITMAP, 
-                width, height, Interop.Win32.LR_LOADMAP3DCOLORS | Interop.Win32.LR_LOADTRANSPARENT);
-        }
+        public const string IDB_PATCH_APPLY  = "#102";
+        public const string IDB_BLAME        = "#103";
+        public const string IDB_CLEANUP      = "#104";
+        public const string IDB_COMMIT       = "#105";
+        public const string IDB_COMPARE      = "#106";
+        public const string IDB_PATCH_CREATE = "#107";
+        public const string IDB_CREATE_REPOS = "#108";
+        public const string IDB_CREDENTIAL   = "#109";
+        public const string IDB_DAEMON       = "#110";
+        public const string IDB_EXPORT       = "#111";
+        public const string IDB_LOG          = "#112";
+        public const string IDB_MERGE        = "#113";
+        public const string IDB_PULL         = "#114";
+        public const string IDB_PUSH         = "#115";
+        public const string IDB_REBASE       = "#116";
+        public const string IDB_REFRESH      = "#117";
+        public const string IDB_RENAME       = "#118";
+        public const string IDB_REPO_BROWSER = "#119";
+        public const string IDB_STASH_POP    = "#120";
+        public const string IDB_STASH_SAVE   = "#121";
+        public const string IDB_SWITCH       = "#122";
+        public const string IDB_REPOSITORIES = "#123";
+        public const string IDB_SNIPPETS     = "#124";
     }
 }
