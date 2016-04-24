@@ -165,6 +165,15 @@ namespace NppKate.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на KateResource.dll.
+        /// </summary>
+        internal static string ExternalResourceDll {
+            get {
+                return ResourceManager.GetString("ExternalResourceDll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap Git {
