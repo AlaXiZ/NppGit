@@ -52,5 +52,6 @@ namespace NppKate.Resources
         public const string IDB_SWITCH       = "#122";
         public const string IDB_REPOSITORIES = "#123";
         public const string IDB_SNIPPETS     = "#124";
+        public const string IDB_LIST         = "#125";
     }
 }

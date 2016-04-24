@@ -115,6 +115,7 @@
     <Image Include="Resources\Icons\credential.bmp" />
     <Image Include="Resources\Icons\daemon.bmp" />
     <Image Include="Resources\Icons\export.bmp" />
+    <Image Include="Resources\Icons\list.bmp" />
     <Image Include="Resources\Icons\log.bmp" />
     <Image Include="Resources\Icons\merge.bmp" />
     <Image Include="Resources\Icons\pull.bmp" />

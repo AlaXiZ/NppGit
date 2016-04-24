@@ -33,6 +33,7 @@ using System.Windows.Forms;
 using NLog;
 using NppKate.Common;
 using NppKate.Npp;
+using NppKate.Resources;
 
 namespace NppKate.Modules.TortoiseGitFeatures
 {
@@ -50,9 +51,9 @@ namespace NppKate.Modules.TortoiseGitFeatures
         StashSave = 0x0040,
         StashPop = 0x0080,
         RepoStatus = 0x0100,
-        Diff = 0x0400,
-        Rebase = 0x0800,
-        ShowCompare = 0x1000,
+        Diff,
+        Rebase,
+        ShowCompare,
         RepoBrowser,
         StashApply,
         RefBrowse,
@@ -100,7 +101,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
         private static string _tortoiseGitPath = "";
         private static string _tortoiseGitProc = "";
 
-        private Dictionary<int, Bitmap> _icons;
+        private Dictionary<int, string> _icons;
         private IModuleManager _manager;
 
         public bool IsNeedRun => Settings.Modules.TortoiseGit;
@@ -590,7 +591,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
             _manager.OnToolbarRegisterEvent += ToolBarInit;
 
             logger.Debug("Create menu");
-            _icons = new Dictionary<int, Bitmap>();
+            _icons = new Dictionary<int, string>();
             if (SearchTortoiseGit())
             {
                 var btnMask = Settings.TortoiseGitProc.ButtonMask;
@@ -604,7 +605,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                     Action = TGitPull
                 });
                 if ((btnMask & (uint)TortoiseGitCommand.Pull) > 0)
-                    _icons.Add(cmdId, Properties.Resources.pull);
+                    _icons.Add(cmdId, ExternalResourceName.IDB_PULL);
 
                 cmdId = _manager.RegisteCommandItem(new CommandItem
                 {
@@ -614,7 +615,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                     Action = TGitPush
                 });
                 if ((btnMask & (uint)TortoiseGitCommand.Push) > 0)
-                    _icons.Add(cmdId, Properties.Resources.push);
+                    _icons.Add(cmdId, ExternalResourceName.IDB_PUSH);
 
                 cmdId = _manager.RegisteCommandItem(new CommandItem
                 {
@@ -624,7 +625,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                     Action = TGitCommit
                 });
                 if ((btnMask & (uint)TortoiseGitCommand.Commit) > 0)
-                    _icons.Add(cmdId, Properties.Resources.commit);
+                    _icons.Add(cmdId, ExternalResourceName.IDB_COMMIT);
 
                 cmdId = _manager.RegisteCommandItem(new CommandItem
                 {
@@ -634,7 +635,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                     Action = TGitFetch
                 });
                 if ((btnMask & (uint)TortoiseGitCommand.Fetch) > 0)
-                    _icons.Add(cmdId, Properties.Resources.pull);
+                    _icons.Add(cmdId, ExternalResourceName.IDB_PULL);
                 
                 /**********************************************************************************/
             _manager.RegisteCommandItem(new CommandItem { Name = "-", Hint = "-", Action = null });
@@ -682,7 +683,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                     Action = TGitLogRepo
                 });
                 if ((btnMask & (uint)TortoiseGitCommand.Log) > 0)
-                    _icons.Add(cmdId, Properties.Resources.log);
+                    _icons.Add(cmdId, ExternalResourceName.IDB_LOG);
 
                 _manager.RegisteCommandItem(new CommandItem
                 {
@@ -700,7 +701,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                     Action = TGitBlame
                 });
                 if ((btnMask & (uint)TortoiseGitCommand.Blame) > 0)
-                    _icons.Add(cmdId, Properties.Resources.blame);
+                    _icons.Add(cmdId, ExternalResourceName.IDB_BLAME);
 
                 _manager.RegisteCommandItem(new CommandItem
                 {
@@ -718,7 +719,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                     Action = TGitRepoStatus
                 });
                 if ((btnMask & (uint)TortoiseGitCommand.RepoStatus) > 0)
-                    _icons.Add(cmdId, Properties.Resources.repo);
+                    _icons.Add(cmdId, ExternalResourceName.IDB_REPO_BROWSER);
 
                 _manager.RegisteCommandItem(new CommandItem
                 {
@@ -768,7 +769,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                     Action = TGitStashSave
                 });
                 if ((btnMask & (uint)TortoiseGitCommand.StashSave) > 0)
-                    _icons.Add(cmdId, Properties.Resources.stashsave);
+                    _icons.Add(cmdId, ExternalResourceName.IDB_STASH_SAVE);
 
                 cmdId = _manager.RegisteCommandItem(new CommandItem
                 {
@@ -778,7 +779,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                     Action = TGitStashPop
                 });
                 if ((btnMask & (uint)TortoiseGitCommand.StashPop) > 0)
-                    _icons.Add(cmdId, Properties.Resources.stashpop);
+                    _icons.Add(cmdId, ExternalResourceName.IDB_STASH_POP);
 
                 _manager.RegisteCommandItem(new CommandItem
                 {
@@ -874,7 +875,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                     Action = TGitSwitch
                 });
                 if ((btnMask & (uint)TortoiseGitCommand.Switch) > 0)
-                    _icons.Add(cmdId, Properties.Resources.checkout);
+                    _icons.Add(cmdId, ExternalResourceName.IDB_SWITCH);
 
                 _manager.RegisteCommandItem(new CommandItem
                 {
@@ -930,7 +931,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                 /**********************************************************************************/
                 _manager.RegisteCommandItem(new CommandItem { Name = "-", Hint = "-", Action = null });
 
-                _manager.RegisteCommandItem(new CommandItem
+                cmdId = _manager.RegisteCommandItem(new CommandItem
                 {
                     Name = "TGit Create patch",
                     Hint = "Create patch",
@@ -938,7 +939,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                     Action = TGitCreatePatchSerial
                 });
 
-                _manager.RegisteCommandItem(new CommandItem
+                cmdId = _manager.RegisteCommandItem(new CommandItem
                 {
                     Name = "TGit Apply patch",
                     Hint = "Apply patch",
