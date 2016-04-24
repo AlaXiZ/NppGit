@@ -191,3 +191,5 @@ ModelManifest.xml
 *.log
 /.idea
 /*.iml
+*.db
+*.opendb

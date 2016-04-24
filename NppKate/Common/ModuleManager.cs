@@ -65,6 +65,8 @@ namespace NppKate.Common
 
     public class ModuleManager : IModuleManager
     {
+        private const int TOOLBAR_ICON_SIZE = 16;
+
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
         private LinkedList<IModule> _modules;
@@ -73,6 +75,7 @@ namespace NppKate.Common
         private Dictionary<uint, string> _menuCache;
         private bool _canEvent = false;
         private ulong _currentFormId = ulong.MaxValue;
+        private ResourceManager _resManager = null;
 
         private LocalWindowsHook winHookProcRet;
         private LocalWindowsHook winHookProc;
@@ -162,6 +165,7 @@ namespace NppKate.Common
 
         public void Init()
         {
+            _resManager = new ResourceManager();
             foreach (var m in _modules)
             {
                 if (m.IsNeedRun)
@@ -416,6 +420,16 @@ namespace NppKate.Common
         {
             toolbarIcons tbIcons = new toolbarIcons();
             tbIcons.hToolbarBmp = icon.GetHbitmap();
+            IntPtr pTbIcons = Marshal.AllocHGlobal(Marshal.SizeOf(tbIcons));
+            Marshal.StructureToPtr(tbIcons, pTbIcons, false);
+            Win32.SendMessage(NppInfo.Instance.NppHandle, NppMsg.NPPM_ADDTOOLBARICON, NppInfo.Instance.SearchCmdIdByIndex(cmdId), pTbIcons);
+            Marshal.FreeHGlobal(pTbIcons);
+        }
+
+        public void AddToolbarButton(int cmdId, string iconName)
+        {
+            toolbarIcons tbIcons = new toolbarIcons();
+            tbIcons.hToolbarBmp = _resManager.LoadImage(iconName, TOOLBAR_ICON_SIZE, TOOLBAR_ICON_SIZE);
             IntPtr pTbIcons = Marshal.AllocHGlobal(Marshal.SizeOf(tbIcons));
             Marshal.StructureToPtr(tbIcons, pTbIcons, false);
             Win32.SendMessage(NppInfo.Instance.NppHandle, NppMsg.NPPM_ADDTOOLBARICON, NppInfo.Instance.SearchCmdIdByIndex(cmdId), pTbIcons);

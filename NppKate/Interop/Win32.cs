@@ -38,17 +38,17 @@ namespace NppKate.Interop
     {
         public IntPtr lParam;
         public IntPtr wParam;
-        public uint   message;
+        public uint message;
         public IntPtr hwnd;
     }
-    
+
     [StructLayout(LayoutKind.Sequential)]
     public struct CWPRETSTRUCT
     {
         public IntPtr lResult;
         public IntPtr lParam;
         public IntPtr wParam;
-        public uint   message;
+        public uint message;
         public IntPtr hwnd;
     }
 
@@ -151,7 +151,8 @@ namespace NppKate.Interop
         }
     }
 
-    public enum WinEvent : uint {
+    public enum WinEvent : uint
+    {
         EVENT_MIN = 0,
         EVENT_MAX = 0x7FFFFFFF,
 
@@ -194,6 +195,17 @@ namespace NppKate.Interop
     }
 
     public delegate void WinEventDelegate(IntPtr hWinEventHook, WinEvent eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime);
+
+    [System.Flags]
+    public enum LoadLibraryFlags : uint
+    {
+        DONT_RESOLVE_DLL_REFERENCES = 0x00000001,
+        LOAD_IGNORE_CODE_AUTHZ_LEVEL = 0x00000010,
+        LOAD_LIBRARY_AS_DATAFILE = 0x00000002,
+        LOAD_LIBRARY_AS_DATAFILE_EXCLUSIVE = 0x00000040,
+        LOAD_LIBRARY_AS_IMAGE_RESOURCE = 0x00000020,
+        LOAD_WITH_ALTERED_SEARCH_PATH = 0x00000008
+    }
 
     public partial class Win32
     {
@@ -338,5 +350,32 @@ namespace NppKate.Interop
 
         [DllImport("user32.dll")]
         public static extern int GetMenuString(IntPtr hMenu, uint uIDItem, [Out, MarshalAs(UnmanagedType.LPStr)] StringBuilder lpString, int nMaxCount, uint uFlag);
+
+        [DllImport("kernel32.dll")]
+        public static extern IntPtr LoadLibrary(string pathToDll);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern IntPtr LoadLibraryEx(string lpFileName, IntPtr hReservedNull, LoadLibraryFlags dwFlags);
+
+
+        [DllImport("kernel32.dll")]
+        public static extern bool FreeLibrary(IntPtr hModule);
+
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern IntPtr LoadImage(IntPtr hInstance, string lpszName, uint uType, int cxDesired, int cyDesired, uint fuLoad);
+        // uType
+        public const uint IMAGE_BITMAP = 0; // Loads a bitmap.
+        public const uint IMAGE_CURSOR = 2; // Loads a cursor.
+        public const uint IMAGE_ICON = 1; // Loads an icon.
+        // fuLoad
+        public const uint LR_CREATEDIBSECTION = 0x00002000; 
+        public const uint LR_DEFAULTCOLOR = 0x00000000;
+        public const uint LR_DEFAULTSIZE = 0x00000040;
+        public const uint LR_LOADFROMFILE = 0x00000010;
+        public const uint LR_LOADMAP3DCOLORS = 0x00001000;
+        public const uint LR_LOADTRANSPARENT = 0x00000020;
+        public const uint LR_MONOCHROME = 0x00000001;
+        public const uint LR_SHARED = 0x00008000;
+        public const uint LR_VGACOLOR = 0x00000080;
     }
 }

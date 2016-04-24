@@ -5,6 +5,7 @@ VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NppKate", "NppKate\NppKate.csproj", "{E56F6E12-089C-40ED-BCFD-923E5FA121A1}"
 	ProjectSection(ProjectDependencies) = postProject
+		{CBA0747E-9E1E-421E-8926-E104BF0192EB} = {CBA0747E-9E1E-421E-8926-E104BF0192EB}
 		{F7161BE6-9FA7-4BEB-94C1-3BDD0CCC9079} = {F7161BE6-9FA7-4BEB-94C1-3BDD0CCC9079}
 	EndProjectSection
 EndProject
@@ -16,6 +17,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common Items", "Common Item
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "restart", "restart\restart.csproj", "{F7161BE6-9FA7-4BEB-94C1-3BDD0CCC9079}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KateResource", "KateResource\KateResource.vcxproj", "{CBA0747E-9E1E-421E-8926-E104BF0192EB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,6 +35,10 @@ Global
 		{F7161BE6-9FA7-4BEB-94C1-3BDD0CCC9079}.Debug|x86.Build.0 = Debug|x86
 		{F7161BE6-9FA7-4BEB-94C1-3BDD0CCC9079}.Release|x86.ActiveCfg = Release|x86
 		{F7161BE6-9FA7-4BEB-94C1-3BDD0CCC9079}.Release|x86.Build.0 = Release|x86
+		{CBA0747E-9E1E-421E-8926-E104BF0192EB}.Debug|x86.ActiveCfg = Debug|Win32
+		{CBA0747E-9E1E-421E-8926-E104BF0192EB}.Debug|x86.Build.0 = Debug|Win32
+		{CBA0747E-9E1E-421E-8926-E104BF0192EB}.Release|x86.ActiveCfg = Release|Win32
+		{CBA0747E-9E1E-421E-8926-E104BF0192EB}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
