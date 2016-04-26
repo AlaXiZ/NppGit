@@ -32,6 +32,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using NLog;
 
 namespace NppKate
 {
@@ -43,11 +44,14 @@ namespace NppKate
             new List<Type> {
                 typeof(GitCore)
             });
+        private static Logger _logger;
         #endregion
 
         #region "Main"
         public static void Init()
         {
+            _logger = LogManager.GetCurrentClassLogger();
+
             LoadModules();
             mm.AddModule(GitCore.Module); // TODO: Переделать на автоматическую загрузку
 
@@ -60,17 +64,37 @@ namespace NppKate
 
         public static void ToolBarInit()
         {
-            mm.ToolBarInit();
+            try
+            {
+                mm.ToolBarInit();
+            } catch (Exception ex)
+            {
+                _logger.Error(ex, "ToolBarInit", null);
+            }
         }
 
         public static void PluginCleanUp()
         {
-            mm.Final();
-        }
+            try
+            {
+
+                mm.Final();
+            } catch (Exception ex)
+            {
+                _logger.Error(ex, "PluginCleanUp", null);
+            }
+}
 
         public static void MessageProc (SCNotification sn)
         {
-            mm.MessageProc(sn);
+            try
+            {
+                mm.MessageProc(sn);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "MessageProc NppMsg={0} or SciMsg",  (NppMsg)sn.nmhdr.code, (SciMsg)sn.message);
+            }
         }
         #endregion
 

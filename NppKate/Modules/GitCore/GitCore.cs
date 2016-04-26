@@ -34,11 +34,13 @@ using System.Xml.Linq;
 using System.Diagnostics;
 using LibGit2Sharp;
 using NppKate.Npp;
+using NLog;
 
 namespace NppKate.Modules.GitCore
 {
     public class GitCore : IModule, IGitCore
     {
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
         #region IModule
         private IModuleManager _manager = null;
         private int _browserCmdId;
@@ -278,21 +280,31 @@ namespace NppKate.Modules.GitCore
 
         private void SaveRepo(RepositoryLink repoLink) 
         {
+            _logger.Trace("Save repo Name={0}, Path={1}", repoLink.Name, repoLink.Path);
             _repos.Add(repoLink.Name, repoLink);
             var root = _doc.Root;
             var element = new XElement("Repository", repoLink.Path, new XAttribute("Name", repoLink.Name));
             root.Add(element);
-            _doc.Save(_filename);
+            try
+            {
+                _doc.Save(_filename);
+            } catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+
         }
 
         public static bool IsValidGitRepo(string path)
         {
+            _logger.Trace("IsValidGitRepo path={0}", path);
             var repoDir = NppUtils.GetRootDir(path);
             return !string.IsNullOrEmpty(repoDir) && Repository.IsValid(repoDir);
         }
 
         public static string GetRootDir(string path)
         {
+            _logger.Trace("GetRootDir path={0}", path);
             var search = Path.Combine(path, ".git");
             if (Directory.Exists(search) || File.Exists(search))
             {
@@ -312,6 +324,7 @@ namespace NppKate.Modules.GitCore
 
         public static string GetRepoName(string repoDir)
         {
+            _logger.Trace("GetRepoName path={0}", repoDir);
             string remote = "";
             using (var repo = new Repository(repoDir))
             {
@@ -327,6 +340,7 @@ namespace NppKate.Modules.GitCore
                 {
                     remote = new DirectoryInfo(repoDir).Name;
                 }
+                _logger.Trace("return {0}", remote);
                 return remote;
             }
         }
