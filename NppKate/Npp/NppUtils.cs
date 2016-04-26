@@ -341,13 +341,14 @@ namespace NppKate.Npp
                 Graphics g = Graphics.FromImage(newBmp);
                 ColorMap[] colorMap = new ColorMap[1];
                 colorMap[0] = new ColorMap();
-                colorMap[0].OldColor = Color.Fuchsia;
+                colorMap[0].OldColor = Color.FromArgb(192,192,192);
                 colorMap[0].NewColor = Color.FromKnownColor(KnownColor.ButtonFace);
                 ImageAttributes attr = new ImageAttributes();
                 attr.SetRemapTable(colorMap);
                 g.DrawImage(bitmap, new Rectangle(0, 0, 16, 16), 0, 0, 16, 16, GraphicsUnit.Pixel, attr);
                 return Icon.FromHandle(newBmp.GetHicon());
             }
+            return Icon.FromHandle(bitmap.GetHicon());
         }
 
         public static string WindowTitle

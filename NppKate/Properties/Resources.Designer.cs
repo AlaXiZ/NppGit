@@ -291,9 +291,9 @@ namespace NppKate.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap repos {
+        internal static System.Drawing.Bitmap repositories {
             get {
-                object obj = ResourceManager.GetObject("repos", resourceCulture);
+                object obj = ResourceManager.GetObject("repositories", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -313,16 +313,6 @@ namespace NppKate.Properties {
         internal static System.Drawing.Bitmap snippets {
             get {
                 object obj = ResourceManager.GetObject("snippets", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap snippets_bar {
-            get {
-                object obj = ResourceManager.GetObject("snippets_bar", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

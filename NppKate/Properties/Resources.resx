@@ -145,9 +145,6 @@
   <data name="ChangeLog" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ChangeLog.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
-  <data name="snippets" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\snippets.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="PluginName" xml:space="preserve">
     <value>NppKate</value>
   </data>
@@ -184,9 +181,6 @@
   <data name="SnippetsXml" xml:space="preserve">
     <value>snippets.xml</value>
   </data>
-  <data name="snippets_bar" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\snippets_bar.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="LICENSE" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\LICENSE;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
@@ -196,10 +190,13 @@
   <data name="bookmark_repo" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\bookmark-repo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="repos" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\bookmark-new-list.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="ExternalResourceDll" xml:space="preserve">
     <value>KateResource.dll</value>
+  </data>
+  <data name="repositories" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\repositories.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="snippets" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\snippets.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

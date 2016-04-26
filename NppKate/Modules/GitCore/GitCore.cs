@@ -86,7 +86,7 @@ namespace NppKate.Modules.GitCore
 
         private void ManagerOnToolbarRegisterEvent()
         {
-            _manager.AddToolbarButton(_browserCmdId, Properties.Resources.bookmark_repo);
+            _manager.AddToolbarButton(_browserCmdId, Resources.ExternalResourceName.IDB_REPOSITORIES);
         }
 
         private void ManagerOnTitleChangedEvent(object sender, TitleChangedEventArgs e)

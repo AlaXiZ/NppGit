@@ -40,11 +40,13 @@ namespace NppKate.Common
         event EventHandler<TitleChangedEventArgs> OnTitleChangedEvent;
 
         int RegisteCommandItem(CommandItem menuItem);
-        void RegisterDockForm(Type formClass, int cmdId, bool updateWithChangeContext, NppTbMsg uMask = NppTbMsg.DWS_PARAMSALL | NppTbMsg.DWS_DF_CONT_RIGHT);
+        void RegisterDockForm(Type formClass, int cmdId, bool updateWithChangeContext, NppTbMsg uMask = NppTbMsg.DWS_PARAMSALL | NppTbMsg.DWS_DF_CONT_RIGHT, IntPtr? hBitmap = null);
         void AddToolbarButton(int cmdId, Bitmap icon);
         void AddToolbarButton(int cmdId, string iconName);
         bool ToogleFormState(int cmdId);
         void SetCheckedMenu(int cmdId, bool isChecked);
         void ManualTitleUpdate();
+
+        ResourceManager ResourceManager { get; }
     }
 }

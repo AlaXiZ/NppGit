@@ -243,7 +243,6 @@
     <None Include="Resources\remove_4075.png" />
     <None Include="Resources\edit_4515.png" />
     <None Include="Resources\button_ok_7197.png" />
-    <None Include="Resources\snippets.bmp" />
     <None Include="Resources\snippets.ico" />
     <None Include="Resources\view-refresh.ico" />
     <None Include="Resources\NppGit-Logo.jpg" />
@@ -263,10 +262,16 @@
     <None Include="Resources\Git.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\pull.bmp" />
+    <None Include="Resources\snippets.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\fb_root_close.bmp" />
+    <None Include="Resources\repositories.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\repositories.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\snippets.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildProjectDirectory)\DllExport\NppPlugin.DllExport.targets" />

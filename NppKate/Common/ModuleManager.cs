@@ -56,11 +56,7 @@ namespace NppKate.Common
         public bool UpdateWithChangeContext { get; set; }
         public Icon TabIcon { get; set; }
         public NppTbMsg uMask { get; set; }
-
-        public DockForm()
-        {
-            uMask = NppTbMsg.DWS_PARAMSALL | NppTbMsg.DWS_DF_CONT_RIGHT;
-        }
+        public IntPtr hBitmap { get; set; }
     }
 
     public class ModuleManager : IModuleManager
@@ -347,7 +343,7 @@ namespace NppKate.Common
             return NppInfo.Instance.AddCommand(menuItem.Name, menuItem.Action, menuItem.ShortcutKey, menuItem.Checked);
         }
 
-        public void RegisterDockForm(Type formClass, int cmdId, bool updateWithChangeContext, NppTbMsg uMask = NppTbMsg.DWS_PARAMSALL | NppTbMsg.DWS_DF_CONT_RIGHT)
+        public void RegisterDockForm(Type formClass, int cmdId, bool updateWithChangeContext, NppTbMsg uMask = NppTbMsg.DWS_PARAMSALL | NppTbMsg.DWS_DF_CONT_RIGHT, IntPtr? hBitmap = null)
         {
             logger.Debug("Reigister form: Class={0} CmdID = {1} UpdateWithChangeContext={2}", formClass.Name, cmdId, updateWithChangeContext);
             if (!_forms.ContainsKey(cmdId))
@@ -357,7 +353,8 @@ namespace NppKate.Common
                     Type = formClass,
                     Form = null,
                     UpdateWithChangeContext = updateWithChangeContext,
-                    uMask = uMask
+                    uMask = uMask,
+                    hBitmap = hBitmap ?? IntPtr.Zero
                 });
                 if (updateWithChangeContext)
                 {
@@ -388,7 +385,7 @@ namespace NppKate.Common
                     _nppTbData.pszName = (form.Form as FormDockable).Title;
                     _nppTbData.dlgID = cmdId;
                     _nppTbData.uMask = form.uMask;
-                    _nppTbData.hIconTab = (uint)form.TabIcon.Handle;
+                    _nppTbData.hIconTab = form.hBitmap == IntPtr.Zero ? (uint)form.TabIcon.Handle : (uint)form.hBitmap;
                     _nppTbData.pszModuleName = Properties.Resources.PluginName;
                     IntPtr _ptrNppTbData = Marshal.AllocHGlobal(Marshal.SizeOf(_nppTbData));
                     Marshal.StructureToPtr(_nppTbData, _ptrNppTbData, false);
@@ -447,6 +444,11 @@ namespace NppKate.Common
         private static readonly string ItemTemplate = "<Item FolderName=\"{0}\" PluginEntryName=\"{1}\" PluginCommandItemName=\"{2}\" ItemNameAs=\"{3}\"/>";
         private static readonly string ItemSeparator = "<Item FolderName=\"{0}\" id = \"0\" />";
         private static readonly string ItemSeparator2 = "<Item id=\"0\" />";
+
+        public ResourceManager ResourceManager
+        {
+            get { return _resManager; }
+        }
 
         private static string GetItemTemplate(string folder = "", string itemName = "---", string itemNameAs = "---")
         {

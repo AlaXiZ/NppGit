@@ -43,7 +43,7 @@ namespace NppKate.Modules.GitCore
 
         public Bitmap TabIcon
         {
-            get { return Properties.Resources.repos; }
+            get { return Properties.Resources.repositories; }
         }
 
         public string Title

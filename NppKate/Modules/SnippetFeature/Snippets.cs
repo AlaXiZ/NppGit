@@ -100,7 +100,7 @@ namespace NppKate.Modules.SnippetFeature
 
         private void ToolbarRegister()
         {
-            _manager.AddToolbarButton(_snipManagerId, Properties.Resources.snippets_bar);
+            _manager.AddToolbarButton(_snipManagerId, Resources.ExternalResourceName.IDB_SNIPPETS);
         }
 
         private void ManagerOnMenuItemClick(object sender, CommandItemClickEventArgs args)
