@@ -30,10 +30,11 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using NppKate.Common;
 
 namespace NppKate.Forms
 {
-    public partial class SnippetsManagerForm : Form, FormDockable
+    public partial class SnippetsManagerForm : DockDialog, FormDockable
     {
         public SnippetsManagerForm()
         {

@@ -76,7 +76,14 @@ namespace NppKate.Modules.GitCore
                 Checked = Settings.Panels.RepoBrowserPanelVisible
             });
 
-            manager.RegisterDockForm(typeof(RepoBrowser), _browserCmdId, false);
+            manager.RegisterDockForm(_browserCmdId, new DockDialogData
+            {
+                Class = typeof(RepoBrowser),
+                IconResourceName = Resources.ExternalResourceName.IDB_REPOSITORIES,
+                Title = "Repository browser",
+                uMask = NppTbMsg.DWS_PARAMSALL | NppTbMsg.DWS_DF_CONT_LEFT
+            });
+            //manager.RegisterDockForm(typeof(RepoBrowser), _browserCmdId, false);
 
             manager.RegisteCommandItem(new CommandItem
             {

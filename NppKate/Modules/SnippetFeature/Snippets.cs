@@ -74,7 +74,14 @@ namespace NppKate.Modules.SnippetFeature
                 Checked = Settings.Panels.SnippetsPanelVisible
             });
 
-            _manager.RegisterDockForm(typeof(Forms.SnippetsManagerForm), _snipManagerId, false);
+            //_manager.RegisterDockForm(typeof(Forms.SnippetsManagerForm), _snipManagerId, false);
+            _manager.RegisterDockForm(_snipManagerId, new DockDialogData
+            {
+                Class = typeof(Forms.SnippetsManagerForm),
+                IconResourceName = Resources.ExternalResourceName.IDB_SNIPPETS,
+                Title = "Snippets manager",
+                uMask = NppTbMsg.DWS_PARAMSALL | NppTbMsg.DWS_DF_CONT_RIGHT
+            });
 
             // -----------------------------------------------------------------
             _manager.RegisteCommandItem(new CommandItem

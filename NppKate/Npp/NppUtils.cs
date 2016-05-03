@@ -169,7 +169,30 @@ namespace NppKate.Npp
             AssemblyLoader.StopLogging();
             Win32.PostMessage(_nppInfo.NppHandle, (int)WinMsg.WM_CLOSE, 0, 0);
         }
-        
+
+        public static void RegisterAsDockDialog(IntPtr hClient, string pszName, int dlgID, NppTbMsg uMask, string pszModuleName,
+            uint hIconTab, string pszAddInfo = "")
+        {
+            NppTbData _nppTbData = new NppTbData();
+
+            _nppTbData.hClient = hClient;
+            _nppTbData.pszName = pszName;
+            _nppTbData.dlgID = dlgID;
+            _nppTbData.uMask = uMask;
+            _nppTbData.hIconTab = hIconTab;
+            _nppTbData.pszModuleName = pszModuleName;
+            _nppTbData.pszAddInfo = pszAddInfo;
+
+            RegisterAsDockDialog(_nppTbData);
+        }
+
+        public static void RegisterAsDockDialog(NppTbData nppTbData)
+        {
+            IntPtr _ptrNppTbData = Marshal.AllocHGlobal(Marshal.SizeOf(nppTbData));
+            Marshal.StructureToPtr(nppTbData, _ptrNppTbData, false);
+            Win32.SendMessage(NppInfo.Instance.NppHandle, NppMsg.NPPM_DMMREGASDCKDLG, 0, _ptrNppTbData);
+        }
+
         #endregion
 
         #region SCI Command
@@ -348,7 +371,22 @@ namespace NppKate.Npp
                 g.DrawImage(bitmap, new Rectangle(0, 0, 16, 16), 0, 0, 16, 16, GraphicsUnit.Pixel, attr);
                 return Icon.FromHandle(newBmp.GetHicon());
             }
-            return Icon.FromHandle(bitmap.GetHicon());
+        }
+
+        public static Icon NppBitmapToIcon(IntPtr hBitmap)
+        {
+            using (Bitmap newBmp = new Bitmap(16, 16))
+            {
+                Graphics g = Graphics.FromImage(newBmp);
+                ColorMap[] colorMap = new ColorMap[1];
+                colorMap[0] = new ColorMap();
+                colorMap[0].OldColor = Color.FromArgb(192, 192, 192);
+                colorMap[0].NewColor = Color.FromKnownColor(KnownColor.ButtonFace);
+                ImageAttributes attr = new ImageAttributes();
+                attr.SetRemapTable(colorMap);
+                g.DrawImage(Bitmap.FromHbitmap(hBitmap), new Rectangle(0, 0, 16, 16), 0, 0, 16, 16, GraphicsUnit.Pixel, attr);
+                return Icon.FromHandle(newBmp.GetHicon());
+            }
         }
 
         public static string WindowTitle

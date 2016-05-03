@@ -1354,6 +1354,14 @@ namespace NppKate
         public IntPtr hToolbarIcon;
     }
 
+    [StructLayout(LayoutKind.Sequential)]
+    public struct tagNMHDR
+    {
+        public IntPtr hwndFrom;
+        public uint idFrom;
+        public uint code;
+    }
+
     #endregion " Notepad++ "
 
     #region " Scintilla "

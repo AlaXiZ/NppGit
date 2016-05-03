@@ -377,5 +377,9 @@ namespace NppKate.Interop
         public const uint LR_MONOCHROME = 0x00000001;
         public const uint LR_SHARED = 0x00008000;
         public const uint LR_VGACOLOR = 0x00000080;
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool IsWindowVisible(IntPtr hWnd);
     }
 }

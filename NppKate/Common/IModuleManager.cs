@@ -41,6 +41,7 @@ namespace NppKate.Common
 
         int RegisteCommandItem(CommandItem menuItem);
         void RegisterDockForm(Type formClass, int cmdId, bool updateWithChangeContext, NppTbMsg uMask = NppTbMsg.DWS_PARAMSALL | NppTbMsg.DWS_DF_CONT_RIGHT, IntPtr? hBitmap = null);
+        void RegisterDockForm(int indexId, DockDialogData dlgData);
         void AddToolbarButton(int cmdId, Bitmap icon);
         void AddToolbarButton(int cmdId, string iconName);
         bool ToogleFormState(int cmdId);

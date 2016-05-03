@@ -36,6 +36,8 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows;
+using System.Windows.Interop;
 
 namespace NppKate.Common
 {
@@ -51,15 +53,15 @@ namespace NppKate.Common
 
     class DockForm
     {
-        public Type Type { get; set; }
-        public Form Form { get; set; }
-        public bool UpdateWithChangeContext { get; set; }
-        public Icon TabIcon { get; set; }
-        public NppTbMsg uMask { get; set; }
-        public IntPtr hBitmap { get; set; }
+        public Type Type;
+        public Form Form;
+        public bool UpdateWithChangeContext;
+        public Icon TabIcon;
+        public NppTbMsg uMask;
+        public IntPtr hBitmap;
     }
 
-    public class ModuleManager : IModuleManager
+    public class ModuleManager : IModuleManager, IDockableManager
     {
         private const int TOOLBAR_ICON_SIZE = 16;
 
@@ -67,6 +69,9 @@ namespace NppKate.Common
 
         private LinkedList<IModule> _modules;
         private Dictionary<int, DockForm> _forms;
+        private Dictionary<int, DockDialogData> _dockDialog;
+        private Dictionary<int, IntPtr> _hwnds;
+
         private Dictionary<string, List<CommandItem>> _cmdList;
         private Dictionary<uint, string> _menuCache;
         private bool _canEvent = false;
@@ -89,6 +94,8 @@ namespace NppKate.Common
             _forms = new Dictionary<int, DockForm>();
             _cmdList = new Dictionary<string, List<CommandItem>>();
             _menuCache = new Dictionary<uint, string>();
+            _dockDialog = new Dictionary<int, DockDialogData>();
+            _hwnds = new Dictionary<int, IntPtr>();
         }
 
         public void MessageProc(SCNotification sn)
@@ -129,20 +136,14 @@ namespace NppKate.Common
 
         private void DoSystemInit()
         {
-            if (OnSystemInit != null)
-            {
-                OnSystemInit();
-            }
+            OnSystemInit?.Invoke();
         }
 
         private void DoTabChangeEvent(uint idFormChanged)
         {
             if (!_canEvent) return;
 
-            if (OnTabChangeEvent != null)
-            {
-                OnTabChangeEvent(this, new TabEventArgs(idFormChanged));
-            }
+            OnTabChangeEvent?.Invoke(this, new TabEventArgs(idFormChanged));
         }
 
         public void Final()
@@ -190,7 +191,7 @@ namespace NppKate.Common
         {
             if (!_canEvent)
                 return;
-            MSG msg = (MSG)Marshal.PtrToStructure(e.lParam, typeof(MSG));
+            Interop.MSG msg = (Interop.MSG)Marshal.PtrToStructure(e.lParam, typeof(Interop.MSG));
             if (msg.message == (uint)WinMsg.WM_COMMAND)
             {
                 // Item click
@@ -252,10 +253,7 @@ namespace NppKate.Common
         {
             if (!_canEvent) return;
 
-            if (OnTitleChangingEvent != null)
-            {
-                OnTitleChangingEvent();
-            }
+            OnTitleChangingEvent?.Invoke();
         }
 
         private string _ending = null;
@@ -310,10 +308,7 @@ namespace NppKate.Common
 
         public void ToolBarInit()
         {
-            if (OnToolbarRegisterEvent != null)
-            {
-                OnToolbarRegisterEvent();
-            }
+            OnToolbarRegisterEvent?.Invoke();
         }
 
         public void AddModule(IModule item)
@@ -372,47 +367,91 @@ namespace NppKate.Common
         public bool ToogleFormState(int cmdId)
         {
             logger.Debug("Toogle form state: CmdID={0}", cmdId);
+            IntPtr hwnd = IntPtr.Zero;
+            bool isReg = false;
             if (_forms.ContainsKey(cmdId))
             {
+                /* old logic */
                 var form = _forms[cmdId];
                 if (form.Form == null)
                 {
+                    isReg = true;
                     form.Form = Activator.CreateInstance(form.Type) as Form;
                     form.TabIcon = NppUtils.NppBitmapToIcon((form.Form as FormDockable).TabIcon);
-
                     NppTbData _nppTbData = new NppTbData();
                     _nppTbData.hClient = form.Form.Handle;
                     _nppTbData.pszName = (form.Form as FormDockable).Title;
-                    _nppTbData.dlgID = cmdId;
+                    _nppTbData.dlgID = NppInfo.Instance.SearchCmdIdByIndex(cmdId);
                     _nppTbData.uMask = form.uMask;
                     _nppTbData.hIconTab = form.hBitmap == IntPtr.Zero ? (uint)form.TabIcon.Handle : (uint)form.hBitmap;
                     _nppTbData.pszModuleName = Properties.Resources.PluginName;
-                    IntPtr _ptrNppTbData = Marshal.AllocHGlobal(Marshal.SizeOf(_nppTbData));
-                    Marshal.StructureToPtr(_nppTbData, _ptrNppTbData, false);
+                    NppUtils.RegisterAsDockDialog(_nppTbData);
+                }
+                hwnd = form.Form?.Handle ?? IntPtr.Zero;
+            }
+            // New logic
+            else if (_dockDialog.ContainsKey(cmdId))
+            {
+                isReg = true;
+                var data = _dockDialog[cmdId];
+                Form wnd = Activator.CreateInstance(data.Class) as Form;
 
-                    Win32.SendMessage(NppInfo.Instance.NppHandle, NppMsg.NPPM_DMMREGASDCKDLG, 0, _ptrNppTbData);
-                }
-                else
+                if (wnd != null)
                 {
-                    if (form.Form.Visible)
+                    NppTbData _nppTbData = new NppTbData
                     {
-                        Win32.SendMessage(NppInfo.Instance.NppHandle, NppMsg.NPPM_DMMHIDE, 0, form.Form.Handle);
-                    }
-                    else
-                    {
-                        Win32.SendMessage(NppInfo.Instance.NppHandle, NppMsg.NPPM_DMMSHOW, 0, form.Form.Handle);
-                    }
+                        hClient = wnd.Handle,
+                        dlgID = NppInfo.Instance.SearchCmdIdByIndex(cmdId),
+                        hIconTab = (uint)NppUtils.NppBitmapToIcon(_resManager.LoadImage(data.IconResourceName, TOOLBAR_ICON_SIZE, TOOLBAR_ICON_SIZE))?.Handle,
+                        pszModuleName = Properties.Resources.PluginName,
+                        pszName = data.Title,
+                        uMask = data.uMask
+                    };
+                    NppUtils.RegisterAsDockDialog(_nppTbData);
+                    _dockDialog.Remove(cmdId);
+                    _hwnds.Add(cmdId, wnd.Handle);
+                    (wnd as IDockDialog).init(this, NppInfo.Instance.SearchCmdIdByIndex(cmdId));
+                    hwnd = wnd.Handle;
                 }
-                NppUtils.SetCheckedMenu(NppInfo.Instance.SearchCmdIdByIndex(cmdId), form.Form.Visible);
-                return form.Form.Visible;
+                // TODO: delete return
+                //return false;
+            }
+            else if (_hwnds.ContainsKey(cmdId))
+            {
+                // TODO: delete return
+                hwnd = _hwnds[cmdId];
+                //
+                //return false;
             }
             else
             {
                 logger.Error("Form with command ID = {0} not found", cmdId);
                 return false;
             }
+            if (hwnd != IntPtr.Zero)
+            {
+                if (!isReg)
+                {
+                    if (Win32.IsWindowVisible(hwnd))
+                    {
+                        Win32.SendMessage(NppInfo.Instance.NppHandle, NppMsg.NPPM_DMMHIDE, 0, hwnd);
+                    }
+                    else
+                    {
+                        Win32.SendMessage(NppInfo.Instance.NppHandle, NppMsg.NPPM_DMMSHOW, 0, hwnd);
+                    }
+                }
+            }
+            else
+            {
+                logger.Error("Handle of window with command ID = {0} not found", cmdId);
+                return false;
+            }
+            NppUtils.SetCheckedMenu(NppInfo.Instance.SearchCmdIdByIndex(cmdId), Win32.IsWindowVisible(hwnd));
+            return Win32.IsWindowVisible(hwnd);
         }
 
+        [Obsolete("Method AddToolbarButton(int cmdId, Bitmap icon) is deprecated, use method public void AddToolbarButton(int cmdId, string iconName)", true)]
         public void AddToolbarButton(int cmdId, Bitmap icon)
         {
             toolbarIcons tbIcons = new toolbarIcons();
@@ -466,7 +505,7 @@ namespace NppKate.Common
             dlg.Commands = _cmdList;
             if (dlg.Commands.Count == 0)
             {
-                MessageBox.Show("Нет доступных команд", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                System.Windows.Forms.MessageBox.Show("Нет доступных команд", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
             if (dlg.ShowDialog() == DialogResult.OK)
@@ -510,6 +549,11 @@ namespace NppKate.Common
         public void ManualTitleUpdate()
         {
             DoTitleChangedEvent();
+        }
+
+        public void RegisterDockForm(int indexId, DockDialogData dlgData)
+        {
+            _dockDialog.Add(indexId, dlgData);
         }
         #endregion
 

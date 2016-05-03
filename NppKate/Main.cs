@@ -93,7 +93,7 @@ namespace NppKate
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "MessageProc NppMsg={0} or SciMsg",  (NppMsg)sn.nmhdr.code, (SciMsg)sn.message);
+                _logger.Error("MessageProc NppMsg={0} or SciMsg={1}",  (NppMsg)sn.nmhdr.code, (SciMsg)sn.message);
             }
         }
         #endregion
