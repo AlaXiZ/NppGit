@@ -36,8 +36,6 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows;
-using System.Windows.Interop;
 
 namespace NppKate.Common
 {

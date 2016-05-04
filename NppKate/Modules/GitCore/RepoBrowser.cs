@@ -25,14 +25,10 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-using System;
 using System.Drawing;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using NppKate.Common;
 using NppKate.Forms;
-using NppKate.Interop;
-using NppKate.Npp;
 
 namespace NppKate.Modules.GitCore
 {

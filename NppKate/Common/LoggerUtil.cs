@@ -25,36 +25,24 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
-using NppKate.Interop;
-using NppKate.Npp;
+using System;
+using NLog;
 
 namespace NppKate.Common
 {
-    public class DockDialog : Form, IDockDialog
+    public static class LoggerUtil
     {
-        protected IDockableManager _manager;
-        protected int _cmdId;
-
-        public void init(IDockableManager manager, int commandId)
+        private static void ErrorEx(Logger logger, Exception ex)
         {
-            _manager = manager;
-            _cmdId = commandId;
+            logger.Error("Exception\r\nMessage: {0}\r\nSource: {1}\r\nStack trance: {2}\r\n Has inner exception: {3}",
+                ex.Message, ex.Source, ex.StackTrace, ex.InnerException != null);
+            if (ex.InnerException != null)
+                ErrorEx(logger, ex.InnerException);
         }
-
-        protected override void WndProc(ref Message m)
+        public static void Error(Logger logger, Exception ex, string format, params object[] args)
         {
-            if (m.Msg == (int)WinMsg.WM_NOTIFY)
-            {
-                tagNMHDR ntf = (tagNMHDR)Marshal.PtrToStructure(m.LParam, typeof(tagNMHDR));
-                if (ntf.code == (uint)DockMgrMsg.DMN_CLOSE)
-                {
-                    Win32.SendMessage(NppInfo.Instance.NppHandle, (int)WinMsg.WM_COMMAND, _cmdId, 0);
-                    return;
-                }
-            }
-            base.WndProc(ref m);
+            logger.Error(format, args);
+            ErrorEx(logger, ex);
         }
     }
 }

@@ -69,7 +69,7 @@ namespace NppKate
                 mm.ToolBarInit();
             } catch (Exception ex)
             {
-                _logger.Error(ex, "ToolBarInit", null);
+                LoggerUtil.Error(_logger, ex, "ToolBarInit", null);
             }
         }
 
@@ -77,11 +77,10 @@ namespace NppKate
         {
             try
             {
-
                 mm.Final();
             } catch (Exception ex)
             {
-                _logger.Error(ex, "PluginCleanUp", null);
+                LoggerUtil.Error(_logger, ex, "PluginCleanUp", null);
             }
 }
 
@@ -93,7 +92,7 @@ namespace NppKate
             }
             catch (Exception ex)
             {
-                _logger.Error("MessageProc NppMsg={0} or SciMsg={1}",  (NppMsg)sn.nmhdr.code, (SciMsg)sn.message);
+                LoggerUtil.Error(_logger, ex, "MessageProc NppMsg={0} or SciMsg={1}", (NppMsg)sn.nmhdr.code, (SciMsg)sn.message);
             }
         }
         #endregion
