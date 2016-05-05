@@ -36,6 +36,8 @@ namespace NppKate.Forms
         public SnippetEdit()
         {
             InitializeComponent();
+            cbCategory.Items.AddRange(SnippetManager.Instance.GetCategories().ToArray());
+            cbExtention.Items.AddRange(SnippetManager.Instance.GetExt().ToArray());
         }
 
         private void bOk_Click(object sender, EventArgs e)
@@ -50,11 +52,11 @@ namespace NppKate.Forms
             {
                 if (string.IsNullOrEmpty(_snippet))
                 {
-                    SnippetManager.Instance.AddSnippet(new Snippet(tbName.Text, tbSnippet.Text, chbIsShowInMenu.Checked));
+                    SnippetManager.Instance.AddSnippet(new Snippet(tbName.Text, tbSnippet.Text, chbIsShowInMenu.Checked, cbCategory.Text, cbExtention.Text));
                 }
                 else
                 {
-                    SnippetManager.Instance.UpdateSnippet(_snippet, new Snippet(tbName.Text, tbSnippet.Text, chbIsShowInMenu.Checked));
+                    SnippetManager.Instance.UpdateSnippet(_snippet, new Snippet(tbName.Text, tbSnippet.Text, chbIsShowInMenu.Checked, cbCategory.Text, cbExtention.Text));
                 }
             }
             catch(Exception ex)
@@ -70,6 +72,8 @@ namespace NppKate.Forms
             tbName.Text = s.Name;
             tbSnippet.Text = s.SnippetText.Replace("\n", "\r\n");
             chbIsShowInMenu.Checked = s.IsShowInMenu;
+            cbCategory.Text = s.Category;
+            cbExtention.Text = s.FileExt;
         }
 
         private string _snippet;

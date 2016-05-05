@@ -165,6 +165,20 @@ namespace NppKate.Modules.SnippetFeature
             List<string> result;
             result = (from s in _snippets.Values
                       select s.Category).Distinct().ToList();
+            result.Sort();
+            return result;
+        }
+
+        public List<string> GetExt()
+        {
+            List<string> result;
+            result = (from s in _snippets.Values
+                      select s.FileExt).Distinct().ToList();
+            if (!result.Contains("*"))
+            {
+                result.Add("*");
+            }
+            result.Sort();
             return result;
         }
     }

@@ -57,6 +57,10 @@ namespace NppKate.Forms
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SnippetEdit));
             this.pTop = new System.Windows.Forms.Panel();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.cbExtention = new System.Windows.Forms.ComboBox();
+            this.cbCategory = new System.Windows.Forms.ComboBox();
             this.chbIsShowInMenu = new System.Windows.Forms.CheckBox();
             this.lSnippet = new System.Windows.Forms.Label();
             this.lName = new System.Windows.Forms.Label();
@@ -66,10 +70,6 @@ namespace NppKate.Forms
             this.pBottom = new System.Windows.Forms.Panel();
             this.bCancel = new System.Windows.Forms.Button();
             this.bOk = new System.Windows.Forms.Button();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.comboBox2 = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
             this.pTop.SuspendLayout();
             this.pMiddle.SuspendLayout();
             this.pBottom.SuspendLayout();
@@ -79,8 +79,8 @@ namespace NppKate.Forms
             // 
             this.pTop.Controls.Add(this.label2);
             this.pTop.Controls.Add(this.label1);
-            this.pTop.Controls.Add(this.comboBox2);
-            this.pTop.Controls.Add(this.comboBox1);
+            this.pTop.Controls.Add(this.cbExtention);
+            this.pTop.Controls.Add(this.cbCategory);
             this.pTop.Controls.Add(this.chbIsShowInMenu);
             this.pTop.Controls.Add(this.lSnippet);
             this.pTop.Controls.Add(this.lName);
@@ -90,6 +90,40 @@ namespace NppKate.Forms
             this.pTop.Name = "pTop";
             this.pTop.Size = new System.Drawing.Size(624, 93);
             this.pTop.TabIndex = 0;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(546, 9);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(72, 13);
+            this.label2.TabIndex = 7;
+            this.label2.Text = "File extention:";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(269, 9);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(52, 13);
+            this.label1.TabIndex = 6;
+            this.label1.Text = "Category:";
+            // 
+            // cbExtention
+            // 
+            this.cbExtention.FormattingEnabled = true;
+            this.cbExtention.Location = new System.Drawing.Point(549, 27);
+            this.cbExtention.Name = "cbExtention";
+            this.cbExtention.Size = new System.Drawing.Size(72, 21);
+            this.cbExtention.TabIndex = 2;
+            // 
+            // cbCategory
+            // 
+            this.cbCategory.FormattingEnabled = true;
+            this.cbCategory.Location = new System.Drawing.Point(272, 28);
+            this.cbCategory.Name = "cbCategory";
+            this.cbCategory.Size = new System.Drawing.Size(271, 21);
+            this.cbCategory.TabIndex = 1;
             // 
             // chbIsShowInMenu
             // 
@@ -186,40 +220,6 @@ namespace NppKate.Forms
             this.bOk.UseVisualStyleBackColor = true;
             this.bOk.Click += new System.EventHandler(this.bOk_Click);
             // 
-            // comboBox1
-            // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(272, 28);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(271, 21);
-            this.comboBox1.TabIndex = 4;
-            // 
-            // comboBox2
-            // 
-            this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(549, 27);
-            this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(72, 21);
-            this.comboBox2.TabIndex = 5;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(269, 9);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(52, 13);
-            this.label1.TabIndex = 6;
-            this.label1.Text = "Category:";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(546, 9);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(72, 13);
-            this.label2.TabIndex = 7;
-            this.label2.Text = "File extention:";
-            // 
             // SnippetEdit
             // 
             this.AcceptButton = this.bOk;
@@ -257,7 +257,7 @@ namespace NppKate.Forms
         private System.Windows.Forms.CheckBox chbIsShowInMenu;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ComboBox comboBox2;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox cbExtention;
+        private System.Windows.Forms.ComboBox cbCategory;
     }
 }

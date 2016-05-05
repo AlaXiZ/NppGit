@@ -65,7 +65,9 @@ namespace NppKate.Forms
             this.miDelete = new System.Windows.Forms.ToolStripMenuItem();
             this.lbSnippets = new System.Windows.Forms.ListBox();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.contextMenuSnippets.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // contextMenuSnippets
@@ -124,7 +126,7 @@ namespace NppKate.Forms
             this.lbSnippets.FormattingEnabled = true;
             this.lbSnippets.Location = new System.Drawing.Point(0, 0);
             this.lbSnippets.Name = "lbSnippets";
-            this.lbSnippets.Size = new System.Drawing.Size(405, 373);
+            this.lbSnippets.Size = new System.Drawing.Size(405, 352);
             this.lbSnippets.TabIndex = 1;
             this.lbSnippets.DoubleClick += new System.EventHandler(this.lbSnippets_DoubleClick);
             // 
@@ -138,17 +140,27 @@ namespace NppKate.Forms
             this.comboBox1.Size = new System.Drawing.Size(405, 21);
             this.comboBox1.TabIndex = 2;
             // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.lbSnippets);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(0, 21);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(405, 352);
+            this.panel1.TabIndex = 3;
+            // 
             // SnippetsManagerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(405, 373);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.comboBox1);
-            this.Controls.Add(this.lbSnippets);
             this.Name = "SnippetsManagerForm";
             this.Text = "SnippetsManagerForm";
             this.VisibleChanged += new System.EventHandler(this.SnippetsManagerForm_VisibleChanged);
             this.contextMenuSnippets.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -162,5 +174,6 @@ namespace NppKate.Forms
         private System.Windows.Forms.ToolStripMenuItem miDelete;
         private System.Windows.Forms.ListBox lbSnippets;
         private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.Panel panel1;
     }
 }
