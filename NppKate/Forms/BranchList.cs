@@ -67,7 +67,7 @@ namespace NppKate.Forms
                 {
                     if (b.IsRemote == showRemoteBranch || !b.IsRemote == showLocal)
                     {
-                        lbItems.Items.Add(b.FriendlyName);
+                        lbItems.Items.Add(b.Name);
                     }
                 }
             }

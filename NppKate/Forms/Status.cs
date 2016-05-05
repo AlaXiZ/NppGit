@@ -91,6 +91,7 @@ namespace NppKate.Forms
                                 var listItem = lvFiles.Items.Add("", 1);
                                 listItem.ImageKey = ext;
                                 listItem.SubItems.Add(item.FilePath);
+                                /*
                                 switch (item.State)
                                 {
                                     case FileStatus.NewInIndex:
@@ -103,6 +104,7 @@ namespace NppKate.Forms
                                     case FileStatus.NewInWorkdir: listItem.ForeColor = Color.RoyalBlue; break;
                                     default: listItem.ForeColor = Color.Black; break;
                                 }
+                                */
                                 listItem.SubItems.Add(item.State.ToString());
                             }
                         }

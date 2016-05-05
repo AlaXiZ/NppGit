@@ -102,7 +102,7 @@ namespace NppKate.Modules.GitCore
         {
             if (_currRepo != null && Settings.GitCore.ActiveRepoInTitle)
             {
-                e.AddTitleItem("Active repo: " + _currentRepo.Name + ":" + _currRepo.Head.FriendlyName);
+                e.AddTitleItem("Active repo: " + _currentRepo.Name + ":" + _currRepo.Head.Name);
             }
         }
 
@@ -213,7 +213,7 @@ namespace NppKate.Modules.GitCore
 
         public string CurrentBranch
         {
-            get { return _currRepo?.Head.FriendlyName ?? ""; }
+            get { return _currRepo?.Head.Name ?? ""; }
         }
 
         public bool SwitchByPath(string path)
@@ -305,7 +305,7 @@ namespace NppKate.Modules.GitCore
         public static bool IsValidGitRepo(string path)
         {
             _logger.Trace("IsValidGitRepo path={0}", path);
-            var repoDir = NppUtils.GetRootDir(path);
+            var repoDir = GetRootDir(path);
             return !string.IsNullOrEmpty(repoDir) && Repository.IsValid(repoDir);
         }
 
