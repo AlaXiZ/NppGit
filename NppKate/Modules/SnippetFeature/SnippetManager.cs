@@ -41,6 +41,8 @@ namespace NppKate.Modules.SnippetFeature
         private const string SNIPPET = "Snippet";
         private const string NAME = "Name";
         private const string ISSHOW = "IsShowInMenu";
+        private const string CATEGORY = "Category";
+        private const string FILEEXT = "FileExt";
 
         private static SnippetManager _instance;
         private static Logger logger = LogManager.GetCurrentClassLogger();
@@ -86,7 +88,12 @@ namespace NppKate.Modules.SnippetFeature
             {
                 _snippets.Add(snippet.Name, snippet);
                 var root = _doc.Root;
-                var element = new XElement(SNIPPET, snippet.SnippetText, new XAttribute(NAME, snippet.Name), new XAttribute(ISSHOW, snippet.IsShowInMenu));
+                var element = new XElement(SNIPPET, snippet.SnippetText, 
+                                            new XAttribute(NAME, snippet.Name), 
+                                            new XAttribute(ISSHOW, snippet.IsShowInMenu),
+                                            new XAttribute(CATEGORY, snippet.Category),
+                                            new XAttribute(FILEEXT, snippet.FileExt)
+                                            );
                 root.Add(element);
                 Save();
             } else
@@ -144,7 +151,21 @@ namespace NppKate.Modules.SnippetFeature
         private void LoadSnippets()
         {
             _snippets = (from e in _doc.Descendants(SNIPPET)
-                         select e).ToDictionary(e => e.Attribute(NAME).Value, (e) => { return new Snippet(e.Attribute(NAME).Value, e.Value, bool.Parse(e.Attribute(ISSHOW)?.Value ?? "true")); });
+                         select e).ToDictionary(e => e.Attribute(NAME).Value, 
+                            (e) => { return new Snippet(e.Attribute(NAME).Value, 
+                                                        e.Value, 
+                                                        bool.Parse(e.Attribute(ISSHOW)?.Value ?? "true"), 
+                                                        e.Attribute(CATEGORY)?.Value, 
+                                                        e.Attribute(FILEEXT)?.Value);
+                            });
+        }
+
+        public List<string> GetCategories()
+        {
+            List<string> result;
+            result = (from s in _snippets.Values
+                      select s.Category).Distinct().ToList();
+            return result;
         }
     }
 }

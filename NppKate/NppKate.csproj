@@ -137,16 +137,16 @@
     <Compile Include="Forms\SettingsDialog.Designer.cs">
       <DependentUpon>SettingsDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\SnippetEdit.cs">
+    <Compile Include="Modules\SnippetFeature\SnippetEdit.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\SnippetEdit.Designer.cs">
+    <Compile Include="Modules\SnippetFeature\SnippetEdit.Designer.cs">
       <DependentUpon>SnippetEdit.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\SnippetsManagerForm.cs">
+    <Compile Include="Modules\SnippetFeature\SnippetsManagerForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\SnippetsManagerForm.Designer.cs">
+    <Compile Include="Modules\SnippetFeature\SnippetsManagerForm.Designer.cs">
       <DependentUpon>SnippetsManagerForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Status.cs">
@@ -215,10 +215,10 @@
     <EmbeddedResource Include="Forms\SettingsDialog.resx">
       <DependentUpon>SettingsDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\SnippetEdit.resx">
+    <EmbeddedResource Include="Modules\SnippetFeature\SnippetEdit.resx">
       <DependentUpon>SnippetEdit.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\SnippetsManagerForm.resx">
+    <EmbeddedResource Include="Modules\SnippetFeature\SnippetsManagerForm.resx">
       <DependentUpon>SnippetsManagerForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Status.resx">

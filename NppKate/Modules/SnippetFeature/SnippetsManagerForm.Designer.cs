@@ -64,6 +64,7 @@ namespace NppKate.Forms
             this.miEdit = new System.Windows.Forms.ToolStripMenuItem();
             this.miDelete = new System.Windows.Forms.ToolStripMenuItem();
             this.lbSnippets = new System.Windows.Forms.ListBox();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.contextMenuSnippets.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -127,11 +128,22 @@ namespace NppKate.Forms
             this.lbSnippets.TabIndex = 1;
             this.lbSnippets.DoubleClick += new System.EventHandler(this.lbSnippets_DoubleClick);
             // 
+            // comboBox1
+            // 
+            this.comboBox1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(0, 0);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(405, 21);
+            this.comboBox1.TabIndex = 2;
+            // 
             // SnippetsManagerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(405, 373);
+            this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.lbSnippets);
             this.Name = "SnippetsManagerForm";
             this.Text = "SnippetsManagerForm";
@@ -149,5 +161,6 @@ namespace NppKate.Forms
         private System.Windows.Forms.ToolStripMenuItem miEdit;
         private System.Windows.Forms.ToolStripMenuItem miDelete;
         private System.Windows.Forms.ListBox lbSnippets;
+        private System.Windows.Forms.ComboBox comboBox1;
     }
 }
