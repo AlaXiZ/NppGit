@@ -167,7 +167,7 @@ namespace NppKate.Npp
         public static void Shutdown()
         {
             AssemblyLoader.StopLogging();
-            Win32.PostMessage(_nppInfo.NppHandle, (int)WinMsg.WM_CLOSE, 0, 0);
+            Win32.SendMenuCmd(_nppInfo.NppHandle, NppMenuCmd.IDM_FILE_EXIT, 0);
         }
 
         public static void RegisterAsDockDialog(IntPtr hClient, string pszName, int dlgID, NppTbMsg uMask, string pszModuleName,
@@ -434,7 +434,8 @@ namespace NppKate.Npp
             }
             if (proc != null && npp != null)
             {
-                ProcessStartInfo psi = new ProcessStartInfo(path, string.Format("-name \"{0}\" -path \"{1}\"", proc.ProcessName, npp.FileName));
+                ProcessStartInfo psi = new ProcessStartInfo(path, string.Format("-name \"{0}\" -path \"{1}\" -id \"{2}\"", proc.ProcessName, npp.FileName, proc.Id));
+                psi.WindowStyle = ProcessWindowStyle.Hidden;
                 psi.CreateNoWindow = true;
                 Process.Start(psi);
             }

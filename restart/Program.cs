@@ -25,7 +25,10 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+using System;
 using System.Diagnostics;
+using System.Linq;
+using System.Threading;
 
 namespace restart
 {
@@ -33,32 +36,48 @@ namespace restart
     {
         static void Main(string[] args)
         {
-            string procName = "";
-            string exePath = "";
-            for(int i = 0; i < args.Length; i++)
+            Thread.Sleep(100);
+            try
             {
-                if (args[i].StartsWith("-name"))
+                string procName = "";
+                string exePath = "";
+                for (int i = 0; i < args.Length; i++)
                 {
-                    i++;
-                    procName = args[i];
+                    if (args[i].StartsWith("-name"))
+                    {
+                        i++;
+                        procName = args[i];
+                    }
+                    else if (args[i].StartsWith("-path"))
+                    {
+                        i++;
+                        exePath = args[i];
+                    }
                 }
-                else if (args[i].StartsWith("-path"))
-                {
-                    i++;
-                    exePath = args[i];
-                }
-            }
 
-            foreach (var p in Process.GetProcessesByName(procName))
+                var proc = Process.GetProcesses().Where(x => x.ProcessName.Contains(procName)).FirstOrDefault();
+                try
+                {
+                    if (proc != null && proc.Id != 0)
+                        proc.WaitForExit();
+                }
+                catch (Exception ex)
+                {
+                    Thread.Sleep(100);
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.StackTrace);
+                }
+
+                var p = new Process();
+                p.StartInfo.FileName = exePath;
+                p.Start();
+            }
+            catch (Exception ex)
             {
-                if (p.ProcessName.Equals(procName))
-                {
-                    p.WaitForExit();
-                    break;
-                }
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                //Console.ReadLine();
             }
-
-            Process.Start(exePath);
         }
     }
 }
