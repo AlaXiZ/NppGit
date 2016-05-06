@@ -26,14 +26,19 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 using NLog;
+using NppKate.Npp;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace NppKate.Modules.SnippetFeature
 {
     public class Snippet
     {
+        const string AUTO_DATE = "$(DATE)";
+        const string AUTO_FILENAME = "$(FILENAME)";
+
         string _snippetText = "";
         private static Regex _paramsSearch = new Regex(@"[{]\d+[}]");
         private static Regex _wrongParam = new Regex(@"[{]\D*[}]");
@@ -69,6 +74,8 @@ namespace NppKate.Modules.SnippetFeature
 
         public string[] Assemble(string param)
         {
+            var snippetText = ReplaceAutoParam(_snippetText);
+
             if (ParamCount > 0)
             {
                 param = Regex.Replace(param.Trim(), @"(\s+)|(\s*[,;]\s*)", " ");
@@ -80,7 +87,7 @@ namespace NppKate.Modules.SnippetFeature
                     {
                         formatArgs[i] = "EMPTY_PARAM";
                     }
-                    outStrings.Add(string.Format(_snippetText, formatArgs));
+                    outStrings.Add(string.Format(snippetText, formatArgs));
                 }
                 else
                 {
@@ -100,7 +107,7 @@ namespace NppKate.Modules.SnippetFeature
                         }
                         if (count == ParamCount)
                         {
-                            outStrings.Add(string.Format(_snippetText, formatArgs));
+                            outStrings.Add(string.Format(snippetText, formatArgs));
                             count = 0;
                         }
                     }
@@ -109,8 +116,24 @@ namespace NppKate.Modules.SnippetFeature
             }
             else
             {
-                return _snippetText.Replace("\r", "").Split('\n'); // split by line
+                return snippetText.Replace("\r", "").Split('\n'); // split by line
             }
+        }
+
+        private static string ReplaceAutoParam(string source)
+        {
+            var result = new StringBuilder(source);
+
+            if (source.Contains(AUTO_DATE))
+            {
+                result.Replace(AUTO_DATE, DateTime.Now.ToString("dd.MM.yyyy"));
+            }
+            if (source.Contains(AUTO_FILENAME))
+            {
+                result.Replace(AUTO_FILENAME, NppUtils.CurrentFileName);
+            }
+
+            return result.ToString();
         }
         
         private static byte CalcParamCount(string snippet)
