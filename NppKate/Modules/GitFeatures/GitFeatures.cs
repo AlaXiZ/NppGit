@@ -59,7 +59,7 @@ namespace NppKate.Modules
             _manager = manager;
             _manager.OnSystemInit += ManagerOnSystemInit;
 
-            _manager.RegisteCommandItem(new CommandItem
+            _manager.RegisterCommandItem(new CommandItem
             {
                 Name = "File in other branch",
                 Hint = "File in other branch",
@@ -68,7 +68,7 @@ namespace NppKate.Modules
             });
 
             /*
-            _statusPanelCmdID = _manager.RegisteCommandItem(new CommandItem
+            _statusPanelCmdID = _manager.RegisterCommandItem(new CommandItem
             {
                 Name = "Status panel",
                 Hint = "Status panel",
@@ -81,7 +81,7 @@ namespace NppKate.Modules
             _manager.RegisterDockForm(typeof(Status), _statusPanelCmdID, true, NppTbMsg.DWS_PARAMSALL | NppTbMsg.DWS_DF_CONT_BOTTOM);
 
             //------------------------------------------------------------------
-            _manager.RegisteCommandItem(new CommandItem
+            _manager.RegisterCommandItem(new CommandItem
             {
                 Name = "-",
                 Hint = "-",

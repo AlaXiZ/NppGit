@@ -67,7 +67,7 @@ namespace NppKate.Modules.GitCore
             manager.OnSystemInit += ManagerOnSystemInit;
             manager.OnToolbarRegisterEvent += ManagerOnToolbarRegisterEvent;
 
-            _browserCmdId = manager.RegisteCommandItem(new CommandItem
+            _browserCmdId = manager.RegisterCommandItem(new CommandItem
             {
                 Name = "Repository browser",
                 Hint = "Repository browser",
@@ -84,7 +84,7 @@ namespace NppKate.Modules.GitCore
             });
             //manager.RegisterDockForm(typeof(RepoBrowser), _browserCmdId, false);
 
-            manager.RegisteCommandItem(new CommandItem
+            manager.RegisterCommandItem(new CommandItem
             {
                 Name = "-",
                 Hint = "-",

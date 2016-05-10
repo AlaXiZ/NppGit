@@ -57,7 +57,7 @@ namespace NppKate.Modules.SnippetFeature
             {
                 if (i.Value.IsShowInMenu)
                 {
-                    _manager.RegisteCommandItem(new CommandItem
+                    _manager.RegisterCommandItem(new CommandItem
                     {
                         Name = i.Value.Name,
                         Hint = i.Value.Name,
@@ -66,7 +66,7 @@ namespace NppKate.Modules.SnippetFeature
                 }
             }
             // -----------------------------------------------------------------
-            _snipManagerId = _manager.RegisteCommandItem(new CommandItem
+            _snipManagerId = _manager.RegisterCommandItem(new CommandItem
             {
                 Name = "Snippet manager",
                 Hint = "Snippet manager",
@@ -84,7 +84,7 @@ namespace NppKate.Modules.SnippetFeature
             });
 
             // -----------------------------------------------------------------
-            _manager.RegisteCommandItem(new CommandItem
+            _manager.RegisterCommandItem(new CommandItem
             {
                 Name = "-",
                 Hint = "-",

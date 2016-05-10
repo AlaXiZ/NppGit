@@ -26,28 +26,18 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace NppKate.Common
 {
-    public class TitleChangedEventArgs: EventArgs
+    public class DockForm
     {
-        private List<string> _items = new List<string>();
-
-        public void AddTitleItem(string titleItem)
-        {
-            _items.Add(titleItem);
-        }
-
-        public List<string> Items { get { return _items; } }
-
-        public string GetTitle(string delimiter = " / ", string beginString = " [", string endString = "]")
-        {
-            if (_items.Count > 0)
-                return beginString + _items.Aggregate((a, b) => a + delimiter + b) + endString;
-            else
-                return "";
-        }
+        public Type Type;
+        public Form Form;
+        public bool UpdateWithChangeContext;
+        public Icon TabIcon;
+        public NppTbMsg uMask;
+        public IntPtr hBitmap;
     }
 }

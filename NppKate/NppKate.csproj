@@ -95,16 +95,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\AssemblyLoader.cs" />
+    <Compile Include="Common\CommandItem.cs" />
     <Compile Include="Common\DockDialog.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Common\DockDialogData.cs" />
+    <Compile Include="Common\DockForm.cs" />
     <Compile Include="Common\IDockableManager.cs" />
     <Compile Include="Common\IDockDialog.cs" />
     <Compile Include="Common\LoggerUtil.cs" />
     <Compile Include="Common\PanelInfo.cs" />
     <Compile Include="Common\ResourceManager.cs" />
-    <Compile Include="Common\TitleChangedEventArgs.cs" />
     <Compile Include="DllExport\DllExportAttribute.cs" />
     <Compile Include="Forms\FormDockable.cs" />
     <Compile Include="Forms\About.cs">

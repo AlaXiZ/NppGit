@@ -596,7 +596,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                 var btnMask = Settings.TortoiseGitProc.ButtonMask;
                 logger.Info("TortoiseGit found");
 
-                var cmdId = _manager.RegisteCommandItem(new CommandItem
+                var cmdId = _manager.RegisterCommandItem(new CommandItem
                 {
                     Name = "TGit Pull",
                     Hint = "Pull",
@@ -606,7 +606,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                 if ((btnMask & (uint)TortoiseGitCommand.Pull) > 0)
                     _icons.Add(cmdId, ExternalResourceName.IDB_PULL);
 
-                cmdId = _manager.RegisteCommandItem(new CommandItem
+                cmdId = _manager.RegisterCommandItem(new CommandItem
                 {
                     Name = "TGit Push",
                     Hint = "Push",
@@ -616,7 +616,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                 if ((btnMask & (uint)TortoiseGitCommand.Push) > 0)
                     _icons.Add(cmdId, ExternalResourceName.IDB_PUSH);
 
-                cmdId = _manager.RegisteCommandItem(new CommandItem
+                cmdId = _manager.RegisterCommandItem(new CommandItem
                 {
                     Name = "TGit Commit",
                     Hint = "Commit",
@@ -626,7 +626,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                 if ((btnMask & (uint)TortoiseGitCommand.Commit) > 0)
                     _icons.Add(cmdId, ExternalResourceName.IDB_COMMIT);
 
-                cmdId = _manager.RegisteCommandItem(new CommandItem
+                cmdId = _manager.RegisterCommandItem(new CommandItem
                 {
                     Name = "TGit Fetch",
                     Hint = "Fetch",
@@ -637,9 +637,9 @@ namespace NppKate.Modules.TortoiseGitFeatures
                     _icons.Add(cmdId, ExternalResourceName.IDB_PULL);
                 
                 /**********************************************************************************/
-            _manager.RegisteCommandItem(new CommandItem { Name = "-", Hint = "-", Action = null });
+            _manager.RegisterCommandItem(new CommandItem { Name = "-", Hint = "-", Action = null });
 
-                _manager.RegisteCommandItem(new CommandItem
+                _manager.RegisterCommandItem(new CommandItem
                 {
                     Name = "TGit Diff",
                     Hint = "Diff",
@@ -647,7 +647,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                     Action = TGitDiffUnified
                 });
 
-                _manager.RegisteCommandItem(new CommandItem
+                _manager.RegisterCommandItem(new CommandItem
                 {
                     Name = "TGit Compare",
                     Hint = "Compare",
@@ -656,9 +656,9 @@ namespace NppKate.Modules.TortoiseGitFeatures
                 });
 
                 /**********************************************************************************/
-                _manager.RegisteCommandItem(new CommandItem { Name = "-", Hint = "-", Action = null });
+                _manager.RegisterCommandItem(new CommandItem { Name = "-", Hint = "-", Action = null });
 
-                _manager.RegisteCommandItem(new CommandItem
+                _manager.RegisterCommandItem(new CommandItem
                 {
                     Name = "TGit Log file",
                     Hint = "Log file",
@@ -666,7 +666,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                     Action = TGitLogFile
                 });
 
-                _manager.RegisteCommandItem(new CommandItem
+                _manager.RegisterCommandItem(new CommandItem
                 {
                     Name = "TGit Log path",
                     Hint = "Log path",
@@ -674,7 +674,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                     Action = TGitLogPath
                 });
 
-                cmdId = _manager.RegisteCommandItem(new CommandItem
+                cmdId = _manager.RegisterCommandItem(new CommandItem
                 {
                     Name = "TGit Log repository",
                     Hint = "Log repository",
@@ -684,7 +684,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                 if ((btnMask & (uint)TortoiseGitCommand.Log) > 0)
                     _icons.Add(cmdId, ExternalResourceName.IDB_LOG);
 
-                _manager.RegisteCommandItem(new CommandItem
+                _manager.RegisterCommandItem(new CommandItem
                 {
                     Name = "TGit Show Reflog",
                     Hint = "Show Reflog",
@@ -692,7 +692,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                     Action = TGitRefLog
                 });
 
-                cmdId = _manager.RegisteCommandItem(new CommandItem
+                cmdId = _manager.RegisterCommandItem(new CommandItem
                 {
                     Name = "TGit Blame file",
                     Hint = "Blame file",
@@ -702,7 +702,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                 if ((btnMask & (uint)TortoiseGitCommand.Blame) > 0)
                     _icons.Add(cmdId, ExternalResourceName.IDB_BLAME);
 
-                _manager.RegisteCommandItem(new CommandItem
+                _manager.RegisterCommandItem(new CommandItem
                 {
                     Name = "TGit Blame line",
                     Hint = "Blame line",
@@ -710,7 +710,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                     Action = TGitBlameCurrentLine
                 });
                                 
-                cmdId = _manager.RegisteCommandItem(new CommandItem
+                cmdId = _manager.RegisterCommandItem(new CommandItem
                 {
                     Name = "TGit Check for modifications",
                     Hint = "Check for modifications",
@@ -720,7 +720,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                 if ((btnMask & (uint)TortoiseGitCommand.RepoStatus) > 0)
                     _icons.Add(cmdId, ExternalResourceName.IDB_REPO_BROWSER);
 
-                _manager.RegisteCommandItem(new CommandItem
+                _manager.RegisterCommandItem(new CommandItem
                 {
                     Name = "TGit Rebase...",
                     Hint = "Rebase...",
@@ -728,7 +728,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                     Action = TGitRebase
                 });
 
-                _manager.RegisteCommandItem(new CommandItem
+                _manager.RegisterCommandItem(new CommandItem
                 {
                     Name = "TGit Repo-browser",
                     Hint = "Repo-browser",
@@ -736,7 +736,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                     Action = TGitRepoBrowser
                 });
 
-                _manager.RegisteCommandItem(new CommandItem
+                _manager.RegisterCommandItem(new CommandItem
                 {
                     Name = "TGit Reference browser",
                     Hint = "Reference browser",
@@ -744,7 +744,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                     Action = TGitRefBrowse
                 });
 
-                _manager.RegisteCommandItem(new CommandItem
+                _manager.RegisterCommandItem(new CommandItem
                 {
                     Name = "TGit Revision graph",
                     Hint = "Revision graph",
@@ -752,7 +752,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                     Action = TGitRevisionGraph
                 });
 
-                _manager.RegisteCommandItem(new CommandItem
+                _manager.RegisterCommandItem(new CommandItem
                 {
                     Name = "TGit Daemon",
                     Hint = "Daemon",
@@ -760,7 +760,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                     Action = TGitDaemon
                 });
 
-                cmdId = _manager.RegisteCommandItem(new CommandItem
+                cmdId = _manager.RegisterCommandItem(new CommandItem
                 {
                     Name = "TGit Stash save",
                     Hint = "Stash save",
@@ -770,7 +770,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                 if ((btnMask & (uint)TortoiseGitCommand.StashSave) > 0)
                     _icons.Add(cmdId, ExternalResourceName.IDB_STASH_SAVE);
 
-                cmdId = _manager.RegisteCommandItem(new CommandItem
+                cmdId = _manager.RegisterCommandItem(new CommandItem
                 {
                     Name = "TGit Stash pop",
                     Hint = "Stash pop",
@@ -780,7 +780,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                 if ((btnMask & (uint)TortoiseGitCommand.StashPop) > 0)
                     _icons.Add(cmdId, ExternalResourceName.IDB_STASH_POP);
 
-                _manager.RegisteCommandItem(new CommandItem
+                _manager.RegisterCommandItem(new CommandItem
                 {
                     Name = "TGit Stash apply",
                     Hint = "Stash apply",
@@ -788,7 +788,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                     Action = TGitStashApply
                 });
 
-                _manager.RegisteCommandItem(new CommandItem
+                _manager.RegisterCommandItem(new CommandItem
                 {
                     Name = "TGit Stash list",
                     Hint = "Stash list",
@@ -797,9 +797,9 @@ namespace NppKate.Modules.TortoiseGitFeatures
                 });
 
                 /**********************************************************************************/
-                _manager.RegisteCommandItem(new CommandItem { Name = "-", Hint = "-", Action = null });
+                _manager.RegisterCommandItem(new CommandItem { Name = "-", Hint = "-", Action = null });
 
-                _manager.RegisteCommandItem(new CommandItem
+                _manager.RegisterCommandItem(new CommandItem
                 {
                     Name = "TGit Conflict editor",
                     Hint = "Conflict editor",
@@ -807,7 +807,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                     Action = TGitConflictEditor
                 });
 
-                _manager.RegisteCommandItem(new CommandItem
+                _manager.RegisterCommandItem(new CommandItem
                 {
                     Name = "TGit Resolve",
                     Hint = "Resolve",
@@ -815,7 +815,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                     Action = TGitResolve
                 });
 
-                _manager.RegisteCommandItem(new CommandItem
+                _manager.RegisterCommandItem(new CommandItem
                 {
                     Name = "TGit Add file",
                     Hint = "Add file",
@@ -823,7 +823,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                     Action = TGitAddFile
                 });
 
-                _manager.RegisteCommandItem(new CommandItem
+                _manager.RegisterCommandItem(new CommandItem
                 {
                     Name = "TGit Ignore",
                     Hint = "Ignore",
@@ -831,7 +831,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                     Action = TGitIgnore
                 });
 
-                _manager.RegisteCommandItem(new CommandItem
+                _manager.RegisterCommandItem(new CommandItem
                 {
                     Name = "TGit Rename",
                     Hint = "Rename",
@@ -839,7 +839,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                     Action = TGitRename
                 });
 
-                _manager.RegisteCommandItem(new CommandItem
+                _manager.RegisterCommandItem(new CommandItem
                 {
                     Name = "TGit Remove",
                     Hint = "Remove",
@@ -847,7 +847,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                     Action = TGitRemove
                 });
 
-                _manager.RegisteCommandItem(new CommandItem
+                _manager.RegisterCommandItem(new CommandItem
                 {
                     Name = "TGit Revert file",
                     Hint = "Revert file",
@@ -855,7 +855,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                     Action = TGitRevertFile
                 });
 
-                _manager.RegisteCommandItem(new CommandItem
+                _manager.RegisterCommandItem(new CommandItem
                 {
                     Name = "TGit Clean up...",
                     Hint = "Clean up",
@@ -864,9 +864,9 @@ namespace NppKate.Modules.TortoiseGitFeatures
                 });
 
                 /**********************************************************************************/
-                _manager.RegisteCommandItem(new CommandItem { Name = "-", Hint = "-", Action = null });
+                _manager.RegisterCommandItem(new CommandItem { Name = "-", Hint = "-", Action = null });
 
-                cmdId = _manager.RegisteCommandItem(new CommandItem
+                cmdId = _manager.RegisterCommandItem(new CommandItem
                 {
                     Name = "TGit Switch",
                     Hint = "Switch",
@@ -876,7 +876,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                 if ((btnMask & (uint)TortoiseGitCommand.Switch) > 0)
                     _icons.Add(cmdId, ExternalResourceName.IDB_SWITCH);
 
-                _manager.RegisteCommandItem(new CommandItem
+                _manager.RegisterCommandItem(new CommandItem
                 {
                     Name = "TGit Merge",
                     Hint = "Merge",
@@ -884,7 +884,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                     Action = TGitMerge
                 });
 
-                _manager.RegisteCommandItem(new CommandItem
+                _manager.RegisterCommandItem(new CommandItem
                 {
                     Name = "TGit Tag",
                     Hint = "Tag",
@@ -892,7 +892,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                     Action = TGitTag
                 });
 
-                _manager.RegisteCommandItem(new CommandItem
+                _manager.RegisterCommandItem(new CommandItem
                 {
                     Name = "TGit Export",
                     Hint = "Export",
@@ -901,9 +901,9 @@ namespace NppKate.Modules.TortoiseGitFeatures
                 });
 
                 /**********************************************************************************/
-                _manager.RegisteCommandItem(new CommandItem { Name = "-", Hint = "-", Action = null });
+                _manager.RegisterCommandItem(new CommandItem { Name = "-", Hint = "-", Action = null });
                 /*
-                _manager.RegisteCommandItem(new CommandItem
+                _manager.RegisterCommandItem(new CommandItem
                 {
                     Name = "TGit Signing Key fingerprint",
                     Hint = "Signing Key fingerprint",
@@ -912,7 +912,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                 });
                 */
 
-                _manager.RegisteCommandItem(new CommandItem
+                _manager.RegisterCommandItem(new CommandItem
                 {
                     Name = "TGit Clone",
                     Hint = "Clone",
@@ -920,7 +920,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                     Action = TGitClone
                 });
 
-                _manager.RegisteCommandItem(new CommandItem
+                _manager.RegisterCommandItem(new CommandItem
                 {
                     Name = "TGit Create repository",
                     Hint = "Create repository",
@@ -928,9 +928,9 @@ namespace NppKate.Modules.TortoiseGitFeatures
                     Action = TGitRepoCreate
                 });
                 /**********************************************************************************/
-                _manager.RegisteCommandItem(new CommandItem { Name = "-", Hint = "-", Action = null });
+                _manager.RegisterCommandItem(new CommandItem { Name = "-", Hint = "-", Action = null });
 
-                cmdId = _manager.RegisteCommandItem(new CommandItem
+                cmdId = _manager.RegisterCommandItem(new CommandItem
                 {
                     Name = "TGit Create patch",
                     Hint = "Create patch",
@@ -938,7 +938,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                     Action = TGitCreatePatchSerial
                 });
 
-                cmdId = _manager.RegisteCommandItem(new CommandItem
+                cmdId = _manager.RegisterCommandItem(new CommandItem
                 {
                     Name = "TGit Apply patch",
                     Hint = "Apply patch",
@@ -946,12 +946,12 @@ namespace NppKate.Modules.TortoiseGitFeatures
                     Action = TGitApplyPatchSerial
                 });
 
-                _manager.RegisteCommandItem(new CommandItem { Name = "-", Hint = "-", Action = null });
+                _manager.RegisterCommandItem(new CommandItem { Name = "-", Hint = "-", Action = null });
             }
             else
             {
                 logger.Info("TortoiseGit not found");
-                _manager.RegisteCommandItem(new CommandItem
+                _manager.RegisterCommandItem(new CommandItem
                 {
                     Name = "TortoiseGit not found",
                     Hint = "-",

@@ -52,14 +52,14 @@ namespace NppKate.Modules.IdeFeatures
         public void Init(IModuleManager manager)
         {
             _manager = manager;
-            _manager.RegisteCommandItem(new CommandItem
+            _manager.RegisterCommandItem(new CommandItem
             {
                 Name = "Swap",
                 Hint = "Swap",
                 Action = DoSwap
             });
 
-            _manager.RegisteCommandItem(new CommandItem
+            _manager.RegisterCommandItem(new CommandItem
             {
                 Name = "Align columns",
                 Hint = "Align columns",
@@ -67,7 +67,7 @@ namespace NppKate.Modules.IdeFeatures
             });
 
             // -----------------------------------------------------------------
-            _manager.RegisteCommandItem(new CommandItem
+            _manager.RegisterCommandItem(new CommandItem
             {
                 Name = "-",
                 Hint = "-",

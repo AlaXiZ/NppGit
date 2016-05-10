@@ -1,4 +1,4 @@
-/*
+﻿/*
 Copyright (c) 2015-2016, Schadin Alexey (schadin@gmail.com)
 All rights reserved.
 
@@ -26,24 +26,45 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 using System;
-using System.Drawing;
 
 namespace NppKate.Common
 {
-    public interface IModuleManager
+    public class CommandItem
     {
-        event Action OnToolbarRegisterEvent;
-        event Action OnSystemInit;
-        event EventHandler<TabEventArgs> OnTabChangeEvent;
-        event EventHandler<CommandItemClickEventArgs> OnCommandItemClick;
+        public string Name
+        {
+            get;
+            set;
+        }
 
-        int RegisterCommandItem(CommandItem menuItem);
-        void RegisterDockForm(Type formClass, int cmdId, bool updateWithChangeContext, NppTbMsg uMask = NppTbMsg.DWS_PARAMSALL | NppTbMsg.DWS_DF_CONT_RIGHT, IntPtr? hBitmap = null);
-        void RegisterDockForm(int indexId, DockDialogData dlgData);
-        void AddToolbarButton(int cmdId, string iconName);
-        bool ToogleFormState(int cmdId);
-        void SetCheckedMenu(int cmdId, bool isChecked);
+        public string Hint
+        {
+            get;
+            set;
+        }
 
-        ResourceManager ResourceManager { get; }
+        public ShortcutKey? ShortcutKey
+        {
+            get;
+            set;
+        }
+
+        public Action Action
+        {
+            get;
+            set;
+        }
+
+        public bool Checked
+        {
+            get;
+            set;
+        }
+
+        public bool Selected
+        {
+            get;
+            set;
+        }
     }
 }
