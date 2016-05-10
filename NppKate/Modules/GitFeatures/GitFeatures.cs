@@ -30,7 +30,6 @@ using NLog;
 using NppKate.Forms;
 using NppKate.Common;
 using System;
-using System.Text;
 using NppKate.Npp;
 
 namespace NppKate.Modules
@@ -46,11 +45,6 @@ namespace NppKate.Modules
             get { return Settings.Modules.Git; }
         }
 
-        private void DoTitleUpdate()
-        {
-            _manager.ManualTitleUpdate();
-        }
-
         private void DoShowStatus()
         {
             Settings.Panels.FileStatusPanelVisible = _manager.ToogleFormState(_statusPanelCmdID);
@@ -63,7 +57,6 @@ namespace NppKate.Modules
         public void Init(IModuleManager manager)
         {
             _manager = manager;
-            _manager.OnTitleChangedEvent += OnTitleChangedEvent;
             _manager.OnSystemInit += ManagerOnSystemInit;
 
             _manager.RegisteCommandItem(new CommandItem
@@ -94,47 +87,6 @@ namespace NppKate.Modules
                 Hint = "-",
                 Action = null
             });
-        }
-
-        private void OnTitleChangedEvent(object sender, TitleChangedEventArgs e)
-        {
-            if (Settings.Functions.ShowBranch || Settings.Functions.ShowRepoName || Settings.Functions.ShowStatusFile)
-            {
-                bool isShowBranch = Settings.Functions.ShowBranch,
-                     isShowRepo = Settings.Functions.ShowRepoName,
-                     isShowStatus = Settings.Functions.ShowStatusFile;
-
-                var repoDir = NppUtils.GetRootDir(NppUtils.CurrentFileDir);
-                if (!string.IsNullOrEmpty(repoDir) && Repository.IsValid(repoDir))
-                {
-                    using (var repo = new Repository(repoDir))
-                    {
-                        var status = repo.RetrieveStatus(NppUtils.CurrentFilePath);
-                        if (status != FileStatus.Ignored)
-                        {
-                            var title = new StringBuilder();
-                            if (isShowRepo)
-                            {                                
-                                string remote = GitCore.GitCore.GetRepoName(repoDir);
-                                title.Append(remote);
-                            }
-                            if (isShowBranch)
-                            {
-                                if (title.Length > 0)
-                                    title.Append(":");
-                                title.Append(repo.Head.Name);
-                            }
-                            if (isShowStatus)
-                            {
-                                if (title.Length > 0)
-                                    title.Append(":");
-                                title.Append(repo.RetrieveStatus(NppUtils.CurrentFilePath).ToString());
-                            }
-                            e.AddTitleItem("File in repo: " + title.ToString());
-                        }
-                    }
-                }
-            }
         }
 
         private void ManagerOnSystemInit()
@@ -174,7 +126,7 @@ namespace NppKate.Modules
                             var blob = (Blob)commit[fileInRepo].Target;
                             var fileName = commit.Sha.Substring(1, Settings.Functions.SHACount) + "_" + NppUtils.CurrentFileName;
                             var contentStream = blob.GetContentStream();
-                            var outFile = Common.GitHelper.SaveStreamToFile(contentStream, fileName);
+                            var outFile = GitHelper.SaveStreamToFile(contentStream, fileName);
                             if (outFile != null)
                             {
                                 var curFile = NppUtils.CurrentFilePath;

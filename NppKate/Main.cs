@@ -127,7 +127,6 @@ namespace NppKate
         {
             var dlg = new Forms.About();
             dlg.ShowDialog();
-            mm.ManualTitleUpdate();
         }
         #endregion
     }

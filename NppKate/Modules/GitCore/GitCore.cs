@@ -65,7 +65,6 @@ namespace NppKate.Modules.GitCore
 
             manager.OnTabChangeEvent += ManagerOnTabChangeEvent;
             manager.OnSystemInit += ManagerOnSystemInit;
-            manager.OnTitleChangedEvent += ManagerOnTitleChangedEvent;
             manager.OnToolbarRegisterEvent += ManagerOnToolbarRegisterEvent;
 
             _browserCmdId = manager.RegisteCommandItem(new CommandItem
@@ -96,14 +95,6 @@ namespace NppKate.Modules.GitCore
         private void ManagerOnToolbarRegisterEvent()
         {
             _manager.AddToolbarButton(_browserCmdId, Resources.ExternalResourceName.IDB_REPOSITORIES);
-        }
-
-        private void ManagerOnTitleChangedEvent(object sender, TitleChangedEventArgs e)
-        {
-            if (_currRepo != null && Settings.GitCore.ActiveRepoInTitle)
-            {
-                e.AddTitleItem("Active repo: " + _currentRepo.Name + ":" + _currRepo.Head.Name);
-            }
         }
 
         private void ManagerOnSystemInit()
@@ -267,7 +258,6 @@ namespace NppKate.Modules.GitCore
             if (OnActiveRepositoryChanged != null)
             {
                 OnActiveRepositoryChanged();
-                _manager.ManualTitleUpdate();
             }
         }
 

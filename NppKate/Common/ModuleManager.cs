@@ -80,11 +80,9 @@ namespace NppKate.Common
         private LocalWindowsHook winHookProc;
 
         public event Action OnToolbarRegisterEvent;
-        public event Action OnTitleChangingEvent;
         public event Action OnSystemInit;
         public event EventHandler<TabEventArgs> OnTabChangeEvent;
         public event EventHandler<CommandItemClickEventArgs> OnCommandItemClick;
-        public event EventHandler<TitleChangedEventArgs> OnTitleChangedEvent;
 
         public ModuleManager()
         {
@@ -206,11 +204,6 @@ namespace NppKate.Common
                 return;
 
             CWPRETSTRUCT msg = (CWPRETSTRUCT)Marshal.PtrToStructure(e.lParam, typeof(CWPRETSTRUCT));
-            if (msg.message == (uint)WinMsg.WM_SETTEXT && (uint)msg.wParam != (uint)WinMsg.WM_SETTEXT && msg.hwnd == NppInfo.Instance.NppHandle)
-            {
-                DoTitleChangedEvent();
-                //DoTitleChangingEvent();
-            }
             if (msg.message == (uint)WinMsg.WM_COMMAND)
             {
                 // Shortcut
@@ -247,62 +240,6 @@ namespace NppKate.Common
             }
         }
 
-        private void DoTitleChangingEvent()
-        {
-            if (!_canEvent) return;
-
-            OnTitleChangingEvent?.Invoke();
-        }
-
-        private string _ending = null;
-        //static private CancellationTokenSource source = null;
-        //static private CancellationToken token;
-        static private Task titleTask;
-
-        private void DoTitleChangedEvent()
-        {
-            if (!_canEvent) return;
-            if (OnTitleChangedEvent != null)
-            {
-                /*
-                if (source == null)
-                {
-                    source = new CancellationTokenSource();
-                    token = source.Token;
-                }
-
-                if (titleTask?.Status == TaskStatus.Running)
-                {
-                    source.Cancel();
-                }
-                */
-                titleTask = new Task(() =>
-                {
-                    var title = NppUtils.WindowTitle;
-                    if (string.IsNullOrEmpty(title))
-                        return;
-                    var args = new TitleChangedEventArgs();
-                    if (!_canEvent) return;
-                    OnTitleChangedEvent(this, args);
-                    //
-                    // Заголовок может заканчиваться на Notepad++ или на [Administrator]
-                    // но всегда есть разделительный дефис между имененем файла и Notepad++
-                    if (string.IsNullOrEmpty(_ending))
-                    {
-                        // Ищем последний дефис
-                        var pos = title.LastIndexOf(" - ") + 3;
-                        // Получаем окончание для заголовка
-                        _ending = title.Substring(pos, title.Length - pos);
-                    }
-                    // Вдруг на пришел заголовок с нашими дописками,
-                    // сначала их порежем
-                    title = title.Substring(0, title.LastIndexOf(_ending) + _ending.Length) + args.GetTitle();
-                    NppUtils.WindowTitle = title;
-                });
-                titleTask.Start();
-                titleTask.Wait();
-            }
-        }
 
         public void ToolBarInit()
         {
@@ -449,17 +386,6 @@ namespace NppKate.Common
             return Win32.IsWindowVisible(hwnd);
         }
 
-        [Obsolete("Method AddToolbarButton(int cmdId, Bitmap icon) is deprecated, use method public void AddToolbarButton(int cmdId, string iconName)", true)]
-        public void AddToolbarButton(int cmdId, Bitmap icon)
-        {
-            toolbarIcons tbIcons = new toolbarIcons();
-            tbIcons.hToolbarBmp = icon.GetHbitmap();
-            IntPtr pTbIcons = Marshal.AllocHGlobal(Marshal.SizeOf(tbIcons));
-            Marshal.StructureToPtr(tbIcons, pTbIcons, false);
-            Win32.SendMessage(NppInfo.Instance.NppHandle, NppMsg.NPPM_ADDTOOLBARICON, NppInfo.Instance.SearchCmdIdByIndex(cmdId), pTbIcons);
-            Marshal.FreeHGlobal(pTbIcons);
-        }
-
         public void AddToolbarButton(int cmdId, string iconName)
         {
             toolbarIcons tbIcons = new toolbarIcons();
@@ -474,6 +400,11 @@ namespace NppKate.Common
         {
             logger.Debug("Menu cmdId={0}, state={1}", cmdId, isChecked);
             Win32.SendMessage(NppInfo.Instance.NppHandle, NppMsg.NPPM_SETMENUITEMCHECK, NppInfo.Instance.SearchCmdIdByIndex(cmdId), isChecked ? 1 : 0);
+        }
+
+        public void RegisterDockForm(int indexId, DockDialogData dlgData)
+        {
+            _dockDialog.Add(indexId, dlgData);
         }
 
         #region "Context menu"
@@ -542,16 +473,6 @@ namespace NppKate.Common
                 */
                 NppUtils.SetLang(LangType.L_XML);
             }
-        }
-
-        public void ManualTitleUpdate()
-        {
-            DoTitleChangedEvent();
-        }
-
-        public void RegisterDockForm(int indexId, DockDialogData dlgData)
-        {
-            _dockDialog.Add(indexId, dlgData);
         }
         #endregion
 
