@@ -176,9 +176,6 @@
     </Compile>
     <Compile Include="Modules\GitCore\RepositoryLink.cs" />
     <Compile Include="Modules\GitFeatures\GitFeatures.cs" />
-    <Compile Include="Modules\PSSEFeatures\POSHExecutor.cs" />
-    <Compile Include="Modules\PSSEFeatures\POSHFeatures.cs" />
-    <Compile Include="Modules\PSSEFeatures\POSHObject.cs" />
     <Compile Include="Modules\SnippetFeature\Snippets.cs" />
     <Compile Include="Modules\IdeFeatures\SqlIde.cs" />
     <Compile Include="Modules\GitCore\IGitCore.cs" />
