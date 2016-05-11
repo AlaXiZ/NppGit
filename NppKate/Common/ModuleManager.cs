@@ -34,6 +34,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using NppKate.AppSettings;
 
 namespace NppKate.Common
 {
@@ -56,6 +57,9 @@ namespace NppKate.Common
         public event Action OnSystemInit;
         public event EventHandler<TabEventArgs> OnTabChangeEvent;
         public event EventHandler<CommandItemClickEventArgs> OnCommandItemClick;
+        public event EventHandler<SettingsInitEventArgs> OnSettingsEvent;
+        public event Action OnSettingsFinishEvent;
+
         public ModuleManager()
         {
             _modules = new LinkedList<IModule>();

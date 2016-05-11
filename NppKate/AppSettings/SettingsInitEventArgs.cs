@@ -1,4 +1,4 @@
-/*
+﻿/*
 Copyright (c) 2015-2016, Schadin Alexey (schadin@gmail.com)
 All rights reserved.
 
@@ -26,27 +26,27 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 using System;
-using System.Drawing;
-using NppKate.AppSettings;
+using System.Collections.Generic;
 
-namespace NppKate.Common
+namespace NppKate.AppSettings
 {
-    public interface IModuleManager
+    public class SettingsInitEventArgs : EventArgs
     {
-        event Action OnToolbarRegisterEvent;
-        event Action OnSystemInit;
-        event EventHandler<TabEventArgs> OnTabChangeEvent;
-        event EventHandler<CommandItemClickEventArgs> OnCommandItemClick;
-        event EventHandler<SettingsInitEventArgs> OnSettingsEvent;
-        event Action OnSettingsFinishEvent;
+        private List<IAppSettings> _settings;
 
-        int RegisterCommandItem(CommandItem menuItem);
-        void RegisterDockForm(Type formClass, int cmdId, bool updateWithChangeContext, NppTbMsg uMask = NppTbMsg.DWS_PARAMSALL | NppTbMsg.DWS_DF_CONT_RIGHT, IntPtr? hBitmap = null);
-        void RegisterDockForm(int indexId, DockDialogData dlgData);
-        void AddToolbarButton(int cmdId, string iconName);
-        bool ToogleFormState(int cmdId);
-        void SetCheckedMenu(int cmdId, bool isChecked);
+        public void AddSetting(IAppSettings settings)
+        {
+            _settings.Add(settings);
+        }
 
-        ResourceManager ResourceManager { get; }
+        public IAppSettings[] AppSettings()
+        {
+            return _settings.ToArray();
+        }
+
+        public SettingsInitEventArgs()
+        {
+            _settings = new List<IAppSettings>(5);
+        }
     }
 }
