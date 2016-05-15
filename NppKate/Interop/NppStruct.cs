@@ -1341,10 +1341,17 @@ namespace NppKate
         //nmhdr.idFrom = ctrlIdNpp;
 
         DMN_DOCK = (DMN_FIRST + 2),
-        DMN_FLOAT = (DMN_FIRST + 3)
+        DMN_FLOAT = (DMN_FIRST + 3),
         //nmhdr.code = DWORD(DMN_XXX, int newContainer);
         //nmhdr.hwndFrom = hwndNpp;
         //nmhdr.idFrom = ctrlIdNpp;
+        DMN_SWITCHIN  = (DMN_FIRST + 4),
+        DMN_SWITCHOFF = (DMN_FIRST + 5),
+        DMN_FLOATDROPPED = (DMN_FIRST + 6)
+        //nmhdr.code = DWORD(DMN_XXX, 0);
+        //nmhdr.hwndFrom = DockingCont::_hself;
+        //nmhdr.idFrom = 0;
+
     }
 
     [StructLayout(LayoutKind.Sequential)]

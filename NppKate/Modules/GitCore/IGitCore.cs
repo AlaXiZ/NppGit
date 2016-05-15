@@ -34,9 +34,13 @@ namespace NppKate.Modules.GitCore
     public interface IGitCore
     {
         // Event
-        event Action OnActiveRepositoryChanged;
+        event Common.EventHandler<RepositoryChangedEventArgs> OnActiveRepositoryChanged;
+        event Common.EventHandler<RepositoryChangedEventArgs> OnDocumentReposituryChanged;
+        event Common.EventHandler<RepositoryChangedEventArgs> OnRepositoryAdded;
+        event Common.EventHandler<RepositoryChangedEventArgs> OnRepositoryRemoved;
         // Properties
         RepositoryLink ActiveRepository { get; }
+        RepositoryLink DocumentRepository { get; }
         List<RepositoryLink> Repositories { get; }
         string CurrentBranch { get; }
         // Method

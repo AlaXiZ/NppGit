@@ -4,7 +4,7 @@
              AssemblyFile="NppPlugin.DllExport.MSBuild.dll"/>
   <Target Name="DllExportTask"
           DependsOnTargets="GetFrameworkPaths"
-          AfterTargets="Build"	  
+          AfterTargets="Build"
           >
     <DllExportTask Platform="$(Platform)"
                    PlatformTarget="$(PlatformTarget)"

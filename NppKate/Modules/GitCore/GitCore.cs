@@ -40,7 +40,7 @@ namespace NppKate.Modules.GitCore
 {
     public class GitCore : IModule, IGitCore
     {
-        private static Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         #region IModule
         private IModuleManager _manager = null;
         private int _browserCmdId;
@@ -48,10 +48,7 @@ namespace NppKate.Modules.GitCore
 
         public void Final()
         {
-            if (_currRepo != null)
-            {
-                _currRepo.Dispose();
-            }
+            _currRepo?.Dispose();
         }
 
         private void DoBrowser()
@@ -107,21 +104,20 @@ namespace NppKate.Modules.GitCore
 
         private void ManagerOnTabChangeEvent(object sender, TabEventArgs e)
         {
-            SwitchByPath(NppUtils.CurrentFilePath);
+            if (SwitchByPath(NppUtils.CurrentFilePath))
+                DoActiveRepository();
+            DoDocumentRepositiry(DocumentRepository?.Name);
         }
 
-        public bool IsNeedRun
-        {
-            get { return true; }
-        }
+        public bool IsNeedRun => true;
         #endregion
 
-        private XDocument _doc;
-        private string _filename;
+        private readonly XDocument _doc;
+        private readonly string _filename;
 
         #region Singletone
         private static GitCore _instance;
-        private static object _objLock = new object();
+        private static readonly object ObjLock = new object();
         public static IGitCore Instance
         {
             get
@@ -137,7 +133,7 @@ namespace NppKate.Modules.GitCore
             {
                 var mth = new StackTrace().GetFrame(1).GetMethod();
                 var type = mth.ReflectedType;
-                if (!type.Equals(typeof(Main)))
+                if (type != typeof(Main))
                 {
                     throw new FieldAccessException("Property Module using only in Plugin class");
                 }
@@ -148,22 +144,23 @@ namespace NppKate.Modules.GitCore
 
         private static void ctor()
         {
-            if (_instance == null)
-                lock (_objLock)
-                    if (_instance == null)
-                        _instance = new GitCore();
+            if (_instance != null) return;
+            lock (ObjLock)
+                if (_instance == null)
+                    _instance = new GitCore();
         }
+
         #endregion
 
         #region GitCore
         private GitCore()
         {
-            string fileName = Path.Combine(NppUtils.ConfigDir, Properties.Resources.PluginName, Properties.Resources.RepositoriesXml);
+            var fileName = Path.Combine(NppUtils.ConfigDir, Properties.Resources.PluginName, Properties.Resources.RepositoriesXml);
             if (File.Exists(fileName))
             {
                 _doc = XDocument.Load(fileName);
                 _repos = (from e in _doc.Descendants("Repository")
-                             select e).ToDictionary(e => e.Attribute("Name").Value, (e) => { return new RepositoryLink(e.Value); });
+                             select e).ToDictionary(e => e.Attribute("Name").Value, (e) => new RepositoryLink(e.Value));
                 if (_repos.ContainsKey(Settings.GitCore.LastActiveRepository))
                 {
                     _currentRepo = _repos[Settings.GitCore.LastActiveRepository];
@@ -188,29 +185,34 @@ namespace NppKate.Modules.GitCore
 
         #region IGitCore
         private RepositoryLink _currentRepo = null;
-        private Dictionary<string, RepositoryLink> _repos = new Dictionary<string, RepositoryLink>();
+        private readonly Dictionary<string, RepositoryLink> _repos = new Dictionary<string, RepositoryLink>();
 
-        public event Action OnActiveRepositoryChanged;
-        
-        public RepositoryLink ActiveRepository
-        {
-            get { return _currentRepo; }
-        }
+        public event Common.EventHandler<RepositoryChangedEventArgs> OnActiveRepositoryChanged;
+        public event Common.EventHandler<RepositoryChangedEventArgs> OnDocumentReposituryChanged;
+        public event Common.EventHandler<RepositoryChangedEventArgs> OnRepositoryAdded;
+        public event Common.EventHandler<RepositoryChangedEventArgs> OnRepositoryRemoved;
 
-        public List<RepositoryLink> Repositories
-        {
-            get { return _repos.Values.ToList(); }
-        }
+        public RepositoryLink ActiveRepository => _currentRepo;
 
-        public string CurrentBranch
+        public List<RepositoryLink> Repositories => _repos.Values.ToList();
+
+        public string CurrentBranch => _currRepo?.Head.Name ?? "";
+
+        public RepositoryLink DocumentRepository
         {
-            get { return _currRepo?.Head.Name ?? ""; }
+            get
+            {
+                var path = GetRootDir(NppUtils.CurrentFileDir);
+                if (path == null) return null;
+                var name = GetRepoName(path);
+                return _repos.ContainsKey(name) ? _repos[name] : null;
+            }
         }
 
         public bool SwitchByPath(string path)
         {
-            string newPath = GetRootDir(path);
-            if (string.IsNullOrWhiteSpace(newPath) || !LibGit2Sharp.Repository.IsValid(newPath))
+            var newPath = GetRootDir(path);
+            if (string.IsNullOrWhiteSpace(newPath) || !Repository.IsValid(newPath))
             {
                 return false;
             }
@@ -234,31 +236,38 @@ namespace NppKate.Modules.GitCore
 
         public bool SwitchByName(string name)
         {
-            if (_repos.ContainsKey(name))
-            {
-                _currentRepo = _repos[name];
-                DoActiveRepository();
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            if (!_repos.ContainsKey(name)) return false;
+            _currentRepo = _repos[name];
+            DoActiveRepository();
+            return true;
         }
 
         private void DoActiveRepository()
         {
-            if (_currRepo != null)
-            {
-                _currRepo.Dispose();
-            }
+            _currRepo?.Dispose();
             _currRepo = new Repository(_currentRepo.Path);
 
             Settings.GitCore.LastActiveRepository = _currentRepo.Name;
-            if (OnActiveRepositoryChanged != null)
-            {
-                OnActiveRepositoryChanged();
-            }
+            var args = new RepositoryChangedEventArgs(_currentRepo.Name);
+            OnActiveRepositoryChanged?.Invoke(this, args);
+        }
+
+        private void DoDocumentRepositiry(string repoName)
+        {
+            var args = new RepositoryChangedEventArgs(repoName);
+            OnDocumentReposituryChanged?.Invoke(this, args);
+        }
+
+        private void DoRepoAdded(string repoName)
+        {
+            var args = new RepositoryChangedEventArgs(repoName);
+            OnRepositoryAdded?.Invoke(this, args);
+        }
+
+        private void DoRepoRemoved(string repoName)
+        {
+            var args = new RepositoryChangedEventArgs(repoName);
+            OnRepositoryRemoved?.Invoke(this, args);
         }
 
         public FileStatus GetFileStatus(string filePath)
@@ -267,21 +276,20 @@ namespace NppKate.Modules.GitCore
             if (repoPath != _currentRepo?.Path)
             {
                 return FileStatus.Nonexistent;
-            } else
-            {
-                return _currRepo?.RetrieveStatus(filePath) ?? FileStatus.Nonexistent;
             }
+            return _currRepo?.RetrieveStatus(filePath) ?? FileStatus.Nonexistent;
         }
 
         #endregion
 
         private void SaveRepo(RepositoryLink repoLink) 
         {
-            _logger.Trace("Save repo Name={0}, Path={1}", repoLink.Name, repoLink.Path);
+            _logger.Trace($"Save repo Name={repoLink.Name}, Path={repoLink.Path}");
             _repos.Add(repoLink.Name, repoLink);
+            DoRepoAdded(repoLink.Name);
             var root = _doc.Root;
             var element = new XElement("Repository", repoLink.Path, new XAttribute("Name", repoLink.Name));
-            root.Add(element);
+            root?.Add(element);
             try
             {
                 _doc.Save(_filename);
@@ -294,38 +302,33 @@ namespace NppKate.Modules.GitCore
 
         public static bool IsValidGitRepo(string path)
         {
-            _logger.Trace("IsValidGitRepo path={0}", path);
+            _logger.Trace($"IsValidGitRepo path={path}");
             var repoDir = GetRootDir(path);
             return !string.IsNullOrEmpty(repoDir) && Repository.IsValid(repoDir);
         }
 
         public static string GetRootDir(string path)
         {
-            _logger.Trace("GetRootDir path={0}", path);
+            _logger.Trace($"GetRootDir path={path}");
             var search = Path.Combine(path, ".git");
             if (Directory.Exists(search) || File.Exists(search))
             {
                 return path;
             }
-            else
+            if (!string.IsNullOrEmpty(path) && Directory.GetParent(path) != null && Path.IsPathRooted(path))
             {
-                if (!string.IsNullOrEmpty(path) && Directory.GetParent(path) != null && Path.IsPathRooted(path))
-                {
-                    return GetRootDir(Directory.GetParent(path).FullName);
-                }
-                else {
-                    return null;
-                }
+                return GetRootDir(Directory.GetParent(path).FullName);
             }
+            return null;
         }
 
         public static string GetRepoName(string repoDir)
         {
-            _logger.Trace("GetRepoName path={0}", repoDir);
-            string remote = "";
+            _logger.Trace($"GetRepoName path={repoDir}");
+            var remote = "";
             using (var repo = new Repository(repoDir))
             {
-                if (repo.Network.Remotes.Count() > 0)
+                if (repo.Network.Remotes.Any())
                 {
                     var remoteUrl = repo.Network.Remotes.First().Url;
                     if (!string.IsNullOrEmpty(remoteUrl))
@@ -337,7 +340,7 @@ namespace NppKate.Modules.GitCore
                 {
                     remote = new DirectoryInfo(repoDir).Name;
                 }
-                _logger.Trace("return {0}", remote);
+                _logger.Trace($"return {remote}");
                 return remote;
             }
         }

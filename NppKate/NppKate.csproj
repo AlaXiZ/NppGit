@@ -3,7 +3,7 @@
   <Import Project="..\packages\LibGit2Sharp.NativeBinaries.1.0.137\build\LibGit2Sharp.NativeBinaries.props" Condition="Exists('..\packages\LibGit2Sharp.NativeBinaries.1.0.137\build\LibGit2Sharp.NativeBinaries.props')" />
   <Import Project="..\packages\LibGit2Sharp.0.21.0.176\build\net40\LibGit2Sharp.props" Condition="Exists('..\packages\LibGit2Sharp.0.21.0.176\build\net40\LibGit2Sharp.props')" />
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <DevEnvDir Condition=" '$(DevEnvDir)' == '' ">C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\</DevEnvDir>
     <SchemaVersion>2.0</SchemaVersion>
@@ -74,6 +74,10 @@
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DiffPlex, Version=1.2.0.0, Culture=neutral, PublicKeyToken=1d35e91d1bd7bc0f, processorArchitecture=MSIL">
+      <HintPath>..\packages\DiffPlex.1.2.1\lib\portable-net40+sl50+win+wpa81+wp80\DiffPlex.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="LibGit2Sharp, Version=0.21.0.176, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\LibGit2Sharp.0.21.0.176\lib\net40\LibGit2Sharp.dll</HintPath>
       <Private>True</Private>
@@ -142,6 +146,7 @@
     <Compile Include="Forms\SettingsDialog.Designer.cs">
       <DependentUpon>SettingsDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Modules\GitCore\RepositoryChangedEventArgs.cs" />
     <Compile Include="Modules\SnippetFeature\SnippetEdit.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -278,12 +283,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Git.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\snippets.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\repositories.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\repositories.bmp" />

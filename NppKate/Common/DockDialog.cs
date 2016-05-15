@@ -27,6 +27,7 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using NLog;
 using NppKate.Interop;
 using NppKate.Npp;
 
@@ -34,8 +35,20 @@ namespace NppKate.Common
 {
     public class DockDialog : Form, IDockDialog
     {
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
+
         protected IDockableManager _manager;
         protected int _cmdId;
+
+        protected virtual void OnSwitchIn()
+        {
+            // Do nothing
+        }
+
+        protected virtual void OnSwitchOut()
+        {
+            // Do nothing
+        }
 
         public void init(IDockableManager manager, int commandId)
         {
@@ -48,10 +61,18 @@ namespace NppKate.Common
             if (m.Msg == (int)WinMsg.WM_NOTIFY)
             {
                 tagNMHDR ntf = (tagNMHDR)Marshal.PtrToStructure(m.LParam, typeof(tagNMHDR));
-                if (ntf.code == (uint)DockMgrMsg.DMN_CLOSE)
-                {
-                    Win32.SendMessage(NppInfo.Instance.NppHandle, (int)WinMsg.WM_COMMAND, _cmdId, 0);
-                    return;
+                //_logger.Trace("DockForm message {0}", (DockMgrMsg)ntf.code);
+                switch (ntf.code) {
+                    case (uint)DockMgrMsg.DMN_CLOSE:
+                        OnSwitchOut();
+                        Win32.SendMessage(NppInfo.Instance.NppHandle, (int)WinMsg.WM_COMMAND, _cmdId, 0);
+                        return;
+                    case (uint)DockMgrMsg.DMN_SWITCHIN:
+                        OnSwitchIn();
+                        return;
+                    case (uint)DockMgrMsg.DMN_SWITCHOFF:
+                        OnSwitchOut();
+                        return;
                 }
             }
             base.WndProc(ref m);

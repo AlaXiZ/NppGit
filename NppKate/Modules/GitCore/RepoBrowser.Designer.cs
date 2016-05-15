@@ -28,18 +28,33 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RepoBrowser));
             this.tvRepositories = new System.Windows.Forms.TreeView();
+            this.ilImages = new System.Windows.Forms.ImageList(this.components);
             this.SuspendLayout();
             // 
             // tvRepositories
             // 
             this.tvRepositories.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tvRepositories.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tvRepositories.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tvRepositories.ImageIndex = 0;
+            this.tvRepositories.ImageList = this.ilImages;
             this.tvRepositories.Location = new System.Drawing.Point(0, 0);
             this.tvRepositories.Name = "tvRepositories";
+            this.tvRepositories.SelectedImageIndex = 0;
             this.tvRepositories.Size = new System.Drawing.Size(284, 353);
             this.tvRepositories.TabIndex = 0;
+            this.tvRepositories.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.tvRepositories_BeforeExpand);
             this.tvRepositories.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.tvRepositories_NodeMouseDoubleClick);
+            // 
+            // ilImages
+            // 
+            this.ilImages.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ilImages.ImageStream")));
+            this.ilImages.TransparentColor = System.Drawing.Color.Transparent;
+            this.ilImages.Images.SetKeyName(0, "REPO");
+            this.ilImages.Images.SetKeyName(1, "BRANCH");
+            this.ilImages.Images.SetKeyName(2, "EMPTY");
             // 
             // RepoBrowser
             // 
@@ -56,5 +71,6 @@
         #endregion
 
         private System.Windows.Forms.TreeView tvRepositories;
+        private System.Windows.Forms.ImageList ilImages;
     }
 }
