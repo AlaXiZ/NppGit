@@ -45,7 +45,6 @@
             this.tvRepositories.SelectedImageIndex = 0;
             this.tvRepositories.Size = new System.Drawing.Size(284, 353);
             this.tvRepositories.TabIndex = 0;
-            this.tvRepositories.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.tvRepositories_BeforeExpand);
             this.tvRepositories.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.tvRepositories_NodeMouseDoubleClick);
             // 
             // ilImages
@@ -55,6 +54,9 @@
             this.ilImages.Images.SetKeyName(0, "REPO");
             this.ilImages.Images.SetKeyName(1, "BRANCH");
             this.ilImages.Images.SetKeyName(2, "EMPTY");
+            this.ilImages.Images.SetKeyName(3, "REMOTE_BRANCH");
+            this.ilImages.Images.SetKeyName(4, "BRANCH_FOLDER");
+            this.ilImages.Images.SetKeyName(5, "CURRENT_BRANCH");
             // 
             // RepoBrowser
             // 

@@ -76,7 +76,6 @@ namespace NppKate.Forms
             this.lSHACount = new System.Windows.Forms.Label();
             this.chbFileInOtherView = new System.Windows.Forms.CheckBox();
             this.mtxbSHACount = new System.Windows.Forms.MaskedTextBox();
-            this.tpGitCore = new System.Windows.Forms.TabPage();
             this.pBottom = new System.Windows.Forms.Panel();
             this.chbRestartNpp = new System.Windows.Forms.CheckBox();
             this.pMain = new System.Windows.Forms.Panel();
@@ -150,7 +149,6 @@ namespace NppKate.Forms
             this.tbSettings.Controls.Add(this.tpCommon);
             this.tbSettings.Controls.Add(this.tpTortoise);
             this.tbSettings.Controls.Add(this.tpGitFeatures);
-            this.tbSettings.Controls.Add(this.tpGitCore);
             this.tbSettings.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tbSettings.Location = new System.Drawing.Point(0, 0);
             this.tbSettings.Name = "tbSettings";
@@ -203,9 +201,9 @@ namespace NppKate.Forms
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(3, 32);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(127, 13);
+            this.label2.Size = new System.Drawing.Size(122, 13);
             this.label2.TabIndex = 7;
-            this.label2.Text = "Уровень логгирования:";
+            this.label2.Text = "Уровень логирования:";
             // 
             // cbLogLevel
             // 
@@ -276,7 +274,7 @@ namespace NppKate.Forms
             this.tpGitFeatures.Padding = new System.Windows.Forms.Padding(3);
             this.tpGitFeatures.Size = new System.Drawing.Size(400, 170);
             this.tpGitFeatures.TabIndex = 2;
-            this.tpGitFeatures.Text = "GitFeatures";
+            this.tpGitFeatures.Text = "Git";
             this.tpGitFeatures.UseVisualStyleBackColor = true;
             // 
             // gbFileInBranch
@@ -318,16 +316,6 @@ namespace NppKate.Forms
             this.mtxbSHACount.Size = new System.Drawing.Size(29, 20);
             this.mtxbSHACount.TabIndex = 3;
             this.mtxbSHACount.Leave += new System.EventHandler(this.mtxbSHACount_Leave);
-            // 
-            // tpGitCore
-            // 
-            this.tpGitCore.Location = new System.Drawing.Point(4, 22);
-            this.tpGitCore.Name = "tpGitCore";
-            this.tpGitCore.Padding = new System.Windows.Forms.Padding(3);
-            this.tpGitCore.Size = new System.Drawing.Size(400, 170);
-            this.tpGitCore.TabIndex = 3;
-            this.tpGitCore.Text = "GitCore";
-            this.tpGitCore.UseVisualStyleBackColor = true;
             // 
             // pBottom
             // 
@@ -418,6 +406,5 @@ namespace NppKate.Forms
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button bSelectFolder;
         private System.Windows.Forms.TextBox tbTGProcPath;
-        private System.Windows.Forms.TabPage tpGitCore;
     }
 }

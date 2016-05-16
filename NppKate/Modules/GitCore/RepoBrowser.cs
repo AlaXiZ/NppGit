@@ -41,12 +41,17 @@ namespace NppKate.Modules.GitCore
         private const string REPO_INDEX = "REPO";
         private const string BRANCH_INDEX = "BRANCH";
         private const string EMPTY_INDEX = "EMPTY";
+        private const string CURBRANCH_INDEX = "CURRENT_BRANCH";
+        private const string BRANCH_FOLDER_INDEX = "BRANCH_FOLDER";
+        private const string REMOTE_BRANCH_INDEX = "REMOTE_BRANCH";
+
         private string _lastActiveRepo = null;
         private string _lastDocumentRepo = null;
 
         protected override void OnSwitchIn()
         {
             _logger.Trace("Switch in repository browser");
+            UpdateState();
         }
 
         protected override void OnSwitchOut()
@@ -133,8 +138,9 @@ namespace NppKate.Modules.GitCore
 
         private void FillBranch(TreeNode node, RepositoryLink link)
         {
-            var local = node.Nodes.Add("LOCAL", "local", BRANCH_INDEX, BRANCH_INDEX);
-            var remote = node.Nodes.Add("REMOTE", "remote", BRANCH_INDEX, BRANCH_INDEX);
+            var currentBranch = node.Nodes.Add("CURRENT", "", CURBRANCH_INDEX, CURBRANCH_INDEX);
+            var local = node.Nodes.Add("LOCAL", "local", BRANCH_FOLDER_INDEX, BRANCH_FOLDER_INDEX);
+            var remote = node.Nodes.Add("REMOTE", "remote", BRANCH_FOLDER_INDEX, BRANCH_FOLDER_INDEX);
             using (var r = new Repository(link.Path))
            {
                 foreach(var b in r.Branches)
@@ -143,7 +149,7 @@ namespace NppKate.Modules.GitCore
                     {
                         if (!b.Name.EndsWith("/HEAD", System.StringComparison.InvariantCultureIgnoreCase))
                         {
-                            remote.Nodes.Add(b.Name, b.Name, BRANCH_INDEX, BRANCH_INDEX);
+                            remote.Nodes.Add(b.Name, b.Name, REMOTE_BRANCH_INDEX, REMOTE_BRANCH_INDEX);
                         }
                     }
                     else
@@ -152,6 +158,9 @@ namespace NppKate.Modules.GitCore
                         if (b.IsCurrentRepositoryHead)
                         {
                             branchNode.ForeColor = Color.DeepSkyBlue;
+                            branchNode.ImageKey = CURBRANCH_INDEX;
+                            branchNode.SelectedImageKey = CURBRANCH_INDEX;
+                            currentBranch.Text = b.Name;
                         }
                     }
                 }
@@ -187,17 +196,6 @@ namespace NppKate.Modules.GitCore
                 DocumentRepositoryUpdate(repoLink.Name);
         }
 
-        private void tvRepositories_BeforeExpand(object sender, TreeViewCancelEventArgs e)
-        {
-            if (e.Node.Name == "LOCAL" && (!e.Node.Tag?.Equals(100) ?? false))
-            {
-                foreach (TreeNode n in e.Node.Nodes)
-                {
-                    n.Text += string.Empty;
-                }
-                e.Node.Tag = 100;
-            }
-        }
     }
 
 }
