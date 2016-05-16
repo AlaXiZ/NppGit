@@ -31,6 +31,11 @@ using LibGit2Sharp;
 using NLog;
 using NppKate.Common;
 using NppKate.Forms;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System;
 
 namespace NppKate.Modules.GitCore
 {
@@ -45,8 +50,12 @@ namespace NppKate.Modules.GitCore
         private const string BRANCH_FOLDER_INDEX = "BRANCH_FOLDER";
         private const string REMOTE_BRANCH_INDEX = "REMOTE_BRANCH";
 
+        private const string INDEX_LOCK = "index.lock";
+
         private string _lastActiveRepo = null;
         private string _lastDocumentRepo = null;
+
+        private Dictionary<string, FileSystemWatcher> _watchers;
 
         protected override void OnSwitchIn()
         {
@@ -67,6 +76,7 @@ namespace NppKate.Modules.GitCore
             GitCore.Instance.OnDocumentReposituryChanged += GitCoreOnDocumentRepositoryChanged;
             GitCore.Instance.OnRepositoryAdded += GitCoreOnRepositoryAdded;
 
+            _watchers = new Dictionary<string, FileSystemWatcher>();
             LoadTree();
             UpdateState();
 
@@ -136,14 +146,14 @@ namespace NppKate.Modules.GitCore
             GitCore.Instance.SwitchByName(e.Node.Name);
         }
 
-        private void FillBranch(TreeNode node, RepositoryLink link)
+        private void FillContent(TreeNode node, RepositoryLink link)
         {
             var currentBranch = node.Nodes.Add("CURRENT", "", CURBRANCH_INDEX, CURBRANCH_INDEX);
             var local = node.Nodes.Add("LOCAL", "local", BRANCH_FOLDER_INDEX, BRANCH_FOLDER_INDEX);
             var remote = node.Nodes.Add("REMOTE", "remote", BRANCH_FOLDER_INDEX, BRANCH_FOLDER_INDEX);
             using (var r = new Repository(link.Path))
-           {
-                foreach(var b in r.Branches)
+            {
+                foreach (var b in r.Branches)
                 {
                     if (b.IsRemote)
                     {
@@ -176,8 +186,23 @@ namespace NppKate.Modules.GitCore
                 Text = link.Name,
                 ImageKey = REPO_INDEX
             };
-            FillBranch(node, link);
+            FillContent(node, link);
+            // Create file watcher
+            var watcher = new FileSystemWatcher(Path.Combine(link.Path, ".git"), "*.lock");
+            watcher.NotifyFilter = NotifyFilters.FileName;
+            watcher.Deleted += WatchersOnChange;
+            watcher.EnableRaisingEvents = true;
+            // save handle
+            _watchers.Add(link.Name, watcher);
             return node;
+        }
+
+        private void WatchersOnChange(object sender, FileSystemEventArgs e)
+        {
+            if (e.ChangeType == WatcherChangeTypes.Deleted && INDEX_LOCK.Equals(e.Name, System.StringComparison.InvariantCultureIgnoreCase))
+            {
+                UpdateBranch(GitCore.GetRepoName(GitCore.GetRootDir(e.FullPath)));
+            }
         }
 
         private void LoadTree()
@@ -194,6 +219,64 @@ namespace NppKate.Modules.GitCore
             repoLink = GitCore.Instance.DocumentRepository;
             if (repoLink != null)
                 DocumentRepositoryUpdate(repoLink.Name);
+        }
+
+        private void UpdateBranch(string repoName)
+        {
+            if (string.IsNullOrEmpty(repoName)) return;
+            _logger.Debug($"Update branches for repo {repoName}");
+            var node = tvRepositories.Nodes[repoName];
+            var link = GitCore.Instance.GetRepositoryByName(repoName);
+            using (var r = new Repository(link.Path))
+            {
+                var currentBranch = node.Nodes["CURRENT"];
+                var local = node.Nodes["LOCAL"];
+                var remote = node.Nodes["REMOTE"];
+                foreach(var b in r.Branches)
+                {
+                    if (!b.IsRemote)
+                    {
+                        if (!local.Nodes.ContainsKey(b.Name))
+                        {
+                            tvRepositories.Invoke(new Action(() =>
+                            {
+                                local.Nodes.Add(b.Name, b.Name, BRANCH_INDEX, BRANCH_INDEX);
+                            }));
+                        }
+                        var branch = local.Nodes[b.Name];
+                        if (b.IsCurrentRepositoryHead)
+                        {
+                            tvRepositories.Invoke(new Action(() =>
+                            {
+                                currentBranch.Text = b.Name;
+                                branch.ForeColor = Color.DeepSkyBlue;
+                                branch.ImageKey = CURBRANCH_INDEX;
+                                branch.SelectedImageKey = CURBRANCH_INDEX;
+                            }));
+                        }
+                        else
+                        {
+                            tvRepositories.Invoke(new Action(() =>
+                            {
+                                branch.ForeColor = Color.Black;
+                                branch.ImageKey = BRANCH_INDEX;
+                                branch.SelectedImageKey = BRANCH_INDEX;
+                            }));
+                        }
+                    }
+                    else
+                    {
+                        if (!b.Name.EndsWith("/HEAD", System.StringComparison.InvariantCultureIgnoreCase) && 
+                            !remote.Nodes.ContainsKey(b.Name))
+                        {
+                            tvRepositories.Invoke(new Action(() =>
+                            {
+                                remote.Nodes.Add(b.Name, b.Name, REMOTE_BRANCH_INDEX, REMOTE_BRANCH_INDEX);
+                            }));
+                        }
+                    }
+                }
+            }
         }
 
     }

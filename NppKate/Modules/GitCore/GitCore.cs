@@ -344,5 +344,10 @@ namespace NppKate.Modules.GitCore
                 return remote;
             }
         }
+
+        public RepositoryLink GetRepositoryByName(string repoName)
+        {
+            return _repos[repoName];
+        }
     }
 }
