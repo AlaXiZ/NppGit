@@ -52,6 +52,9 @@ namespace NppKate.Modules.GitCore
 
         private const string INDEX_LOCK = "index.lock";
 
+        //private readonly Color CurrentBranchColor = Color.FromArgb(10,192,56);
+        private readonly Color DocumentRepoColor = Color.Red;
+
         private string _lastActiveRepo = null;
         private string _lastDocumentRepo = null;
 
@@ -107,7 +110,7 @@ namespace NppKate.Modules.GitCore
             if (!string.IsNullOrEmpty(repoName))
             {
                 var nodeNew = tvRepositories.Nodes[repoName];
-                nodeNew.ForeColor = Color.Red;
+                nodeNew.ForeColor = DocumentRepoColor;
             }
             _lastDocumentRepo = repoName;
         }
@@ -149,6 +152,7 @@ namespace NppKate.Modules.GitCore
         private void FillContent(TreeNode node, RepositoryLink link)
         {
             var currentBranch = node.Nodes.Add("CURRENT", "", CURBRANCH_INDEX, CURBRANCH_INDEX);
+            //currentBranch.ForeColor = CurrentBranchColor;
             var local = node.Nodes.Add("LOCAL", "local", BRANCH_FOLDER_INDEX, BRANCH_FOLDER_INDEX);
             var remote = node.Nodes.Add("REMOTE", "remote", BRANCH_FOLDER_INDEX, BRANCH_FOLDER_INDEX);
             using (var r = new Repository(link.Path))
@@ -159,15 +163,14 @@ namespace NppKate.Modules.GitCore
                     {
                         if (!b.Name.EndsWith("/HEAD", System.StringComparison.InvariantCultureIgnoreCase))
                         {
-                            remote.Nodes.Add(b.Name, b.Name, REMOTE_BRANCH_INDEX, REMOTE_BRANCH_INDEX);
+                            CreateNode(b.Name, b.Name, REMOTE_BRANCH_INDEX, remote, null);
                         }
                     }
                     else
                     {
-                        var branchNode = local.Nodes.Add(b.Name, b.Name, BRANCH_INDEX, BRANCH_INDEX);
+                        var branchNode = CreateNode(b.Name, b.Name, BRANCH_INDEX, local, cmBranch);
                         if (b.IsCurrentRepositoryHead)
                         {
-                            branchNode.ForeColor = Color.DeepSkyBlue;
                             branchNode.ImageKey = CURBRANCH_INDEX;
                             branchNode.SelectedImageKey = CURBRANCH_INDEX;
                             currentBranch.Text = b.Name;
@@ -180,12 +183,8 @@ namespace NppKate.Modules.GitCore
         private TreeNode CreateRepoNode(RepositoryLink link)
         {
             if (link == null) return null;
-            var node = new TreeNode(link.Name)
-            {
-                Name = link.Name,
-                Text = link.Name,
-                ImageKey = REPO_INDEX
-            };
+
+            var node = CreateNode(link.Name, link.Name, REPO_INDEX, null, cmRepositories);
             FillContent(node, link);
             // Create file watcher
             var watcher = new FileSystemWatcher(Path.Combine(link.Path, ".git"), "*.lock");
@@ -240,7 +239,7 @@ namespace NppKate.Modules.GitCore
                         {
                             tvRepositories.Invoke(new Action(() =>
                             {
-                                local.Nodes.Add(b.Name, b.Name, BRANCH_INDEX, BRANCH_INDEX);
+                                CreateNode(b.Name, b.Name, BRANCH_INDEX, local);
                             }));
                         }
                         var branch = local.Nodes[b.Name];
@@ -249,7 +248,6 @@ namespace NppKate.Modules.GitCore
                             tvRepositories.Invoke(new Action(() =>
                             {
                                 currentBranch.Text = b.Name;
-                                branch.ForeColor = Color.DeepSkyBlue;
                                 branch.ImageKey = CURBRANCH_INDEX;
                                 branch.SelectedImageKey = CURBRANCH_INDEX;
                             }));
@@ -258,7 +256,6 @@ namespace NppKate.Modules.GitCore
                         {
                             tvRepositories.Invoke(new Action(() =>
                             {
-                                branch.ForeColor = Color.Black;
                                 branch.ImageKey = BRANCH_INDEX;
                                 branch.SelectedImageKey = BRANCH_INDEX;
                             }));
@@ -266,17 +263,31 @@ namespace NppKate.Modules.GitCore
                     }
                     else
                     {
-                        if (!b.Name.EndsWith("/HEAD", System.StringComparison.InvariantCultureIgnoreCase) && 
+                        if (!b.Name.EndsWith("/HEAD", StringComparison.InvariantCultureIgnoreCase) && 
                             !remote.Nodes.ContainsKey(b.Name))
                         {
                             tvRepositories.Invoke(new Action(() =>
                             {
-                                remote.Nodes.Add(b.Name, b.Name, REMOTE_BRANCH_INDEX, REMOTE_BRANCH_INDEX);
+                                CreateNode(b.Name, b.Name, REMOTE_BRANCH_INDEX, remote);
                             }));
                         }
                     }
                 }
             }
+        }
+
+        private TreeNode CreateNode(string name, string text, string imageKey, TreeNode parentNode = null, ContextMenuStrip menu = null)
+        {
+            var node = new TreeNode()
+            {
+                Name = name,
+                Text = text,
+                ImageKey = imageKey,
+                SelectedImageKey = imageKey,
+                ContextMenuStrip = menu
+            };
+            parentNode?.Nodes?.Add(node);
+            return node;
         }
 
     }
