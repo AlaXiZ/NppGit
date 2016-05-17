@@ -13,5 +13,7 @@
   <td> <img src="https://ci.appveyor.com/api/projects/status/0juypbxi4ew49ug5?svg=true"/> </td>
 </tr>
 </table>
+##Как пользоваться?
+На [вики](https://github.com/schadin/NppGit/wiki) вы найдете всю необходимую информацию, хотя 99% функций интуитивно понятны, если вы когда либо работали с git. Информация на вики постоянно пополняется и актуализируется.
 ##Список изменений
 Список изменений в версиях всегда можно найти на странице [#3 Changelog](https://github.com/schadin/NppGit/wiki/%233-Changelog)
