@@ -153,41 +153,10 @@ namespace NppKate
                 [MethodImpl(MethodImplOptions.NoInlining)]
                 set { Set(value); }
             }
-            public static bool PSSE
-            {
-                [MethodImpl(MethodImplOptions.NoInlining)]
-                get { return Get(true); }
-                [MethodImpl(MethodImplOptions.NoInlining)]
-                set { Set(value); }
-            }
         }
 
         public static class Functions
         {
-            public static bool ShowBranch
-            {
-                [MethodImpl(MethodImplOptions.NoInlining)]
-                get { return Get(false); }
-                [MethodImpl(MethodImplOptions.NoInlining)]
-                set { Set(value); }
-            }
-
-            public static bool ShowRepoName
-            {
-                [MethodImpl(MethodImplOptions.NoInlining)]
-                get { return Get(false); }
-                [MethodImpl(MethodImplOptions.NoInlining)]
-                set { Set(value); }
-            }
-
-            public static bool ShowStatusFile
-            {
-                [MethodImpl(MethodImplOptions.NoInlining)]
-                get { return Get(false); }
-                [MethodImpl(MethodImplOptions.NoInlining)]
-                set { Set(value); }
-            }
-
             public static byte SHACount
             {
                 [MethodImpl(MethodImplOptions.NoInlining)]
@@ -207,20 +176,6 @@ namespace NppKate
 
         public static class Panels
         {
-            public static bool StatusPanelVisible
-            {
-                [MethodImpl(MethodImplOptions.NoInlining)]
-                get { return Get(false); }
-                [MethodImpl(MethodImplOptions.NoInlining)]
-                set { Set(value); }
-            }
-            public static bool FileStatusPanelVisible
-            {
-                [MethodImpl(MethodImplOptions.NoInlining)]
-                get { return Get(false); }
-                [MethodImpl(MethodImplOptions.NoInlining)]
-                set { Set(value); }
-            }
             public static bool SnippetsPanelVisible
             {
                 [MethodImpl(MethodImplOptions.NoInlining)]

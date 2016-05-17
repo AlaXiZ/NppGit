@@ -47,7 +47,7 @@ namespace NppKate.Modules
 
         private void DoShowStatus()
         {
-            Settings.Panels.FileStatusPanelVisible = _manager.ToogleFormState(_statusPanelCmdID);
+            //Settings.Panels.FileStatusPanelVisible = _manager.ToogleFormState(_statusPanelCmdID);
         }
 
         public void Final()
@@ -91,10 +91,11 @@ namespace NppKate.Modules
 
         private void ManagerOnSystemInit()
         {
-            if (Settings.Panels.FileStatusPanelVisible)
+            /*if (Settings.Panels.FileStatusPanelVisible)
             {
                 DoShowStatus();
             }
+            */
         }
 
         private void OpenFileInOtherBranch()
