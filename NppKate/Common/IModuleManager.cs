@@ -27,7 +27,6 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
 using System.Drawing;
-using NppKate.AppSettings;
 
 namespace NppKate.Common
 {
@@ -37,8 +36,6 @@ namespace NppKate.Common
         event Action OnSystemInit;
         event EventHandler<TabEventArgs> OnTabChangeEvent;
         event EventHandler<CommandItemClickEventArgs> OnCommandItemClick;
-        event EventHandler<SettingsInitEventArgs> OnSettingsEvent;
-        event Action OnSettingsFinishEvent;
 
         int RegisterCommandItem(CommandItem menuItem);
         void RegisterDockForm(Type formClass, int cmdId, bool updateWithChangeContext, NppTbMsg uMask = NppTbMsg.DWS_PARAMSALL | NppTbMsg.DWS_DF_CONT_RIGHT, IntPtr? hBitmap = null);

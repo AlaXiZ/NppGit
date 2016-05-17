@@ -44,55 +44,61 @@ namespace NppKate
         // Загрузка/сохранение происходит по имени класса и свойства
         // Имена получаются через стек и рефлексию
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static void Set<T>(T value)
+        private static void Set<T>(T value, string section = null, string key = null)
         {
-            var mth = new StackTrace().GetFrame(1).GetMethod();
-            var className = mth.ReflectedType.Name;
-            var propName = mth.Name.Replace("set_", "");
+            if (string.IsNullOrEmpty(section) || string.IsNullOrEmpty(key))
+            {
+                var mth = new StackTrace().GetFrame(1).GetMethod();
+                section = mth.ReflectedType.Name;
+                key = mth.Name.Replace("set_", "");
+            }
             try
             {
-                logger.Debug("Save: Section={0}, Key={1}, Value={2}", className, propName, value);
+                logger.Debug("Save: Section={0}, Key={1}, Value={2}", section, key, value);
             }
             finally { }
-            _file.SetValue(className, propName, value);
-            if (!_cache.ContainsKey(className))
+            _file.SetValue(section, key, value);
+            if (!_cache.ContainsKey(section))
             {
-                _cache.Add(className, new Dictionary<string, object>());
+                _cache.Add(section, new Dictionary<string, object>());
             }
-            if (!_cache[className].ContainsKey(propName))
+            if (!_cache[section].ContainsKey(key))
             {
-                _cache[className].Add(propName, null);
+                _cache[section].Add(key, null);
             }
-            _cache[className][propName] = value;
+            _cache[section][key] = value;
         }
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static T Get<T>(T defaultValue)
+        private static T Get<T>(T defaultValue, string section = null, string key = null)
         {
-            var mth = new StackTrace().GetFrame(1).GetMethod();
-            var className = mth.ReflectedType.Name;
-            var propName = mth.Name.Replace("get_", "");
-            T value;
-            if (_cache.ContainsKey(className) && _cache[className].ContainsKey(propName))
+            if (string.IsNullOrEmpty(section) || string.IsNullOrEmpty(key))
             {
-                value = (T)_cache[className][propName];
+                var mth = new StackTrace().GetFrame(1).GetMethod();
+                section = mth.ReflectedType.Name;
+                key = mth.Name.Replace("get_", "");
+            }
+            T value;
+            if (_cache.ContainsKey(section) && _cache[section].ContainsKey(key))
+            {
+                value = (T)_cache[section][key];
             }
             else
             {
-                value = _file.GetValue(className, propName, defaultValue);
+                value = _file.GetValue(section, key, defaultValue);
                 try
                 {
-                    logger.Debug("Load: Section={0}, Key={1}, Value={2}", className, propName, value);
+                    logger.Debug("Load: Section={0}, Key={1}, Value={2}", section, key, value);
                 }
                 finally { }
-                if (!_cache.ContainsKey(className))
+                if (!_cache.ContainsKey(section))
                 {
-                    _cache.Add(className, new Dictionary<string, object>());
+                    _cache.Add(section, new Dictionary<string, object>());
                 }
-                if (!_cache[className].ContainsKey(propName))
+                if (!_cache[section].ContainsKey(key))
                 {
-                    _cache[className].Add(propName, null);
+                    _cache[section].Add(key, null);
                 }
-                _cache[className][propName] = value;
+                _cache[section][key] = value;
             }
 
             return value;
