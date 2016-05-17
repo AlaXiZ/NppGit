@@ -190,6 +190,7 @@
             this.Controls.Add(this.tvRepositories);
             this.Name = "RepoBrowser";
             this.Text = "RepoBrowser";
+            this.VisibleChanged += new System.EventHandler(this.RepoBrowser_VisibleChanged);
             this.cmRepositories.ResumeLayout(false);
             this.cmBranch.ResumeLayout(false);
             this.ResumeLayout(false);

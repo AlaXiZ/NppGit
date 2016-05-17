@@ -33,8 +33,6 @@ using NppKate.Common;
 using NppKate.Forms;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading;
 using System;
 
 namespace NppKate.Modules.GitCore
@@ -53,12 +51,13 @@ namespace NppKate.Modules.GitCore
         private const string INDEX_LOCK = "index.lock";
 
         //private readonly Color CurrentBranchColor = Color.FromArgb(10,192,56);
-        private readonly Color DocumentRepoColor = Color.Red;
+        private readonly Color DocumentRepoColor = Color.DeepSkyBlue;
 
         private string _lastActiveRepo = null;
         private string _lastDocumentRepo = null;
         private bool _hasDoubleClick = false;
         private DateTime _lastMouseDown = DateTime.Now;
+        private bool _isInitialized = false;
 
         private Dictionary<string, FileSystemWatcher> _watchers;
 
@@ -123,12 +122,14 @@ namespace NppKate.Modules.GitCore
             if (!string.IsNullOrEmpty(_lastDocumentRepo))
             {
                 var nodeOld = tvRepositories.Nodes[_lastDocumentRepo];
+                nodeOld.Text = nodeOld.Name;
                 nodeOld.ForeColor = tvRepositories.ForeColor;
             }
             if (!string.IsNullOrEmpty(repoName))
             {
                 var nodeNew = tvRepositories.Nodes[repoName];
                 nodeNew.ForeColor = DocumentRepoColor;
+                nodeNew.Text = nodeNew.Name + "*";
             }
             _lastDocumentRepo = repoName;
         }
@@ -372,6 +373,15 @@ namespace NppKate.Modules.GitCore
             {
                 var node = tvRepositories.GetNodeAt(e.Location);
                 _hasDoubleClick = node?.ImageKey == REPO_INDEX;
+            }
+        }
+
+        private void RepoBrowser_VisibleChanged(object sender, EventArgs e)
+        {
+            if (Visible && !_isInitialized)
+            {
+                _isInitialized = true;
+                tvRepositories.Nodes[_lastActiveRepo].Text += string.Empty;
             }
         }
     }
