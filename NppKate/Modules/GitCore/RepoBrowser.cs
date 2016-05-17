@@ -78,12 +78,28 @@ namespace NppKate.Modules.GitCore
             GitCore.Instance.OnActiveRepositoryChanged += GitCoreOnActiveRepositoryChanged;
             GitCore.Instance.OnDocumentReposituryChanged += GitCoreOnDocumentRepositoryChanged;
             GitCore.Instance.OnRepositoryAdded += GitCoreOnRepositoryAdded;
+            GitCore.Instance.OnRepositoryRemoved += GitCoreOnRepositoryRemoved;
 
             _watchers = new Dictionary<string, FileSystemWatcher>();
             LoadTree();
             UpdateState();
 
             tvRepositories.Update();
+        }
+
+        private void GitCoreOnRepositoryRemoved(object sender, RepositoryChangedEventArgs e)
+        {
+            var node = tvRepositories.Nodes[e.RepositoryName];
+            if (node.Name == _lastActiveRepo)
+            {
+                var otherNode = node.PrevVisibleNode != null ? node.PrevVisibleNode : node.NextVisibleNode;
+                GitCore.Instance.SwitchByName(otherNode.Name);
+            }
+            _watchers[node.Name].EnableRaisingEvents = false;
+            _watchers[node.Name].Dispose();
+            _watchers.Remove(node.Name);
+            node.Remove();
+
         }
 
         private void GitCoreOnRepositoryAdded(object sender, RepositoryChangedEventArgs e)
@@ -146,7 +162,10 @@ namespace NppKate.Modules.GitCore
 
         private void tvRepositories_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
-            GitCore.Instance.SwitchByName(e.Node.Name);
+            if (e.Button == MouseButtons.Left)
+            {
+                GitCore.Instance.SwitchByName(e.Node.Name);
+            }
         }
 
         private void FillContent(TreeNode node, RepositoryLink link)
@@ -290,6 +309,45 @@ namespace NppKate.Modules.GitCore
             return node;
         }
 
+        private void miSetActive_Click(object sender, EventArgs e)
+        {
+            var node = tvRepositories.SelectedNode;
+            GitCore.Instance.SwitchByName(node?.Name);
+        }
+
+        private void cmRepositories_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            var node = tvRepositories.SelectedNode;
+            miSetActive.Enabled = _lastActiveRepo != node?.Name;
+            miRemoveRepo.Enabled = _lastDocumentRepo != node?.Name;
+        }
+
+        private void tvRepositories_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            if (tvRepositories.SelectedNode != e.Node)
+            {
+                tvRepositories.SelectedNode = e.Node;
+            }
+        }
+
+        private void miAddRepo_Click(object sender, EventArgs e)
+        {
+            var openDlg = new FolderBrowserDialog()
+            {
+                Description = "Select git-repository folder",
+                ShowNewFolderButton = false
+            };
+            if (openDlg.ShowDialog() == DialogResult.OK)
+            {
+                GitCore.Instance.SwitchByPath(openDlg.SelectedPath);
+            }
+        }
+
+        private void miRemoveRepo_Click(object sender, EventArgs e)
+        {
+            var node = tvRepositories.SelectedNode;
+            GitCore.Instance.RemoveRepository(node.Name);
+        }
     }
 
 }

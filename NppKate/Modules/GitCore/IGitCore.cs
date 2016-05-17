@@ -46,7 +46,8 @@ namespace NppKate.Modules.GitCore
         // Method
         bool SwitchByPath(string path);
         bool SwitchByName(string name);
+        void RemoveRepository(string name);
         FileStatus GetFileStatus(string filePath);
-        RepositoryLink GetRepositoryByName(string repoName);
+        RepositoryLink GetRepositoryByName(string name);
     }
 }

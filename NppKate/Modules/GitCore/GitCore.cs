@@ -297,7 +297,6 @@ namespace NppKate.Modules.GitCore
             {
                 _logger.Error(ex);
             }
-
         }
 
         public static bool IsValidGitRepo(string path)
@@ -345,9 +344,30 @@ namespace NppKate.Modules.GitCore
             }
         }
 
-        public RepositoryLink GetRepositoryByName(string repoName)
+        public RepositoryLink GetRepositoryByName(string name)
         {
-            return _repos[repoName];
+            return _repos[name];
+        }
+
+        public void RemoveRepository(string name)
+        {
+            var root = _doc.Root;
+            if (root == null) return;
+            var element = root.Descendants("Repository").Where(e => e.Attribute("Name").Value == name).FirstOrDefault();
+            if (element != null)
+            {
+                _repos.Remove(name);
+                element.Remove();
+                DoRepoRemoved(name);
+                try
+                {
+                    _doc.Save(_filename);
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex);
+                }
+            }
         }
     }
 }

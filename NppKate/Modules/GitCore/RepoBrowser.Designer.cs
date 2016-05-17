@@ -59,6 +59,7 @@
             this.tvRepositories.SelectedImageIndex = 0;
             this.tvRepositories.Size = new System.Drawing.Size(284, 353);
             this.tvRepositories.TabIndex = 0;
+            this.tvRepositories.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.tvRepositories_NodeMouseClick);
             this.tvRepositories.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.tvRepositories_NodeMouseDoubleClick);
             // 
             // ilImages
@@ -87,35 +88,37 @@
             this.cmRepositories.Name = "cmRepositories";
             this.cmRepositories.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
             this.cmRepositories.Size = new System.Drawing.Size(174, 186);
+            this.cmRepositories.Opening += new System.ComponentModel.CancelEventHandler(this.cmRepositories_Opening);
             // 
             // miSetActive
             // 
-            this.miSetActive.Enabled = false;
             this.miSetActive.Image = global::NppKate.Properties.Resources.database__arrow;
             this.miSetActive.Name = "miSetActive";
             this.miSetActive.Size = new System.Drawing.Size(173, 22);
             this.miSetActive.Text = "Set active";
+            this.miSetActive.Click += new System.EventHandler(this.miSetActive_Click);
             // 
             // miAddRepo
             // 
-            this.miAddRepo.Enabled = false;
             this.miAddRepo.Image = global::NppKate.Properties.Resources.database__plus;
             this.miAddRepo.Name = "miAddRepo";
             this.miAddRepo.Size = new System.Drawing.Size(173, 22);
             this.miAddRepo.Text = "Add repository";
+            this.miAddRepo.Click += new System.EventHandler(this.miAddRepo_Click);
             // 
             // miRemoveRepo
             // 
-            this.miRemoveRepo.Enabled = false;
             this.miRemoveRepo.Image = global::NppKate.Properties.Resources.database__minus;
             this.miRemoveRepo.Name = "miRemoveRepo";
             this.miRemoveRepo.Size = new System.Drawing.Size(173, 22);
             this.miRemoveRepo.Text = "Remove repository";
+            this.miRemoveRepo.Click += new System.EventHandler(this.miRemoveRepo_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
             this.toolStripMenuItem1.Size = new System.Drawing.Size(170, 6);
+            this.toolStripMenuItem1.Visible = false;
             // 
             // fetchToolStripMenuItem
             // 
@@ -124,6 +127,7 @@
             this.fetchToolStripMenuItem.Name = "fetchToolStripMenuItem";
             this.fetchToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.fetchToolStripMenuItem.Text = "Fetch";
+            this.fetchToolStripMenuItem.Visible = false;
             // 
             // pullToolStripMenuItem
             // 
@@ -132,6 +136,7 @@
             this.pullToolStripMenuItem.Name = "pullToolStripMenuItem";
             this.pullToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.pullToolStripMenuItem.Text = "Pull";
+            this.pullToolStripMenuItem.Visible = false;
             // 
             // commitToolStripMenuItem
             // 
@@ -140,6 +145,7 @@
             this.commitToolStripMenuItem.Name = "commitToolStripMenuItem";
             this.commitToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.commitToolStripMenuItem.Text = "Commit";
+            this.commitToolStripMenuItem.Visible = false;
             // 
             // pushToolStripMenuItem
             // 
@@ -148,6 +154,7 @@
             this.pushToolStripMenuItem.Name = "pushToolStripMenuItem";
             this.pushToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.pushToolStripMenuItem.Text = "Push";
+            this.pushToolStripMenuItem.Visible = false;
             // 
             // syncToolStripMenuItem
             // 
@@ -155,6 +162,7 @@
             this.syncToolStripMenuItem.Name = "syncToolStripMenuItem";
             this.syncToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.syncToolStripMenuItem.Text = "Sync";
+            this.syncToolStripMenuItem.Visible = false;
             // 
             // cmBranch
             // 
