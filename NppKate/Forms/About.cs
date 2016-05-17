@@ -57,5 +57,17 @@ namespace NppKate.Forms
             System.Diagnostics.Process.Start("https://nppgit.myjetbrains.com/youtrack/issues");
 
         }
+
+        private void llYusuke_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            llYusuke.LinkVisited = true;
+            System.Diagnostics.Process.Start("http://p.yusukekamiyamane.com/");
+        }
+
+        private void llCCA30L_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            llCCA30L.LinkVisited = true;
+            System.Diagnostics.Process.Start("http://creativecommons.org/licenses/by/3.0/");
+        }
     }
 }

@@ -65,6 +65,9 @@ namespace NppKate.Forms
             this.label1 = new System.Windows.Forms.Label();
             this.llIssue = new System.Windows.Forms.LinkLabel();
             this.tbLicense = new System.Windows.Forms.TextBox();
+            this.lblIcons = new System.Windows.Forms.Label();
+            this.llYusuke = new System.Windows.Forms.LinkLabel();
+            this.llCCA30L = new System.Windows.Forms.LinkLabel();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -125,7 +128,7 @@ namespace NppKate.Forms
             this.tbChangeLog.Name = "tbChangeLog";
             this.tbChangeLog.ReadOnly = true;
             this.tbChangeLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbChangeLog.Size = new System.Drawing.Size(307, 143);
+            this.tbChangeLog.Size = new System.Drawing.Size(335, 143);
             this.tbChangeLog.TabIndex = 5;
             // 
             // label1
@@ -157,15 +160,50 @@ namespace NppKate.Forms
             this.tbLicense.Name = "tbLicense";
             this.tbLicense.ReadOnly = true;
             this.tbLicense.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbLicense.Size = new System.Drawing.Size(440, 210);
+            this.tbLicense.Size = new System.Drawing.Size(468, 210);
             this.tbLicense.TabIndex = 8;
+            // 
+            // lblIcons
+            // 
+            this.lblIcons.AutoSize = true;
+            this.lblIcons.Location = new System.Drawing.Point(12, 433);
+            this.lblIcons.Name = "lblIcons";
+            this.lblIcons.Size = new System.Drawing.Size(468, 13);
+            this.lblIcons.TabIndex = 9;
+            this.lblIcons.Text = "Some icons by Yusuke Kamiyamane. Licensed under a Creative Commons Attribution 3." +
+    "0 License.";
+            // 
+            // llYusuke
+            // 
+            this.llYusuke.AutoSize = true;
+            this.llYusuke.Location = new System.Drawing.Point(84, 433);
+            this.llYusuke.Name = "llYusuke";
+            this.llYusuke.Size = new System.Drawing.Size(106, 13);
+            this.llYusuke.TabIndex = 10;
+            this.llYusuke.TabStop = true;
+            this.llYusuke.Text = "Yusuke Kamiyamane";
+            this.llYusuke.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.llYusuke_LinkClicked);
+            // 
+            // llCCA30L
+            // 
+            this.llCCA30L.AutoSize = true;
+            this.llCCA30L.Location = new System.Drawing.Point(275, 433);
+            this.llCCA30L.Name = "llCCA30L";
+            this.llCCA30L.Size = new System.Drawing.Size(203, 13);
+            this.llCCA30L.TabIndex = 11;
+            this.llCCA30L.TabStop = true;
+            this.llCCA30L.Text = "Creative Commons Attribution 3.0 License";
+            this.llCCA30L.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.llCCA30L_LinkClicked);
             // 
             // About
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(464, 442);
+            this.ClientSize = new System.Drawing.Size(492, 453);
+            this.Controls.Add(this.llCCA30L);
+            this.Controls.Add(this.llYusuke);
+            this.Controls.Add(this.lblIcons);
             this.Controls.Add(this.tbLicense);
             this.Controls.Add(this.llIssue);
             this.Controls.Add(this.label1);
@@ -201,5 +239,8 @@ namespace NppKate.Forms
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.LinkLabel llIssue;
         private System.Windows.Forms.TextBox tbLicense;
+        private System.Windows.Forms.Label lblIcons;
+        private System.Windows.Forms.LinkLabel llYusuke;
+        private System.Windows.Forms.LinkLabel llCCA30L;
     }
 }
