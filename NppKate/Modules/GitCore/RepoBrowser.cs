@@ -57,6 +57,8 @@ namespace NppKate.Modules.GitCore
 
         private string _lastActiveRepo = null;
         private string _lastDocumentRepo = null;
+        private bool _hasDoubleClick = false;
+        private DateTime _lastMouseDown = DateTime.Now;
 
         private Dictionary<string, FileSystemWatcher> _watchers;
 
@@ -162,7 +164,7 @@ namespace NppKate.Modules.GitCore
 
         private void tvRepositories_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
-            if (e.Button == MouseButtons.Left)
+            if (e.Button == MouseButtons.Left && e.Node.ImageKey == REPO_INDEX && !(e.Node.NodeFont?.Bold ?? false))
             {
                 GitCore.Instance.SwitchByName(e.Node.Name);
             }
@@ -347,6 +349,30 @@ namespace NppKate.Modules.GitCore
         {
             var node = tvRepositories.SelectedNode;
             GitCore.Instance.RemoveRepository(node.Name);
+        }
+
+        private void tvRepositories_BeforeCollapse(object sender, TreeViewCancelEventArgs e)
+        {
+            e.Cancel = _hasDoubleClick;
+            _hasDoubleClick = false;
+        }
+
+        private void tvRepositories_BeforeExpand(object sender, TreeViewCancelEventArgs e)
+        {
+            e.Cancel = _hasDoubleClick;
+            _hasDoubleClick = false;
+        }
+
+        private void tvRepositories_MouseDown(object sender, MouseEventArgs e)
+        {
+            int delta = (int)DateTime.Now.Subtract(_lastMouseDown).TotalMilliseconds;
+            _hasDoubleClick = (delta < SystemInformation.DoubleClickTime);
+            _lastMouseDown = DateTime.Now;
+            if (_hasDoubleClick)
+            {
+                var node = tvRepositories.GetNodeAt(e.Location);
+                _hasDoubleClick = node?.ImageKey == REPO_INDEX;
+            }
         }
     }
 
