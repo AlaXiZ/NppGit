@@ -145,10 +145,10 @@ namespace NppKate.Forms
             this.llIssue.AutoSize = true;
             this.llIssue.Location = new System.Drawing.Point(228, 51);
             this.llIssue.Name = "llIssue";
-            this.llIssue.Size = new System.Drawing.Size(194, 13);
+            this.llIssue.Size = new System.Drawing.Size(204, 13);
             this.llIssue.TabIndex = 7;
             this.llIssue.TabStop = true;
-            this.llIssue.Text = "nppgit.myjetbrains.com/youtrack/issues";
+            this.llIssue.Text = "nppkate.myjetbrains.com/youtrack/issues";
             this.llIssue.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.llIssue_LinkClicked);
             // 
             // tbLicense
@@ -176,7 +176,7 @@ namespace NppKate.Forms
             // llYusuke
             // 
             this.llYusuke.AutoSize = true;
-            this.llYusuke.Location = new System.Drawing.Point(84, 433);
+            this.llYusuke.Location = new System.Drawing.Point(87, 434);
             this.llYusuke.Name = "llYusuke";
             this.llYusuke.Size = new System.Drawing.Size(106, 13);
             this.llYusuke.TabIndex = 10;
@@ -187,7 +187,7 @@ namespace NppKate.Forms
             // llCCA30L
             // 
             this.llCCA30L.AutoSize = true;
-            this.llCCA30L.Location = new System.Drawing.Point(275, 433);
+            this.llCCA30L.Location = new System.Drawing.Point(277, 434);
             this.llCCA30L.Name = "llCCA30L";
             this.llCCA30L.Size = new System.Drawing.Size(203, 13);
             this.llCCA30L.TabIndex = 11;

@@ -139,6 +139,7 @@ namespace NppKate.Forms
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(405, 21);
             this.comboBox1.TabIndex = 2;
+            this.comboBox1.Visible = false;
             // 
             // panel1
             // 
