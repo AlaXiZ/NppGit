@@ -48,7 +48,7 @@ namespace NppKate.Modules.GitCore
         private const string BRANCH_FOLDER_INDEX = "BRANCH_FOLDER";
         private const string REMOTE_BRANCH_INDEX = "REMOTE_BRANCH";
 
-        private const string INDEX_LOCK = "index.lock";
+        private const string FILE_LOCK = "head.lock";
 
         //private readonly Color CurrentBranchColor = Color.FromArgb(10,192,56);
         private readonly Color DocumentRepoColor = Color.DeepSkyBlue;
@@ -220,7 +220,7 @@ namespace NppKate.Modules.GitCore
 
         private void WatchersOnChange(object sender, FileSystemEventArgs e)
         {
-            if (e.ChangeType == WatcherChangeTypes.Deleted && INDEX_LOCK.Equals(e.Name, System.StringComparison.InvariantCultureIgnoreCase))
+            if (e.ChangeType == WatcherChangeTypes.Deleted && FILE_LOCK.Equals(e.Name, System.StringComparison.InvariantCultureIgnoreCase))
             {
                 UpdateBranch(GitCore.GetRepoName(GitCore.GetRootDir(e.FullPath)));
             }
@@ -272,6 +272,7 @@ namespace NppKate.Modules.GitCore
                                 currentBranch.Text = b.Name;
                                 branch.ImageKey = CURBRANCH_INDEX;
                                 branch.SelectedImageKey = CURBRANCH_INDEX;
+                                branch.Text += string.Empty;
                             }));
                         }
                         else
@@ -280,6 +281,7 @@ namespace NppKate.Modules.GitCore
                             {
                                 branch.ImageKey = BRANCH_INDEX;
                                 branch.SelectedImageKey = BRANCH_INDEX;
+                                branch.Text += string.Empty;
                             }));
                         }
                     }
