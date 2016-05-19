@@ -26,58 +26,20 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading;
+using System.Windows.Forms;
 
-namespace restart
+namespace NppKate
 {
-    class Program
+    public partial class GitStatus : Form
     {
-        static void Main(string[] args)
+        public GitStatus()
         {
-            Thread.Sleep(100);
-            try
-            {
-                string procName = "";
-                string exePath = "";
-                for (int i = 0; i < args.Length; i++)
-                {
-                    if (args[i].StartsWith("-name"))
-                    {
-                        i++;
-                        procName = args[i];
-                    }
-                    else if (args[i].StartsWith("-path"))
-                    {
-                        i++;
-                        exePath = args[i];
-                    }
-                }
+            InitializeComponent();
+        }
 
-                var proc = Process.GetProcesses().Where(x => x.ProcessName.Contains(procName)).FirstOrDefault();
-                try
-                {
-                    if (proc != null && proc.Id != 0)
-                        proc.WaitForExit();
-                }
-                catch (Exception ex)
-                {
-                    Thread.Sleep(100);
-                    Console.WriteLine(ex.Message);
-                    Console.WriteLine(ex.StackTrace);
-                }
-
-                var p = new Process();
-                p.StartInfo.FileName = exePath;
-                p.Start();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
-                //Console.ReadLine();
-            }
+        private void button1_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Button say!");
         }
     }
 }

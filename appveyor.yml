@@ -1,0 +1,44 @@
+version: 0.4.1.{build}
+branches:
+  only:
+  - master
+  - develop
+skip_non_tags: true
+configuration: Release
+platform: x86
+clone_folder: c:\projects\kate
+init:
+- cmd: git config --global core.autocrlf "false"
+assembly_info:
+  patch: true
+  file: '**\AssemblyInfo.*'
+  assembly_version: '{version}'
+  assembly_file_version: '{version}'
+  assembly_informational_version: '{version}'
+environment:
+  BUILD_SUFFIX: RELEASE
+install:
+- ps: cinst cs-script
+before_build:
+- cmd: nuget restore
+build:
+  project: NppKate.sln
+  verbosity: minimal
+after_build:
+- cmd: cscs build\KatePack.cs
+artifacts:
+- path: bin\NppKate_$(APPVEYOR_BUILD_VERSION)_$(BUILD_SUFFIX).zip
+  name: ARCHIVE-BUILD
+deploy:
+- provider: GitHub
+  tag: $(APPVEYOR_BUILD_VERSION)
+  release: NppKate v$(APPVEYOR_BUILD_VERSION)
+  description: $(APPVEYOR_REPO_COMMIT_MESSAGE_EXTENDED)
+  auth_token:
+    secure: yF5rZFueiDl3K06rjEWayGHlURF+EPfEs43TStNa6Bbak7iNWvzolpbV/6LV540E
+  artifact: ARCHIVE-BUILD
+  draft: true
+  prerelease: false
+  force_update: true
+  on:
+    branch: master

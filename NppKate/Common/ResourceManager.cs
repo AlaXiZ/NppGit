@@ -1,4 +1,4 @@
-/*
+﻿/*
 Copyright (c) 2015-2016, Schadin Alexey (schadin@gmail.com)
 All rights reserved.
 
@@ -26,58 +26,43 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading;
+using System.IO;
 
-namespace restart
+namespace NppKate.Common
 {
-    class Program
+    public class ResourceManager : IDisposable
     {
-        static void Main(string[] args)
+        private IntPtr _hResourceDll = IntPtr.Zero;
+
+        public ResourceManager()
         {
-            Thread.Sleep(100);
-            try
+            var dllPath = Path.Combine(Npp.NppUtils.PluginDir, Properties.Resources.ExternalResourceDll);
+            if (!File.Exists(dllPath))
             {
-                string procName = "";
-                string exePath = "";
-                for (int i = 0; i < args.Length; i++)
-                {
-                    if (args[i].StartsWith("-name"))
-                    {
-                        i++;
-                        procName = args[i];
-                    }
-                    else if (args[i].StartsWith("-path"))
-                    {
-                        i++;
-                        exePath = args[i];
-                    }
-                }
-
-                var proc = Process.GetProcesses().Where(x => x.ProcessName.Contains(procName)).FirstOrDefault();
-                try
-                {
-                    if (proc != null && proc.Id != 0)
-                        proc.WaitForExit();
-                }
-                catch (Exception ex)
-                {
-                    Thread.Sleep(100);
-                    Console.WriteLine(ex.Message);
-                    Console.WriteLine(ex.StackTrace);
-                }
-
-                var p = new Process();
-                p.StartInfo.FileName = exePath;
-                p.Start();
+                throw new Exception(string.Format("File with resources {0} not exists!", dllPath));
             }
-            catch (Exception ex)
+            else
             {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
-                //Console.ReadLine();
+                _hResourceDll = Interop.Win32.LoadLibraryEx(dllPath, IntPtr.Zero, Interop.LoadLibraryFlags.LOAD_LIBRARY_AS_DATAFILE);
+                if (_hResourceDll == IntPtr.Zero)
+                {
+                    throw new Exception(string.Format("Library {0} not loaded!", dllPath));
+                }
             }
+        }
+
+        public void Dispose()
+        {
+            if (_hResourceDll != IntPtr.Zero)
+            {
+                Interop.Win32.FreeLibrary(_hResourceDll);
+            }
+        }
+
+        public IntPtr LoadImage(string resourceName, int width, int height)
+        {
+            return Interop.Win32.LoadImage(_hResourceDll, resourceName, Interop.Win32.IMAGE_BITMAP, 
+                width, height, Interop.Win32.LR_LOADMAP3DCOLORS | Interop.Win32.LR_LOADTRANSPARENT);
         }
     }
 }

@@ -26,58 +26,15 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading;
 
-namespace restart
+namespace NppKate.Common
 {
-    class Program
+    public class TabEventArgs : EventArgs
     {
-        static void Main(string[] args)
+        public uint TabId { get; protected set; }
+        public TabEventArgs(uint tabId)
         {
-            Thread.Sleep(100);
-            try
-            {
-                string procName = "";
-                string exePath = "";
-                for (int i = 0; i < args.Length; i++)
-                {
-                    if (args[i].StartsWith("-name"))
-                    {
-                        i++;
-                        procName = args[i];
-                    }
-                    else if (args[i].StartsWith("-path"))
-                    {
-                        i++;
-                        exePath = args[i];
-                    }
-                }
-
-                var proc = Process.GetProcesses().Where(x => x.ProcessName.Contains(procName)).FirstOrDefault();
-                try
-                {
-                    if (proc != null && proc.Id != 0)
-                        proc.WaitForExit();
-                }
-                catch (Exception ex)
-                {
-                    Thread.Sleep(100);
-                    Console.WriteLine(ex.Message);
-                    Console.WriteLine(ex.StackTrace);
-                }
-
-                var p = new Process();
-                p.StartInfo.FileName = exePath;
-                p.Start();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
-                //Console.ReadLine();
-            }
+            TabId = tabId;
         }
     }
 }

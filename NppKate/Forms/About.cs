@@ -26,58 +26,48 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading;
+using System.Windows.Forms;
 
-namespace restart
+namespace NppKate.Forms
 {
-    class Program
+    public partial class About : Form
     {
-        static void Main(string[] args)
+        public About()
         {
-            Thread.Sleep(100);
-            try
-            {
-                string procName = "";
-                string exePath = "";
-                for (int i = 0; i < args.Length; i++)
-                {
-                    if (args[i].StartsWith("-name"))
-                    {
-                        i++;
-                        procName = args[i];
-                    }
-                    else if (args[i].StartsWith("-path"))
-                    {
-                        i++;
-                        exePath = args[i];
-                    }
-                }
+            InitializeComponent();
+        }
 
-                var proc = Process.GetProcesses().Where(x => x.ProcessName.Contains(procName)).FirstOrDefault();
-                try
-                {
-                    if (proc != null && proc.Id != 0)
-                        proc.WaitForExit();
-                }
-                catch (Exception ex)
-                {
-                    Thread.Sleep(100);
-                    Console.WriteLine(ex.Message);
-                    Console.WriteLine(ex.StackTrace);
-                }
+        private void About_Load(object sender, EventArgs e)
+        {
+            lPluginName.Text = Properties.Resources.PluginName;
+            lVersion.Text = this.GetType().Assembly.GetName().Version.ToString();
+            tbChangeLog.Text = Properties.Resources.ChangeLog;
+            tbLicense.Text = Properties.Resources.LICENSE;
+        }
 
-                var p = new Process();
-                p.StartInfo.FileName = exePath;
-                p.Start();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
-                //Console.ReadLine();
-            }
+        private void llMail_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            llMail.LinkVisited = true; 
+            System.Diagnostics.Process.Start("mailto:" + llMail.Text + "?subject=NppKate");
+        }
+
+        private void llIssue_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            llIssue.LinkVisited = true;
+            System.Diagnostics.Process.Start("https://nppkate.myjetbrains.com/youtrack/issues");
+
+        }
+
+        private void llYusuke_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            llYusuke.LinkVisited = true;
+            System.Diagnostics.Process.Start("http://p.yusukekamiyamane.com/");
+        }
+
+        private void llCCA30L_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            llCCA30L.LinkVisited = true;
+            System.Diagnostics.Process.Start("http://creativecommons.org/licenses/by/3.0/");
         }
     }
 }

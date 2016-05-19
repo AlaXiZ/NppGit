@@ -1,4 +1,4 @@
-/*
+﻿/*
 Copyright (c) 2015-2016, Schadin Alexey (schadin@gmail.com)
 All rights reserved.
 
@@ -25,59 +25,29 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+using LibGit2Sharp;
 using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading;
+using System.Collections.Generic;
 
-namespace restart
+namespace NppKate.Modules.GitCore
 {
-    class Program
+    public interface IGitCore
     {
-        static void Main(string[] args)
-        {
-            Thread.Sleep(100);
-            try
-            {
-                string procName = "";
-                string exePath = "";
-                for (int i = 0; i < args.Length; i++)
-                {
-                    if (args[i].StartsWith("-name"))
-                    {
-                        i++;
-                        procName = args[i];
-                    }
-                    else if (args[i].StartsWith("-path"))
-                    {
-                        i++;
-                        exePath = args[i];
-                    }
-                }
-
-                var proc = Process.GetProcesses().Where(x => x.ProcessName.Contains(procName)).FirstOrDefault();
-                try
-                {
-                    if (proc != null && proc.Id != 0)
-                        proc.WaitForExit();
-                }
-                catch (Exception ex)
-                {
-                    Thread.Sleep(100);
-                    Console.WriteLine(ex.Message);
-                    Console.WriteLine(ex.StackTrace);
-                }
-
-                var p = new Process();
-                p.StartInfo.FileName = exePath;
-                p.Start();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
-                //Console.ReadLine();
-            }
-        }
+        // Event
+        event Common.EventHandler<RepositoryChangedEventArgs> OnActiveRepositoryChanged;
+        event Common.EventHandler<RepositoryChangedEventArgs> OnDocumentReposituryChanged;
+        event Common.EventHandler<RepositoryChangedEventArgs> OnRepositoryAdded;
+        event Common.EventHandler<RepositoryChangedEventArgs> OnRepositoryRemoved;
+        // Properties
+        RepositoryLink ActiveRepository { get; }
+        RepositoryLink DocumentRepository { get; }
+        List<RepositoryLink> Repositories { get; }
+        string CurrentBranch { get; }
+        // Method
+        bool SwitchByPath(string path);
+        bool SwitchByName(string name);
+        void RemoveRepository(string name);
+        FileStatus GetFileStatus(string filePath);
+        RepositoryLink GetRepositoryByName(string name);
     }
 }

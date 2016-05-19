@@ -26,58 +26,24 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading;
+using System.Drawing;
 
-namespace restart
+namespace NppKate.Common
 {
-    class Program
+    public interface IModuleManager
     {
-        static void Main(string[] args)
-        {
-            Thread.Sleep(100);
-            try
-            {
-                string procName = "";
-                string exePath = "";
-                for (int i = 0; i < args.Length; i++)
-                {
-                    if (args[i].StartsWith("-name"))
-                    {
-                        i++;
-                        procName = args[i];
-                    }
-                    else if (args[i].StartsWith("-path"))
-                    {
-                        i++;
-                        exePath = args[i];
-                    }
-                }
+        event Action OnToolbarRegisterEvent;
+        event Action OnSystemInit;
+        event EventHandler<TabEventArgs> OnTabChangeEvent;
+        event EventHandler<CommandItemClickEventArgs> OnCommandItemClick;
 
-                var proc = Process.GetProcesses().Where(x => x.ProcessName.Contains(procName)).FirstOrDefault();
-                try
-                {
-                    if (proc != null && proc.Id != 0)
-                        proc.WaitForExit();
-                }
-                catch (Exception ex)
-                {
-                    Thread.Sleep(100);
-                    Console.WriteLine(ex.Message);
-                    Console.WriteLine(ex.StackTrace);
-                }
+        int RegisterCommandItem(CommandItem menuItem);
+        void RegisterDockForm(Type formClass, int cmdId, bool updateWithChangeContext, NppTbMsg uMask = NppTbMsg.DWS_PARAMSALL | NppTbMsg.DWS_DF_CONT_RIGHT, IntPtr? hBitmap = null);
+        void RegisterDockForm(int indexId, DockDialogData dlgData);
+        void AddToolbarButton(int cmdId, string iconName);
+        bool ToogleFormState(int cmdId);
+        void SetCheckedMenu(int cmdId, bool isChecked);
 
-                var p = new Process();
-                p.StartInfo.FileName = exePath;
-                p.Start();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
-                //Console.ReadLine();
-            }
-        }
+        ResourceManager ResourceManager { get; }
     }
 }

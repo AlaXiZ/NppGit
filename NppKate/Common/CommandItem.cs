@@ -1,4 +1,4 @@
-/*
+﻿/*
 Copyright (c) 2015-2016, Schadin Alexey (schadin@gmail.com)
 All rights reserved.
 
@@ -26,58 +26,45 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading;
 
-namespace restart
+namespace NppKate.Common
 {
-    class Program
+    public class CommandItem
     {
-        static void Main(string[] args)
+        public string Name
         {
-            Thread.Sleep(100);
-            try
-            {
-                string procName = "";
-                string exePath = "";
-                for (int i = 0; i < args.Length; i++)
-                {
-                    if (args[i].StartsWith("-name"))
-                    {
-                        i++;
-                        procName = args[i];
-                    }
-                    else if (args[i].StartsWith("-path"))
-                    {
-                        i++;
-                        exePath = args[i];
-                    }
-                }
+            get;
+            set;
+        }
 
-                var proc = Process.GetProcesses().Where(x => x.ProcessName.Contains(procName)).FirstOrDefault();
-                try
-                {
-                    if (proc != null && proc.Id != 0)
-                        proc.WaitForExit();
-                }
-                catch (Exception ex)
-                {
-                    Thread.Sleep(100);
-                    Console.WriteLine(ex.Message);
-                    Console.WriteLine(ex.StackTrace);
-                }
+        public string Hint
+        {
+            get;
+            set;
+        }
 
-                var p = new Process();
-                p.StartInfo.FileName = exePath;
-                p.Start();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
-                //Console.ReadLine();
-            }
+        public ShortcutKey? ShortcutKey
+        {
+            get;
+            set;
+        }
+
+        public Action Action
+        {
+            get;
+            set;
+        }
+
+        public bool Checked
+        {
+            get;
+            set;
+        }
+
+        public bool Selected
+        {
+            get;
+            set;
         }
     }
 }

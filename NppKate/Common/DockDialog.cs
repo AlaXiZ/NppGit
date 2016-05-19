@@ -1,4 +1,4 @@
-/*
+﻿/*
 Copyright (c) 2015-2016, Schadin Alexey (schadin@gmail.com)
 All rights reserved.
 
@@ -25,59 +25,57 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
+using NLog;
+using NppKate.Interop;
+using NppKate.Npp;
 
-namespace restart
+namespace NppKate.Common
 {
-    class Program
+    public class DockDialog : Form, IDockDialog
     {
-        static void Main(string[] args)
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
+
+        protected IDockableManager _manager;
+        protected int _cmdId;
+
+        protected virtual void OnSwitchIn()
         {
-            Thread.Sleep(100);
-            try
-            {
-                string procName = "";
-                string exePath = "";
-                for (int i = 0; i < args.Length; i++)
-                {
-                    if (args[i].StartsWith("-name"))
-                    {
-                        i++;
-                        procName = args[i];
-                    }
-                    else if (args[i].StartsWith("-path"))
-                    {
-                        i++;
-                        exePath = args[i];
-                    }
-                }
+            // Do nothing
+        }
 
-                var proc = Process.GetProcesses().Where(x => x.ProcessName.Contains(procName)).FirstOrDefault();
-                try
-                {
-                    if (proc != null && proc.Id != 0)
-                        proc.WaitForExit();
-                }
-                catch (Exception ex)
-                {
-                    Thread.Sleep(100);
-                    Console.WriteLine(ex.Message);
-                    Console.WriteLine(ex.StackTrace);
-                }
+        protected virtual void OnSwitchOut()
+        {
+            // Do nothing
+        }
 
-                var p = new Process();
-                p.StartInfo.FileName = exePath;
-                p.Start();
-            }
-            catch (Exception ex)
+        public void init(IDockableManager manager, int commandId)
+        {
+            _manager = manager;
+            _cmdId = commandId;
+        }
+
+        protected override void WndProc(ref Message m)
+        {
+            if (m.Msg == (int)WinMsg.WM_NOTIFY)
             {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
-                //Console.ReadLine();
+                tagNMHDR ntf = (tagNMHDR)Marshal.PtrToStructure(m.LParam, typeof(tagNMHDR));
+                //_logger.Trace("DockForm message {0}", (DockMgrMsg)ntf.code);
+                switch (ntf.code) {
+                    case (uint)DockMgrMsg.DMN_CLOSE:
+                        OnSwitchOut();
+                        Win32.SendMessage(NppInfo.Instance.NppHandle, (int)WinMsg.WM_COMMAND, _cmdId, 0);
+                        return;
+                    case (uint)DockMgrMsg.DMN_SWITCHIN:
+                        OnSwitchIn();
+                        return;
+                    case (uint)DockMgrMsg.DMN_SWITCHOFF:
+                        OnSwitchOut();
+                        return;
+                }
             }
+            base.WndProc(ref m);
         }
     }
 }

@@ -25,59 +25,36 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+using NLog;
 using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading;
+using System.IO;
 
-namespace restart
+namespace NppKate.Common
 {
-    class Program
+    public static class GitHelper
     {
-        static void Main(string[] args)
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
+        public static string SaveStreamToFile(Stream input, string fileName, string directory = null)
         {
-            Thread.Sleep(100);
+            if (string.IsNullOrEmpty(directory))
+            {
+                directory = Path.GetTempPath();
+            }
+            var result = Path.Combine(directory, fileName);
             try
             {
-                string procName = "";
-                string exePath = "";
-                for (int i = 0; i < args.Length; i++)
+                using (var outFile = File.Create(result))
                 {
-                    if (args[i].StartsWith("-name"))
-                    {
-                        i++;
-                        procName = args[i];
-                    }
-                    else if (args[i].StartsWith("-path"))
-                    {
-                        i++;
-                        exePath = args[i];
-                    }
+                    input.Seek(0, SeekOrigin.Begin);
+                    input.CopyTo(outFile);
                 }
-
-                var proc = Process.GetProcesses().Where(x => x.ProcessName.Contains(procName)).FirstOrDefault();
-                try
-                {
-                    if (proc != null && proc.Id != 0)
-                        proc.WaitForExit();
-                }
-                catch (Exception ex)
-                {
-                    Thread.Sleep(100);
-                    Console.WriteLine(ex.Message);
-                    Console.WriteLine(ex.StackTrace);
-                }
-
-                var p = new Process();
-                p.StartInfo.FileName = exePath;
-                p.Start();
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
-                //Console.ReadLine();
+                logger.Debug(e, "Stack Trace: ", e.StackTrace);
             }
+            return result;
         }
     }
 }
