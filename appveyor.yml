@@ -29,16 +29,3 @@ after_build:
 artifacts:
 - path: bin\NppKate_$(APPVEYOR_BUILD_VERSION)_$(BUILD_SUFFIX).zip
   name: ARCHIVE-BUILD
-deploy:
-- provider: GitHub
-  tag: $(APPVEYOR_BUILD_VERSION)
-  release: NppKate v$(APPVEYOR_BUILD_VERSION)
-  description: $(APPVEYOR_REPO_COMMIT_MESSAGE_EXTENDED)
-  auth_token:
-    secure: yF5rZFueiDl3K06rjEWayGHlURF+EPfEs43TStNa6Bbak7iNWvzolpbV/6LV540E
-  artifact: ARCHIVE-BUILD
-  draft: true
-  prerelease: false
-  force_update: true
-  on:
-    branch: master
