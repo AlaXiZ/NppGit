@@ -148,7 +148,7 @@ namespace NppKate.Forms
             this.llIssue.Size = new System.Drawing.Size(204, 13);
             this.llIssue.TabIndex = 7;
             this.llIssue.TabStop = true;
-            this.llIssue.Text = "nppkate.myjetbrains.com/youtrack/issues";
+            this.llIssue.Text = "nppgit.myjetbrains.com/youtrack/issues";
             this.llIssue.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.llIssue_LinkClicked);
             // 
             // tbLicense
