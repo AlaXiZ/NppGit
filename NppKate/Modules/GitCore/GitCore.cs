@@ -161,6 +161,13 @@ namespace NppKate.Modules.GitCore
                 _doc = XDocument.Load(fileName);
                 _repos = (from e in _doc.Descendants("Repository")
                              select e).ToDictionary(e => e.Attribute("Name").Value, (e) => new RepositoryLink(e.Value));
+                foreach (var name in  _repos.Keys.ToList())
+                {
+                    if (_repos[name].Name == null)
+                    {
+                        _repos.Remove(name);
+                    }
+                }
                 if (_repos.ContainsKey(Settings.GitCore.LastActiveRepository))
                 {
                     _currentRepo = _repos[Settings.GitCore.LastActiveRepository];
@@ -323,6 +330,8 @@ namespace NppKate.Modules.GitCore
 
         public static string GetRepoName(string repoDir)
         {
+            if (!Directory.Exists(repoDir)) return null;
+
             _logger.Trace($"GetRepoName path={repoDir}");
             var remote = "";
             using (var repo = new Repository(repoDir))
