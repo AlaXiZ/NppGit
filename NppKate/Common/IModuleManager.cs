@@ -43,6 +43,9 @@ namespace NppKate.Common
         void AddToolbarButton(int cmdId, string iconName);
         bool ToogleFormState(int cmdId);
         void SetCheckedMenu(int cmdId, bool isChecked);
+        object GetService(Type interfaceType);
+        void RegisterService(Type interfaceType, object instance);
+        bool ServiceExists(Type interfaceType);
 
         ResourceManager ResourceManager { get; }
     }

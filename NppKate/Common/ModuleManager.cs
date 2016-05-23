@@ -46,16 +46,21 @@ namespace NppKate.Common
         private Dictionary<int, DockDialogData> _dockDialog;
         private Dictionary<int, IntPtr> _hwnds;
         private Dictionary<string, List<CommandItem>> _cmdList;
+        //TODO: Remove menu cache
         private Dictionary<uint, string> _menuCache;
         private bool _canEvent = false;
         private ulong _currentFormId = ulong.MaxValue;
         private ResourceManager _resManager = null;
+        // TODO: Remove hooks
         private LocalWindowsHook winHookProcRet;
         private LocalWindowsHook winHookProc;
+        private Dictionary<Type, object> _services;
+
         public event Action OnToolbarRegisterEvent;
         public event Action OnSystemInit;
         public event EventHandler<TabEventArgs> OnTabChangeEvent;
         public event EventHandler<CommandItemClickEventArgs> OnCommandItemClick;
+
         public ModuleManager()
         {
             _modules = new LinkedList<IModule>();
@@ -64,6 +69,7 @@ namespace NppKate.Common
             _menuCache = new Dictionary<uint, string>();
             _dockDialog = new Dictionary<int, DockDialogData>();
             _hwnds = new Dictionary<int, IntPtr>();
+            _services = new Dictionary<Type, object>();
         }
 
         public void MessageProc(SCNotification sn)
@@ -359,7 +365,23 @@ namespace NppKate.Common
             _dockDialog.Add(indexId, dlgData);
         }
 
-#region "Context menu"
+        public object GetService(Type interfaceType)
+        {
+            return _services[interfaceType];
+        }
+
+        public void RegisterService(Type interfaceType, object instance)
+        {
+            if (_services.ContainsKey(interfaceType)) return;
+            _services.Add(interfaceType, instance);
+        }
+
+        public bool ServiceExists(Type interfaceType)
+        {
+            return _services.ContainsKey(interfaceType);
+        }
+
+        #region "Context menu"
         private static readonly string ItemTemplate = "<Item FolderName=\"{0}\" PluginEntryName=\"{1}\" PluginCommandItemName=\"{2}\" ItemNameAs=\"{3}\"/>";
         private static readonly string ItemSeparator = "<Item FolderName=\"{0}\" id = \"0\" />";
         private static readonly string ItemSeparator2 = "<Item id=\"0\" />";
@@ -429,6 +451,6 @@ namespace NppKate.Common
                 NppUtils.SetLang(LangType.L_XML);
             }
         }
-#endregion
+        #endregion
     }
 }
