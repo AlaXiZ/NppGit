@@ -36,46 +36,7 @@ using NppKate.Resources;
 
 namespace NppKate.Modules.TortoiseGitFeatures
 {
-    public enum TortoiseGitCommand : uint
-    {
-        Fetch = 0x0001,
-        Log = 0x0020,
-        Commit = 0x0004,
-        Add,
-        Revert,
-        Switch = 0x0200,
-        Blame = 0x0010,
-        Pull = 0x0002,
-        Push = 0x0008,
-        StashSave = 0x0040,
-        StashPop = 0x0080,
-        RepoStatus = 0x0100,
-        Diff,
-        Rebase,
-        ShowCompare,
-        RepoBrowser,
-        StashApply,
-        RefBrowse,
-        Ignore,
-        CleanUp,
-        Resolve,
-        RepoCreate,
-        Export,
-        Merge,
-        Remove,
-        Rename,
-        ConflictEditor,
-        RefLog,
-        RevisionGraph,
-        Tag,
-        Daemon,
-        PGPfp,
-        Clone,
-        ImportPatch,
-        FormatPatch
-    }
-
-    public class TortoiseGitHelper : IModule
+    public class TortoiseGitHelper : IModule, ITortoiseGit
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -937,6 +898,11 @@ namespace NppKate.Modules.TortoiseGitFeatures
         public void Final()
         {
             logger.Debug("Finalization");
+        }
+
+        public void RunCommand(TortoiseGitCommand command, string path, string logMessage = null, bool isAutoClose = false)
+        {
+            StartCommand(CreateCommand(command, path, logMessage, (byte)(isAutoClose ? 1 : 0)));
         }
     }
 }

@@ -170,6 +170,8 @@
     <Compile Include="Interop\LocalWinEventHook.cs" />
     <Compile Include="Interop\Win32.cs" />
     <Compile Include="Main.cs" />
+    <Compile Include="Modules\TortoiseGitFeatures\ITortoiseGit.cs" />
+    <Compile Include="Modules\TortoiseGitFeatures\TortoiseGitCommand.cs" />
     <Compile Include="Npp\NppInfo.cs" />
     <Compile Include="Interop\NppStruct.cs" />
     <Compile Include="Common\MessageEventArgs.cs" />
