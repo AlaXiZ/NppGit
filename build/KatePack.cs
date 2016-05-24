@@ -15,7 +15,7 @@ class Script
     private const string DEPLOY_ARCHIVE = "NppKate_{0}_{1}.zip";
     private static readonly IList<string> _exclude = new ReadOnlyCollection<string>(
             new List<string> {
-                ".pdb", ".lib", ".exp", ".config", ".xml", "linux", "osx"
+                ".pdb", ".lib", ".exp", ".config", ".xml", "linux", "osx", ".iobj", ".ipdb"
             });
     private static readonly IList<string> _rootFiles = new ReadOnlyCollection<string>(
             new List<string> {
@@ -24,10 +24,10 @@ class Script
     
     private static string _rootDir = "";
     private static string _config = "Release";
-	private static string _suffix = "Release";
+    private static string _suffix = "Release";
     private static bool _fromEnv = true;
-	private static string _version = "";
-	
+    private static string _version = "";
+    
     [STAThread]
     static public void Main(string[] args)
     {
@@ -57,7 +57,7 @@ class Script
         }
         if (_fromEnv)
         {
-			System.Console.WriteLine("Load params from environment variables");
+            System.Console.WriteLine("Load params from environment variables");
             _rootDir = System.Environment.GetEnvironmentVariable("APPVEYOR_BUILD_FOLDER");
             System.Console.WriteLine("Root directory: {0}", _rootDir);
             _config = System.Environment.GetEnvironmentVariable("CONFIGURATION");
@@ -73,25 +73,25 @@ class Script
         // Задаем рабочие папки
         var configDir = new DirectoryInfo(Path.Combine(_rootDir, "bin", _config));
         
-		System.Console.WriteLine("Search work directories...");
+        System.Console.WriteLine("Search work directories...");
         var pathDir = Path.Combine(_rootDir, "bin", DEPLOY_DIR);
         if (!Directory.Exists(pathDir))
         {
-			System.Console.WriteLine("Create directory {0}", pathDir);
+            System.Console.WriteLine("Create directory {0}", pathDir);
             Directory.CreateDirectory(pathDir);
         }
         var deployDir = new DirectoryInfo(pathDir);
         pathDir = Path.Combine(_rootDir, "bin", DEPLOY_DIR, DEPLOY_DLL_DIR);
         if (!Directory.Exists(pathDir))
         {
-			System.Console.WriteLine("Create directory {0}", pathDir);
+            System.Console.WriteLine("Create directory {0}", pathDir);
             Directory.CreateDirectory(pathDir);
         }
         var deployDll = new DirectoryInfo(pathDir);
         
         ClearDir(deployDir);
-		System.Console.WriteLine("Copying files...");
-		CopyFiles(configDir, deployDir, deployDll);
+        System.Console.WriteLine("Copying files...");
+        CopyFiles(configDir, deployDir, deployDll);
         Archive(deployDir);
     }
     
@@ -100,15 +100,15 @@ class Script
         System.Console.WriteLine("Clear directory: {0}", dirInfo.FullName);
         foreach(var f in dirInfo.EnumerateFiles()) 
         {
-			try 
-			{
-				System.Console.WriteLine("Delete file {0}", f.Name);
-				f.Delete();
-			} 
-			catch (Exception e) 
-			{
+            try 
+            {
+                System.Console.WriteLine("Delete file {0}", f.Name);
+                f.Delete();
+            } 
+            catch (Exception e) 
+            {
                 System.Console.WriteLine("{0}\r\n{1}\r\n{2}\r\n", e.Message, e.InnerException, e.StackTrace);
-			}
+            }
         }
         foreach (var d in dirInfo.EnumerateDirectories())
         {
@@ -119,17 +119,17 @@ class Script
     private static void CopyFiles(DirectoryInfo source, DirectoryInfo deployDir, DirectoryInfo deployDll)
     {
         foreach(var f in source.GetFiles()) 
-		{
-			if (!_exclude.Contains(f.Extension)) 
-			{
-				var destination = "";
-				if (_rootFiles.Contains(f.Name)) 
-					destination = Path.Combine(deployDir.FullName, f.Name);
-				else 
-					destination = Path.Combine(deployDll.FullName, f.Name);
-				System.Console.WriteLine("Copying files: {0} -> {1}", f.FullName, destination);
-				f.CopyTo(destination);
-			}
+        {
+            if (!_exclude.Contains(f.Extension)) 
+            {
+                var destination = "";
+                if (_rootFiles.Contains(f.Name)) 
+                    destination = Path.Combine(deployDir.FullName, f.Name);
+                else 
+                    destination = Path.Combine(deployDll.FullName, f.Name);
+                System.Console.WriteLine("Copying files: {0} -> {1}", f.FullName, destination);
+                f.CopyTo(destination);
+            }
         }
 
         foreach(var d in source.GetDirectories())
@@ -137,14 +137,14 @@ class Script
             CopyDirectories(d, deployDll);
         }
     }
-	
-	private static void CopyDirectories(DirectoryInfo source, DirectoryInfo destination) 
-	{
+    
+    private static void CopyDirectories(DirectoryInfo source, DirectoryInfo destination) 
+    {
         if (_exclude.Contains(source.Name))
             return;
 
         var dest = Path.Combine(destination.FullName, source.Name);
-		System.Console.WriteLine("Copying files: {0} -> {1}", source.FullName, dest);
+        System.Console.WriteLine("Copying files: {0} -> {1}", source.FullName, dest);
         if (!Directory.Exists(dest))
         {
             Directory.CreateDirectory(dest);
@@ -154,7 +154,7 @@ class Script
             if (!_exclude.Contains(f.Extension))
             {
                 var destF = Path.Combine(dest, f.Name);
-				System.Console.WriteLine("Copying files: {0} -> {1}", f.FullName, destF);
+                System.Console.WriteLine("Copying files: {0} -> {1}", f.FullName, destF);
                 f.CopyTo(destF);
             }
         }
@@ -162,17 +162,17 @@ class Script
         {
             CopyDirectories(d, new DirectoryInfo(dest));
         }
-	}
-	
-	private static void Archive(DirectoryInfo deployDir) 
-	{
+    }
+    
+    private static void Archive(DirectoryInfo deployDir) 
+    {
         System.Console.WriteLine("Compressing directory: {0}", deployDir.FullName);
         var archName = Path.Combine(_rootDir, "bin", string.Format(DEPLOY_ARCHIVE, _version, _suffix));
-		if (File.Exists(archName)) {
-			System.Console.WriteLine("File exists: {0}", archName);
-			new FileInfo(archName).Delete();
-		}
-		ZipFile.CreateFromDirectory(deployDir.FullName, archName, CompressionLevel.Optimal, false);
+        if (File.Exists(archName)) {
+            System.Console.WriteLine("File exists: {0}", archName);
+            new FileInfo(archName).Delete();
+        }
+        ZipFile.CreateFromDirectory(deployDir.FullName, archName, CompressionLevel.Optimal, false);
         System.Console.WriteLine("Archive created: {0}", archName);
     }
-}	
+}   
