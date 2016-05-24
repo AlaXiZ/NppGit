@@ -65,7 +65,7 @@ namespace NppKate.Forms
         private void contextMenuSnippets_Opening(object sender, CancelEventArgs e)
         {
             var isSelected = false; // lbSnippets.SelectedIndex != -1;
-            miInsert.Enabled = miEdit.Enabled = miDelete.Enabled = isSelected;
+            miEdit.Enabled = miDelete.Enabled = isSelected;
         }
 
         private void miAdd_Click(object sender, EventArgs e)
