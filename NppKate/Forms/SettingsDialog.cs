@@ -75,6 +75,9 @@ namespace NppKate.Forms
             chlModules.SetItemChecked(3, Settings.Modules.Snippets);
 
             //chlModules.SetItemChecked(4, Settings.Modules.PSSE);
+
+            chbGroupByCategory.Checked = Settings.Snippets.IsGroupByCategory;
+            chbHideByExt.Checked = Settings.Snippets.IsHideByExtention;
         }
 
         private uint GetButtonMask()
@@ -112,6 +115,9 @@ namespace NppKate.Forms
             Settings.Modules.SQLIDE = chlModules.GetItemChecked(2);
             Settings.Modules.Snippets = chlModules.GetItemChecked(3);
             //Settings.Modules.PSSE = chlModules.GetItemChecked(4);
+
+            Settings.Snippets.IsGroupByCategory = chbGroupByCategory.Checked;
+            Settings.Snippets.IsHideByExtention = chbHideByExt.Checked;
         }
 
         private void bOk_Click(object sender, EventArgs e)

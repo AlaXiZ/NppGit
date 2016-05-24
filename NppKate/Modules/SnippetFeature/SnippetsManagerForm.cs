@@ -31,14 +31,20 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using NppKate.Common;
+using System.Linq;
 
 namespace NppKate.Forms
 {
     public partial class SnippetsManagerForm : DockDialog, FormDockable
     {
+        private bool _isGrouping = true;
+        private bool _isHiding = false;
+
         public SnippetsManagerForm()
         {
             InitializeComponent();
+            _isGrouping = Settings.Snippets.IsGroupByCategory;
+            _isHiding = Settings.Snippets.IsHideByExtention;
         }
 
         public Bitmap TabIcon
@@ -58,7 +64,7 @@ namespace NppKate.Forms
 
         private void contextMenuSnippets_Opening(object sender, CancelEventArgs e)
         {
-            var isSelected = lbSnippets.SelectedIndex != -1;
+            var isSelected = false; // lbSnippets.SelectedIndex != -1;
             miInsert.Enabled = miEdit.Enabled = miDelete.Enabled = isSelected;
         }
 
@@ -73,19 +79,26 @@ namespace NppKate.Forms
 
         private void reloadSnippets()
         {
-            lbSnippets.BeginUpdate();
-            try
+            if (_isGrouping)
             {
-                lbSnippets.Items.Clear();
-                foreach(var s in SnippetManager.Instance.Snippets.Values)
+                var categories = SnippetManager.Instance.GetCategories();
+                var allSnippets = SnippetManager.Instance.Snippets;
+                categories.Sort();
+                foreach (var cat in categories)
                 {
-                    lbSnippets.Items.Add(s.Name);
+                    var catItem = tvSnippets.Nodes.Add(cat);
+                    var snips = allSnippets.Values.Where(s => s.Category == cat).OrderBy(s => s.Name);
+                    foreach (var s in snips)
+                    {
+                        catItem.Nodes.Add(s.Name);
+                    }
                 }
-                lbSnippets.Sorted = true;
-            }
-            finally
+            } else
             {
-                lbSnippets.EndUpdate();
+                foreach (var s in SnippetManager.Instance.Snippets.Values.OrderBy(s => s.Name))
+                {
+                    tvSnippets.Nodes.Add(s.Name);
+                }
             }
         }
 
@@ -99,39 +112,39 @@ namespace NppKate.Forms
 
         private void miDelete_Click(object sender, EventArgs e)
         {
-            var selectedSnippet = lbSnippets.SelectedItem as string;
-            if (MessageBox.Show(string.Format("Delete snippet \"{0}\"?", selectedSnippet), "Warning", 
-                MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-            {
-                SnippetManager.Instance.RemoveSnippet(selectedSnippet);
-                lbSnippets.Items.RemoveAt(lbSnippets.SelectedIndex);
-            }
+            //var selectedSnippet = lbSnippets.SelectedItem as string;
+            //if (MessageBox.Show(string.Format("Delete snippet \"{0}\"?", selectedSnippet), "Warning", 
+            //    MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            //{
+            //    SnippetManager.Instance.RemoveSnippet(selectedSnippet);
+            //    lbSnippets.Items.RemoveAt(lbSnippets.SelectedIndex);
+            //}
         }
 
         private void miEdit_Click(object sender, EventArgs e)
         {
-            var dlg = new SnippetEdit();
-            dlg.SnippetText = lbSnippets.SelectedItem as string;
-            if (dlg.ShowDialog() == DialogResult.OK)
-            {
-                reloadSnippets();
-            }
+            //var dlg = new SnippetEdit();
+            //dlg.SnippetText = lbSnippets.SelectedItem as string;
+            //if (dlg.ShowDialog() == DialogResult.OK)
+            //{
+            //    reloadSnippets();
+            //}
         }
 
         private void lbSnippets_DoubleClick(object sender, EventArgs e)
         {
-            if (lbSnippets.SelectedIndex != -1)
-            {
-                InsertSnippet(lbSnippets.SelectedItem as string);
-            }
+            //if (lbSnippets.SelectedIndex != -1)
+            //{
+            //    InsertSnippet(lbSnippets.SelectedItem as string);
+            //}
         }
 
         private void miInsert_Click(object sender, EventArgs e)
         {
-            if (lbSnippets.SelectedIndex != -1)
-            {
-                InsertSnippet(lbSnippets.SelectedItem as string);
-            }
+            //if (lbSnippets.SelectedIndex != -1)
+            //{
+            //    InsertSnippet(lbSnippets.SelectedItem as string);
+            //}
         }
 
         private void InsertSnippet(string snippet)

@@ -60,14 +60,16 @@ namespace NppKate.Modules.SnippetFeature
         public bool IsShowInMenu { get; set; }
         public string Category { get; set; }
         public string FileExt { get; set; }
+        public string ShortName { get; set; }
 
-        public Snippet(string name, string snippet, bool isShowInMenu, string category = null, string fileExt = null)
+        public Snippet(string name, string snippet, bool isShowInMenu, string category = null, string fileExt = null, string shortName = null)
         {
             Name = name;
             SnippetText = snippet;
             IsShowInMenu = isShowInMenu;
             Category = category ?? "default";
             FileExt = fileExt ?? "*";
+            ShortName = shortName ?? name;
         }
 
         public Snippet(string name) : this(name, "", false) { }

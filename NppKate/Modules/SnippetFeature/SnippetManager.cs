@@ -43,6 +43,7 @@ namespace NppKate.Modules.SnippetFeature
         private const string ISSHOW = "IsShowInMenu";
         private const string CATEGORY = "Category";
         private const string FILEEXT = "FileExt";
+        private const string SHORTNAME = "ShortName";
 
         private static SnippetManager _instance;
         private static Logger logger = LogManager.GetCurrentClassLogger();
@@ -92,7 +93,8 @@ namespace NppKate.Modules.SnippetFeature
                                             new XAttribute(NAME, snippet.Name), 
                                             new XAttribute(ISSHOW, snippet.IsShowInMenu),
                                             new XAttribute(CATEGORY, snippet.Category),
-                                            new XAttribute(FILEEXT, snippet.FileExt)
+                                            new XAttribute(FILEEXT, snippet.FileExt),
+                                            new XAttribute(SHORTNAME, snippet.ShortName)
                                             );
                 root.Add(element);
                 Save();
@@ -156,7 +158,9 @@ namespace NppKate.Modules.SnippetFeature
                                                         e.Value, 
                                                         bool.Parse(e.Attribute(ISSHOW)?.Value ?? "true"), 
                                                         e.Attribute(CATEGORY)?.Value, 
-                                                        e.Attribute(FILEEXT)?.Value);
+                                                        e.Attribute(FILEEXT)?.Value,
+                                                        e.Attribute(SHORTNAME)?.Value
+                                                        );
                             });
         }
 

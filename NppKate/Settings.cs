@@ -245,6 +245,25 @@ namespace NppKate
                 }
             }
         }
+
+        public static class Snippets
+        {
+            public static bool IsGroupByCategory
+            {
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                get { return Get(true); }
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                set { Set(value); }
+            }
+
+            public static bool IsHideByExtention
+            {
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                get { return Get(false); }
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                set { Set(value); }
+            }
+        }
         #endregion
     }
 }
