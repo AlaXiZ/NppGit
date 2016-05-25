@@ -37,6 +37,8 @@ namespace NppKate.Forms
 {
     public partial class SnippetsManagerForm : DockDialog, FormDockable
     {
+        private const string SNIPPET_INDEX = "";
+        private const string CATEGORY_INDEX = "";
         private bool _isGrouping = true;
         private bool _isHiding = false;
 
@@ -64,8 +66,8 @@ namespace NppKate.Forms
 
         private void contextMenuSnippets_Opening(object sender, CancelEventArgs e)
         {
-            var isSelected = false; // lbSnippets.SelectedIndex != -1;
-            miEdit.Enabled = miDelete.Enabled = isSelected;
+            var node = tvSnippets.SelectedNode;
+            miInsert.Enabled = miEdit.Enabled = miDelete.Enabled = node?.ImageKey == SNIPPET_INDEX;
         }
 
         private void miAdd_Click(object sender, EventArgs e)
@@ -79,27 +81,28 @@ namespace NppKate.Forms
 
         private void reloadSnippets()
         {
+            if (_isGrouping != Settings.Snippets.IsGroupByCategory)
+            {
+                _isGrouping = Settings.Snippets.IsGroupByCategory;
+                tvSnippets.BeginUpdate();
+                tvSnippets.Nodes.Clear();
+                tvSnippets.EndUpdate();
+            }
+            IOrderedEnumerable<Snippet> allSnippets;
             if (_isGrouping)
             {
-                var categories = SnippetManager.Instance.GetCategories();
-                var allSnippets = SnippetManager.Instance.Snippets;
-                categories.Sort();
-                foreach (var cat in categories)
-                {
-                    var catItem = tvSnippets.Nodes.Add(cat);
-                    var snips = allSnippets.Values.Where(s => s.Category == cat).OrderBy(s => s.Name);
-                    foreach (var s in snips)
-                    {
-                        catItem.Nodes.Add(s.Name);
-                    }
-                }
-            } else
-            {
-                foreach (var s in SnippetManager.Instance.Snippets.Values.OrderBy(s => s.Name))
-                {
-                    tvSnippets.Nodes.Add(s.Name);
-                }
+                allSnippets = SnippetManager.Instance.Snippets.Values.OrderBy(s => s.Category).OrderBy(s => s.Name);
             }
+            else
+            {
+                allSnippets = SnippetManager.Instance.Snippets.Values.OrderBy(s => s.Name);
+            }
+            tvSnippets.BeginUpdate();
+            foreach(var s in allSnippets)
+            {
+                SaveSnippet(s);
+            }
+            tvSnippets.EndUpdate();
         }
 
         private void SnippetsManagerForm_VisibleChanged(object sender, EventArgs e)
@@ -150,6 +153,47 @@ namespace NppKate.Forms
         private void InsertSnippet(string snippet)
         {
             Snippets.SetSnippet(snippet);
+        }
+
+        private TreeNode CreateNode(string name, string index, TreeNode parent = null)
+        {
+            var node = new TreeNode
+            {
+                Name = name,
+                Text = name,
+                ImageKey = index,
+                SelectedImageKey = index
+            };
+            node.ContextMenuStrip = contextMenuSnippets;
+            parent?.Nodes.Add(node);
+            return node;
+        }
+
+        private void SaveSnippet(Snippet snippet)
+        {
+            if (_isGrouping)
+            {
+                var catItem = tvSnippets.Nodes.Find(snippet.Category, false)?.FirstOrDefault() ?? CreateCategory(snippet.Category);
+                if (!catItem.Nodes.ContainsKey(snippet.Name))
+                    CreateNode(snippet.Name, SNIPPET_INDEX, catItem);
+            }
+            else
+            {
+                if (!tvSnippets.Nodes.ContainsKey(snippet.Name))
+                    tvSnippets.Nodes.Add(CreateNode(snippet.Name, SNIPPET_INDEX));
+            }
+        }
+
+        private void RemoveSnippet(Snippet snippet)
+        {
+            tvSnippets.Nodes.Find(snippet.Name, true)?.FirstOrDefault()?.Remove();
+        }
+
+        private TreeNode CreateCategory(string category)
+        {
+            var node = CreateNode(category, CATEGORY_INDEX);
+            tvSnippets.Nodes.Add(node);
+            return node;
         }
     }
 }
