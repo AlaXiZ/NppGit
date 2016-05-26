@@ -50,14 +50,16 @@ namespace NppKate.Forms
             }
             try
             {
+                var newSnippet = new Snippet(tbName.Text, tbSnippet.Text, chbIsShowInMenu.Checked, cbCategory.Text, cbExtention.Text, tbShortName.Text);
                 if (string.IsNullOrEmpty(_snippet))
                 {
-                    SnippetManager.Instance.AddSnippet(new Snippet(tbName.Text, tbSnippet.Text, chbIsShowInMenu.Checked, cbCategory.Text, cbExtention.Text));
+                    SnippetManager.Instance.AddSnippet(newSnippet);
                 }
                 else
                 {
-                    SnippetManager.Instance.UpdateSnippet(_snippet, new Snippet(tbName.Text, tbSnippet.Text, chbIsShowInMenu.Checked, cbCategory.Text, cbExtention.Text));
+                    SnippetManager.Instance.UpdateSnippet(_snippet, newSnippet);
                 }
+                _snippet = newSnippet.Name;
             }
             catch(Exception ex)
             {
@@ -70,6 +72,7 @@ namespace NppKate.Forms
         {
             var s = SnippetManager.Instance.Snippets[_snippet];
             tbName.Text = s.Name;
+            tbShortName.Text = s.ShortName;
             tbSnippet.Text = s.SnippetText.Replace("\n", "\r\n");
             chbIsShowInMenu.Checked = s.IsShowInMenu;
             cbCategory.Text = s.Category;
@@ -77,7 +80,7 @@ namespace NppKate.Forms
         }
 
         private string _snippet;
-        public string SnippetText
+        public string SnippetName
         {
             get { return _snippet; }
             set

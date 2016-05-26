@@ -57,8 +57,8 @@ namespace NppKate.Forms
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SnippetEdit));
             this.pTop = new System.Windows.Forms.Panel();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
+            this.lExt = new System.Windows.Forms.Label();
+            this.lCategory = new System.Windows.Forms.Label();
             this.cbExtention = new System.Windows.Forms.ComboBox();
             this.cbCategory = new System.Windows.Forms.ComboBox();
             this.chbIsShowInMenu = new System.Windows.Forms.CheckBox();
@@ -70,6 +70,8 @@ namespace NppKate.Forms
             this.pBottom = new System.Windows.Forms.Panel();
             this.bCancel = new System.Windows.Forms.Button();
             this.bOk = new System.Windows.Forms.Button();
+            this.lShortName = new System.Windows.Forms.Label();
+            this.tbShortName = new System.Windows.Forms.TextBox();
             this.pTop.SuspendLayout();
             this.pMiddle.SuspendLayout();
             this.pBottom.SuspendLayout();
@@ -77,8 +79,10 @@ namespace NppKate.Forms
             // 
             // pTop
             // 
-            this.pTop.Controls.Add(this.label2);
-            this.pTop.Controls.Add(this.label1);
+            this.pTop.Controls.Add(this.lShortName);
+            this.pTop.Controls.Add(this.tbShortName);
+            this.pTop.Controls.Add(this.lExt);
+            this.pTop.Controls.Add(this.lCategory);
             this.pTop.Controls.Add(this.cbExtention);
             this.pTop.Controls.Add(this.cbCategory);
             this.pTop.Controls.Add(this.chbIsShowInMenu);
@@ -91,23 +95,23 @@ namespace NppKate.Forms
             this.pTop.Size = new System.Drawing.Size(624, 93);
             this.pTop.TabIndex = 0;
             // 
-            // label2
+            // lExt
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(546, 9);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(72, 13);
-            this.label2.TabIndex = 7;
-            this.label2.Text = "File extention:";
+            this.lExt.AutoSize = true;
+            this.lExt.Location = new System.Drawing.Point(546, 9);
+            this.lExt.Name = "lExt";
+            this.lExt.Size = new System.Drawing.Size(72, 13);
+            this.lExt.TabIndex = 7;
+            this.lExt.Text = "File extention:";
             // 
-            // label1
+            // lCategory
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(269, 9);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(52, 13);
-            this.label1.TabIndex = 6;
-            this.label1.Text = "Category:";
+            this.lCategory.AutoSize = true;
+            this.lCategory.Location = new System.Drawing.Point(410, 9);
+            this.lCategory.Name = "lCategory";
+            this.lCategory.Size = new System.Drawing.Size(52, 13);
+            this.lCategory.TabIndex = 6;
+            this.lCategory.Text = "Category:";
             // 
             // cbExtention
             // 
@@ -115,15 +119,15 @@ namespace NppKate.Forms
             this.cbExtention.Location = new System.Drawing.Point(549, 27);
             this.cbExtention.Name = "cbExtention";
             this.cbExtention.Size = new System.Drawing.Size(72, 21);
-            this.cbExtention.TabIndex = 2;
+            this.cbExtention.TabIndex = 3;
             // 
             // cbCategory
             // 
             this.cbCategory.FormattingEnabled = true;
-            this.cbCategory.Location = new System.Drawing.Point(272, 28);
+            this.cbCategory.Location = new System.Drawing.Point(413, 28);
             this.cbCategory.Name = "cbCategory";
-            this.cbCategory.Size = new System.Drawing.Size(271, 21);
-            this.cbCategory.TabIndex = 1;
+            this.cbCategory.Size = new System.Drawing.Size(130, 21);
+            this.cbCategory.TabIndex = 2;
             // 
             // chbIsShowInMenu
             // 
@@ -131,7 +135,7 @@ namespace NppKate.Forms
             this.chbIsShowInMenu.Location = new System.Drawing.Point(6, 53);
             this.chbIsShowInMenu.Name = "chbIsShowInMenu";
             this.chbIsShowInMenu.Size = new System.Drawing.Size(93, 17);
-            this.chbIsShowInMenu.TabIndex = 3;
+            this.chbIsShowInMenu.TabIndex = 4;
             this.chbIsShowInMenu.Text = "Show in menu";
             this.chbIsShowInMenu.UseVisualStyleBackColor = true;
             // 
@@ -157,7 +161,7 @@ namespace NppKate.Forms
             // 
             this.tbName.Location = new System.Drawing.Point(6, 28);
             this.tbName.Name = "tbName";
-            this.tbName.Size = new System.Drawing.Size(260, 20);
+            this.tbName.Size = new System.Drawing.Size(216, 20);
             this.tbName.TabIndex = 0;
             // 
             // pMiddle
@@ -220,6 +224,22 @@ namespace NppKate.Forms
             this.bOk.UseVisualStyleBackColor = true;
             this.bOk.Click += new System.EventHandler(this.bOk_Click);
             // 
+            // lShortName
+            // 
+            this.lShortName.AutoSize = true;
+            this.lShortName.Location = new System.Drawing.Point(225, 9);
+            this.lShortName.Name = "lShortName";
+            this.lShortName.Size = new System.Drawing.Size(101, 13);
+            this.lShortName.TabIndex = 9;
+            this.lShortName.Text = "Snippet short name:";
+            // 
+            // tbShortName
+            // 
+            this.tbShortName.Location = new System.Drawing.Point(228, 28);
+            this.tbShortName.Name = "tbShortName";
+            this.tbShortName.Size = new System.Drawing.Size(179, 20);
+            this.tbShortName.TabIndex = 1;
+            // 
             // SnippetEdit
             // 
             this.AcceptButton = this.bOk;
@@ -255,9 +275,11 @@ namespace NppKate.Forms
         private System.Windows.Forms.Button bCancel;
         private System.Windows.Forms.Button bOk;
         private System.Windows.Forms.CheckBox chbIsShowInMenu;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lExt;
+        private System.Windows.Forms.Label lCategory;
         private System.Windows.Forms.ComboBox cbExtention;
         private System.Windows.Forms.ComboBox cbCategory;
+        private System.Windows.Forms.Label lShortName;
+        private System.Windows.Forms.TextBox tbShortName;
     }
 }

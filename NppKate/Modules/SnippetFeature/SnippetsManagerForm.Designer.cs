@@ -64,6 +64,7 @@ namespace NppKate.Forms
             this.miDelete = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
             this.tvSnippets = new System.Windows.Forms.TreeView();
+            this.ilImages = new System.Windows.Forms.ImageList(this.components);
             this.contextMenuSnippets.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -76,14 +77,14 @@ namespace NppKate.Forms
             this.miEdit,
             this.miDelete});
             this.contextMenuSnippets.Name = "contextMenuSnippets";
-            this.contextMenuSnippets.Size = new System.Drawing.Size(153, 114);
+            this.contextMenuSnippets.Size = new System.Drawing.Size(108, 92);
             this.contextMenuSnippets.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuSnippets_Opening);
             // 
             // miInsert
             // 
             this.miInsert.Image = ((System.Drawing.Image)(resources.GetObject("miInsert.Image")));
             this.miInsert.Name = "miInsert";
-            this.miInsert.Size = new System.Drawing.Size(152, 22);
+            this.miInsert.Size = new System.Drawing.Size(107, 22);
             this.miInsert.Text = "Insert";
             this.miInsert.Click += new System.EventHandler(this.miInsert_Click);
             // 
@@ -91,7 +92,7 @@ namespace NppKate.Forms
             // 
             this.miAdd.Image = ((System.Drawing.Image)(resources.GetObject("miAdd.Image")));
             this.miAdd.Name = "miAdd";
-            this.miAdd.Size = new System.Drawing.Size(152, 22);
+            this.miAdd.Size = new System.Drawing.Size(107, 22);
             this.miAdd.Text = "Add";
             this.miAdd.Click += new System.EventHandler(this.miAdd_Click);
             // 
@@ -99,7 +100,7 @@ namespace NppKate.Forms
             // 
             this.miEdit.Image = ((System.Drawing.Image)(resources.GetObject("miEdit.Image")));
             this.miEdit.Name = "miEdit";
-            this.miEdit.Size = new System.Drawing.Size(152, 22);
+            this.miEdit.Size = new System.Drawing.Size(107, 22);
             this.miEdit.Text = "Edit";
             this.miEdit.Click += new System.EventHandler(this.miEdit_Click);
             // 
@@ -107,7 +108,7 @@ namespace NppKate.Forms
             // 
             this.miDelete.Image = ((System.Drawing.Image)(resources.GetObject("miDelete.Image")));
             this.miDelete.Name = "miDelete";
-            this.miDelete.Size = new System.Drawing.Size(152, 22);
+            this.miDelete.Size = new System.Drawing.Size(107, 22);
             this.miDelete.Text = "Delete";
             this.miDelete.Click += new System.EventHandler(this.miDelete_Click);
             // 
@@ -123,10 +124,25 @@ namespace NppKate.Forms
             // tvSnippets
             // 
             this.tvSnippets.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tvSnippets.ImageIndex = 0;
+            this.tvSnippets.ImageList = this.ilImages;
+            this.tvSnippets.ItemHeight = 18;
             this.tvSnippets.Location = new System.Drawing.Point(0, 0);
             this.tvSnippets.Name = "tvSnippets";
+            this.tvSnippets.SelectedImageIndex = 0;
             this.tvSnippets.Size = new System.Drawing.Size(405, 373);
             this.tvSnippets.TabIndex = 0;
+            this.tvSnippets.AfterCollapse += new System.Windows.Forms.TreeViewEventHandler(this.tvSnippets_AfterCollapse);
+            this.tvSnippets.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.tvSnippets_AfterExpand);
+            this.tvSnippets.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.tvSnippets_NodeMouseDoubleClick);
+            // 
+            // ilImages
+            // 
+            this.ilImages.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ilImages.ImageStream")));
+            this.ilImages.TransparentColor = System.Drawing.Color.Transparent;
+            this.ilImages.Images.SetKeyName(0, "SNIPPET");
+            this.ilImages.Images.SetKeyName(1, "CATEGORY");
+            this.ilImages.Images.SetKeyName(2, "CATEGORY_OPEN");
             // 
             // SnippetsManagerForm
             // 
@@ -151,5 +167,6 @@ namespace NppKate.Forms
         private System.Windows.Forms.ToolStripMenuItem miDelete;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.TreeView tvSnippets;
+        private System.Windows.Forms.ImageList ilImages;
     }
 }

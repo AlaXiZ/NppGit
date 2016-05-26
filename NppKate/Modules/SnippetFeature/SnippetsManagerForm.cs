@@ -37,10 +37,12 @@ namespace NppKate.Forms
 {
     public partial class SnippetsManagerForm : DockDialog, FormDockable
     {
-        private const string SNIPPET_INDEX = "";
-        private const string CATEGORY_INDEX = "";
+        private const string SNIPPET_INDEX = "SNIPPET";
+        private const string CATEGORY_INDEX = "CATEGORY";
+        private const string CATEGORY_OPEN_INDEX = "CATEGORY_OPEN";
         private bool _isGrouping = true;
         private bool _isHiding = false;
+        private string _currentExt = "*";
 
         public SnippetsManagerForm()
         {
@@ -75,7 +77,7 @@ namespace NppKate.Forms
             var dlg = new SnippetEdit();
             if (dlg.ShowDialog() == DialogResult.OK)
             {
-                reloadSnippets();
+                SaveSnippet(SnippetManager.Instance[dlg.SnippetName]);
             }
         }
 
@@ -115,39 +117,40 @@ namespace NppKate.Forms
 
         private void miDelete_Click(object sender, EventArgs e)
         {
-            //var selectedSnippet = lbSnippets.SelectedItem as string;
-            //if (MessageBox.Show(string.Format("Delete snippet \"{0}\"?", selectedSnippet), "Warning", 
-            //    MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-            //{
-            //    SnippetManager.Instance.RemoveSnippet(selectedSnippet);
-            //    lbSnippets.Items.RemoveAt(lbSnippets.SelectedIndex);
-            //}
+            var selectedSnippet = tvSnippets.SelectedNode?.Tag as Snippet;
+            if (selectedSnippet == null) return;
+            if (MessageBox.Show(string.Format("Delete snippet \"{0}\"?", selectedSnippet.Name), "Warning", 
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                RemoveSnippet(selectedSnippet);
+                SnippetManager.Instance.RemoveSnippet(selectedSnippet.Name);
+            }
         }
 
         private void miEdit_Click(object sender, EventArgs e)
         {
-            //var dlg = new SnippetEdit();
-            //dlg.SnippetText = lbSnippets.SelectedItem as string;
-            //if (dlg.ShowDialog() == DialogResult.OK)
-            //{
-            //    reloadSnippets();
-            //}
-        }
-
-        private void lbSnippets_DoubleClick(object sender, EventArgs e)
-        {
-            //if (lbSnippets.SelectedIndex != -1)
-            //{
-            //    InsertSnippet(lbSnippets.SelectedItem as string);
-            //}
+            var selectedSnippet = tvSnippets.SelectedNode?.Tag as Snippet;
+            if (selectedSnippet == null) return;
+            var dlg = new SnippetEdit();
+            dlg.SnippetName = selectedSnippet.Name;
+            if (dlg.ShowDialog() == DialogResult.OK)
+            {
+                if (dlg.SnippetName == selectedSnippet.Name)
+                {
+                    SaveSnippet(SnippetManager.Instance[selectedSnippet.Name]);
+                } else
+                {
+                    RemoveSnippet(selectedSnippet);
+                    SaveSnippet(SnippetManager.Instance[dlg.SnippetName]);
+                }
+            }
         }
 
         private void miInsert_Click(object sender, EventArgs e)
         {
-            //if (lbSnippets.SelectedIndex != -1)
-            //{
-            //    InsertSnippet(lbSnippets.SelectedItem as string);
-            //}
+            var selectedSnippet = tvSnippets.SelectedNode?.Tag as Snippet;
+            if (selectedSnippet == null) return;
+            InsertSnippet(selectedSnippet.Name);
         }
 
         private void InsertSnippet(string snippet)
@@ -155,14 +158,15 @@ namespace NppKate.Forms
             Snippets.SetSnippet(snippet);
         }
 
-        private TreeNode CreateNode(string name, string index, TreeNode parent = null)
+        private TreeNode CreateNode(string name, string index, TreeNode parent = null, object linkedObject = null)
         {
             var node = new TreeNode
             {
                 Name = name,
                 Text = name,
                 ImageKey = index,
-                SelectedImageKey = index
+                SelectedImageKey = index,
+                Tag = linkedObject
             };
             node.ContextMenuStrip = contextMenuSnippets;
             parent?.Nodes.Add(node);
@@ -173,20 +177,40 @@ namespace NppKate.Forms
         {
             if (_isGrouping)
             {
+                // »щем, вдруг есть сниппет с таким именем, но в другой категории
+                var oldItem = tvSnippets.Nodes.Find(snippet.Name, true)?.FirstOrDefault();
+                if (oldItem != null && oldItem.Parent.Name != snippet.Category)
+                {
+                    var cat = oldItem.Parent;
+                    oldItem.Remove();
+                    if (cat.Nodes.Count == 0)
+                    {
+                        cat.Remove();
+                    }
+                }
+                // »щем узел категорий или создаем новый
                 var catItem = tvSnippets.Nodes.Find(snippet.Category, false)?.FirstOrDefault() ?? CreateCategory(snippet.Category);
                 if (!catItem.Nodes.ContainsKey(snippet.Name))
-                    CreateNode(snippet.Name, SNIPPET_INDEX, catItem);
+                    CreateNode(snippet.Name, SNIPPET_INDEX, catItem, snippet);
             }
             else
             {
                 if (!tvSnippets.Nodes.ContainsKey(snippet.Name))
-                    tvSnippets.Nodes.Add(CreateNode(snippet.Name, SNIPPET_INDEX));
+                    tvSnippets.Nodes.Add(CreateNode(snippet.Name, SNIPPET_INDEX, null, snippet));
             }
         }
 
         private void RemoveSnippet(Snippet snippet)
         {
-            tvSnippets.Nodes.Find(snippet.Name, true)?.FirstOrDefault()?.Remove();
+            tvSnippets.BeginUpdate();
+            try
+            {
+                tvSnippets.Nodes.Find(snippet.Name, true)?.FirstOrDefault()?.Remove();
+            }
+            finally
+            {
+                tvSnippets.EndUpdate();
+            }
         }
 
         private TreeNode CreateCategory(string category)
@@ -194,6 +218,32 @@ namespace NppKate.Forms
             var node = CreateNode(category, CATEGORY_INDEX);
             tvSnippets.Nodes.Add(node);
             return node;
+        }
+
+        private void tvSnippets_AfterExpand(object sender, TreeViewEventArgs e)
+        {
+            if (e.Node.ImageKey == CATEGORY_INDEX)
+            {
+                e.Node.ImageKey = CATEGORY_OPEN_INDEX;
+                e.Node.SelectedImageKey = CATEGORY_OPEN_INDEX;
+            }
+        }
+
+        private void tvSnippets_AfterCollapse(object sender, TreeViewEventArgs e)
+        {
+            if (e.Node.ImageKey == CATEGORY_OPEN_INDEX)
+            {
+                e.Node.ImageKey = CATEGORY_INDEX;
+                e.Node.SelectedImageKey = CATEGORY_INDEX;
+            }
+        }
+
+        private void tvSnippets_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            if (e.Node.ImageKey == SNIPPET_INDEX)
+            {
+                InsertSnippet((e.Node.Tag as Snippet).Name);
+            }
         }
     }
 }
