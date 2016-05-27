@@ -87,7 +87,7 @@ namespace NppKate.Modules.SnippetFeature
                 {
                     for (int i = 0; i < formatArgs.Length; i++)
                     {
-                        formatArgs[i] = "EMPTY_PARAM";
+                        formatArgs[i] = Settings.Snippets.InsertEmpty ? "EMPTY_PARAM" : "";
                     }
                     outStrings.Add(string.Format(snippetText, formatArgs));
                 }

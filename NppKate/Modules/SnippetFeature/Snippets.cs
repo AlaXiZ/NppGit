@@ -28,6 +28,7 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using NLog;
 using NppKate.Common;
 using NppKate.Npp;
+using System.Linq;
 
 namespace NppKate.Modules.SnippetFeature
 {
@@ -66,6 +67,14 @@ namespace NppKate.Modules.SnippetFeature
                 }
             }
             // -----------------------------------------------------------------
+            _manager.RegisterCommandItem(new CommandItem
+            {
+                Name = "Expand snippet",
+                Hint = "Expand snippet",
+                Action = DoExpandSnippet,
+                ShortcutKey = new ShortcutKey("Ctrl+Shift+X")
+            });
+
             _snipManagerId = _manager.RegisterCommandItem(new CommandItem
             {
                 Name = "Snippet manager",
@@ -121,24 +130,31 @@ namespace NppKate.Modules.SnippetFeature
             if (SnippetManager.Instance.Contains(snippetName)) 
             {
                 logger.Debug("Insert snippet {0}", snippetName);
-                Snippet snip = SnippetManager.Instance[snippetName];
+                var snip = SnippetManager.Instance[snippetName];
                 var outLines = snip.Assemble(NppUtils.GetSelectedText());
                 NppUtils.ReplaceSelectedText(outLines);
             }
         }
-
         // ---------------------------------------------------------------------
         private void DoSnippetsManager()
         {
             Settings.Panels.SnippetsPanelVisible = _manager.ToogleFormState(_snipManagerId);
         }
+
+        private void DoExpandSnippet()
+        {
+            var inputParams = NppUtils.GetSelectedText().Trim().Split(' ');
+            if (inputParams.Length == 0) return;
+            var snip = SnippetManager.Instance[inputParams[0]];
+            if (snip == Snippet.Null) return;
+            string param = inputParams.Length > 1 ? inputParams.Where(s => s != inputParams[0]).Aggregate((s1, s2) => s1 + " " + s2) : "";
+            var outLines = snip.Assemble(param);
+            NppUtils.ReplaceSelectedText(outLines);
+        }
         // ---------------------------------------------------------------------
         public static void SetSnippet(string snippet)
         {
-            if (InsertSnippetEvent != null)
-            {
-                InsertSnippetEvent(snippet);
-            }
+            InsertSnippetEvent?.Invoke(snippet);
         }
     }
 }

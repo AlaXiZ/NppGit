@@ -72,6 +72,7 @@ namespace NppKate.Forms
             this.tbTGProcPath = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.tpGitFeatures = new System.Windows.Forms.TabPage();
+            this.chbAutoExpand = new System.Windows.Forms.CheckBox();
             this.gbFileInBranch = new System.Windows.Forms.GroupBox();
             this.lSHACount = new System.Windows.Forms.Label();
             this.chbFileInOtherView = new System.Windows.Forms.CheckBox();
@@ -83,7 +84,7 @@ namespace NppKate.Forms
             this.pBottom = new System.Windows.Forms.Panel();
             this.chbRestartNpp = new System.Windows.Forms.CheckBox();
             this.pMain = new System.Windows.Forms.Panel();
-            this.chbAutoExpand = new System.Windows.Forms.CheckBox();
+            this.chbInsertEmpty = new System.Windows.Forms.CheckBox();
             this.tbSettings.SuspendLayout();
             this.tpCommon.SuspendLayout();
             this.gbUsingModules.SuspendLayout();
@@ -285,6 +286,16 @@ namespace NppKate.Forms
             this.tpGitFeatures.Text = "Git";
             this.tpGitFeatures.UseVisualStyleBackColor = true;
             // 
+            // chbAutoExpand
+            // 
+            this.chbAutoExpand.AutoSize = true;
+            this.chbAutoExpand.Location = new System.Drawing.Point(15, 77);
+            this.chbAutoExpand.Name = "chbAutoExpand";
+            this.chbAutoExpand.Size = new System.Drawing.Size(201, 17);
+            this.chbAutoExpand.TabIndex = 7;
+            this.chbAutoExpand.Text = "Auto expand/collapse after activated";
+            this.chbAutoExpand.UseVisualStyleBackColor = true;
+            // 
             // gbFileInBranch
             // 
             this.gbFileInBranch.Controls.Add(this.lSHACount);
@@ -327,6 +338,7 @@ namespace NppKate.Forms
             // 
             // tpSnippets
             // 
+            this.tpSnippets.Controls.Add(this.chbInsertEmpty);
             this.tpSnippets.Controls.Add(this.chbExpand);
             this.tpSnippets.Controls.Add(this.chbHideByExt);
             this.tpSnippets.Controls.Add(this.chbGroupByCategory);
@@ -399,15 +411,15 @@ namespace NppKate.Forms
             this.pMain.Size = new System.Drawing.Size(408, 196);
             this.pMain.TabIndex = 6;
             // 
-            // chbAutoExpand
+            // chbInsertEmpty
             // 
-            this.chbAutoExpand.AutoSize = true;
-            this.chbAutoExpand.Location = new System.Drawing.Point(15, 77);
-            this.chbAutoExpand.Name = "chbAutoExpand";
-            this.chbAutoExpand.Size = new System.Drawing.Size(201, 17);
-            this.chbAutoExpand.TabIndex = 7;
-            this.chbAutoExpand.Text = "Auto expand/collapse after activated";
-            this.chbAutoExpand.UseVisualStyleBackColor = true;
+            this.chbInsertEmpty.AutoSize = true;
+            this.chbInsertEmpty.Location = new System.Drawing.Point(8, 75);
+            this.chbInsertEmpty.Name = "chbInsertEmpty";
+            this.chbInsertEmpty.Size = new System.Drawing.Size(136, 17);
+            this.chbInsertEmpty.TabIndex = 3;
+            this.chbInsertEmpty.Text = "Insert EMPTY_PARAM";
+            this.chbInsertEmpty.UseVisualStyleBackColor = true;
             // 
             // SettingsDialog
             // 
@@ -475,5 +487,6 @@ namespace NppKate.Forms
         private System.Windows.Forms.CheckBox chbGroupByCategory;
         private System.Windows.Forms.CheckBox chbExpand;
         private System.Windows.Forms.CheckBox chbAutoExpand;
+        private System.Windows.Forms.CheckBox chbInsertEmpty;
     }
 }

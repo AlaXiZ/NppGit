@@ -271,6 +271,14 @@ namespace NppKate
                 [MethodImpl(MethodImplOptions.NoInlining)]
                 set { Set(value); }
             }
+
+            public static bool InsertEmpty
+            {
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                get { return Get(true); }
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                set { Set(value); }
+            }
         }
         #endregion
     }

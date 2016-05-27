@@ -132,7 +132,20 @@ namespace NppKate.Modules.SnippetFeature
 
         public Snippet this[string index]
         {
-            get { return _snippets.ContainsKey(index) ? _snippets[index] : Snippet.Null; }
+            get
+            {
+                // Full name
+                if (_snippets.ContainsKey(index))
+                    return _snippets[index];
+                else
+                {
+                    var snip = _snippets.Values.Where(s => s.ShortName == index)?.FirstOrDefault();
+                    // Short name
+                    if (snip != null)
+                        return snip;
+                }
+                return Snippet.Null;
+            }
         }
 
         public Dictionary<string, Snippet> Snippets
