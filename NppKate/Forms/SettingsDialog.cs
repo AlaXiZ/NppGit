@@ -64,6 +64,7 @@ namespace NppKate.Forms
             chbDefaultShortcut.Checked = Settings.InnerSettings.IsSetDefaultShortcut;
             mtxbSHACount.Text = Settings.Functions.SHACount.ToString();
             chbFileInOtherView.Checked = Settings.Functions.OpenFileInOtherView;
+            chbAutoExpand.Checked = Settings.GitCore.AutoExpand;
 
             cbLogLevel.Items.Clear();
             cbLogLevel.Items.AddRange(_logLevel.ToArray());
@@ -108,6 +109,7 @@ namespace NppKate.Forms
             Settings.InnerSettings.IsSetDefaultShortcut = chbDefaultShortcut.Checked;
             Settings.Functions.SHACount = byte.Parse(mtxbSHACount.Text);
             Settings.Functions.OpenFileInOtherView = chbFileInOtherView.Checked;
+            Settings.GitCore.AutoExpand = chbAutoExpand.Checked;
             Settings.InnerSettings.LogLevel = cbLogLevel.Text;
 
             // Modules state

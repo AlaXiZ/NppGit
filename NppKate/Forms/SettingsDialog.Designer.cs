@@ -77,12 +77,13 @@ namespace NppKate.Forms
             this.chbFileInOtherView = new System.Windows.Forms.CheckBox();
             this.mtxbSHACount = new System.Windows.Forms.MaskedTextBox();
             this.tpSnippets = new System.Windows.Forms.TabPage();
+            this.chbExpand = new System.Windows.Forms.CheckBox();
             this.chbHideByExt = new System.Windows.Forms.CheckBox();
             this.chbGroupByCategory = new System.Windows.Forms.CheckBox();
             this.pBottom = new System.Windows.Forms.Panel();
             this.chbRestartNpp = new System.Windows.Forms.CheckBox();
             this.pMain = new System.Windows.Forms.Panel();
-            this.chbExpand = new System.Windows.Forms.CheckBox();
+            this.chbAutoExpand = new System.Windows.Forms.CheckBox();
             this.tbSettings.SuspendLayout();
             this.tpCommon.SuspendLayout();
             this.gbUsingModules.SuspendLayout();
@@ -274,6 +275,7 @@ namespace NppKate.Forms
             // 
             // tpGitFeatures
             // 
+            this.tpGitFeatures.Controls.Add(this.chbAutoExpand);
             this.tpGitFeatures.Controls.Add(this.gbFileInBranch);
             this.tpGitFeatures.Location = new System.Drawing.Point(4, 22);
             this.tpGitFeatures.Name = "tpGitFeatures";
@@ -336,6 +338,16 @@ namespace NppKate.Forms
             this.tpSnippets.Text = "Snippets";
             this.tpSnippets.UseVisualStyleBackColor = true;
             // 
+            // chbExpand
+            // 
+            this.chbExpand.AutoSize = true;
+            this.chbExpand.Location = new System.Drawing.Point(8, 52);
+            this.chbExpand.Name = "chbExpand";
+            this.chbExpand.Size = new System.Drawing.Size(119, 17);
+            this.chbExpand.TabIndex = 2;
+            this.chbExpand.Text = "Expand after create";
+            this.chbExpand.UseVisualStyleBackColor = true;
+            // 
             // chbHideByExt
             // 
             this.chbHideByExt.AutoSize = true;
@@ -387,15 +399,15 @@ namespace NppKate.Forms
             this.pMain.Size = new System.Drawing.Size(408, 196);
             this.pMain.TabIndex = 6;
             // 
-            // chbExpand
+            // chbAutoExpand
             // 
-            this.chbExpand.AutoSize = true;
-            this.chbExpand.Location = new System.Drawing.Point(8, 52);
-            this.chbExpand.Name = "chbExpand";
-            this.chbExpand.Size = new System.Drawing.Size(119, 17);
-            this.chbExpand.TabIndex = 2;
-            this.chbExpand.Text = "Expand after create";
-            this.chbExpand.UseVisualStyleBackColor = true;
+            this.chbAutoExpand.AutoSize = true;
+            this.chbAutoExpand.Location = new System.Drawing.Point(15, 77);
+            this.chbAutoExpand.Name = "chbAutoExpand";
+            this.chbAutoExpand.Size = new System.Drawing.Size(201, 17);
+            this.chbAutoExpand.TabIndex = 7;
+            this.chbAutoExpand.Text = "Auto expand/collapse after activated";
+            this.chbAutoExpand.UseVisualStyleBackColor = true;
             // 
             // SettingsDialog
             // 
@@ -421,6 +433,7 @@ namespace NppKate.Forms
             this.tpTortoise.ResumeLayout(false);
             this.tpTortoise.PerformLayout();
             this.tpGitFeatures.ResumeLayout(false);
+            this.tpGitFeatures.PerformLayout();
             this.gbFileInBranch.ResumeLayout(false);
             this.gbFileInBranch.PerformLayout();
             this.tpSnippets.ResumeLayout(false);
@@ -461,5 +474,6 @@ namespace NppKate.Forms
         private System.Windows.Forms.CheckBox chbHideByExt;
         private System.Windows.Forms.CheckBox chbGroupByCategory;
         private System.Windows.Forms.CheckBox chbExpand;
+        private System.Windows.Forms.CheckBox chbAutoExpand;
     }
 }

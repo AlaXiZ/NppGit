@@ -151,15 +151,21 @@ namespace NppKate.Modules.GitCore
 
         private void ActiverRepositoryUpdate(string repoName)
         {
+            var isAutoExpand = Settings.GitCore.AutoExpand;
+
             if (repoName.Equals(_lastActiveRepo)) return;
             if (!string.IsNullOrEmpty(_lastActiveRepo))
             {
                 var nodeOld = tvRepositories.Nodes[_lastActiveRepo];
                 nodeOld.NodeFont = new Font(nodeOld.NodeFont ?? tvRepositories.Font, FontStyle.Regular);
+                if (isAutoExpand)
+                    nodeOld.Collapse();
             }
             var nodeNew = tvRepositories.Nodes[repoName];
             nodeNew.NodeFont = new Font(nodeNew.NodeFont ?? tvRepositories.Font, FontStyle.Bold);
             nodeNew.Text += string.Empty;
+            if (isAutoExpand)
+                nodeNew.Expand();
             _lastActiveRepo = repoName;
         }
 
@@ -183,7 +189,7 @@ namespace NppKate.Modules.GitCore
                 {
                     if (b.IsRemote)
                     {
-                        if (!b.Name.EndsWith("/HEAD", System.StringComparison.InvariantCultureIgnoreCase))
+                        if (!b.Name.EndsWith("/HEAD", StringComparison.InvariantCultureIgnoreCase))
                         {
                             CreateNode(b.Name, b.Name, REMOTE_BRANCH_INDEX, remote, null);
                         }

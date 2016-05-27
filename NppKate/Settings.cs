@@ -115,7 +115,7 @@ namespace NppKate
                 [MethodImpl(MethodImplOptions.NoInlining)]
                 set { Set(value); }
             }
-            public static bool ActiveRepoInTitle
+            public static bool AutoExpand
             {
                 [MethodImpl(MethodImplOptions.NoInlining)]
                 get { return Get(false); }
