@@ -303,6 +303,7 @@ namespace NppKate.Common
                     _hwnds.Add(cmdId, wnd.Handle);
                     (wnd as IDockDialog).init(this, NppInfo.Instance.SearchCmdIdByIndex(cmdId));
                     hwnd = wnd.Handle;
+                    OnTabChangeEvent += (o, e) => { (wnd as FormDockable).ChangeContext(); };
                 }
             // TODO: delete return
             //return false;

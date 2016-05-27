@@ -125,6 +125,14 @@ namespace NppKate.Npp
             }
         }
 
+        public static string CurrentFileExt
+        {
+            get
+            {
+                return Path.GetExtension(CurrentFilePath).Replace(".", "");
+            }
+        }
+
         public static long CurrentLine
         {
             get { return ((long)Win32.SendMessage(_nppInfo.NppHandle, NppMsg.NPPM_GETCURRENTLINE, 0, 0)) + 1; }

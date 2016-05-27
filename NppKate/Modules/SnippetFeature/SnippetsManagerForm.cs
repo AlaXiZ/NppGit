@@ -32,38 +32,67 @@ using System.Drawing;
 using System.Windows.Forms;
 using NppKate.Common;
 using System.Linq;
+using NLog;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace NppKate.Forms
 {
     public partial class SnippetsManagerForm : DockDialog, FormDockable
     {
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
+
         private const string SNIPPET_INDEX = "SNIPPET";
         private const string CATEGORY_INDEX = "CATEGORY";
         private const string CATEGORY_OPEN_INDEX = "CATEGORY_OPEN";
-        private bool _isGrouping = true;
-        private bool _isHiding = false;
-        private string _currentExt = "*";
+        private const string UNDEFINED_EXT = "?";
+        private const string ALL_EXT = "*";
+        private bool _isGrouping;
+        private bool _isLoaded = false;
+        private bool _isNewTree = true;
+        private List<TreeNode> _needShow = new List<TreeNode>();
+        private List<TreeNode> _needHide = new List<TreeNode>();
+
+        private string _currentExt = UNDEFINED_EXT;
 
         public SnippetsManagerForm()
         {
             InitializeComponent();
             _isGrouping = Settings.Snippets.IsGroupByCategory;
-            _isHiding = Settings.Snippets.IsHideByExtention;
         }
 
-        public Bitmap TabIcon
-        {
-            get { return Properties.Resources.snippets; }
-        }
+        public Bitmap TabIcon => Properties.Resources.snippets;
 
-        public string Title
-        {
-            get { return "Snippets manager"; }
-        }
+        public string Title => "Snippets manager";
 
         public void ChangeContext()
         {
+            if (Visible && Settings.Snippets.IsHideByExtention)
+            {
+                var newExt = Npp.NppUtils.CurrentFileExt;
+                newExt = newExt == "" ? ALL_EXT : newExt;
+                if (newExt != _currentExt)
+                {
+                    _currentExt = newExt;
+                    ReloadSnippets();
+                }
+            }
+        }
 
+        protected override void OnSwitchIn()
+        {
+            base.OnSwitchIn();
+            if (!_isLoaded || _currentExt == UNDEFINED_EXT)
+            {
+                ReloadSnippets();
+                _isLoaded = true;
+            }
+        }
+
+        protected override void OnSwitchOut()
+        {
+            base.OnSwitchOut();
+            _currentExt = UNDEFINED_EXT;
         }
 
         private void contextMenuSnippets_Opening(object sender, CancelEventArgs e)
@@ -81,37 +110,47 @@ namespace NppKate.Forms
             }
         }
 
-        private void reloadSnippets()
+        private void ReloadSnippets()
         {
-            if (_isGrouping != Settings.Snippets.IsGroupByCategory)
+            if (_currentExt == UNDEFINED_EXT)
+                _currentExt = Npp.NppUtils.CurrentFileExt;
+
+            if (_isGrouping != Settings.Snippets.IsGroupByCategory || Settings.Snippets.IsHideByExtention)
             {
                 _isGrouping = Settings.Snippets.IsGroupByCategory;
                 tvSnippets.BeginUpdate();
-                tvSnippets.Nodes.Clear();
+                try
+                {
+                    _isNewTree = true;
+                    tvSnippets.Nodes.Clear();
+                }
+                finally
+                {
+                    tvSnippets.EndUpdate();
+                }
+            }
+            var filtered = Settings.Snippets.IsHideByExtention && _currentExt != ALL_EXT ? SnippetManager.Instance.Snippets.Values.Where(s => s.FileExt.Contains(_currentExt) || s.FileExt.Contains(ALL_EXT)) :
+                SnippetManager.Instance.Snippets.Values.Where(s => true);
+            var allSnippets = _isGrouping ? filtered.OrderBy(s => s.Category).ThenBy(s => s.Name) : filtered.OrderBy(s => s.Name);
+
+            tvSnippets.BeginUpdate();
+            try
+            {
+                foreach (var s in allSnippets)
+                {
+                    SaveSnippet(s);
+                }
+            }
+            finally
+            {
                 tvSnippets.EndUpdate();
             }
-            IOrderedEnumerable<Snippet> allSnippets;
-            if (_isGrouping)
+            // Если нет узлов, то повесим меню на дерево
+            tvSnippets.ContextMenuStrip = tvSnippets.Nodes.Count == 0 ? null : contextMenuSnippets;
+            if (_isNewTree && Settings.Snippets.IsExpanAfterCreate)
             {
-                allSnippets = SnippetManager.Instance.Snippets.Values.OrderBy(s => s.Category).OrderBy(s => s.Name);
-            }
-            else
-            {
-                allSnippets = SnippetManager.Instance.Snippets.Values.OrderBy(s => s.Name);
-            }
-            tvSnippets.BeginUpdate();
-            foreach(var s in allSnippets)
-            {
-                SaveSnippet(s);
-            }
-            tvSnippets.EndUpdate();
-        }
-
-        private void SnippetsManagerForm_VisibleChanged(object sender, EventArgs e)
-        {
-            if (Visible)
-            {
-                reloadSnippets();
+                tvSnippets.ExpandAll();
+                _isNewTree = false;
             }
         }
 
@@ -119,7 +158,7 @@ namespace NppKate.Forms
         {
             var selectedSnippet = tvSnippets.SelectedNode?.Tag as Snippet;
             if (selectedSnippet == null) return;
-            if (MessageBox.Show(string.Format("Delete snippet \"{0}\"?", selectedSnippet.Name), "Warning", 
+            if (MessageBox.Show($"Delete snippet \"{selectedSnippet.Name}\"?", "Warning",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 RemoveSnippet(selectedSnippet);
@@ -131,14 +170,14 @@ namespace NppKate.Forms
         {
             var selectedSnippet = tvSnippets.SelectedNode?.Tag as Snippet;
             if (selectedSnippet == null) return;
-            var dlg = new SnippetEdit();
-            dlg.SnippetName = selectedSnippet.Name;
+            var dlg = new SnippetEdit { SnippetName = selectedSnippet.Name };
             if (dlg.ShowDialog() == DialogResult.OK)
             {
                 if (dlg.SnippetName == selectedSnippet.Name)
                 {
                     SaveSnippet(SnippetManager.Instance[selectedSnippet.Name]);
-                } else
+                }
+                else
                 {
                     RemoveSnippet(selectedSnippet);
                     SaveSnippet(SnippetManager.Instance[dlg.SnippetName]);
@@ -166,9 +205,9 @@ namespace NppKate.Forms
                 Text = name,
                 ImageKey = index,
                 SelectedImageKey = index,
-                Tag = linkedObject
+                Tag = linkedObject,
+                ContextMenuStrip = contextMenuSnippets
             };
-            node.ContextMenuStrip = contextMenuSnippets;
             parent?.Nodes.Add(node);
             return node;
         }
@@ -177,7 +216,6 @@ namespace NppKate.Forms
         {
             if (_isGrouping)
             {
-                // Ищем, вдруг есть сниппет с таким именем, но в другой категории
                 var oldItem = tvSnippets.Nodes.Find(snippet.Name, true)?.FirstOrDefault();
                 if (oldItem != null && oldItem.Parent.Name != snippet.Category)
                 {
@@ -188,7 +226,6 @@ namespace NppKate.Forms
                         cat.Remove();
                     }
                 }
-                // Ищем узел категорий или создаем новый
                 var catItem = tvSnippets.Nodes.Find(snippet.Category, false)?.FirstOrDefault() ?? CreateCategory(snippet.Category);
                 if (!catItem.Nodes.ContainsKey(snippet.Name))
                     CreateNode(snippet.Name, SNIPPET_INDEX, catItem, snippet);
@@ -217,6 +254,7 @@ namespace NppKate.Forms
         {
             var node = CreateNode(category, CATEGORY_INDEX);
             tvSnippets.Nodes.Add(node);
+            node.Expand();
             return node;
         }
 
@@ -242,8 +280,13 @@ namespace NppKate.Forms
         {
             if (e.Node.ImageKey == SNIPPET_INDEX)
             {
-                InsertSnippet((e.Node.Tag as Snippet).Name);
+                InsertSnippet((e.Node.Tag as Snippet)?.Name);
             }
+        }
+
+        private void miRefresh_Click(object sender, EventArgs e)
+        {
+            ReloadSnippets();
         }
     }
 }

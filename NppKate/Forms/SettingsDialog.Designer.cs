@@ -76,21 +76,22 @@ namespace NppKate.Forms
             this.lSHACount = new System.Windows.Forms.Label();
             this.chbFileInOtherView = new System.Windows.Forms.CheckBox();
             this.mtxbSHACount = new System.Windows.Forms.MaskedTextBox();
+            this.tpSnippets = new System.Windows.Forms.TabPage();
+            this.chbHideByExt = new System.Windows.Forms.CheckBox();
+            this.chbGroupByCategory = new System.Windows.Forms.CheckBox();
             this.pBottom = new System.Windows.Forms.Panel();
             this.chbRestartNpp = new System.Windows.Forms.CheckBox();
             this.pMain = new System.Windows.Forms.Panel();
-            this.tpSnippets = new System.Windows.Forms.TabPage();
-            this.chbGroupByCategory = new System.Windows.Forms.CheckBox();
-            this.chbHideByExt = new System.Windows.Forms.CheckBox();
+            this.chbExpand = new System.Windows.Forms.CheckBox();
             this.tbSettings.SuspendLayout();
             this.tpCommon.SuspendLayout();
             this.gbUsingModules.SuspendLayout();
             this.tpTortoise.SuspendLayout();
             this.tpGitFeatures.SuspendLayout();
             this.gbFileInBranch.SuspendLayout();
+            this.tpSnippets.SuspendLayout();
             this.pBottom.SuspendLayout();
             this.pMain.SuspendLayout();
-            this.tpSnippets.SuspendLayout();
             this.SuspendLayout();
             // 
             // chbTGToolbar
@@ -322,6 +323,39 @@ namespace NppKate.Forms
             this.mtxbSHACount.TabIndex = 3;
             this.mtxbSHACount.Leave += new System.EventHandler(this.mtxbSHACount_Leave);
             // 
+            // tpSnippets
+            // 
+            this.tpSnippets.Controls.Add(this.chbExpand);
+            this.tpSnippets.Controls.Add(this.chbHideByExt);
+            this.tpSnippets.Controls.Add(this.chbGroupByCategory);
+            this.tpSnippets.Location = new System.Drawing.Point(4, 22);
+            this.tpSnippets.Name = "tpSnippets";
+            this.tpSnippets.Padding = new System.Windows.Forms.Padding(3);
+            this.tpSnippets.Size = new System.Drawing.Size(400, 170);
+            this.tpSnippets.TabIndex = 3;
+            this.tpSnippets.Text = "Snippets";
+            this.tpSnippets.UseVisualStyleBackColor = true;
+            // 
+            // chbHideByExt
+            // 
+            this.chbHideByExt.AutoSize = true;
+            this.chbHideByExt.Location = new System.Drawing.Point(8, 29);
+            this.chbHideByExt.Name = "chbHideByExt";
+            this.chbHideByExt.Size = new System.Drawing.Size(118, 17);
+            this.chbHideByExt.TabIndex = 1;
+            this.chbHideByExt.Text = "Hiding by extension";
+            this.chbHideByExt.UseVisualStyleBackColor = true;
+            // 
+            // chbGroupByCategory
+            // 
+            this.chbGroupByCategory.AutoSize = true;
+            this.chbGroupByCategory.Location = new System.Drawing.Point(8, 6);
+            this.chbGroupByCategory.Name = "chbGroupByCategory";
+            this.chbGroupByCategory.Size = new System.Drawing.Size(127, 17);
+            this.chbGroupByCategory.TabIndex = 0;
+            this.chbGroupByCategory.Text = "Grouping by category";
+            this.chbGroupByCategory.UseVisualStyleBackColor = true;
+            // 
             // pBottom
             // 
             this.pBottom.Controls.Add(this.chbRestartNpp);
@@ -353,37 +387,15 @@ namespace NppKate.Forms
             this.pMain.Size = new System.Drawing.Size(408, 196);
             this.pMain.TabIndex = 6;
             // 
-            // tpSnippets
+            // chbExpand
             // 
-            this.tpSnippets.Controls.Add(this.chbHideByExt);
-            this.tpSnippets.Controls.Add(this.chbGroupByCategory);
-            this.tpSnippets.Location = new System.Drawing.Point(4, 22);
-            this.tpSnippets.Name = "tpSnippets";
-            this.tpSnippets.Padding = new System.Windows.Forms.Padding(3);
-            this.tpSnippets.Size = new System.Drawing.Size(400, 170);
-            this.tpSnippets.TabIndex = 3;
-            this.tpSnippets.Text = "Snippets";
-            this.tpSnippets.UseVisualStyleBackColor = true;
-            // 
-            // chbGroupByCategory
-            // 
-            this.chbGroupByCategory.AutoSize = true;
-            this.chbGroupByCategory.Location = new System.Drawing.Point(8, 6);
-            this.chbGroupByCategory.Name = "chbGroupByCategory";
-            this.chbGroupByCategory.Size = new System.Drawing.Size(127, 17);
-            this.chbGroupByCategory.TabIndex = 0;
-            this.chbGroupByCategory.Text = "Grouping by category";
-            this.chbGroupByCategory.UseVisualStyleBackColor = true;
-            // 
-            // chbHideByExt
-            // 
-            this.chbHideByExt.AutoSize = true;
-            this.chbHideByExt.Location = new System.Drawing.Point(8, 29);
-            this.chbHideByExt.Name = "chbHideByExt";
-            this.chbHideByExt.Size = new System.Drawing.Size(118, 17);
-            this.chbHideByExt.TabIndex = 1;
-            this.chbHideByExt.Text = "Hiding by extension";
-            this.chbHideByExt.UseVisualStyleBackColor = true;
+            this.chbExpand.AutoSize = true;
+            this.chbExpand.Location = new System.Drawing.Point(8, 52);
+            this.chbExpand.Name = "chbExpand";
+            this.chbExpand.Size = new System.Drawing.Size(119, 17);
+            this.chbExpand.TabIndex = 2;
+            this.chbExpand.Text = "Expand after create";
+            this.chbExpand.UseVisualStyleBackColor = true;
             // 
             // SettingsDialog
             // 
@@ -411,11 +423,11 @@ namespace NppKate.Forms
             this.tpGitFeatures.ResumeLayout(false);
             this.gbFileInBranch.ResumeLayout(false);
             this.gbFileInBranch.PerformLayout();
+            this.tpSnippets.ResumeLayout(false);
+            this.tpSnippets.PerformLayout();
             this.pBottom.ResumeLayout(false);
             this.pBottom.PerformLayout();
             this.pMain.ResumeLayout(false);
-            this.tpSnippets.ResumeLayout(false);
-            this.tpSnippets.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -448,5 +460,6 @@ namespace NppKate.Forms
         private System.Windows.Forms.TabPage tpSnippets;
         private System.Windows.Forms.CheckBox chbHideByExt;
         private System.Windows.Forms.CheckBox chbGroupByCategory;
+        private System.Windows.Forms.CheckBox chbExpand;
     }
 }
