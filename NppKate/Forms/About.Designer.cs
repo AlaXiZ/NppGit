@@ -68,6 +68,10 @@ namespace NppKate.Forms
             this.lblIcons = new System.Windows.Forms.Label();
             this.llYusuke = new System.Windows.Forms.LinkLabel();
             this.llCCA30L = new System.Windows.Forms.LinkLabel();
+            this.llBoard = new System.Windows.Forms.LinkLabel();
+            this.lBoard = new System.Windows.Forms.Label();
+            this.llWiki = new System.Windows.Forms.LinkLabel();
+            this.lWiki = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -103,7 +107,7 @@ namespace NppKate.Forms
             this.pictureBox1.Image = global::NppKate.Properties.Resources.NppGit_Logo;
             this.pictureBox1.Location = new System.Drawing.Point(12, 12);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(124, 202);
+            this.pictureBox1.Size = new System.Drawing.Size(124, 238);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 3;
             this.pictureBox1.TabStop = false;
@@ -123,12 +127,12 @@ namespace NppKate.Forms
             // 
             this.tbChangeLog.BackColor = System.Drawing.Color.White;
             this.tbChangeLog.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.tbChangeLog.Location = new System.Drawing.Point(145, 71);
+            this.tbChangeLog.Location = new System.Drawing.Point(145, 97);
             this.tbChangeLog.Multiline = true;
             this.tbChangeLog.Name = "tbChangeLog";
             this.tbChangeLog.ReadOnly = true;
             this.tbChangeLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbChangeLog.Size = new System.Drawing.Size(335, 143);
+            this.tbChangeLog.Size = new System.Drawing.Size(335, 153);
             this.tbChangeLog.TabIndex = 5;
             // 
             // label1
@@ -145,7 +149,7 @@ namespace NppKate.Forms
             this.llIssue.AutoSize = true;
             this.llIssue.Location = new System.Drawing.Point(228, 51);
             this.llIssue.Name = "llIssue";
-            this.llIssue.Size = new System.Drawing.Size(204, 13);
+            this.llIssue.Size = new System.Drawing.Size(194, 13);
             this.llIssue.TabIndex = 7;
             this.llIssue.TabStop = true;
             this.llIssue.Text = "nppgit.myjetbrains.com/youtrack/issues";
@@ -155,7 +159,7 @@ namespace NppKate.Forms
             // 
             this.tbLicense.BackColor = System.Drawing.Color.White;
             this.tbLicense.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.tbLicense.Location = new System.Drawing.Point(12, 220);
+            this.tbLicense.Location = new System.Drawing.Point(12, 256);
             this.tbLicense.Multiline = true;
             this.tbLicense.Name = "tbLicense";
             this.tbLicense.ReadOnly = true;
@@ -166,7 +170,7 @@ namespace NppKate.Forms
             // lblIcons
             // 
             this.lblIcons.AutoSize = true;
-            this.lblIcons.Location = new System.Drawing.Point(12, 433);
+            this.lblIcons.Location = new System.Drawing.Point(12, 469);
             this.lblIcons.Name = "lblIcons";
             this.lblIcons.Size = new System.Drawing.Size(468, 13);
             this.lblIcons.TabIndex = 9;
@@ -176,7 +180,7 @@ namespace NppKate.Forms
             // llYusuke
             // 
             this.llYusuke.AutoSize = true;
-            this.llYusuke.Location = new System.Drawing.Point(87, 434);
+            this.llYusuke.Location = new System.Drawing.Point(87, 469);
             this.llYusuke.Name = "llYusuke";
             this.llYusuke.Size = new System.Drawing.Size(106, 13);
             this.llYusuke.TabIndex = 10;
@@ -187,7 +191,7 @@ namespace NppKate.Forms
             // llCCA30L
             // 
             this.llCCA30L.AutoSize = true;
-            this.llCCA30L.Location = new System.Drawing.Point(277, 434);
+            this.llCCA30L.Location = new System.Drawing.Point(277, 469);
             this.llCCA30L.Name = "llCCA30L";
             this.llCCA30L.Size = new System.Drawing.Size(203, 13);
             this.llCCA30L.TabIndex = 11;
@@ -195,12 +199,56 @@ namespace NppKate.Forms
             this.llCCA30L.Text = "Creative Commons Attribution 3.0 License";
             this.llCCA30L.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.llCCA30L_LinkClicked);
             // 
+            // llBoard
+            // 
+            this.llBoard.AutoSize = true;
+            this.llBoard.Location = new System.Drawing.Point(228, 64);
+            this.llBoard.Name = "llBoard";
+            this.llBoard.Size = new System.Drawing.Size(209, 13);
+            this.llBoard.TabIndex = 13;
+            this.llBoard.TabStop = true;
+            this.llBoard.Text = "nppgit.myjetbrains.com/youtrack/rest/agile";
+            this.llBoard.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.llBoard_LinkClicked);
+            // 
+            // lBoard
+            // 
+            this.lBoard.AutoSize = true;
+            this.lBoard.Location = new System.Drawing.Point(142, 64);
+            this.lBoard.Name = "lBoard";
+            this.lBoard.Size = new System.Drawing.Size(63, 13);
+            this.lBoard.TabIndex = 12;
+            this.lBoard.Text = "Agile-board:";
+            // 
+            // llWiki
+            // 
+            this.llWiki.AutoSize = true;
+            this.llWiki.Location = new System.Drawing.Point(228, 77);
+            this.llWiki.Name = "llWiki";
+            this.llWiki.Size = new System.Drawing.Size(171, 13);
+            this.llWiki.TabIndex = 15;
+            this.llWiki.TabStop = true;
+            this.llWiki.Text = "github.com/schadin/NppKate/wiki";
+            this.llWiki.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.llWiki_LinkClicked);
+            // 
+            // lWiki
+            // 
+            this.lWiki.AutoSize = true;
+            this.lWiki.Location = new System.Drawing.Point(142, 77);
+            this.lWiki.Name = "lWiki";
+            this.lWiki.Size = new System.Drawing.Size(31, 13);
+            this.lWiki.TabIndex = 14;
+            this.lWiki.Text = "Wiki:";
+            // 
             // About
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(492, 453);
+            this.ClientSize = new System.Drawing.Size(492, 491);
+            this.Controls.Add(this.llWiki);
+            this.Controls.Add(this.lWiki);
+            this.Controls.Add(this.llBoard);
+            this.Controls.Add(this.lBoard);
             this.Controls.Add(this.llCCA30L);
             this.Controls.Add(this.llYusuke);
             this.Controls.Add(this.lblIcons);
@@ -242,5 +290,9 @@ namespace NppKate.Forms
         private System.Windows.Forms.Label lblIcons;
         private System.Windows.Forms.LinkLabel llYusuke;
         private System.Windows.Forms.LinkLabel llCCA30L;
+        private System.Windows.Forms.LinkLabel llBoard;
+        private System.Windows.Forms.Label lBoard;
+        private System.Windows.Forms.LinkLabel llWiki;
+        private System.Windows.Forms.Label lWiki;
     }
 }

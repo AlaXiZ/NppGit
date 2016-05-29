@@ -155,5 +155,11 @@ namespace NppKate.Forms
                 tbTGProcPath.Text = dlg.SelectedPath;
             }
         }
+
+        private void llWiki_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            llWiki.LinkVisited = true;
+            System.Diagnostics.Process.Start("https://github.com/schadin/NppKate/wiki");
+        }
     }
 }
