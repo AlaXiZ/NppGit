@@ -146,7 +146,7 @@ namespace NppKate.Forms
                 tvSnippets.EndUpdate();
             }
             // ≈сли нет узлов, то повесим меню на дерево
-            tvSnippets.ContextMenuStrip = tvSnippets.Nodes.Count == 0 ? null : contextMenuSnippets;
+            tvSnippets.ContextMenuStrip = tvSnippets.Nodes.Count != 0 ? null : contextMenuSnippets;
             if (_isNewTree && Settings.Snippets.IsExpanAfterCreate)
             {
                 tvSnippets.ExpandAll();

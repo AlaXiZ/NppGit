@@ -38,6 +38,7 @@ namespace NppKate.Modules.SnippetFeature
     {
         const string AUTO_DATE = "$(DATE)";
         const string AUTO_FILENAME = "$(FILENAME)";
+        const string AUTO_USER = "$(USERNAME)";
 
         string _snippetText = "";
         private static Regex _paramsSearch = new Regex(@"[{]\d+[}]");
@@ -133,6 +134,10 @@ namespace NppKate.Modules.SnippetFeature
             if (source.Contains(AUTO_FILENAME))
             {
                 result.Replace(AUTO_FILENAME, NppUtils.CurrentFileName);
+            }
+            if (source.Contains(AUTO_USER))
+            {
+                result.Replace(AUTO_USER, Interop.Win32.GetUserNameEx(Interop.ExtendedNameFormat.NameDisplay));
             }
 
             return result.ToString();

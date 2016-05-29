@@ -86,13 +86,13 @@ namespace NppKate.Forms
             // 
             this.miRefresh.Image = global::NppKate.Properties.Resources.arrow_circle_315;
             this.miRefresh.Name = "miRefresh";
-            this.miRefresh.Size = new System.Drawing.Size(152, 22);
+            this.miRefresh.Size = new System.Drawing.Size(113, 22);
             this.miRefresh.Text = "Refresh";
             this.miRefresh.Click += new System.EventHandler(this.miRefresh_Click);
             // 
             // miInsert
             // 
-            this.miInsert.Image = ((System.Drawing.Image)(resources.GetObject("miInsert.Image")));
+            this.miInsert.Image = global::NppKate.Properties.Resources.tick_button;
             this.miInsert.Name = "miInsert";
             this.miInsert.Size = new System.Drawing.Size(113, 22);
             this.miInsert.Text = "Insert";
@@ -100,25 +100,25 @@ namespace NppKate.Forms
             // 
             // miAdd
             // 
-            this.miAdd.Image = ((System.Drawing.Image)(resources.GetObject("miAdd.Image")));
+            this.miAdd.Image = global::NppKate.Properties.Resources.plus_button;
             this.miAdd.Name = "miAdd";
-            this.miAdd.Size = new System.Drawing.Size(152, 22);
+            this.miAdd.Size = new System.Drawing.Size(113, 22);
             this.miAdd.Text = "Add";
             this.miAdd.Click += new System.EventHandler(this.miAdd_Click);
             // 
             // miEdit
             // 
-            this.miEdit.Image = ((System.Drawing.Image)(resources.GetObject("miEdit.Image")));
+            this.miEdit.Image = global::NppKate.Properties.Resources.pencil_button;
             this.miEdit.Name = "miEdit";
-            this.miEdit.Size = new System.Drawing.Size(152, 22);
+            this.miEdit.Size = new System.Drawing.Size(113, 22);
             this.miEdit.Text = "Edit";
             this.miEdit.Click += new System.EventHandler(this.miEdit_Click);
             // 
             // miDelete
             // 
-            this.miDelete.Image = ((System.Drawing.Image)(resources.GetObject("miDelete.Image")));
+            this.miDelete.Image = global::NppKate.Properties.Resources.minus_button;
             this.miDelete.Name = "miDelete";
-            this.miDelete.Size = new System.Drawing.Size(152, 22);
+            this.miDelete.Size = new System.Drawing.Size(113, 22);
             this.miDelete.Text = "Delete";
             this.miDelete.Click += new System.EventHandler(this.miDelete_Click);
             // 
