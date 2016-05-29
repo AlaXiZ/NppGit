@@ -61,6 +61,7 @@
             this.tvRepositories.TabIndex = 0;
             this.tvRepositories.BeforeCollapse += new System.Windows.Forms.TreeViewCancelEventHandler(this.tvRepositories_BeforeCollapse);
             this.tvRepositories.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.tvRepositories_BeforeExpand);
+            this.tvRepositories.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.tvRepositories_AfterExpand);
             this.tvRepositories.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.tvRepositories_NodeMouseClick);
             this.tvRepositories.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.tvRepositories_NodeMouseDoubleClick);
             this.tvRepositories.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tvRepositories_MouseDown);
@@ -75,6 +76,7 @@
             this.ilImages.Images.SetKeyName(3, "REMOTE_BRANCH");
             this.ilImages.Images.SetKeyName(4, "BRANCH_FOLDER");
             this.ilImages.Images.SetKeyName(5, "CURRENT_BRANCH");
+            this.ilImages.Images.SetKeyName(6, "LOADING");
             // 
             // cmRepositories
             // 

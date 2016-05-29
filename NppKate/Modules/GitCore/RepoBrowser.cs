@@ -47,6 +47,7 @@ namespace NppKate.Modules.GitCore
         private const string CURBRANCH_INDEX = "CURRENT_BRANCH";
         private const string BRANCH_FOLDER_INDEX = "BRANCH_FOLDER";
         private const string REMOTE_BRANCH_INDEX = "REMOTE_BRANCH";
+        private const string LOADING_INDEX = "LOADING";
 
         private const string FILE_LOCK = "head.lock";
 
@@ -182,9 +183,15 @@ namespace NppKate.Modules.GitCore
             var currentBranch = node.Nodes.Add("CURRENT", "", CURBRANCH_INDEX, CURBRANCH_INDEX);
             //currentBranch.ForeColor = CurrentBranchColor;
             var local = node.Nodes.Add("LOCAL", "local", BRANCH_FOLDER_INDEX, BRANCH_FOLDER_INDEX);
+            local.Tag = 0;
+            CreateNode("LOAD_LOCAL", "Loading...", LOADING_INDEX, local);
             var remote = node.Nodes.Add("REMOTE", "remote", BRANCH_FOLDER_INDEX, BRANCH_FOLDER_INDEX);
+            remote.Tag = 0;
+            CreateNode("LOAD_REMOTE", "Loading...", LOADING_INDEX, remote);
             using (var r = new Repository(link.Path))
             {
+                currentBranch.Text = r.Head.Name;
+                /*
                 foreach (var b in r.Branches)
                 {
                     if (b.IsRemote)
@@ -205,6 +212,7 @@ namespace NppKate.Modules.GitCore
                         }
                     }
                 }
+                */
             }
         }
 
@@ -259,47 +267,55 @@ namespace NppKate.Modules.GitCore
                 var currentBranch = node.Nodes["CURRENT"];
                 var local = node.Nodes["LOCAL"];
                 var remote = node.Nodes["REMOTE"];
-                foreach(var b in r.Branches)
+
+                tvRepositories.Invoke(new Action(() =>
                 {
-                    if (!b.IsRemote)
+                    currentBranch.Text = r.Head.Name;
+                }));
+
+                if ((int)local.Tag != 0 || (int)remote.Tag != 0)
+                {
+                    foreach (var b in r.Branches)
                     {
-                        if (!local.Nodes.ContainsKey(b.Name))
+                        if (!b.IsRemote && (int)local.Tag == 1)
                         {
-                            tvRepositories.Invoke(new Action(() =>
+                            if (!local.Nodes.ContainsKey(b.Name))
                             {
-                                CreateNode(b.Name, b.Name, BRANCH_INDEX, local);
-                            }));
+                                tvRepositories.Invoke(new Action(() =>
+                                {
+                                    CreateNode(b.Name, b.Name, BRANCH_INDEX, local);
+                                }));
+                            }
+                            var branch = local.Nodes[b.Name];
+                            if (b.IsCurrentRepositoryHead)
+                            {
+                                tvRepositories.Invoke(new Action(() =>
+                                {
+                                    branch.ImageKey = CURBRANCH_INDEX;
+                                    branch.SelectedImageKey = CURBRANCH_INDEX;
+                                    branch.Text += string.Empty;
+                                }));
+                            }
+                            else
+                            {
+                                tvRepositories.Invoke(new Action(() =>
+                                {
+                                    branch.ImageKey = BRANCH_INDEX;
+                                    branch.SelectedImageKey = BRANCH_INDEX;
+                                    branch.Text += string.Empty;
+                                }));
+                            }
                         }
-                        var branch = local.Nodes[b.Name];
-                        if (b.IsCurrentRepositoryHead)
+                        else if (b.IsRemote && (int)remote.Tag == 1)
                         {
-                            tvRepositories.Invoke(new Action(() =>
+                            if (!b.Name.EndsWith("/HEAD", StringComparison.InvariantCultureIgnoreCase) &&
+                                !remote.Nodes.ContainsKey(b.Name))
                             {
-                                currentBranch.Text = b.Name;
-                                branch.ImageKey = CURBRANCH_INDEX;
-                                branch.SelectedImageKey = CURBRANCH_INDEX;
-                                branch.Text += string.Empty;
-                            }));
-                        }
-                        else
-                        {
-                            tvRepositories.Invoke(new Action(() =>
-                            {
-                                branch.ImageKey = BRANCH_INDEX;
-                                branch.SelectedImageKey = BRANCH_INDEX;
-                                branch.Text += string.Empty;
-                            }));
-                        }
-                    }
-                    else
-                    {
-                        if (!b.Name.EndsWith("/HEAD", StringComparison.InvariantCultureIgnoreCase) && 
-                            !remote.Nodes.ContainsKey(b.Name))
-                        {
-                            tvRepositories.Invoke(new Action(() =>
-                            {
-                                CreateNode(b.Name, b.Name, REMOTE_BRANCH_INDEX, remote);
-                            }));
+                                tvRepositories.Invoke(new Action(() =>
+                                {
+                                    CreateNode(b.Name, b.Name, REMOTE_BRANCH_INDEX, remote);
+                                }));
+                            }
                         }
                     }
                 }
@@ -390,6 +406,14 @@ namespace NppKate.Modules.GitCore
             {
                 _isInitialized = true;
                 tvRepositories.Nodes[_lastActiveRepo].Text += string.Empty;
+            }
+        }
+
+        private void tvRepositories_AfterExpand(object sender, TreeViewEventArgs e)
+        {
+            if (e.Node.ImageKey == BRANCH_FOLDER_INDEX && (int)e.Node.Tag == 0)
+            {
+
             }
         }
     }
