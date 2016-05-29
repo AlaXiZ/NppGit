@@ -69,5 +69,17 @@ namespace NppKate.Forms
             llCCA30L.LinkVisited = true;
             System.Diagnostics.Process.Start("http://creativecommons.org/licenses/by/3.0/");
         }
+
+        private void llBoard_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            llBoard.LinkVisited = true;
+            System.Diagnostics.Process.Start("https://nppgit.myjetbrains.com/youtrack/rest/agile");
+        }
+
+        private void llWiki_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            llWiki.LinkVisited = true;
+            System.Diagnostics.Process.Start("https://github.com/schadin/NppKate/wiki");
+        }
     }
 }

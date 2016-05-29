@@ -85,6 +85,7 @@ namespace NppKate.Forms
             this.chbRestartNpp = new System.Windows.Forms.CheckBox();
             this.pMain = new System.Windows.Forms.Panel();
             this.chbInsertEmpty = new System.Windows.Forms.CheckBox();
+            this.llWiki = new System.Windows.Forms.LinkLabel();
             this.tbSettings.SuspendLayout();
             this.tpCommon.SuspendLayout();
             this.gbUsingModules.SuspendLayout();
@@ -145,7 +146,7 @@ namespace NppKate.Forms
             this.bOk.Location = new System.Drawing.Point(330, 3);
             this.bOk.Margin = new System.Windows.Forms.Padding(5);
             this.bOk.Name = "bOk";
-            this.bOk.Size = new System.Drawing.Size(75, 25);
+            this.bOk.Size = new System.Drawing.Size(75, 29);
             this.bOk.TabIndex = 3;
             this.bOk.Text = "OK";
             this.bOk.UseVisualStyleBackColor = true;
@@ -382,6 +383,7 @@ namespace NppKate.Forms
             // 
             // pBottom
             // 
+            this.pBottom.Controls.Add(this.llWiki);
             this.pBottom.Controls.Add(this.chbRestartNpp);
             this.pBottom.Controls.Add(this.label1);
             this.pBottom.Controls.Add(this.bOk);
@@ -389,7 +391,7 @@ namespace NppKate.Forms
             this.pBottom.Location = new System.Drawing.Point(0, 196);
             this.pBottom.Name = "pBottom";
             this.pBottom.Padding = new System.Windows.Forms.Padding(3);
-            this.pBottom.Size = new System.Drawing.Size(408, 31);
+            this.pBottom.Size = new System.Drawing.Size(408, 35);
             this.pBottom.TabIndex = 5;
             // 
             // chbRestartNpp
@@ -421,11 +423,22 @@ namespace NppKate.Forms
             this.chbInsertEmpty.Text = "Insert EMPTY_PARAM";
             this.chbInsertEmpty.UseVisualStyleBackColor = true;
             // 
+            // llWiki
+            // 
+            this.llWiki.AutoSize = true;
+            this.llWiki.Location = new System.Drawing.Point(6, 19);
+            this.llWiki.Name = "llWiki";
+            this.llWiki.Size = new System.Drawing.Size(28, 13);
+            this.llWiki.TabIndex = 5;
+            this.llWiki.TabStop = true;
+            this.llWiki.Text = "Wiki";
+            this.llWiki.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.llWiki_LinkClicked);
+            // 
             // SettingsDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(408, 227);
+            this.ClientSize = new System.Drawing.Size(408, 231);
             this.Controls.Add(this.pMain);
             this.Controls.Add(this.pBottom);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -488,5 +501,6 @@ namespace NppKate.Forms
         private System.Windows.Forms.CheckBox chbExpand;
         private System.Windows.Forms.CheckBox chbAutoExpand;
         private System.Windows.Forms.CheckBox chbInsertEmpty;
+        private System.Windows.Forms.LinkLabel llWiki;
     }
 }
