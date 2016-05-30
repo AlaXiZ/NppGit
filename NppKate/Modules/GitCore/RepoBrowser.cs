@@ -97,7 +97,6 @@ namespace NppKate.Modules.GitCore
             GitCore.Instance.OnRepositoryRemoved += GitCoreOnRepositoryRemoved;
 
             _watchers = new Dictionary<string, FileSystemWatcher>();
-            LoadTree();
         }
 
         private void GitCoreOnRepositoryRemoved(object sender, RepositoryChangedEventArgs e)
@@ -246,6 +245,7 @@ namespace NppKate.Modules.GitCore
                     finally
                     {
                         tvRepositories.EndUpdate();
+                        tvRepositories.Nodes[_lastActiveRepo].Text += string.Empty;
                     }
                 }));
             });
@@ -422,7 +422,7 @@ namespace NppKate.Modules.GitCore
             if (Visible && !_isInitialized)
             {
                 _isInitialized = true;
-                tvRepositories.Nodes[_lastActiveRepo].Text += string.Empty;
+                LoadTree();
             }
         }
 
