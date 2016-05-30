@@ -79,7 +79,8 @@ namespace NppKate.Modules.GitCore
         protected override void OnSwitchIn()
         {
             _logger.Trace("Switch in repository browser");
-            UpdateState();
+            if (_isInitialized)
+                UpdateState();
         }
 
         protected override void OnSwitchOut()
@@ -245,6 +246,7 @@ namespace NppKate.Modules.GitCore
                     finally
                     {
                         tvRepositories.EndUpdate();
+                        _isInitialized = true;
                         tvRepositories.Nodes[_lastActiveRepo].Text += string.Empty;
                     }
                 }));
@@ -421,7 +423,6 @@ namespace NppKate.Modules.GitCore
         {
             if (Visible && !_isInitialized)
             {
-                _isInitialized = true;
                 LoadTree();
             }
         }
