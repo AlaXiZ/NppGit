@@ -288,5 +288,13 @@ namespace NppKate.Forms
         {
             ReloadSnippets();
         }
+
+        private void tvSnippets_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            if (tvSnippets.SelectedNode != e.Node)
+            {
+                tvSnippets.SelectedNode = e.Node;
+            }
+        }
     }
 }

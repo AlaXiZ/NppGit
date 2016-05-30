@@ -34,6 +34,7 @@ using NppKate.Forms;
 using System.Collections.Generic;
 using System.IO;
 using System;
+using System.Threading.Tasks;
 
 namespace NppKate.Modules.GitCore
 {
@@ -41,6 +42,15 @@ namespace NppKate.Modules.GitCore
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
+
+        #region Node names
+        private const string LOCAL_FOLDER = "LOCAL";
+        private const string REMOTE_FOLDER = "REMOTE";
+        private const string LOAD_ITEM = "LOAD";
+        private const string CURRENT_BRANCH = "CURRENT";
+        #endregion
+
+        #region Image key
         private const string REPO_INDEX = "REPO";
         private const string BRANCH_INDEX = "BRANCH";
         private const string EMPTY_INDEX = "EMPTY";
@@ -48,8 +58,12 @@ namespace NppKate.Modules.GitCore
         private const string BRANCH_FOLDER_INDEX = "BRANCH_FOLDER";
         private const string REMOTE_BRANCH_INDEX = "REMOTE_BRANCH";
         private const string LOADING_INDEX = "LOADING";
+        #endregion
 
+        #region File hook
         private const string FILE_LOCK = "head.lock";
+        private const string HOOK_FILTER = "*.lock";
+        #endregion
 
         //private readonly Color CurrentBranchColor = Color.FromArgb(10,192,56);
         private readonly Color DocumentRepoColor = Color.DeepSkyBlue;
@@ -140,7 +154,7 @@ namespace NppKate.Modules.GitCore
         public string Title => "Repository browser";
 
         public void ChangeContext()
-        { 
+        {
             // TODO: ? 
         }
 
@@ -180,39 +194,17 @@ namespace NppKate.Modules.GitCore
 
         private void FillContent(TreeNode node, RepositoryLink link)
         {
-            var currentBranch = node.Nodes.Add("CURRENT", "", CURBRANCH_INDEX, CURBRANCH_INDEX);
+            var currentBranch = node.Nodes.Add(CURRENT_BRANCH, "", CURBRANCH_INDEX, CURBRANCH_INDEX);
             //currentBranch.ForeColor = CurrentBranchColor;
-            var local = node.Nodes.Add("LOCAL", "local", BRANCH_FOLDER_INDEX, BRANCH_FOLDER_INDEX);
+            var local = node.Nodes.Add(LOCAL_FOLDER, Properties.Resources.RsLocal, BRANCH_FOLDER_INDEX, BRANCH_FOLDER_INDEX);
             local.Tag = 0;
-            CreateNode("LOAD_LOCAL", "Loading...", LOADING_INDEX, local);
-            var remote = node.Nodes.Add("REMOTE", "remote", BRANCH_FOLDER_INDEX, BRANCH_FOLDER_INDEX);
+            CreateNode(LOAD_ITEM, Properties.Resources.RsLoading, LOADING_INDEX, local);
+            var remote = node.Nodes.Add(REMOTE_FOLDER, Properties.Resources.RsRemote, BRANCH_FOLDER_INDEX, BRANCH_FOLDER_INDEX);
             remote.Tag = 0;
-            CreateNode("LOAD_REMOTE", "Loading...", LOADING_INDEX, remote);
+            CreateNode(LOAD_ITEM, Properties.Resources.RsLoading, LOADING_INDEX, remote);
             using (var r = new Repository(link.Path))
             {
                 currentBranch.Text = r.Head.Name;
-                /*
-                foreach (var b in r.Branches)
-                {
-                    if (b.IsRemote)
-                    {
-                        if (!b.Name.EndsWith("/HEAD", StringComparison.InvariantCultureIgnoreCase))
-                        {
-                            CreateNode(b.Name, b.Name, REMOTE_BRANCH_INDEX, remote, null);
-                        }
-                    }
-                    else
-                    {
-                        var branchNode = CreateNode(b.Name, b.Name, BRANCH_INDEX, local, cmBranch);
-                        if (b.IsCurrentRepositoryHead)
-                        {
-                            branchNode.ImageKey = CURBRANCH_INDEX;
-                            branchNode.SelectedImageKey = CURBRANCH_INDEX;
-                            currentBranch.Text = b.Name;
-                        }
-                    }
-                }
-                */
             }
         }
 
@@ -223,7 +215,7 @@ namespace NppKate.Modules.GitCore
             var node = CreateNode(link.Name, link.Name, REPO_INDEX, null, cmRepositories);
             FillContent(node, link);
             // Create file watcher
-            var watcher = new FileSystemWatcher(Path.Combine(link.Path, ".git"), "*.lock");
+            var watcher = new FileSystemWatcher(Path.Combine(link.Path, ".git"), HOOK_FILTER);
             watcher.NotifyFilter = NotifyFilters.FileName;
             watcher.Deleted += WatchersOnChange;
             watcher.EnableRaisingEvents = true;
@@ -264,9 +256,9 @@ namespace NppKate.Modules.GitCore
             var link = GitCore.Instance.GetRepositoryByName(repoName);
             using (var r = new Repository(link.Path))
             {
-                var currentBranch = node.Nodes["CURRENT"];
-                var local = node.Nodes["LOCAL"];
-                var remote = node.Nodes["REMOTE"];
+                var currentBranch = node.Nodes[CURRENT_BRANCH];
+                var local = node.Nodes[LOCAL_FOLDER];
+                var remote = node.Nodes[REMOTE_FOLDER];
 
                 tvRepositories.Invoke(new Action(() =>
                 {
@@ -361,7 +353,7 @@ namespace NppKate.Modules.GitCore
         {
             var openDlg = new FolderBrowserDialog()
             {
-                Description = "Select git-repository folder",
+                Description = Properties.Resources.RsSelectGitDir,
                 ShowNewFolderButton = false
             };
             if (openDlg.ShowDialog() == DialogResult.OK)
@@ -413,7 +405,12 @@ namespace NppKate.Modules.GitCore
         {
             if (e.Node.ImageKey == BRANCH_FOLDER_INDEX && (int)e.Node.Tag == 0)
             {
-
+                e.Node.Tag = 1;
+                e.Node.Nodes.RemoveByKey(LOAD_ITEM);
+                new Task(() =>
+                {
+                    UpdateBranch(e.Node.Parent.Name);
+                }).Start();
             }
         }
     }

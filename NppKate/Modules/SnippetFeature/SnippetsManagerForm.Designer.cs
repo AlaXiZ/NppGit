@@ -144,6 +144,7 @@ namespace NppKate.Forms
             this.tvSnippets.TabIndex = 0;
             this.tvSnippets.AfterCollapse += new System.Windows.Forms.TreeViewEventHandler(this.tvSnippets_AfterCollapse);
             this.tvSnippets.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.tvSnippets_AfterExpand);
+            this.tvSnippets.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.tvSnippets_NodeMouseClick);
             this.tvSnippets.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.tvSnippets_NodeMouseDoubleClick);
             // 
             // ilImages
