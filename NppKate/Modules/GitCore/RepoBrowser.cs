@@ -35,6 +35,7 @@ using System.Collections.Generic;
 using System.IO;
 using System;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace NppKate.Modules.GitCore
 {
@@ -65,7 +66,6 @@ namespace NppKate.Modules.GitCore
         private const string HOOK_FILTER = "*.lock";
         #endregion
 
-        //private readonly Color CurrentBranchColor = Color.FromArgb(10,192,56);
         private readonly Color DocumentRepoColor = Color.DeepSkyBlue;
 
         private string _lastActiveRepo = null;
@@ -98,9 +98,6 @@ namespace NppKate.Modules.GitCore
 
             _watchers = new Dictionary<string, FileSystemWatcher>();
             LoadTree();
-            UpdateState();
-
-            tvRepositories.Update();
         }
 
         private void GitCoreOnRepositoryRemoved(object sender, RepositoryChangedEventArgs e)
@@ -153,10 +150,7 @@ namespace NppKate.Modules.GitCore
 
         public string Title => "Repository browser";
 
-        public void ChangeContext()
-        {
-            // TODO: ? 
-        }
+        public void ChangeContext() { }
 
         private void GitCoreOnActiveRepositoryChanged(object sender, RepositoryChangedEventArgs e)
         {
@@ -195,7 +189,6 @@ namespace NppKate.Modules.GitCore
         private void FillContent(TreeNode node, RepositoryLink link)
         {
             var currentBranch = node.Nodes.Add(CURRENT_BRANCH, "", CURBRANCH_INDEX, CURBRANCH_INDEX);
-            //currentBranch.ForeColor = CurrentBranchColor;
             var local = node.Nodes.Add(LOCAL_FOLDER, Properties.Resources.RsLocal, BRANCH_FOLDER_INDEX, BRANCH_FOLDER_INDEX);
             local.Tag = 0;
             CreateNode(LOAD_ITEM, Properties.Resources.RsLoading, LOADING_INDEX, local);
@@ -211,7 +204,6 @@ namespace NppKate.Modules.GitCore
         private TreeNode CreateRepoNode(RepositoryLink link)
         {
             if (link == null) return null;
-
             var node = CreateNode(link.Name, link.Name, REPO_INDEX, null, cmRepositories);
             FillContent(node, link);
             // Create file watcher
@@ -235,7 +227,29 @@ namespace NppKate.Modules.GitCore
         private void LoadTree()
         {
             var repoList = GitCore.Instance.Repositories;
-            repoList.ForEach(r => tvRepositories.Nodes.Add(CreateRepoNode(r)));
+            var task = new Task<List<TreeNode>>(() =>
+            {
+                var result = new List<TreeNode>();
+                repoList.ForEach(r => result.Add(CreateRepoNode(r)));
+                return result;
+            });
+            task.ContinueWith((t) =>
+            {
+                Invoke(new Action(() => 
+                { 
+                    tvRepositories.BeginUpdate();
+                    try
+                    {
+                        t.Result.ForEach(n => tvRepositories.Nodes.Add(n));
+                        UpdateState();
+                    }
+                    finally
+                    {
+                        tvRepositories.EndUpdate();
+                    }
+                }));
+            });
+            task.Start();
         }
 
         private void UpdateState()
@@ -262,54 +276,65 @@ namespace NppKate.Modules.GitCore
 
                 tvRepositories.Invoke(new Action(() =>
                 {
+                    tvRepositories.BeginUpdate();
                     currentBranch.Text = r.Head.Name;
                 }));
 
-                if ((int)local.Tag != 0 || (int)remote.Tag != 0)
+                try
                 {
-                    foreach (var b in r.Branches)
+                    if ((int)local.Tag != 0 || (int)remote.Tag != 0)
                     {
-                        if (!b.IsRemote && (int)local.Tag == 1)
+                        foreach (var b in r.Branches.OrderBy(b => b.Name))
                         {
-                            if (!local.Nodes.ContainsKey(b.Name))
+                            if (!b.IsRemote && (int)local.Tag == 1)
                             {
-                                tvRepositories.Invoke(new Action(() =>
+                                if (!local.Nodes.ContainsKey(b.Name))
                                 {
-                                    CreateNode(b.Name, b.Name, BRANCH_INDEX, local);
-                                }));
+                                    tvRepositories.Invoke(new Action(() =>
+                                    {
+                                        CreateNode(b.Name, b.Name, BRANCH_INDEX, local);
+                                    }));
+                                }
+                                var branch = local.Nodes[b.Name];
+                                if (b.IsCurrentRepositoryHead)
+                                {
+                                    tvRepositories.Invoke(new Action(() =>
+                                    {
+                                        branch.ImageKey = CURBRANCH_INDEX;
+                                        branch.SelectedImageKey = CURBRANCH_INDEX;
+                                        branch.Text += string.Empty;
+                                    }));
+                                }
+                                else
+                                {
+                                    tvRepositories.Invoke(new Action(() =>
+                                    {
+                                        branch.ImageKey = BRANCH_INDEX;
+                                        branch.SelectedImageKey = BRANCH_INDEX;
+                                        branch.Text += string.Empty;
+                                    }));
+                                }
                             }
-                            var branch = local.Nodes[b.Name];
-                            if (b.IsCurrentRepositoryHead)
+                            else if (b.IsRemote && (int)remote.Tag == 1)
                             {
-                                tvRepositories.Invoke(new Action(() =>
+                                if (!b.Name.EndsWith("/HEAD", StringComparison.InvariantCultureIgnoreCase) &&
+                                    !remote.Nodes.ContainsKey(b.Name))
                                 {
-                                    branch.ImageKey = CURBRANCH_INDEX;
-                                    branch.SelectedImageKey = CURBRANCH_INDEX;
-                                    branch.Text += string.Empty;
-                                }));
-                            }
-                            else
-                            {
-                                tvRepositories.Invoke(new Action(() =>
-                                {
-                                    branch.ImageKey = BRANCH_INDEX;
-                                    branch.SelectedImageKey = BRANCH_INDEX;
-                                    branch.Text += string.Empty;
-                                }));
-                            }
-                        }
-                        else if (b.IsRemote && (int)remote.Tag == 1)
-                        {
-                            if (!b.Name.EndsWith("/HEAD", StringComparison.InvariantCultureIgnoreCase) &&
-                                !remote.Nodes.ContainsKey(b.Name))
-                            {
-                                tvRepositories.Invoke(new Action(() =>
-                                {
-                                    CreateNode(b.Name, b.Name, REMOTE_BRANCH_INDEX, remote);
-                                }));
+                                    tvRepositories.Invoke(new Action(() =>
+                                    {
+                                        CreateNode(b.Name, b.Name, REMOTE_BRANCH_INDEX, remote);
+                                    }));
+                                }
                             }
                         }
                     }
+                } 
+                finally
+                {
+                    tvRepositories.Invoke(new Action(() =>
+                    {
+                        tvRepositories.EndUpdate();
+                    }));
                 }
             }
         }
