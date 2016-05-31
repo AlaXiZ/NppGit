@@ -53,22 +53,22 @@ namespace NppKate.Forms
 
         private void LoadSettings()
         {
-            chbTGToolbar.Checked = Settings.TortoiseGitProc.ShowToolbar;
-            chlButtons.Enabled = chbTGToolbar.Checked;
-            var mask = Settings.TortoiseGitProc.ButtonMask;
-            for (int i = 0; i < chlButtons.Items.Count; i++)
-            {
-                chlButtons.SetItemChecked(i, (mask & (1u << i)) > 0);
-            }
+            //chbTGToolbar.Checked = Settings.TortoiseGitProc.ShowToolbar;
+            //chlButtons.Enabled = chbTGToolbar.Checked;
+            //var mask = Settings.TortoiseGitProc.ButtonMask;
+            //for (int i = 0; i < chlButtons.Items.Count; i++)
+            //{
+            //    chlButtons.SetItemChecked(i, (mask & (1u << i)) > 0);
+            //}
             tbTGProcPath.Text = Settings.TortoiseGitProc.Path;
-            chbDefaultShortcut.Checked = Settings.InnerSettings.IsSetDefaultShortcut;
+            chbDefaultShortcut.Checked = Settings.CommonSettings.IsSetDefaultShortcut;
             mtxbSHACount.Text = Settings.Functions.SHACount.ToString();
             chbFileInOtherView.Checked = Settings.Functions.OpenFileInOtherView;
             chbAutoExpand.Checked = Settings.GitCore.AutoExpand;
 
             cbLogLevel.Items.Clear();
             cbLogLevel.Items.AddRange(_logLevel.ToArray());
-            cbLogLevel.Text = Settings.InnerSettings.LogLevel;
+            cbLogLevel.Text = Settings.CommonSettings.LogLevel;
 
             chlModules.SetItemChecked(0, Settings.Modules.TortoiseGit);
             chlModules.SetItemChecked(1, Settings.Modules.Git);
@@ -81,21 +81,28 @@ namespace NppKate.Forms
             chbHideByExt.Checked = Settings.Snippets.IsHideByExtention;
             chbExpand.Checked = Settings.Snippets.IsExpanAfterCreate;
             chbInsertEmpty.Checked = Settings.Snippets.InsertEmpty;
+
+            LoadTortoiseCommands();
         }
 
         private uint GetButtonMask()
         {
             uint result = 0u;
-            for (int i = 0; i < chlButtons.Items.Count; i++)
-            {
-                result |= (chlButtons.GetItemChecked(i) ? 1u : 0) << i;
-            }
+            //for (int i = 0; i < chlButtons.Items.Count; i++)
+            //{
+            //    result |= (chlButtons.GetItemChecked(i) ? 1u : 0) << i;
+            //}
             return result;
+        }
+
+        private void LoadTortoiseCommands()
+        {
+            // TODO: Load command in tree view
         }
 
         private void chbTGToolbar_CheckedChanged(object sender, EventArgs e)
         {
-            chlButtons.Enabled = chbTGToolbar.Checked;
+            //chlButtons.Enabled = chbTGToolbar.Checked;
         }
 
         private void SettingsDialog_FormClosed(object sender, FormClosedEventArgs e)
@@ -104,21 +111,20 @@ namespace NppKate.Forms
 
         private void SaveSettings()
         {
-            Settings.TortoiseGitProc.ShowToolbar = chbTGToolbar.Checked;
-            Settings.TortoiseGitProc.ButtonMask = GetButtonMask();
+            Settings.CommonSettings.IsSetDefaultShortcut = chbDefaultShortcut.Checked;
+            Settings.CommonSettings.LogLevel = cbLogLevel.Text;
+            //Settings.TortoiseGitProc.ShowToolbar = chbTGToolbar.Checked;
+            //Settings.TortoiseGitProc.ButtonMask = GetButtonMask();
             Settings.TortoiseGitProc.Path = tbTGProcPath.Text;
-            Settings.InnerSettings.IsSetDefaultShortcut = chbDefaultShortcut.Checked;
             Settings.Functions.SHACount = byte.Parse(mtxbSHACount.Text);
             Settings.Functions.OpenFileInOtherView = chbFileInOtherView.Checked;
             Settings.GitCore.AutoExpand = chbAutoExpand.Checked;
-            Settings.InnerSettings.LogLevel = cbLogLevel.Text;
 
             // Modules state
             Settings.Modules.TortoiseGit = chlModules.GetItemChecked(0);
             Settings.Modules.Git = chlModules.GetItemChecked(1);
             Settings.Modules.SQLIDE = chlModules.GetItemChecked(2);
             Settings.Modules.Snippets = chlModules.GetItemChecked(3);
-            //Settings.Modules.PSSE = chlModules.GetItemChecked(4);
 
             // Snippet settings
             Settings.Snippets.IsGroupByCategory = chbGroupByCategory.Checked;

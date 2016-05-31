@@ -39,7 +39,7 @@ namespace NppKate
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         private static Dictionary<string, Dictionary<string, object>> _cache = new Dictionary<string, Dictionary<string, object>>();
         private static IniFile _file = new IniFile(Path.Combine(NppUtils.ConfigDir, Properties.Resources.PluginName + ".ini"));
-        
+
         #region "Get/Set"
         // Загрузка/сохранение происходит по имени класса и свойства
         // Имена получаются через стек и рефлексию
@@ -74,8 +74,10 @@ namespace NppKate
             if (string.IsNullOrEmpty(section) || string.IsNullOrEmpty(key))
             {
                 var mth = new StackTrace().GetFrame(1).GetMethod();
-                section = mth.ReflectedType.Name;
-                key = mth.Name.Replace("get_", "");
+                if (string.IsNullOrEmpty(section))
+                    section = mth.ReflectedType.Name;
+                if (string.IsNullOrEmpty(key))
+                    key = mth.Name.Replace("get_", "");
             }
             T value;
             if (_cache.ContainsKey(section) && _cache[section].ContainsKey(key))
@@ -104,7 +106,7 @@ namespace NppKate
             return value;
         }
         #endregion
-        
+
         #region "Settings classes"
         public static class GitCore
         {
@@ -193,7 +195,7 @@ namespace NppKate
         }
 
         public static class TortoiseGitProc
-        {            
+        {
             public static string Path
             {
                 [MethodImpl(MethodImplOptions.NoInlining)]
@@ -222,12 +224,25 @@ namespace NppKate
                 [MethodImpl(MethodImplOptions.NoInlining)]
                 set { Set(value); }
             }
+
+            [MethodImpl(MethodImplOptions.NoInlining)]
+            public static bool GetButtonVisible(string command)
+            {
+                return Get(false, key: command);
+            }
+
+            [MethodImpl(MethodImplOptions.NoInlining)]
+            public static void SetButtonVisible(string command, bool value)
+            {
+                Set(value, key: command);
+            }
+
         }
 
-        public static class InnerSettings
+        public static class CommonSettings
         {
             public static bool IsSetDefaultShortcut
-            { 
+            {
                 [MethodImpl(MethodImplOptions.NoInlining)]
                 get { return Get(false); }
                 [MethodImpl(MethodImplOptions.NoInlining)]
@@ -243,6 +258,16 @@ namespace NppKate
                     Set(value);
                     AssemblyLoader.ReConfigLog();
                 }
+            }
+
+            public static bool GetCommandState(string module, string command)
+            {
+                return Get(true, module, command);
+            }
+
+            public static void SetCommandState(string module, string command, bool value)
+            {
+                Set(value, module, command);
             }
         }
 

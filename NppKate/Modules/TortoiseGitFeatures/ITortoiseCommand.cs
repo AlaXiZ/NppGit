@@ -27,7 +27,7 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace NppKate.Modules.TortoiseGitFeatures
 {
-    public interface ITortoiseGit
+    public interface ITortoiseCommand
     {
         void RunCommand(TortoiseGitCommand command, string path, string logMessage = null, bool isAutoClose = false);
     }

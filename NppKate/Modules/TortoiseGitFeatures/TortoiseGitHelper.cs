@@ -25,18 +25,18 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Forms;
 using NLog;
 using NppKate.Common;
 using NppKate.Npp;
 using NppKate.Resources;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Windows.Forms;
 
 namespace NppKate.Modules.TortoiseGitFeatures
 {
-    public class TortoiseGitHelper : IModule, ITortoiseGit
+    public class TortoiseGitHelper : IModule, ITortoiseCommand
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -560,7 +560,6 @@ namespace NppKate.Modules.TortoiseGitFeatures
                     _icons.Add(cmdId, ExternalResourceName.IDB_PULL);
 
                 /**********************************************************************************/
-                _manager.RegisterCommandItem(new CommandItem { Name = "-", Hint = "-", Action = null });
 
                 _manager.RegisterCommandItem(new CommandItem
                 {
@@ -579,8 +578,6 @@ namespace NppKate.Modules.TortoiseGitFeatures
                 });
 
                 /**********************************************************************************/
-                _manager.RegisterCommandItem(new CommandItem { Name = "-", Hint = "-", Action = null });
-
                 _manager.RegisterCommandItem(new CommandItem
                 {
                     Name = "Log file",
@@ -720,7 +717,6 @@ namespace NppKate.Modules.TortoiseGitFeatures
                 });
 
                 /**********************************************************************************/
-                _manager.RegisterCommandItem(new CommandItem { Name = "-", Hint = "-", Action = null });
 
                 _manager.RegisterCommandItem(new CommandItem
                 {
@@ -787,7 +783,6 @@ namespace NppKate.Modules.TortoiseGitFeatures
                 });
 
                 /**********************************************************************************/
-                _manager.RegisterCommandItem(new CommandItem { Name = "-", Hint = "-", Action = null });
 
                 cmdId = _manager.RegisterCommandItem(new CommandItem
                 {
@@ -824,7 +819,6 @@ namespace NppKate.Modules.TortoiseGitFeatures
                 });
 
                 /**********************************************************************************/
-                _manager.RegisterCommandItem(new CommandItem { Name = "-", Hint = "-", Action = null });
                 /*
                 _manager.RegisterCommandItem(new CommandItem
                 {
@@ -851,7 +845,6 @@ namespace NppKate.Modules.TortoiseGitFeatures
                     Action = GitRepoCreate
                 });
                 /**********************************************************************************/
-                _manager.RegisterCommandItem(new CommandItem { Name = "-", Hint = "-", Action = null });
 
                 cmdId = _manager.RegisterCommandItem(new CommandItem
                 {
@@ -868,8 +861,6 @@ namespace NppKate.Modules.TortoiseGitFeatures
                     ShortcutKey = null,
                     Action = GitApplyPatchSerial
                 });
-
-                _manager.RegisterCommandItem(new CommandItem { Name = "-", Hint = "-", Action = null });
             }
             else
             {
