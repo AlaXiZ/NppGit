@@ -66,6 +66,11 @@ namespace NppKate.Forms
             this.cbLogLevel = new System.Windows.Forms.ComboBox();
             this.chbDefaultShortcut = new System.Windows.Forms.CheckBox();
             this.tpTortoise = new System.Windows.Forms.TabPage();
+            this.tcCommands = new System.Windows.Forms.TabControl();
+            this.tpMenu = new System.Windows.Forms.TabPage();
+            this.tvMenuCommand = new System.Windows.Forms.TreeView();
+            this.tpToolbar = new System.Windows.Forms.TabPage();
+            this.tvToolbarCommand = new System.Windows.Forms.TreeView();
             this.bSelectFolder = new System.Windows.Forms.Button();
             this.tbTGProcPath = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -84,23 +89,18 @@ namespace NppKate.Forms
             this.llWiki = new System.Windows.Forms.LinkLabel();
             this.chbRestartNpp = new System.Windows.Forms.CheckBox();
             this.pMain = new System.Windows.Forms.Panel();
-            this.tcCommands = new System.Windows.Forms.TabControl();
-            this.tpMenu = new System.Windows.Forms.TabPage();
-            this.tpToolbar = new System.Windows.Forms.TabPage();
-            this.tvMenuCommand = new System.Windows.Forms.TreeView();
-            this.tvToolbarCommand = new System.Windows.Forms.TreeView();
             this.tbSettings.SuspendLayout();
             this.tpCommon.SuspendLayout();
             this.gbUsingModules.SuspendLayout();
             this.tpTortoise.SuspendLayout();
+            this.tcCommands.SuspendLayout();
+            this.tpMenu.SuspendLayout();
+            this.tpToolbar.SuspendLayout();
             this.tpGitFeatures.SuspendLayout();
             this.gbFileInBranch.SuspendLayout();
             this.tpSnippets.SuspendLayout();
             this.pBottom.SuspendLayout();
             this.pMain.SuspendLayout();
-            this.tcCommands.SuspendLayout();
-            this.tpMenu.SuspendLayout();
-            this.tpToolbar.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -148,7 +148,7 @@ namespace NppKate.Forms
             this.tpCommon.Location = new System.Drawing.Point(4, 22);
             this.tpCommon.Name = "tpCommon";
             this.tpCommon.Padding = new System.Windows.Forms.Padding(3);
-            this.tpCommon.Size = new System.Drawing.Size(400, 170);
+            this.tpCommon.Size = new System.Drawing.Size(401, 201);
             this.tpCommon.TabIndex = 0;
             this.tpCommon.Text = "Общие";
             this.tpCommon.UseVisualStyleBackColor = true;
@@ -221,6 +221,55 @@ namespace NppKate.Forms
             this.tpTortoise.Text = "TortoiseGit";
             this.tpTortoise.UseVisualStyleBackColor = true;
             // 
+            // tcCommands
+            // 
+            this.tcCommands.Controls.Add(this.tpMenu);
+            this.tcCommands.Controls.Add(this.tpToolbar);
+            this.tcCommands.Location = new System.Drawing.Point(8, 46);
+            this.tcCommands.Name = "tcCommands";
+            this.tcCommands.SelectedIndex = 0;
+            this.tcCommands.Size = new System.Drawing.Size(385, 152);
+            this.tcCommands.TabIndex = 5;
+            // 
+            // tpMenu
+            // 
+            this.tpMenu.Controls.Add(this.tvMenuCommand);
+            this.tpMenu.ForeColor = System.Drawing.Color.Black;
+            this.tpMenu.Location = new System.Drawing.Point(4, 22);
+            this.tpMenu.Name = "tpMenu";
+            this.tpMenu.Padding = new System.Windows.Forms.Padding(3);
+            this.tpMenu.Size = new System.Drawing.Size(377, 126);
+            this.tpMenu.TabIndex = 0;
+            this.tpMenu.Text = "In menu";
+            this.tpMenu.UseVisualStyleBackColor = true;
+            // 
+            // tvMenuCommand
+            // 
+            this.tvMenuCommand.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tvMenuCommand.Location = new System.Drawing.Point(3, 3);
+            this.tvMenuCommand.Name = "tvMenuCommand";
+            this.tvMenuCommand.Size = new System.Drawing.Size(371, 120);
+            this.tvMenuCommand.TabIndex = 0;
+            // 
+            // tpToolbar
+            // 
+            this.tpToolbar.Controls.Add(this.tvToolbarCommand);
+            this.tpToolbar.Location = new System.Drawing.Point(4, 22);
+            this.tpToolbar.Name = "tpToolbar";
+            this.tpToolbar.Padding = new System.Windows.Forms.Padding(3);
+            this.tpToolbar.Size = new System.Drawing.Size(377, 126);
+            this.tpToolbar.TabIndex = 1;
+            this.tpToolbar.Text = "In toolbar";
+            this.tpToolbar.UseVisualStyleBackColor = true;
+            // 
+            // tvToolbarCommand
+            // 
+            this.tvToolbarCommand.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tvToolbarCommand.Location = new System.Drawing.Point(3, 3);
+            this.tvToolbarCommand.Name = "tvToolbarCommand";
+            this.tvToolbarCommand.Size = new System.Drawing.Size(371, 120);
+            this.tvToolbarCommand.TabIndex = 1;
+            // 
             // bSelectFolder
             // 
             this.bSelectFolder.Location = new System.Drawing.Point(366, 18);
@@ -255,7 +304,7 @@ namespace NppKate.Forms
             this.tpGitFeatures.Location = new System.Drawing.Point(4, 22);
             this.tpGitFeatures.Name = "tpGitFeatures";
             this.tpGitFeatures.Padding = new System.Windows.Forms.Padding(3);
-            this.tpGitFeatures.Size = new System.Drawing.Size(400, 170);
+            this.tpGitFeatures.Size = new System.Drawing.Size(401, 201);
             this.tpGitFeatures.TabIndex = 2;
             this.tpGitFeatures.Text = "Git";
             this.tpGitFeatures.UseVisualStyleBackColor = true;
@@ -319,7 +368,7 @@ namespace NppKate.Forms
             this.tpSnippets.Location = new System.Drawing.Point(4, 22);
             this.tpSnippets.Name = "tpSnippets";
             this.tpSnippets.Padding = new System.Windows.Forms.Padding(3);
-            this.tpSnippets.Size = new System.Drawing.Size(400, 170);
+            this.tpSnippets.Size = new System.Drawing.Size(401, 201);
             this.tpSnippets.TabIndex = 3;
             this.tpSnippets.Text = "Snippets";
             this.tpSnippets.UseVisualStyleBackColor = true;
@@ -407,55 +456,6 @@ namespace NppKate.Forms
             this.pMain.Size = new System.Drawing.Size(409, 227);
             this.pMain.TabIndex = 6;
             // 
-            // tcCommands
-            // 
-            this.tcCommands.Controls.Add(this.tpMenu);
-            this.tcCommands.Controls.Add(this.tpToolbar);
-            this.tcCommands.Location = new System.Drawing.Point(8, 46);
-            this.tcCommands.Name = "tcCommands";
-            this.tcCommands.SelectedIndex = 0;
-            this.tcCommands.Size = new System.Drawing.Size(385, 152);
-            this.tcCommands.TabIndex = 5;
-            // 
-            // tpMenu
-            // 
-            this.tpMenu.Controls.Add(this.tvMenuCommand);
-            this.tpMenu.ForeColor = System.Drawing.Color.Black;
-            this.tpMenu.Location = new System.Drawing.Point(4, 22);
-            this.tpMenu.Name = "tpMenu";
-            this.tpMenu.Padding = new System.Windows.Forms.Padding(3);
-            this.tpMenu.Size = new System.Drawing.Size(377, 126);
-            this.tpMenu.TabIndex = 0;
-            this.tpMenu.Text = "In menu";
-            this.tpMenu.UseVisualStyleBackColor = true;
-            // 
-            // tpToolbar
-            // 
-            this.tpToolbar.Controls.Add(this.tvToolbarCommand);
-            this.tpToolbar.Location = new System.Drawing.Point(4, 22);
-            this.tpToolbar.Name = "tpToolbar";
-            this.tpToolbar.Padding = new System.Windows.Forms.Padding(3);
-            this.tpToolbar.Size = new System.Drawing.Size(377, 126);
-            this.tpToolbar.TabIndex = 1;
-            this.tpToolbar.Text = "In toolbar";
-            this.tpToolbar.UseVisualStyleBackColor = true;
-            // 
-            // tvMenuCommand
-            // 
-            this.tvMenuCommand.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tvMenuCommand.Location = new System.Drawing.Point(3, 3);
-            this.tvMenuCommand.Name = "tvMenuCommand";
-            this.tvMenuCommand.Size = new System.Drawing.Size(371, 120);
-            this.tvMenuCommand.TabIndex = 0;
-            // 
-            // tvToolbarCommand
-            // 
-            this.tvToolbarCommand.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tvToolbarCommand.Location = new System.Drawing.Point(3, 3);
-            this.tvToolbarCommand.Name = "tvToolbarCommand";
-            this.tvToolbarCommand.Size = new System.Drawing.Size(371, 120);
-            this.tvToolbarCommand.TabIndex = 1;
-            // 
             // SettingsDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -479,6 +479,9 @@ namespace NppKate.Forms
             this.gbUsingModules.ResumeLayout(false);
             this.tpTortoise.ResumeLayout(false);
             this.tpTortoise.PerformLayout();
+            this.tcCommands.ResumeLayout(false);
+            this.tpMenu.ResumeLayout(false);
+            this.tpToolbar.ResumeLayout(false);
             this.tpGitFeatures.ResumeLayout(false);
             this.tpGitFeatures.PerformLayout();
             this.gbFileInBranch.ResumeLayout(false);
@@ -488,9 +491,6 @@ namespace NppKate.Forms
             this.pBottom.ResumeLayout(false);
             this.pBottom.PerformLayout();
             this.pMain.ResumeLayout(false);
-            this.tcCommands.ResumeLayout(false);
-            this.tpMenu.ResumeLayout(false);
-            this.tpToolbar.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }

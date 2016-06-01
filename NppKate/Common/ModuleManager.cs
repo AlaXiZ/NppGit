@@ -60,6 +60,8 @@ namespace NppKate.Common
         public event EventHandler<TabEventArgs> OnTabChangeEvent;
         public event EventHandler<CommandItemClickEventArgs> OnCommandItemClick;
 
+        public ResourceManager ResourceManager => _resManager;
+
         public ModuleManager()
         {
             _modules = new LinkedList<IModule>();
@@ -381,13 +383,6 @@ namespace NppKate.Common
         private static readonly string ItemTemplate = "<Item FolderName=\"{0}\" PluginEntryName=\"{1}\" PluginCommandItemName=\"{2}\" ItemNameAs=\"{3}\"/>";
         private static readonly string ItemSeparator = "<Item FolderName=\"{0}\" id = \"0\" />";
         private static readonly string ItemSeparator2 = "<Item id=\"0\" />";
-        public ResourceManager ResourceManager
-        {
-            get
-            {
-                return _resManager;
-            }
-        }
 
         private static string GetItemTemplate(string folder = "", string itemName = "---", string itemNameAs = "---")
         {
@@ -447,6 +442,12 @@ namespace NppKate.Common
                 NppUtils.SetLang(LangType.L_XML);
             }
         }
+        #endregion
+
+        #region IDocableManager
+
+        IModuleManager IDockableManager.ModuleManager => this;
+
         #endregion
     }
 }

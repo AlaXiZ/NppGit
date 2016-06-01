@@ -25,11 +25,11 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
 using NLog;
 using NppKate.Interop;
 using NppKate.Npp;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace NppKate.Common
 {
@@ -50,10 +50,13 @@ namespace NppKate.Common
             // Do nothing
         }
 
+        protected virtual void AfterInit() { }
+
         public void init(IDockableManager manager, int commandId)
         {
             _manager = manager;
             _cmdId = commandId;
+            AfterInit();
         }
 
         protected override void WndProc(ref Message m)
@@ -62,7 +65,8 @@ namespace NppKate.Common
             {
                 tagNMHDR ntf = (tagNMHDR)Marshal.PtrToStructure(m.LParam, typeof(tagNMHDR));
                 //_logger.Trace("DockForm message {0}", (DockMgrMsg)ntf.code);
-                switch (ntf.code) {
+                switch (ntf.code)
+                {
                     case (uint)DockMgrMsg.DMN_CLOSE:
                         OnSwitchOut();
                         Win32.SendMessage(NppInfo.Instance.NppHandle, (int)WinMsg.WM_COMMAND, _cmdId, 0);

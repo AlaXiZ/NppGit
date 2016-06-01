@@ -511,6 +511,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
         {
             _manager = manager;
             _manager.OnToolbarRegisterEvent += ToolBarInit;
+            _manager.RegisterService(typeof(ITortoiseCommand), this);
 
             logger.Debug("Create menu");
             _icons = new Dictionary<int, string>();

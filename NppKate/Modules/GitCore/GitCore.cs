@@ -25,16 +25,16 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-using System;
+using LibGit2Sharp;
+using NLog;
 using NppKate.Common;
+using NppKate.Npp;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
-using System.Diagnostics;
-using LibGit2Sharp;
-using NppKate.Npp;
-using NLog;
 
 namespace NppKate.Modules.GitCore
 {
@@ -77,7 +77,7 @@ namespace NppKate.Modules.GitCore
                 Class = typeof(RepoBrowser),
                 IconResourceName = Resources.ExternalResourceName.IDB_REPOSITORIES,
                 Title = "Repository browser",
-                uMask = NppTbMsg.DWS_PARAMSALL | NppTbMsg.DWS_DF_CONT_LEFT
+                uMask = NppTbMsg.DWS_PARAMSALL | NppTbMsg.DWS_DF_CONT_RIGHT
             });
             //manager.RegisterDockForm(typeof(RepoBrowser), _browserCmdId, false);
 
@@ -160,8 +160,8 @@ namespace NppKate.Modules.GitCore
             {
                 _doc = XDocument.Load(fileName);
                 _repos = (from e in _doc.Descendants("Repository")
-                             select e).ToDictionary(e => e.Attribute("Name").Value, (e) => new RepositoryLink(e.Value));
-                foreach (var name in  _repos.Keys.ToList())
+                          select e).ToDictionary(e => e.Attribute("Name").Value, (e) => new RepositoryLink(e.Value));
+                foreach (var name in _repos.Keys.ToList())
                 {
                     if (_repos[name].Name == null)
                     {
@@ -289,7 +289,7 @@ namespace NppKate.Modules.GitCore
 
         #endregion
 
-        private void SaveRepo(RepositoryLink repoLink) 
+        private void SaveRepo(RepositoryLink repoLink)
         {
             _logger.Trace($"Save repo Name={repoLink.Name}, Path={repoLink.Path}");
             _repos.Add(repoLink.Name, repoLink);
@@ -300,7 +300,8 @@ namespace NppKate.Modules.GitCore
             try
             {
                 _doc.Save(_filename);
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 _logger.Error(ex);
             }

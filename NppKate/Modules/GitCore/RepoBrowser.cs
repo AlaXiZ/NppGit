@@ -25,17 +25,18 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-using System.Drawing;
-using System.Windows.Forms;
 using LibGit2Sharp;
 using NLog;
 using NppKate.Common;
 using NppKate.Forms;
-using System.Collections.Generic;
-using System.IO;
+using NppKate.Modules.TortoiseGitFeatures;
 using System;
-using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace NppKate.Modules.GitCore
 {
@@ -73,6 +74,7 @@ namespace NppKate.Modules.GitCore
         private bool _hasDoubleClick = false;
         private DateTime _lastMouseDown = DateTime.Now;
         private bool _isInitialized = false;
+        private ITortoiseCommand _commandRuner;
 
         private Dictionary<string, FileSystemWatcher> _watchers;
 
@@ -98,6 +100,23 @@ namespace NppKate.Modules.GitCore
             GitCore.Instance.OnRepositoryRemoved += GitCoreOnRepositoryRemoved;
 
             _watchers = new Dictionary<string, FileSystemWatcher>();
+        }
+
+        protected override void AfterInit()
+        {
+            if (_manager.ModuleManager.ServiceExists(typeof(ITortoiseCommand)))
+            {
+                _commandRuner = (ITortoiseCommand)_manager.ModuleManager.GetService(typeof(ITortoiseCommand));
+                LoadAdditionalContextMenu();
+            }
+        }
+
+        private void LoadAdditionalContextMenu()
+        {
+            for (int i = 0; i < cmAdditional.Items.Count - 1; i++)
+            {
+                cmRepositories.Items.Add(cmAdditional.Items[i]);
+            }
         }
 
         private void GitCoreOnRepositoryRemoved(object sender, RepositoryChangedEventArgs e)
@@ -235,8 +254,8 @@ namespace NppKate.Modules.GitCore
             });
             task.ContinueWith((t) =>
             {
-                Invoke(new Action(() => 
-                { 
+                Invoke(new Action(() =>
+                {
                     tvRepositories.BeginUpdate();
                     try
                     {
@@ -330,7 +349,7 @@ namespace NppKate.Modules.GitCore
                             }
                         }
                     }
-                } 
+                }
                 finally
                 {
                     tvRepositories.Invoke(new Action(() =>
@@ -438,6 +457,36 @@ namespace NppKate.Modules.GitCore
                     UpdateBranch(e.Node.Parent.Name);
                 }).Start();
             }
+        }
+
+        private void RunTortoiseCommand(TortoiseGitCommand cmd)
+        {
+            _commandRuner.RunCommand(cmd, GitCore.Instance.ActiveRepository.Path);
+        }
+
+        private void fetchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RunTortoiseCommand(TortoiseGitCommand.Fetch);
+        }
+
+        private void pullToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RunTortoiseCommand(TortoiseGitCommand.Pull);
+        }
+
+        private void commitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RunTortoiseCommand(TortoiseGitCommand.Commit);
+        }
+
+        private void pushToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RunTortoiseCommand(TortoiseGitCommand.Push);
+        }
+
+        private void syncToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //RunTortoiseCommand(TortoiseGitCommand.Sync);
         }
     }
 

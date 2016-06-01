@@ -26,7 +26,6 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 using System;
-using System.Drawing;
 
 namespace NppKate.Common
 {
@@ -45,7 +44,7 @@ namespace NppKate.Common
         void SetCheckedMenu(int cmdId, bool isChecked);
         object GetService(Type interfaceType);
         void RegisterService(Type interfaceType, object instance);
-        bool ServiceExists(Type interfaceType);
+        bool ServiceExists(Type interfaceName);
 
         ResourceManager ResourceManager { get; }
     }
