@@ -107,15 +107,7 @@ namespace NppKate.Modules.GitCore
             if (_manager.ModuleManager.ServiceExists(typeof(ITortoiseCommand)))
             {
                 _commandRuner = (ITortoiseCommand)_manager.ModuleManager.GetService(typeof(ITortoiseCommand));
-                LoadAdditionalContextMenu();
-            }
-        }
-
-        private void LoadAdditionalContextMenu()
-        {
-            for (int i = 0; i < cmAdditional.Items.Count - 1; i++)
-            {
-                cmRepositories.Items.Add(cmAdditional.Items[i]);
+                tortoiseGitToolStripMenuItem.Visible = true;
             }
         }
 
@@ -459,34 +451,104 @@ namespace NppKate.Modules.GitCore
             }
         }
 
-        private void RunTortoiseCommand(TortoiseGitCommand cmd)
+        private void RunTortoiseCommandForRepo(TortoiseGitCommand cmd)
         {
-            _commandRuner.RunCommand(cmd, GitCore.Instance.ActiveRepository.Path);
+            var node = tvRepositories.SelectedNode;
+            var path = GitCore.Instance.GetRepositoryByName(node?.Name)?.Path;
+            if (path != null)
+                _commandRuner.RunCommand(cmd, path);
+        }
+
+        private void RunTortoiseCommandCurrentFile(TortoiseGitCommand cmd)
+        {
+            var path = Npp.NppUtils.CurrentFilePath;
+            if (path != null)
+                _commandRuner.RunCommand(cmd, path);
         }
 
         private void fetchToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            RunTortoiseCommand(TortoiseGitCommand.Fetch);
+            RunTortoiseCommandForRepo(TortoiseGitCommand.Fetch);
         }
 
         private void pullToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            RunTortoiseCommand(TortoiseGitCommand.Pull);
+            RunTortoiseCommandForRepo(TortoiseGitCommand.Pull);
         }
 
         private void commitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            RunTortoiseCommand(TortoiseGitCommand.Commit);
+            RunTortoiseCommandForRepo(TortoiseGitCommand.Commit);
         }
 
         private void pushToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            RunTortoiseCommand(TortoiseGitCommand.Push);
+            RunTortoiseCommandForRepo(TortoiseGitCommand.Push);
         }
 
         private void syncToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //RunTortoiseCommand(TortoiseGitCommand.Sync);
+        }
+
+        private void showLogToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RunTortoiseCommandForRepo(TortoiseGitCommand.Log);
+        }
+
+        private void showReflogToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RunTortoiseCommandForRepo(TortoiseGitCommand.RefLog);
+        }
+
+        private void stashSaveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RunTortoiseCommandForRepo(TortoiseGitCommand.StashSave);
+        }
+
+        private void stashPopToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RunTortoiseCommandForRepo(TortoiseGitCommand.StashPop);
+        }
+
+        private void stashListToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // ???
+        }
+
+        private void repoBrowserToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RunTortoiseCommandForRepo(TortoiseGitCommand.RepoBrowser);
+        }
+
+        private void checkForModificationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RunTortoiseCommandForRepo(TortoiseGitCommand.RepoStatus);
+        }
+
+        private void browseReferenceToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RunTortoiseCommandForRepo(TortoiseGitCommand.RefBrowse);
+        }
+
+        private void switchCheckoutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RunTortoiseCommandForRepo(TortoiseGitCommand.Switch);
+        }
+
+        private void blameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RunTortoiseCommandCurrentFile(TortoiseGitCommand.Blame);
+        }
+
+        private void exportToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RunTortoiseCommandForRepo(TortoiseGitCommand.Export);
+        }
+
+        private void mergeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RunTortoiseCommandForRepo(TortoiseGitCommand.Merge);
         }
     }
 

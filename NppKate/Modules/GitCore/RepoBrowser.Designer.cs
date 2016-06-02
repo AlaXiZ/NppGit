@@ -36,18 +36,29 @@
             this.miSetActive = new System.Windows.Forms.ToolStripMenuItem();
             this.miAddRepo = new System.Windows.Forms.ToolStripMenuItem();
             this.miRemoveRepo = new System.Windows.Forms.ToolStripMenuItem();
-            this.cmBranch = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.miSwitchTo = new System.Windows.Forms.ToolStripMenuItem();
-            this.cmAdditional = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
+            this.tortoiseGitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fetchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pullToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.commitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pushToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.syncToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
+            this.showLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showReflogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.stashSaveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.stashPopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.stashListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.repoBrowserToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.checkForModificationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.browseReferenceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.switchCheckoutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.blameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mergeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmBranch = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.miSwitchTo = new System.Windows.Forms.ToolStripMenuItem();
             this.cmRepositories.SuspendLayout();
             this.cmBranch.SuspendLayout();
-            this.cmAdditional.SuspendLayout();
             this.SuspendLayout();
             // 
             // tvRepositories
@@ -85,10 +96,12 @@
             this.cmRepositories.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.miSetActive,
             this.miAddRepo,
-            this.miRemoveRepo});
+            this.miRemoveRepo,
+            this.toolStripMenuItem1,
+            this.tortoiseGitToolStripMenuItem});
             this.cmRepositories.Name = "cmRepositories";
             this.cmRepositories.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-            this.cmRepositories.Size = new System.Drawing.Size(174, 70);
+            this.cmRepositories.Size = new System.Drawing.Size(174, 120);
             this.cmRepositories.Opening += new System.ComponentModel.CancelEventHandler(this.cmRepositories_Opening);
             // 
             // miSetActive
@@ -115,6 +128,167 @@
             this.miRemoveRepo.Text = "Remove repository";
             this.miRemoveRepo.Click += new System.EventHandler(this.miRemoveRepo_Click);
             // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(170, 6);
+            // 
+            // tortoiseGitToolStripMenuItem
+            // 
+            this.tortoiseGitToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fetchToolStripMenuItem,
+            this.pullToolStripMenuItem,
+            this.commitToolStripMenuItem,
+            this.pushToolStripMenuItem,
+            this.syncToolStripMenuItem,
+            this.showLogToolStripMenuItem,
+            this.showReflogToolStripMenuItem,
+            this.stashSaveToolStripMenuItem,
+            this.stashPopToolStripMenuItem,
+            this.stashListToolStripMenuItem,
+            this.repoBrowserToolStripMenuItem,
+            this.checkForModificationToolStripMenuItem,
+            this.browseReferenceToolStripMenuItem,
+            this.switchCheckoutToolStripMenuItem,
+            this.blameToolStripMenuItem,
+            this.exportToolStripMenuItem,
+            this.mergeToolStripMenuItem});
+            this.tortoiseGitToolStripMenuItem.Name = "tortoiseGitToolStripMenuItem";
+            this.tortoiseGitToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.tortoiseGitToolStripMenuItem.Text = "Tortoise Git";
+            this.tortoiseGitToolStripMenuItem.Visible = false;
+            // 
+            // fetchToolStripMenuItem
+            // 
+            this.fetchToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("fetchToolStripMenuItem.Image")));
+            this.fetchToolStripMenuItem.Name = "fetchToolStripMenuItem";
+            this.fetchToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+            this.fetchToolStripMenuItem.Text = "Fetch";
+            this.fetchToolStripMenuItem.Click += new System.EventHandler(this.fetchToolStripMenuItem_Click);
+            // 
+            // pullToolStripMenuItem
+            // 
+            this.pullToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("pullToolStripMenuItem.Image")));
+            this.pullToolStripMenuItem.Name = "pullToolStripMenuItem";
+            this.pullToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+            this.pullToolStripMenuItem.Text = "Pull";
+            this.pullToolStripMenuItem.Click += new System.EventHandler(this.pullToolStripMenuItem_Click);
+            // 
+            // commitToolStripMenuItem
+            // 
+            this.commitToolStripMenuItem.Image = global::NppKate.Properties.Resources.commit;
+            this.commitToolStripMenuItem.Name = "commitToolStripMenuItem";
+            this.commitToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+            this.commitToolStripMenuItem.Text = "Commit";
+            this.commitToolStripMenuItem.Click += new System.EventHandler(this.commitToolStripMenuItem_Click);
+            // 
+            // pushToolStripMenuItem
+            // 
+            this.pushToolStripMenuItem.Image = global::NppKate.Properties.Resources.push;
+            this.pushToolStripMenuItem.Name = "pushToolStripMenuItem";
+            this.pushToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+            this.pushToolStripMenuItem.Text = "Push";
+            this.pushToolStripMenuItem.Click += new System.EventHandler(this.pushToolStripMenuItem_Click);
+            // 
+            // syncToolStripMenuItem
+            // 
+            this.syncToolStripMenuItem.Enabled = false;
+            this.syncToolStripMenuItem.Name = "syncToolStripMenuItem";
+            this.syncToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+            this.syncToolStripMenuItem.Text = "Sync";
+            this.syncToolStripMenuItem.Click += new System.EventHandler(this.syncToolStripMenuItem_Click);
+            // 
+            // showLogToolStripMenuItem
+            // 
+            this.showLogToolStripMenuItem.Image = global::NppKate.Properties.Resources.log;
+            this.showLogToolStripMenuItem.Name = "showLogToolStripMenuItem";
+            this.showLogToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+            this.showLogToolStripMenuItem.Text = "Show log";
+            this.showLogToolStripMenuItem.Click += new System.EventHandler(this.showLogToolStripMenuItem_Click);
+            // 
+            // showReflogToolStripMenuItem
+            // 
+            this.showReflogToolStripMenuItem.Image = global::NppKate.Properties.Resources.log;
+            this.showReflogToolStripMenuItem.Name = "showReflogToolStripMenuItem";
+            this.showReflogToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+            this.showReflogToolStripMenuItem.Text = "Show Reflog";
+            this.showReflogToolStripMenuItem.Click += new System.EventHandler(this.showReflogToolStripMenuItem_Click);
+            // 
+            // stashSaveToolStripMenuItem
+            // 
+            this.stashSaveToolStripMenuItem.Image = global::NppKate.Properties.Resources.stashsave;
+            this.stashSaveToolStripMenuItem.Name = "stashSaveToolStripMenuItem";
+            this.stashSaveToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+            this.stashSaveToolStripMenuItem.Text = "Stash Save";
+            this.stashSaveToolStripMenuItem.Click += new System.EventHandler(this.stashSaveToolStripMenuItem_Click);
+            // 
+            // stashPopToolStripMenuItem
+            // 
+            this.stashPopToolStripMenuItem.Image = global::NppKate.Properties.Resources.stashpop;
+            this.stashPopToolStripMenuItem.Name = "stashPopToolStripMenuItem";
+            this.stashPopToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+            this.stashPopToolStripMenuItem.Text = "Stash Pop";
+            this.stashPopToolStripMenuItem.Click += new System.EventHandler(this.stashPopToolStripMenuItem_Click);
+            // 
+            // stashListToolStripMenuItem
+            // 
+            this.stashListToolStripMenuItem.Enabled = false;
+            this.stashListToolStripMenuItem.Name = "stashListToolStripMenuItem";
+            this.stashListToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+            this.stashListToolStripMenuItem.Text = "Stash List";
+            this.stashListToolStripMenuItem.Click += new System.EventHandler(this.stashListToolStripMenuItem_Click);
+            // 
+            // repoBrowserToolStripMenuItem
+            // 
+            this.repoBrowserToolStripMenuItem.Image = global::NppKate.Properties.Resources.repo;
+            this.repoBrowserToolStripMenuItem.Name = "repoBrowserToolStripMenuItem";
+            this.repoBrowserToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+            this.repoBrowserToolStripMenuItem.Text = "Repo browser";
+            this.repoBrowserToolStripMenuItem.Click += new System.EventHandler(this.repoBrowserToolStripMenuItem_Click);
+            // 
+            // checkForModificationToolStripMenuItem
+            // 
+            this.checkForModificationToolStripMenuItem.Name = "checkForModificationToolStripMenuItem";
+            this.checkForModificationToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+            this.checkForModificationToolStripMenuItem.Text = "Check for modification";
+            this.checkForModificationToolStripMenuItem.Click += new System.EventHandler(this.checkForModificationToolStripMenuItem_Click);
+            // 
+            // browseReferenceToolStripMenuItem
+            // 
+            this.browseReferenceToolStripMenuItem.Image = global::NppKate.Properties.Resources.repo;
+            this.browseReferenceToolStripMenuItem.Name = "browseReferenceToolStripMenuItem";
+            this.browseReferenceToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+            this.browseReferenceToolStripMenuItem.Text = "Browse Reference";
+            this.browseReferenceToolStripMenuItem.Click += new System.EventHandler(this.browseReferenceToolStripMenuItem_Click);
+            // 
+            // switchCheckoutToolStripMenuItem
+            // 
+            this.switchCheckoutToolStripMenuItem.Name = "switchCheckoutToolStripMenuItem";
+            this.switchCheckoutToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+            this.switchCheckoutToolStripMenuItem.Text = "Switch/Checkout";
+            this.switchCheckoutToolStripMenuItem.Click += new System.EventHandler(this.switchCheckoutToolStripMenuItem_Click);
+            // 
+            // blameToolStripMenuItem
+            // 
+            this.blameToolStripMenuItem.Name = "blameToolStripMenuItem";
+            this.blameToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+            this.blameToolStripMenuItem.Text = "Blame";
+            this.blameToolStripMenuItem.Click += new System.EventHandler(this.blameToolStripMenuItem_Click);
+            // 
+            // exportToolStripMenuItem
+            // 
+            this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
+            this.exportToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+            this.exportToolStripMenuItem.Text = "Export...";
+            this.exportToolStripMenuItem.Click += new System.EventHandler(this.exportToolStripMenuItem_Click);
+            // 
+            // mergeToolStripMenuItem
+            // 
+            this.mergeToolStripMenuItem.Name = "mergeToolStripMenuItem";
+            this.mergeToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+            this.mergeToolStripMenuItem.Text = "Merge";
+            this.mergeToolStripMenuItem.Click += new System.EventHandler(this.mergeToolStripMenuItem_Click);
+            // 
             // cmBranch
             // 
             this.cmBranch.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -130,62 +304,6 @@
             this.miSwitchTo.Size = new System.Drawing.Size(123, 22);
             this.miSwitchTo.Text = "Switch to";
             // 
-            // cmAdditional
-            // 
-            this.cmAdditional.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItem1,
-            this.fetchToolStripMenuItem,
-            this.pullToolStripMenuItem,
-            this.commitToolStripMenuItem,
-            this.pushToolStripMenuItem,
-            this.syncToolStripMenuItem});
-            this.cmAdditional.Name = "cmAdditional";
-            this.cmAdditional.Size = new System.Drawing.Size(153, 142);
-            // 
-            // fetchToolStripMenuItem
-            // 
-            this.fetchToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("fetchToolStripMenuItem.Image")));
-            this.fetchToolStripMenuItem.Name = "fetchToolStripMenuItem";
-            this.fetchToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.fetchToolStripMenuItem.Text = "Fetch";
-            this.fetchToolStripMenuItem.Click += new System.EventHandler(this.fetchToolStripMenuItem_Click);
-            // 
-            // pullToolStripMenuItem
-            // 
-            this.pullToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("pullToolStripMenuItem.Image")));
-            this.pullToolStripMenuItem.Name = "pullToolStripMenuItem";
-            this.pullToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.pullToolStripMenuItem.Text = "Pull";
-            this.pullToolStripMenuItem.Click += new System.EventHandler(this.pullToolStripMenuItem_Click);
-            // 
-            // commitToolStripMenuItem
-            // 
-            this.commitToolStripMenuItem.Image = global::NppKate.Properties.Resources.commit;
-            this.commitToolStripMenuItem.Name = "commitToolStripMenuItem";
-            this.commitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.commitToolStripMenuItem.Text = "Commit";
-            this.commitToolStripMenuItem.Click += new System.EventHandler(this.commitToolStripMenuItem_Click);
-            // 
-            // pushToolStripMenuItem
-            // 
-            this.pushToolStripMenuItem.Image = global::NppKate.Properties.Resources.push;
-            this.pushToolStripMenuItem.Name = "pushToolStripMenuItem";
-            this.pushToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.pushToolStripMenuItem.Text = "Push";
-            this.pushToolStripMenuItem.Click += new System.EventHandler(this.pushToolStripMenuItem_Click);
-            // 
-            // syncToolStripMenuItem
-            // 
-            this.syncToolStripMenuItem.Name = "syncToolStripMenuItem";
-            this.syncToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.syncToolStripMenuItem.Text = "Sync";
-            this.syncToolStripMenuItem.Click += new System.EventHandler(this.syncToolStripMenuItem_Click);
-            // 
-            // toolStripMenuItem1
-            // 
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(149, 6);
-            // 
             // RepoBrowser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -197,7 +315,6 @@
             this.VisibleChanged += new System.EventHandler(this.RepoBrowser_VisibleChanged);
             this.cmRepositories.ResumeLayout(false);
             this.cmBranch.ResumeLayout(false);
-            this.cmAdditional.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -212,12 +329,24 @@
         private System.Windows.Forms.ToolStripMenuItem miRemoveRepo;
         private System.Windows.Forms.ContextMenuStrip cmBranch;
         private System.Windows.Forms.ToolStripMenuItem miSwitchTo;
-        private System.Windows.Forms.ContextMenuStrip cmAdditional;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem tortoiseGitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem fetchToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pullToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem commitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pushToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem syncToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem showLogToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem showReflogToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem stashSaveToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem stashPopToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem stashListToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem repoBrowserToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem checkForModificationToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem browseReferenceToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem switchCheckoutToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem blameToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem exportToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem mergeToolStripMenuItem;
     }
 }
