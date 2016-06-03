@@ -66,6 +66,8 @@ namespace NppKate.Modules.TortoiseGitFeatures
         PGPfp,
         Clone,
         ImportPatch,
-        FormatPatch
+        FormatPatch,
+        Sync,
+        Settings
     }
 }

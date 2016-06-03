@@ -377,6 +377,12 @@ namespace NppKate.Modules.GitCore
             var node = tvRepositories.SelectedNode;
             miSetActive.Enabled = _lastActiveRepo != node?.Name;
             miRemoveRepo.Enabled = _lastDocumentRepo != node?.Name;
+
+            var inRepo = GitCore.IsValidGitRepo(Npp.NppUtils.CurrentFileDir);
+
+            blameToolStripMenuItem.Enabled = inRepo;
+            showLogFileToolStripMenuItem.Enabled = inRepo;
+
         }
 
         private void tvRepositories_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
@@ -488,7 +494,7 @@ namespace NppKate.Modules.GitCore
 
         private void syncToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //RunTortoiseCommand(TortoiseGitCommand.Sync);
+            RunTortoiseCommandForRepo(TortoiseGitCommand.Sync);
         }
 
         private void showLogToolStripMenuItem_Click(object sender, EventArgs e)
@@ -549,6 +555,16 @@ namespace NppKate.Modules.GitCore
         private void mergeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             RunTortoiseCommandForRepo(TortoiseGitCommand.Merge);
+        }
+
+        private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RunTortoiseCommandForRepo(TortoiseGitCommand.Settings);
+        }
+
+        private void showLogFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RunTortoiseCommandCurrentFile(TortoiseGitCommand.Log);
         }
     }
 
