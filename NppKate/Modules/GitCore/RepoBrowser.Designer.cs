@@ -55,8 +55,10 @@
             this.blameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mergeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cmBranch = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.miSwitchTo = new System.Windows.Forms.ToolStripMenuItem();
+            this.showLogFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cmRepositories.SuspendLayout();
             this.cmBranch.SuspendLayout();
             this.SuspendLayout();
@@ -101,7 +103,7 @@
             this.tortoiseGitToolStripMenuItem});
             this.cmRepositories.Name = "cmRepositories";
             this.cmRepositories.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-            this.cmRepositories.Size = new System.Drawing.Size(174, 120);
+            this.cmRepositories.Size = new System.Drawing.Size(174, 98);
             this.cmRepositories.Opening += new System.ComponentModel.CancelEventHandler(this.cmRepositories_Opening);
             // 
             // miSetActive
@@ -142,6 +144,7 @@
             this.pushToolStripMenuItem,
             this.syncToolStripMenuItem,
             this.showLogToolStripMenuItem,
+            this.showLogFileToolStripMenuItem,
             this.showReflogToolStripMenuItem,
             this.stashSaveToolStripMenuItem,
             this.stashPopToolStripMenuItem,
@@ -152,7 +155,8 @@
             this.switchCheckoutToolStripMenuItem,
             this.blameToolStripMenuItem,
             this.exportToolStripMenuItem,
-            this.mergeToolStripMenuItem});
+            this.mergeToolStripMenuItem,
+            this.settingsToolStripMenuItem});
             this.tortoiseGitToolStripMenuItem.Name = "tortoiseGitToolStripMenuItem";
             this.tortoiseGitToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.tortoiseGitToolStripMenuItem.Text = "Tortoise Git";
@@ -192,7 +196,6 @@
             // 
             // syncToolStripMenuItem
             // 
-            this.syncToolStripMenuItem.Enabled = false;
             this.syncToolStripMenuItem.Name = "syncToolStripMenuItem";
             this.syncToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
             this.syncToolStripMenuItem.Text = "Sync";
@@ -236,6 +239,7 @@
             this.stashListToolStripMenuItem.Name = "stashListToolStripMenuItem";
             this.stashListToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
             this.stashListToolStripMenuItem.Text = "Stash List";
+            this.stashListToolStripMenuItem.Visible = false;
             this.stashListToolStripMenuItem.Click += new System.EventHandler(this.stashListToolStripMenuItem_Click);
             // 
             // repoBrowserToolStripMenuItem
@@ -289,6 +293,13 @@
             this.mergeToolStripMenuItem.Text = "Merge";
             this.mergeToolStripMenuItem.Click += new System.EventHandler(this.mergeToolStripMenuItem_Click);
             // 
+            // settingsToolStripMenuItem
+            // 
+            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+            this.settingsToolStripMenuItem.Text = "Settings";
+            this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
+            // 
             // cmBranch
             // 
             this.cmBranch.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -303,6 +314,14 @@
             this.miSwitchTo.Name = "miSwitchTo";
             this.miSwitchTo.Size = new System.Drawing.Size(123, 22);
             this.miSwitchTo.Text = "Switch to";
+            // 
+            // showLogFileToolStripMenuItem
+            // 
+            this.showLogFileToolStripMenuItem.Image = global::NppKate.Properties.Resources.log;
+            this.showLogFileToolStripMenuItem.Name = "showLogFileToolStripMenuItem";
+            this.showLogFileToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+            this.showLogFileToolStripMenuItem.Text = "Show log file";
+            this.showLogFileToolStripMenuItem.Click += new System.EventHandler(this.showLogFileToolStripMenuItem_Click);
             // 
             // RepoBrowser
             // 
@@ -348,5 +367,7 @@
         private System.Windows.Forms.ToolStripMenuItem blameToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exportToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem mergeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem showLogFileToolStripMenuItem;
     }
 }
