@@ -307,6 +307,27 @@
   <ItemGroup>
     <None Include="Resources\tick-button.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Tortoise.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\menushowchanged.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\menuswitch.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\menuexport.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\menusettings.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\menumerge.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\menurelocate.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildProjectDirectory)\DllExport\NppPlugin.DllExport.targets" />
   <PropertyGroup>
