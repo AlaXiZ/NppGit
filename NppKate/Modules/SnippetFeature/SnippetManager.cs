@@ -35,7 +35,7 @@ using System.Xml.Linq;
 
 namespace NppKate.Modules.SnippetFeature
 {
-    public class SnippetManager
+    public class SnippetManager : ISnippetManager
     {
         private const string SNIPPETS = "Snippets";
         private const string SNIPPET = "Snippet";

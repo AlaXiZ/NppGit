@@ -138,12 +138,16 @@
       <DependentUpon>SettingsDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Modules\GitCore\RepositoryChangedEventArgs.cs" />
+    <Compile Include="Modules\SnippetFeature\ISnippetManager.cs" />
+    <Compile Include="Modules\SnippetFeature\ISnippetTextBuilder.cs" />
+    <Compile Include="Modules\SnippetFeature\ISnippetValidator.cs" />
     <Compile Include="Modules\SnippetFeature\SnippetEdit.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Modules\SnippetFeature\SnippetEdit.Designer.cs">
       <DependentUpon>SnippetEdit.cs</DependentUpon>
     </Compile>
+    <Compile Include="Modules\SnippetFeature\SnippetManager.cs" />
     <Compile Include="Modules\SnippetFeature\SnippetsManagerForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -165,6 +169,8 @@
     <Compile Include="Interop\LocalWinEventHook.cs" />
     <Compile Include="Interop\Win32.cs" />
     <Compile Include="Main.cs" />
+    <Compile Include="Modules\SnippetFeature\SnippetTextBuilder.cs" />
+    <Compile Include="Modules\SnippetFeature\SnippetValidator.cs" />
     <Compile Include="Modules\TortoiseGitFeatures\ITortoiseCommand.cs" />
     <Compile Include="Modules\TortoiseGitFeatures\TortoiseGitCommand.cs" />
     <Compile Include="Npp\NppInfo.cs" />
@@ -195,7 +201,6 @@
     <Compile Include="Interop\UnmanagedExports.cs" />
     <Compile Include="Modules\GitFeatures\Git.cs" />
     <Compile Include="Modules\SnippetFeature\Snippet.cs" />
-    <Compile Include="Modules\SnippetFeature\SnippetManager.cs" />
     <Compile Include="Common\TabEventArgs.cs" />
     <Compile Include="Modules\GitCore\GitCore.cs" />
   </ItemGroup>
@@ -307,6 +312,7 @@
   <ItemGroup>
     <None Include="Resources\tick-button.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildProjectDirectory)\DllExport\NppPlugin.DllExport.targets" />
   <PropertyGroup>
