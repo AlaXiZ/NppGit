@@ -57,6 +57,8 @@ namespace NppKate.Forms
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SnippetEdit));
             this.pTop = new System.Windows.Forms.Panel();
+            this.lShortName = new System.Windows.Forms.Label();
+            this.tbShortName = new System.Windows.Forms.TextBox();
             this.lExt = new System.Windows.Forms.Label();
             this.lCategory = new System.Windows.Forms.Label();
             this.cbExtention = new System.Windows.Forms.ComboBox();
@@ -70,8 +72,6 @@ namespace NppKate.Forms
             this.pBottom = new System.Windows.Forms.Panel();
             this.bCancel = new System.Windows.Forms.Button();
             this.bOk = new System.Windows.Forms.Button();
-            this.lShortName = new System.Windows.Forms.Label();
-            this.tbShortName = new System.Windows.Forms.TextBox();
             this.pTop.SuspendLayout();
             this.pMiddle.SuspendLayout();
             this.pBottom.SuspendLayout();
@@ -92,8 +92,24 @@ namespace NppKate.Forms
             this.pTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.pTop.Location = new System.Drawing.Point(0, 0);
             this.pTop.Name = "pTop";
-            this.pTop.Size = new System.Drawing.Size(624, 93);
+            this.pTop.Size = new System.Drawing.Size(784, 69);
             this.pTop.TabIndex = 0;
+            // 
+            // lShortName
+            // 
+            this.lShortName.AutoSize = true;
+            this.lShortName.Location = new System.Drawing.Point(225, 9);
+            this.lShortName.Name = "lShortName";
+            this.lShortName.Size = new System.Drawing.Size(101, 13);
+            this.lShortName.TabIndex = 9;
+            this.lShortName.Text = "Snippet short name:";
+            // 
+            // tbShortName
+            // 
+            this.tbShortName.Location = new System.Drawing.Point(228, 28);
+            this.tbShortName.Name = "tbShortName";
+            this.tbShortName.Size = new System.Drawing.Size(179, 20);
+            this.tbShortName.TabIndex = 1;
             // 
             // lExt
             // 
@@ -132,7 +148,7 @@ namespace NppKate.Forms
             // chbIsShowInMenu
             // 
             this.chbIsShowInMenu.AutoSize = true;
-            this.chbIsShowInMenu.Location = new System.Drawing.Point(6, 53);
+            this.chbIsShowInMenu.Location = new System.Drawing.Point(627, 30);
             this.chbIsShowInMenu.Name = "chbIsShowInMenu";
             this.chbIsShowInMenu.Size = new System.Drawing.Size(93, 17);
             this.chbIsShowInMenu.TabIndex = 4;
@@ -142,7 +158,7 @@ namespace NppKate.Forms
             // lSnippet
             // 
             this.lSnippet.AutoSize = true;
-            this.lSnippet.Location = new System.Drawing.Point(3, 73);
+            this.lSnippet.Location = new System.Drawing.Point(3, 51);
             this.lSnippet.Name = "lSnippet";
             this.lSnippet.Size = new System.Drawing.Size(46, 13);
             this.lSnippet.TabIndex = 2;
@@ -168,9 +184,9 @@ namespace NppKate.Forms
             // 
             this.pMiddle.Controls.Add(this.tbSnippet);
             this.pMiddle.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pMiddle.Location = new System.Drawing.Point(0, 93);
+            this.pMiddle.Location = new System.Drawing.Point(0, 69);
             this.pMiddle.Name = "pMiddle";
-            this.pMiddle.Size = new System.Drawing.Size(624, 323);
+            this.pMiddle.Size = new System.Drawing.Size(784, 467);
             this.pMiddle.TabIndex = 1;
             // 
             // tbSnippet
@@ -183,7 +199,7 @@ namespace NppKate.Forms
             this.tbSnippet.Multiline = true;
             this.tbSnippet.Name = "tbSnippet";
             this.tbSnippet.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbSnippet.Size = new System.Drawing.Size(624, 323);
+            this.tbSnippet.Size = new System.Drawing.Size(784, 467);
             this.tbSnippet.TabIndex = 1;
             // 
             // pBottom
@@ -191,9 +207,9 @@ namespace NppKate.Forms
             this.pBottom.Controls.Add(this.bCancel);
             this.pBottom.Controls.Add(this.bOk);
             this.pBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pBottom.Location = new System.Drawing.Point(0, 416);
+            this.pBottom.Location = new System.Drawing.Point(0, 536);
             this.pBottom.Name = "pBottom";
-            this.pBottom.Size = new System.Drawing.Size(624, 26);
+            this.pBottom.Size = new System.Drawing.Size(784, 26);
             this.pBottom.TabIndex = 2;
             // 
             // bCancel
@@ -202,7 +218,7 @@ namespace NppKate.Forms
             this.bCancel.Dock = System.Windows.Forms.DockStyle.Right;
             this.bCancel.Image = global::NppKate.Properties.Resources.button_cancel_8865;
             this.bCancel.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.bCancel.Location = new System.Drawing.Point(474, 0);
+            this.bCancel.Location = new System.Drawing.Point(634, 0);
             this.bCancel.Name = "bCancel";
             this.bCancel.Size = new System.Drawing.Size(75, 26);
             this.bCancel.TabIndex = 4;
@@ -216,7 +232,7 @@ namespace NppKate.Forms
             this.bOk.Dock = System.Windows.Forms.DockStyle.Right;
             this.bOk.Image = ((System.Drawing.Image)(resources.GetObject("bOk.Image")));
             this.bOk.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.bOk.Location = new System.Drawing.Point(549, 0);
+            this.bOk.Location = new System.Drawing.Point(709, 0);
             this.bOk.Name = "bOk";
             this.bOk.Size = new System.Drawing.Size(75, 26);
             this.bOk.TabIndex = 3;
@@ -224,35 +240,21 @@ namespace NppKate.Forms
             this.bOk.UseVisualStyleBackColor = true;
             this.bOk.Click += new System.EventHandler(this.bOk_Click);
             // 
-            // lShortName
-            // 
-            this.lShortName.AutoSize = true;
-            this.lShortName.Location = new System.Drawing.Point(225, 9);
-            this.lShortName.Name = "lShortName";
-            this.lShortName.Size = new System.Drawing.Size(101, 13);
-            this.lShortName.TabIndex = 9;
-            this.lShortName.Text = "Snippet short name:";
-            // 
-            // tbShortName
-            // 
-            this.tbShortName.Location = new System.Drawing.Point(228, 28);
-            this.tbShortName.Name = "tbShortName";
-            this.tbShortName.Size = new System.Drawing.Size(179, 20);
-            this.tbShortName.TabIndex = 1;
-            // 
             // SnippetEdit
             // 
             this.AcceptButton = this.bOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.bCancel;
-            this.ClientSize = new System.Drawing.Size(624, 442);
+            this.ClientSize = new System.Drawing.Size(784, 562);
             this.Controls.Add(this.pMiddle);
             this.Controls.Add(this.pBottom);
             this.Controls.Add(this.pTop);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MinimumSize = new System.Drawing.Size(740, 300);
             this.Name = "SnippetEdit";
             this.ShowInTaskbar = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Snippet Editor";
             this.pTop.ResumeLayout(false);
             this.pTop.PerformLayout();
