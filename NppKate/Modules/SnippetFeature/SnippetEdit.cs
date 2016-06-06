@@ -50,7 +50,7 @@ namespace NppKate.Forms
             }
             try
             {
-                var newSnippet = new Snippet(tbName.Text, tbSnippet.Text, chbIsShowInMenu.Checked, cbCategory.Text, cbExtention.Text, tbShortName.Text);
+                var newSnippet = new Snippet(tbName.Text, tbSnippet.Text.Replace("\r\n", "\n"), chbIsShowInMenu.Checked, cbCategory.Text, cbExtention.Text, tbShortName.Text);
                 if (string.IsNullOrEmpty(_snippet))
                 {
                     SnippetManager.Instance.AddSnippet(newSnippet);
@@ -61,7 +61,7 @@ namespace NppKate.Forms
                 }
                 _snippet = newSnippet.Name;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 DialogResult = DialogResult.None;
