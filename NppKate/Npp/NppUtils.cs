@@ -151,7 +151,7 @@ namespace NppKate.Npp
         public static bool OpenFile(string filePath)
         {
             var buf = new StringBuilder(filePath);
-           return 1 == (int)Win32.SendMessage(_nppInfo.NppHandle, NppMsg.NPPM_DOOPEN, 0, buf);
+            return 1 == (int)Win32.SendMessage(_nppInfo.NppHandle, NppMsg.NPPM_DOOPEN, 0, buf);
         }
 
         public static void MoveFileToOtherView()
@@ -201,6 +201,36 @@ namespace NppKate.Npp
             Win32.SendMessage(NppInfo.Instance.NppHandle, NppMsg.NPPM_DMMREGASDCKDLG, 0, _ptrNppTbData);
         }
 
+        public static void ChangeMenuItemChecked(int cmdId, bool isChecked)
+        {
+            Win32.PostMessage(NppInfo.Instance.NppHandle, (uint)NppMsg.NPPM_SETMENUITEMCHECK, cmdId, isChecked ? 1 : 0);
+        }
+
+        public static void ShowDockForm(IntPtr hwnd)
+        {
+            Win32.SendMessage(NppInfo.Instance.NppHandle, NppMsg.NPPM_DMMSHOW, 0, hwnd);
+        }
+
+        public static void HideDockForm(IntPtr hwnd)
+        {
+            Win32.SendMessage(NppInfo.Instance.NppHandle, NppMsg.NPPM_DMMHIDE, 0, hwnd);
+        }
+
+        public static bool IsVisibleDockForm(IntPtr hwnd)
+        {
+            return Win32.IsWindowVisible(hwnd);
+        }
+
+        public static void RegisterAsDialog(IntPtr hwnd)
+        {
+            Win32.SendMessage(NppInfo.Instance.NppHandle, NppMsg.NPPM_MODELESSDIALOG, (int)NppMsg.MODELESSDIALOGADD, (int)hwnd);
+        }
+
+        public static void UnregisterAsDialog(IntPtr hwnd)
+        {
+            Win32.SendMessage(NppInfo.Instance.NppHandle, NppMsg.NPPM_MODELESSDIALOG, (int)NppMsg.MODELESSDIALOGREMOVE, (int)hwnd);
+        }
+
         #endregion
 
         #region SCI Command
@@ -216,7 +246,7 @@ namespace NppKate.Npp
 
         public static string GetEOL()
         {
-           switch(execute(SciMsg.SCI_GETEOLMODE, 0))
+            switch (execute(SciMsg.SCI_GETEOLMODE, 0))
             {
                 case (int)SciMsg.SC_EOL_CRLF: return "\r\n";
                 case (int)SciMsg.SC_EOL_CR: return "\r";
@@ -243,7 +273,7 @@ namespace NppKate.Npp
         {
             return GetText(SciMsg.SCI_GETSELTEXT);
         }
-        
+
         public static void ReplaceSelectedText(string[] lines)
         {
             StringBuilder buf = new StringBuilder("");
@@ -328,7 +358,7 @@ namespace NppKate.Npp
             IntPtr ptr = Marshal.AllocHGlobal(length);
             try
             {
-                Win32.SendMessage(CurrentScintilla, msg,     length, ptr);
+                Win32.SendMessage(CurrentScintilla, msg, length, ptr);
                 Marshal.Copy(ptr, buffer, 0, length);
             }
             finally
@@ -359,7 +389,8 @@ namespace NppKate.Npp
                 {
                     return GetRootDir(Directory.GetParent(path).FullName);
                 }
-                else {
+                else
+                {
                     return null;
                 }
             }
@@ -372,7 +403,7 @@ namespace NppKate.Npp
                 Graphics g = Graphics.FromImage(newBmp);
                 ColorMap[] colorMap = new ColorMap[1];
                 colorMap[0] = new ColorMap();
-                colorMap[0].OldColor = Color.FromArgb(192,192,192);
+                colorMap[0].OldColor = Color.FromArgb(192, 192, 192);
                 colorMap[0].NewColor = Color.FromKnownColor(KnownColor.ButtonFace);
                 ImageAttributes attr = new ImageAttributes();
                 attr.SetRemapTable(colorMap);
@@ -406,7 +437,7 @@ namespace NppKate.Npp
                 return title.ToString();
             }
             set
-            {   
+            {
                 var title = new StringBuilder(value);
                 Win32.SendMessage(_nppInfo.NppHandle, (int)WinMsg.WM_SETTEXT, (int)WinMsg.WM_SETTEXT, title);
             }
@@ -432,7 +463,7 @@ namespace NppKate.Npp
             var path = Path.Combine(PluginDir, "restart.exe");
             var proc = Process.GetCurrentProcess();
             ProcessModule npp = null;
-            foreach(ProcessModule m in proc.Modules)
+            foreach (ProcessModule m in proc.Modules)
             {
                 if (m.ModuleName.Contains("notepad++.exe"))
                 {

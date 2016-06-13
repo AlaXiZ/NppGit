@@ -44,37 +44,16 @@ namespace NppKate.Modules.IdeFeatures
             get { return Settings.Modules.SQLIDE; }
         }
 
-        public void Final()
-        {
-
-        }
+        public void Final() { }
 
         public void Init(IModuleManager manager)
         {
             _manager = manager;
-            _manager.RegisterCommandItem(new CommandItem
-            {
-                Name = "Swap",
-                Hint = "Swap",
-                Action = DoSwap
-            });
-
-            _manager.RegisterCommandItem(new CommandItem
-            {
-                Name = "Align columns",
-                Hint = "Align columns",
-                Action = DoAlign
-            });
-
-            // -----------------------------------------------------------------
-            _manager.RegisterCommandItem(new CommandItem
-            {
-                Name = "-",
-                Hint = "-",
-                Action = null
-            });
+            var selfName = GetType().Name;
+            _manager.CommandManager.RegisterCommand(selfName, "Swap", DoSwap);
+            _manager.CommandManager.RegisterCommand(selfName, "Align columns", DoAlign);
+            _manager.CommandManager.RegisterCommand(selfName, "-");
         }
-        // ---------------------------------------------------------------------
 
         private void DoSwap()
         {

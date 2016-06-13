@@ -162,7 +162,7 @@ namespace NppKate.Forms
             this.ClientSize = new System.Drawing.Size(405, 373);
             this.Controls.Add(this.panel1);
             this.Name = "SnippetsManagerForm";
-            this.Text = "SnippetsManagerForm";
+            this.Text = "Snippets";
             this.contextMenuSnippets.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);

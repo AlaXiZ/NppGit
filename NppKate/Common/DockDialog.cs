@@ -56,6 +56,7 @@ namespace NppKate.Common
         {
             _manager = manager;
             _cmdId = commandId;
+            Npp.NppUtils.SetCheckedMenu(_cmdId, true);
             AfterInit();
         }
 

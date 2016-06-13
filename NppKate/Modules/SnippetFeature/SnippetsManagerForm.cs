@@ -33,7 +33,6 @@ using System.Windows.Forms;
 using NppKate.Common;
 using System.Linq;
 using NLog;
-using System.Threading.Tasks;
 using System.Collections.Generic;
 
 namespace NppKate.Forms

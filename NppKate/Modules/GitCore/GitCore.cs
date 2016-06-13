@@ -45,6 +45,7 @@ namespace NppKate.Modules.GitCore
         private IModuleManager _manager = null;
         private int _browserCmdId;
         private Repository _currRepo = null;
+        private RepoBrowser _repoBrowser = null;
 
         public void Final()
         {
@@ -53,7 +54,17 @@ namespace NppKate.Modules.GitCore
 
         private void DoBrowser()
         {
-            Settings.Panels.RepoBrowserPanelVisible = _manager.ToogleFormState(_browserCmdId);
+            if (_repoBrowser == null)
+            {
+                var icon = _manager.ResourceManager.LoadToolbarIcon(Resources.ExternalResourceName.IDB_REPOSITORIES);
+                _repoBrowser = _manager.FormManager.BuildForm<RepoBrowser>(_browserCmdId, NppTbMsg.DWS_PARAMSALL | NppTbMsg.DWS_DF_CONT_RIGHT, icon.Handle);
+                _repoBrowser.init((IDockableManager)_manager, _manager.CommandManager.GetIdByIndex(_browserCmdId));
+            }
+            else
+            {
+                Settings.Panels.RepoBrowserPanelVisible = _manager.FormManager.ToogleVisibleDockableForm(_repoBrowser.Handle);
+                _manager.CommandManager.SetCommandChekedState(_browserCmdId, Settings.Panels.RepoBrowserPanelVisible);
+            }
         }
 
         public void Init(IModuleManager manager)
@@ -64,29 +75,11 @@ namespace NppKate.Modules.GitCore
             manager.OnSystemInit += ManagerOnSystemInit;
             manager.OnToolbarRegisterEvent += ManagerOnToolbarRegisterEvent;
 
-            _browserCmdId = manager.RegisterCommandItem(new CommandItem
-            {
-                Name = "Repository browser",
-                Hint = "Repository browser",
-                Action = DoBrowser,
-                Checked = Settings.Panels.RepoBrowserPanelVisible
-            });
+            var selfName = GetType().Name;
 
-            manager.RegisterDockForm(_browserCmdId, new DockDialogData
-            {
-                Class = typeof(RepoBrowser),
-                IconResourceName = Resources.ExternalResourceName.IDB_REPOSITORIES,
-                Title = "Repository browser",
-                uMask = NppTbMsg.DWS_PARAMSALL | NppTbMsg.DWS_DF_CONT_RIGHT
-            });
-            //manager.RegisterDockForm(typeof(RepoBrowser), _browserCmdId, false);
-
-            manager.RegisterCommandItem(new CommandItem
-            {
-                Name = "-",
-                Hint = "-",
-                Action = null
-            });
+            _browserCmdId = manager.CommandManager.RegisterCommand(selfName, Properties.Resources.CmdRepositoryBrowser, DoBrowser, Settings.Panels.RepoBrowserPanelVisible);
+            
+            manager.CommandManager.RegisterSeparator(selfName);
         }
 
         private void ManagerOnToolbarRegisterEvent()

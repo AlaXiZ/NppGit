@@ -27,7 +27,6 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using LibGit2Sharp;
 using NLog;
-using NppKate.Forms;
 using NppKate.Common;
 using System;
 using NppKate.Npp;
@@ -38,18 +37,12 @@ namespace NppKate.Modules
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
         private IModuleManager _manager;
-        private int _statusPanelCmdID = -1;
 
         public bool IsNeedRun
         {
             get { return Settings.Modules.Git; }
         }
-
-        private void DoShowStatus()
-        {
-            //Settings.Panels.FileStatusPanelVisible = _manager.ToogleFormState(_statusPanelCmdID);
-        }
-
+        
         public void Final()
         {
         }
@@ -57,45 +50,11 @@ namespace NppKate.Modules
         public void Init(IModuleManager manager)
         {
             _manager = manager;
-            _manager.OnSystemInit += ManagerOnSystemInit;
 
-            _manager.RegisterCommandItem(new CommandItem
-            {
-                Name = "File in other branch",
-                Hint = "File in other branch",
-                ShortcutKey = null,
-                Action = OpenFileInOtherBranch
-            });
+            var selfName = GetType().Name;
 
-            /*
-            _statusPanelCmdID = _manager.RegisterCommandItem(new CommandItem
-            {
-                Name = "Status panel",
-                Hint = "Status panel",
-                ShortcutKey = null,
-                Action = DoShowStatus,
-                Checked = Settings.Panels.FileStatusPanelVisible
-            });
-            */
-
-            _manager.RegisterDockForm(typeof(Status), _statusPanelCmdID, true, NppTbMsg.DWS_PARAMSALL | NppTbMsg.DWS_DF_CONT_BOTTOM);
-
-            //------------------------------------------------------------------
-            _manager.RegisterCommandItem(new CommandItem
-            {
-                Name = "-",
-                Hint = "-",
-                Action = null
-            });
-        }
-
-        private void ManagerOnSystemInit()
-        {
-            /*if (Settings.Panels.FileStatusPanelVisible)
-            {
-                DoShowStatus();
-            }
-            */
+            _manager.CommandManager.RegisterCommand(selfName, "File in other branch", OpenFileInOtherBranch);
+            _manager.CommandManager.RegisterSeparator(selfName);
         }
 
         private void OpenFileInOtherBranch()
