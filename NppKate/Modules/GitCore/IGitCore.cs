@@ -26,7 +26,6 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 using LibGit2Sharp;
-using System;
 using System.Collections.Generic;
 
 namespace NppKate.Modules.GitCore

@@ -515,363 +515,89 @@ namespace NppKate.Modules.TortoiseGitFeatures
 
             logger.Debug("Create menu");
             _icons = new Dictionary<int, string>();
+            var selfName = GetType().Name;
             if (SearchTortoiseGit())
             {
                 var btnMask = Settings.TortoiseGitProc.ButtonMask;
+
                 logger.Info("TortoiseGit found");
 
-                var cmdId = _manager.RegisterCommandItem(new CommandItem
-                {
-                    Name = "Pull",
-                    Hint = "Pull",
-                    ShortcutKey = new ShortcutKey { _isAlt = 1, _key = (byte)Keys.P },
-                    Action = GitPull
-                });
+                var cmdId = _manager.CommandManager.RegisterCommand(selfName, "Pull", GitPull, false, new ShortcutKey("Alt+P"));
                 if ((btnMask & (uint)TortoiseGitCommand.Pull) > 0)
                     _icons.Add(cmdId, ExternalResourceName.IDB_PULL);
 
-                cmdId = _manager.RegisterCommandItem(new CommandItem
-                {
-                    Name = "Push",
-                    Hint = "Push",
-                    ShortcutKey = new ShortcutKey { _isAlt = 1, _isCtrl = 1, _key = (byte)Keys.P },
-                    Action = GitPush
-                });
+                cmdId = _manager.CommandManager.RegisterCommand(selfName, "Push", GitPush, false, new ShortcutKey("Ctrl+Alt+P"));
                 if ((btnMask & (uint)TortoiseGitCommand.Push) > 0)
                     _icons.Add(cmdId, ExternalResourceName.IDB_PUSH);
 
-                cmdId = _manager.RegisterCommandItem(new CommandItem
-                {
-                    Name = "Commit",
-                    Hint = "Commit",
-                    ShortcutKey = new ShortcutKey { _isAlt = 1, _isCtrl = 1, _key = (byte)Keys.C },
-                    Action = GitCommit
-                });
+                cmdId = _manager.CommandManager.RegisterCommand(selfName, "Commit", GitCommit, false, new ShortcutKey("Ctrl+Alt+Shift+C"));
                 if ((btnMask & (uint)TortoiseGitCommand.Commit) > 0)
                     _icons.Add(cmdId, ExternalResourceName.IDB_COMMIT);
 
-                cmdId = _manager.RegisterCommandItem(new CommandItem
-                {
-                    Name = "Fetch",
-                    Hint = "Fetch",
-                    ShortcutKey = new ShortcutKey { _isAlt = 1, _isCtrl = 1, _isShift = 1, _key = (byte)Keys.F },
-                    Action = GitFetch
-                });
+                cmdId = _manager.CommandManager.RegisterCommand(selfName, "Fetch", GitFetch, false, new ShortcutKey("Ctrl+Alt+Shift+F"));
                 if ((btnMask & (uint)TortoiseGitCommand.Fetch) > 0)
                     _icons.Add(cmdId, ExternalResourceName.IDB_PULL);
-
                 /**********************************************************************************/
-
-                _manager.RegisterCommandItem(new CommandItem
-                {
-                    Name = "Diff",
-                    Hint = "Diff",
-                    ShortcutKey = null,
-                    Action = GitDiffUnified
-                });
-
-                _manager.RegisterCommandItem(new CommandItem
-                {
-                    Name = "Compare",
-                    Hint = "Compare",
-                    ShortcutKey = null,
-                    Action = GitDiff
-                });
-
+                _manager.CommandManager.RegisterCommand(selfName, "Diff", GitDiffUnified);
+                _manager.CommandManager.RegisterCommand(selfName, "Compare", GitDiff);
                 /**********************************************************************************/
-                _manager.RegisterCommandItem(new CommandItem
-                {
-                    Name = "Log file",
-                    Hint = "Log file",
-                    ShortcutKey = new ShortcutKey { _isCtrl = 1, _isShift = 1, _key = (byte)Keys.L },
-                    Action = GitLogFile
-                });
-
-                _manager.RegisterCommandItem(new CommandItem
-                {
-                    Name = "Log path",
-                    Hint = "Log path",
-                    ShortcutKey = new ShortcutKey { },
-                    Action = GitLogPath
-                });
-
-                cmdId = _manager.RegisterCommandItem(new CommandItem
-                {
-                    Name = "Log repository",
-                    Hint = "Log repository",
-                    ShortcutKey = new ShortcutKey { _isAlt = 1, _isCtrl = 1, _isShift = 1, _key = (byte)Keys.L },
-                    Action = GitLogRepo
-                });
+                _manager.CommandManager.RegisterCommand(selfName, "Log file", GitLogFile, false, new ShortcutKey("Ctrl+Shift+L"));
+                _manager.CommandManager.RegisterCommand(selfName, "Log path", GitLogPath);
+                cmdId = _manager.CommandManager.RegisterCommand(selfName, "Log repository", GitLogRepo, false, new ShortcutKey("Ctrl+Alt+Shift+L"));
                 if ((btnMask & (uint)TortoiseGitCommand.Log) > 0)
                     _icons.Add(cmdId, ExternalResourceName.IDB_LOG);
 
-                _manager.RegisterCommandItem(new CommandItem
-                {
-                    Name = "Show Reflog",
-                    Hint = "Show Reflog",
-                    ShortcutKey = null,
-                    Action = GitRefLog
-                });
-
-                cmdId = _manager.RegisterCommandItem(new CommandItem
-                {
-                    Name = "Blame file",
-                    Hint = "Blame file",
-                    ShortcutKey = new ShortcutKey { _isAlt = 1, _isCtrl = 1, _key = (byte)Keys.B },
-                    Action = GitBlame
-                });
+                _manager.CommandManager.RegisterCommand(selfName, "Show Reflog", GitRefLog);
+                cmdId = _manager.CommandManager.RegisterCommand(selfName, "Blame file", GitBlame, false, new ShortcutKey("Ctrl+Alt+B"));
                 if ((btnMask & (uint)TortoiseGitCommand.Blame) > 0)
                     _icons.Add(cmdId, ExternalResourceName.IDB_BLAME);
 
-                _manager.RegisterCommandItem(new CommandItem
-                {
-                    Name = "Blame line",
-                    Hint = "Blame line",
-                    ShortcutKey = new ShortcutKey { _isAlt = 1, _key = (byte)Keys.B },
-                    Action = GitBlameCurrentLine
-                });
-
-                cmdId = _manager.RegisterCommandItem(new CommandItem
-                {
-                    Name = "Check for modifications",
-                    Hint = "Check for modifications",
-                    ShortcutKey = null,
-                    Action = GitRepoStatus
-                });
+                _manager.CommandManager.RegisterCommand(selfName, "Blame line", GitBlameCurrentLine, false, new ShortcutKey("Ctrl+Alt+Shift+B"));
+                cmdId = _manager.CommandManager.RegisterCommand(selfName, "Check for modifications", GitRepoStatus);
                 if ((btnMask & (uint)TortoiseGitCommand.RepoStatus) > 0)
                     _icons.Add(cmdId, ExternalResourceName.IDB_REPO_BROWSER);
 
-                _manager.RegisterCommandItem(new CommandItem
-                {
-                    Name = "Rebase...",
-                    Hint = "Rebase...",
-                    ShortcutKey = null,
-                    Action = GitRebase
-                });
-
-                _manager.RegisterCommandItem(new CommandItem
-                {
-                    Name = "Repo-browser",
-                    Hint = "Repo-browser",
-                    ShortcutKey = null,
-                    Action = GitRepoBrowser
-                });
-
-                _manager.RegisterCommandItem(new CommandItem
-                {
-                    Name = "Reference browser",
-                    Hint = "Reference browser",
-                    ShortcutKey = null,
-                    Action = GitRefBrowse
-                });
-
-                _manager.RegisterCommandItem(new CommandItem
-                {
-                    Name = "Revision graph",
-                    Hint = "Revision graph",
-                    ShortcutKey = null,
-                    Action = GitRevisionGraph
-                });
-
-                _manager.RegisterCommandItem(new CommandItem
-                {
-                    Name = "Daemon",
-                    Hint = "Daemon",
-                    ShortcutKey = null,
-                    Action = GitDaemon
-                });
-
-                cmdId = _manager.RegisterCommandItem(new CommandItem
-                {
-                    Name = "Stash save",
-                    Hint = "Stash save",
-                    ShortcutKey = null,
-                    Action = GitStashSave
-                });
+                _manager.CommandManager.RegisterCommand(selfName, "Rebase", GitRebase);
+                _manager.CommandManager.RegisterCommand(selfName, "Repo-browser", GitRepoBrowser);
+                _manager.CommandManager.RegisterCommand(selfName, "Reference browser", GitRefBrowse);
+                _manager.CommandManager.RegisterCommand(selfName, "Revision graph", GitRevisionGraph);
+                cmdId = _manager.CommandManager.RegisterCommand(selfName, "Stash save", GitStashSave);
                 if ((btnMask & (uint)TortoiseGitCommand.StashSave) > 0)
                     _icons.Add(cmdId, ExternalResourceName.IDB_STASH_SAVE);
 
-                cmdId = _manager.RegisterCommandItem(new CommandItem
-                {
-                    Name = "Stash pop",
-                    Hint = "Stash pop",
-                    ShortcutKey = null,
-                    Action = GitStashPop
-                });
+                cmdId = _manager.CommandManager.RegisterCommand(selfName, "Stash pop", GitStashPop);
                 if ((btnMask & (uint)TortoiseGitCommand.StashPop) > 0)
                     _icons.Add(cmdId, ExternalResourceName.IDB_STASH_POP);
 
-                _manager.RegisterCommandItem(new CommandItem
-                {
-                    Name = "Stash apply",
-                    Hint = "Stash apply",
-                    ShortcutKey = null,
-                    Action = GitStashApply
-                });
-
-                _manager.RegisterCommandItem(new CommandItem
-                {
-                    Name = "Stash list",
-                    Hint = "Stash list",
-                    ShortcutKey = null,
-                    Action = GitStashList
-                });
-
+                _manager.CommandManager.RegisterCommand(selfName, "Stash apply", GitStashApply);
+                _manager.CommandManager.RegisterCommand(selfName, "Stash list", GitStashList);
                 /**********************************************************************************/
-
-                _manager.RegisterCommandItem(new CommandItem
-                {
-                    Name = "Conflict editor",
-                    Hint = "Conflict editor",
-                    ShortcutKey = null,
-                    Action = GitConflictEditor
-                });
-
-                _manager.RegisterCommandItem(new CommandItem
-                {
-                    Name = "Resolve",
-                    Hint = "Resolve",
-                    ShortcutKey = null,
-                    Action = GitResolve
-                });
-
-                _manager.RegisterCommandItem(new CommandItem
-                {
-                    Name = "Add file",
-                    Hint = "Add file",
-                    ShortcutKey = null,
-                    Action = GitAddFile
-                });
-
-                _manager.RegisterCommandItem(new CommandItem
-                {
-                    Name = "Ignore",
-                    Hint = "Ignore",
-                    ShortcutKey = null,
-                    Action = GitIgnore
-                });
-
-                _manager.RegisterCommandItem(new CommandItem
-                {
-                    Name = "Rename",
-                    Hint = "Rename",
-                    ShortcutKey = null,
-                    Action = GitRename
-                });
-
-                _manager.RegisterCommandItem(new CommandItem
-                {
-                    Name = "Remove",
-                    Hint = "Remove",
-                    ShortcutKey = null,
-                    Action = GitRemove
-                });
-
-                _manager.RegisterCommandItem(new CommandItem
-                {
-                    Name = "Revert file",
-                    Hint = "Revert file",
-                    ShortcutKey = null,
-                    Action = GitRevertFile
-                });
-
-                _manager.RegisterCommandItem(new CommandItem
-                {
-                    Name = "Clean up...",
-                    Hint = "Clean up",
-                    ShortcutKey = null,
-                    Action = GitCleanup
-                });
-
+                _manager.CommandManager.RegisterCommand(selfName, "Conflict editor", GitConflictEditor);
+                _manager.CommandManager.RegisterCommand(selfName, "Resolve", GitResolve);
+                _manager.CommandManager.RegisterCommand(selfName, "Add file", GitAddFile);
+                _manager.CommandManager.RegisterCommand(selfName, "Ignore", GitIgnore);
+                _manager.CommandManager.RegisterCommand(selfName, "Rename", GitRename);
+                _manager.CommandManager.RegisterCommand(selfName, "Remove", GitRemove);
+                _manager.CommandManager.RegisterCommand(selfName, "Revert file", GitRevertFile);
+                _manager.CommandManager.RegisterCommand(selfName, "Clean up", GitCleanup);
                 /**********************************************************************************/
-
-                cmdId = _manager.RegisterCommandItem(new CommandItem
-                {
-                    Name = "Switch",
-                    Hint = "Switch",
-                    ShortcutKey = new ShortcutKey { _isCtrl = 1, _isAlt = 1, _key = (byte)Keys.S },
-                    Action = GitSwitch
-                });
+                cmdId = _manager.CommandManager.RegisterCommand(selfName, "Switch", GitSwitch);
                 if ((btnMask & (uint)TortoiseGitCommand.Switch) > 0)
                     _icons.Add(cmdId, ExternalResourceName.IDB_SWITCH);
 
-                _manager.RegisterCommandItem(new CommandItem
-                {
-                    Name = "Merge",
-                    Hint = "Merge",
-                    ShortcutKey = null,
-                    Action = GitMerge
-                });
-
-                _manager.RegisterCommandItem(new CommandItem
-                {
-                    Name = "Tag",
-                    Hint = "Tag",
-                    ShortcutKey = null,
-                    Action = GitTag
-                });
-
-                _manager.RegisterCommandItem(new CommandItem
-                {
-                    Name = "Export",
-                    Hint = "Export",
-                    ShortcutKey = null,
-                    Action = GitExport
-                });
-
+                _manager.CommandManager.RegisterCommand(selfName, "Merge", GitMerge);
+                _manager.CommandManager.RegisterCommand(selfName, "Tag", GitTag);
+                _manager.CommandManager.RegisterCommand(selfName, "Export", GitExport);
+                _manager.CommandManager.RegisterCommand(selfName, "Clone", GitClone);
+                _manager.CommandManager.RegisterCommand(selfName, "Create repository", GitRepoCreate);
                 /**********************************************************************************/
-                /*
-                _manager.RegisterCommandItem(new CommandItem
-                {
-                    Name = "Signing Key fingerprint",
-                    Hint = "Signing Key fingerprint",
-                    ShortcutKey = null,
-                    Action =  TGitPGPfp
-                });
-                */
-
-                _manager.RegisterCommandItem(new CommandItem
-                {
-                    Name = "Clone",
-                    Hint = "Clone",
-                    ShortcutKey = null,
-                    Action = GitClone
-                });
-
-                _manager.RegisterCommandItem(new CommandItem
-                {
-                    Name = "Create repository",
-                    Hint = "Create repository",
-                    ShortcutKey = null,
-                    Action = GitRepoCreate
-                });
-                /**********************************************************************************/
-
-                cmdId = _manager.RegisterCommandItem(new CommandItem
-                {
-                    Name = "Create patch",
-                    Hint = "Create patch",
-                    ShortcutKey = null,
-                    Action = GitCreatePatchSerial
-                });
-
-                cmdId = _manager.RegisterCommandItem(new CommandItem
-                {
-                    Name = "Apply patch",
-                    Hint = "Apply patch",
-                    ShortcutKey = null,
-                    Action = GitApplyPatchSerial
-                });
+                cmdId = _manager.CommandManager.RegisterCommand(selfName, "Create patch", GitCreatePatchSerial);
+                cmdId = _manager.CommandManager.RegisterCommand(selfName, "Apply patch", GitApplyPatchSerial);
             }
             else
             {
                 logger.Info("TortoiseGit not found");
-                _manager.RegisterCommandItem(new CommandItem
-                {
-                    Name = "TortoiseGit not found",
-                    Hint = "-",
-                    Action = ReadmeFunc
-                });
+                _manager.CommandManager.RegisterCommand(selfName, "TortoiseGit not found", ReadmeFunc);
             }
         }
 

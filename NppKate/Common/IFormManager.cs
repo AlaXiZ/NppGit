@@ -1,4 +1,4 @@
-/*
+﻿/*
 Copyright (c) 2015-2016, Schadin Alexey (schadin@gmail.com)
 All rights reserved.
 
@@ -29,21 +29,22 @@ using System;
 
 namespace NppKate.Common
 {
-    public interface IModuleManager
+    public interface IFormManager
     {
-        event Action OnToolbarRegisterEvent;
-        event Action OnSystemInit;
-        event EventHandler<TabEventArgs> OnTabChangeEvent;
-        event EventHandler<CommandItemClickEventArgs> OnCommandItemClick;
-
-        void AddToolbarButton(int cmdId, string iconName);
-
-        object GetService(Type interfaceType);
-        void RegisterService(Type interfaceType, object instance);
-        bool ServiceExists(Type interfaceName);
-
-        ResourceManager ResourceManager { get; }
-        ICommandManager CommandManager { get; }
-        IFormManager FormManager { get; }
+        /// <summary>
+        /// Переключение состояния прикрепляемой формы
+        /// </summary>
+        /// <param name="hwnd">Дескриптор окна</param>
+        /// <returns>Возвращает текущее состояние</returns>
+        bool ToogleVisibleDockableForm(IntPtr hwnd);
+        /// <summary>
+        /// Конструктор форм
+        /// </summary>
+        /// <typeparam name="T">Класс формы, наследующий DockDialog</typeparam>
+        /// <param name="commandIndex">Номер команды</param>
+        /// <param name="dockParam">Параметры для менеджера окон</param>
+        /// <param name="iconHandle">Ссылка на иконку в закладке</param>
+        /// <returns>Экзепляр формы</returns>
+        T BuildForm<T>(int commandIndex, NppTbMsg dockParam, IntPtr iconHandle) where T : DockDialog, new();
     }
 }

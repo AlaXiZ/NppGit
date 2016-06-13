@@ -36,10 +36,11 @@ namespace NppKate.Common
         public NppTbMsg uMask;
         public string IconResourceName;
     }
-/*
-    public struct DockDialogDataReduce
+
+    public struct DockDialogData2
     {
-        public IntPtr HWND;
+        public Type FormType;
+        public NppTbMsg DockMask;
+        public string IconResourceName;
     }
-*/
 }

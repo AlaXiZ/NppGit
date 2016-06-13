@@ -103,7 +103,7 @@
             this.tortoiseGitToolStripMenuItem});
             this.cmRepositories.Name = "cmRepositories";
             this.cmRepositories.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-            this.cmRepositories.Size = new System.Drawing.Size(174, 120);
+            this.cmRepositories.Size = new System.Drawing.Size(174, 98);
             this.cmRepositories.Opening += new System.ComponentModel.CancelEventHandler(this.cmRepositories_Opening);
             // 
             // miSetActive
@@ -340,7 +340,7 @@
             this.ClientSize = new System.Drawing.Size(284, 353);
             this.Controls.Add(this.tvRepositories);
             this.Name = "RepoBrowser";
-            this.Text = "RepoBrowser";
+            this.Text = "Repositories";
             this.VisibleChanged += new System.EventHandler(this.RepoBrowser_VisibleChanged);
             this.cmRepositories.ResumeLayout(false);
             this.cmBranch.ResumeLayout(false);

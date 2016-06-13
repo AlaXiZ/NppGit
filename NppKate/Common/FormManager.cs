@@ -29,10 +29,36 @@ using System;
 
 namespace NppKate.Common
 {
-    public struct PanelInfo
-    {
-        public IntPtr hHWND;
-        public IntPtr hTabIcon;
-        public NppTbMsg uMask;
+    public class FormManager : IFormManager
+    {        
+        public T BuildForm<T>(int commandIndex, NppTbMsg dockParam, IntPtr iconHandle) where T : DockDialog, new()
+        {
+            var formInst = new T();
+            var cmdId = Npp.NppInfo.Instance.SearchCmdIdByIndex(commandIndex);
+            var nppTbData = new NppTbData
+            {
+                hClient = formInst.Handle,
+                dlgID = cmdId,
+                hIconTab = (uint)iconHandle,
+                pszModuleName = Properties.Resources.PluginName,
+                pszName = formInst.Text,
+                uMask = dockParam
+            };
+            Npp.NppUtils.RegisterAsDockDialog(nppTbData);
+            return formInst;
+        }
+
+        public bool ToogleVisibleDockableForm(IntPtr hwnd)
+        {
+            var isVisible = true;
+            if (Npp.NppUtils.IsVisibleDockForm(hwnd))
+            {
+                Npp.NppUtils.HideDockForm(hwnd);
+                isVisible = false;
+            }
+            else
+                Npp.NppUtils.ShowDockForm(hwnd);
+            return isVisible;
+        }
     }
 }

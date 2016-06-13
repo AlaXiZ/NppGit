@@ -25,6 +25,7 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+using NLog;
 using NppKate.Common;
 using NppKate.Modules.GitCore;
 using NppKate.Npp;
@@ -32,14 +33,13 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using NLog;
 
 namespace NppKate
 {
     class Main
     {
         #region "Fields"
-        private static ModuleManager mm = new ModuleManager();
+        private static ModuleManager mm = new ModuleManager(new CommandManager(), new FormManager());
         private static readonly IList<Type> _excludedTypes = new ReadOnlyCollection<Type>(
             new List<Type> {
                 typeof(GitCore)
@@ -67,7 +67,8 @@ namespace NppKate
             try
             {
                 mm.ToolBarInit();
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 LoggerUtil.Error(_logger, ex, "ToolBarInit", null);
             }
@@ -78,13 +79,14 @@ namespace NppKate
             try
             {
                 mm.Final();
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 LoggerUtil.Error(_logger, ex, "PluginCleanUp", null);
             }
-}
+        }
 
-        public static void MessageProc (SCNotification sn)
+        public static void MessageProc(SCNotification sn)
         {
             try
             {

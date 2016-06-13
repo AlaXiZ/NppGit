@@ -1,4 +1,4 @@
-/*
+﻿/*
 Copyright (c) 2015-2016, Schadin Alexey (schadin@gmail.com)
 All rights reserved.
 
@@ -25,25 +25,12 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-using System;
 
 namespace NppKate.Common
 {
-    public interface IModuleManager
+    public struct CommandMenuItem
     {
-        event Action OnToolbarRegisterEvent;
-        event Action OnSystemInit;
-        event EventHandler<TabEventArgs> OnTabChangeEvent;
-        event EventHandler<CommandItemClickEventArgs> OnCommandItemClick;
-
-        void AddToolbarButton(int cmdId, string iconName);
-
-        object GetService(Type interfaceType);
-        void RegisterService(Type interfaceType, object instance);
-        bool ServiceExists(Type interfaceName);
-
-        ResourceManager ResourceManager { get; }
-        ICommandManager CommandManager { get; }
-        IFormManager FormManager { get; }
+        public string Name;
+        public int CommandIndex;
     }
 }
