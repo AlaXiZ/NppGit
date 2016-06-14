@@ -29,5 +29,9 @@ namespace NppKate.Modules.SnippetFeature
 {
     public interface ISnippetManager
     {
+        void AddOrUpdate(Snippet snippet);
+        void Remove(Snippet snippet);
+        void Remove(string snippetName);
+        Snippet FindByName(string snippetName);
     }
 }

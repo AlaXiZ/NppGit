@@ -27,8 +27,13 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace NppKate.Modules.SnippetFeature
 {
-    public interface ISnippetTextBuilder
+    interface IParam
     {
-        string BuildText(Snippet snippet);
+        /// <summary>
+        /// Обработка текста
+        /// </summary>
+        /// <param name="text">Текст, в которым необходимо заменить параметры</param>
+        /// <returns>Обработанный текст</returns>
+        string Process(string text);
     }
 }

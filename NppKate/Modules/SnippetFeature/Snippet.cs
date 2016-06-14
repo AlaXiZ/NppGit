@@ -36,9 +36,12 @@ namespace NppKate.Modules.SnippetFeature
 {
     public class Snippet
     {
-        const string AUTO_DATE = "$(DATE)";
-        const string AUTO_FILENAME = "$(FILENAME)";
-        const string AUTO_USER = "$(USERNAME)";
+        const string AutoDate = "$(DATE)";
+        const string AutoFileName = "$(FILENAME)";
+        const string AutoUsername = "$(USERNAME)";
+
+        const string DefaultCategory = "default";
+        const string DefaultFileExtention = "*";
 
         string _snippetText = "";
         private static Regex _paramsSearch = new Regex(@"[{]\d+[}]");
@@ -47,33 +50,45 @@ namespace NppKate.Modules.SnippetFeature
         public static readonly Snippet Null = new Snippet("");
 
         public string Name { get; set; }
+        [Obsolete("This property is deprecated.", false)]
         public bool IsSimpleSnippet { get { return ParamCount == 0; } }
+        [Obsolete("This property is deprecated.", false)]
         public uint ParamCount { get; protected set; }
+        [Obsolete("This property is deprecated. Use property Text", false)]
         public string SnippetText
         {
-            get { return _snippetText; }
-            set
-            {
-                _snippetText = value;
-                ParamCount = CalcParamCount(_snippetText);
-            }
+            get { return Text; }
+            set { Text = value; }
         }
         public bool IsShowInMenu { get; set; }
         public string Category { get; set; }
         public string FileExt { get; set; }
         public string ShortName { get; set; }
-
-        public Snippet(string name, string snippet, bool isShowInMenu, string category = null, string fileExt = null, string shortName = null)
+        public string Text
         {
-            Name = name;
-            SnippetText = snippet;
-            IsShowInMenu = isShowInMenu;
-            Category = category ?? "default";
-            FileExt = fileExt ?? "*";
-            ShortName = shortName ?? name;
+            get { return _snippetText; }
+            set
+            {
+                _snippetText = value;
+            }
         }
 
-        public Snippet(string name) : this(name, "", false) { }
+        [Obsolete("This constructor is deprecated", false)]
+        public Snippet(string name) : this(name, name, string.Empty) { }
+
+        [Obsolete("This constructor is deprecated", false)]
+        public Snippet(string name, string snippet, bool isShowInMenu, string category = null, string fileExt = null, string shortName = null)
+            : this(name, shortName ?? name, snippet, isShowInMenu, category ?? DefaultCategory, fileExt ?? DefaultFileExtention) { }
+
+        public Snippet(string name, string shortName, string text, bool isVisible = false, string category = DefaultCategory, string fileExt = DefaultFileExtention)
+        {
+            Name = name;
+            ShortName = !string.IsNullOrEmpty(shortName) ? shortName : name;
+            Text = text;
+            IsShowInMenu = isVisible;
+            Category = !string.IsNullOrEmpty(category) ? category : DefaultCategory;
+            FileExt = !string.IsNullOrEmpty(fileExt) ? fileExt : DefaultFileExtention;
+        }
 
         public string[] Assemble(string param)
         {
@@ -127,22 +142,22 @@ namespace NppKate.Modules.SnippetFeature
         {
             var result = new StringBuilder(source);
 
-            if (source.Contains(AUTO_DATE))
+            if (source.Contains(AutoDate))
             {
-                result.Replace(AUTO_DATE, DateTime.Now.ToString("dd.MM.yyyy"));
+                result.Replace(AutoDate, DateTime.Now.ToString("dd.MM.yyyy"));
             }
-            if (source.Contains(AUTO_FILENAME))
+            if (source.Contains(AutoFileName))
             {
-                result.Replace(AUTO_FILENAME, NppUtils.CurrentFileName);
+                result.Replace(AutoFileName, NppUtils.CurrentFileName);
             }
-            if (source.Contains(AUTO_USER))
+            if (source.Contains(AutoUsername))
             {
-                result.Replace(AUTO_USER, Interop.Win32.GetUserNameEx(Interop.ExtendedNameFormat.NameDisplay));
+                result.Replace(AutoUsername, Interop.Win32.GetUserNameEx(Interop.ExtendedNameFormat.NameDisplay));
             }
 
             return result.ToString();
         }
-        
+
         private static byte CalcParamCount(string snippet)
         {
             byte param = 0;

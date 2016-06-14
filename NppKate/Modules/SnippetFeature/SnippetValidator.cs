@@ -31,7 +31,7 @@ namespace NppKate.Modules.SnippetFeature
 {
     public class SnippetValidator : ISnippetValidator
     {
-        public bool SnippetIsValid(Snippet Object)
+        public bool SnippetIsValid(Snippet snippet)
         {
             throw new NotImplementedException();
         }

@@ -29,6 +29,6 @@ namespace NppKate.Modules.SnippetFeature
 {
     public interface ISnippetValidator
     {
-        bool SnippetIsValid(Snippet Object);
+        bool SnippetIsValid(Snippet snippet);
     }
 }

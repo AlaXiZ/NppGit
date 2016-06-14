@@ -72,7 +72,8 @@ namespace NppKate.Modules.SnippetFeature
             {
                 _doc = XDocument.Load(fileName);
                 LoadSnippets();
-            } else
+            }
+            else
             {
                 if (!Directory.Exists(Path.GetDirectoryName(fileName)))
                 {
@@ -89,8 +90,8 @@ namespace NppKate.Modules.SnippetFeature
             {
                 _snippets.Add(snippet.Name, snippet);
                 var root = _doc.Root;
-                var element = new XElement(SNIPPET, snippet.SnippetText, 
-                                            new XAttribute(NAME, snippet.Name), 
+                var element = new XElement(SNIPPET, snippet.SnippetText,
+                                            new XAttribute(NAME, snippet.Name),
                                             new XAttribute(ISSHOW, snippet.IsShowInMenu),
                                             new XAttribute(CATEGORY, snippet.Category),
                                             new XAttribute(FILEEXT, snippet.FileExt),
@@ -98,7 +99,8 @@ namespace NppKate.Modules.SnippetFeature
                                             );
                 root.Add(element);
                 Save();
-            } else
+            }
+            else
             {
                 throw new Exception(string.Format("Snippent with name '{0}' exists", snippet.Name));
             }
@@ -118,7 +120,7 @@ namespace NppKate.Modules.SnippetFeature
             if (_snippets.ContainsKey(snippetName))
             {
                 _snippets.Remove(snippetName);
-                foreach(var x in _doc.Root.Elements(SNIPPET))
+                foreach (var x in _doc.Root.Elements(SNIPPET))
                 {
                     if (x.Attribute(NAME).Value == snippetName)
                     {
@@ -166,14 +168,16 @@ namespace NppKate.Modules.SnippetFeature
         private void LoadSnippets()
         {
             _snippets = (from e in _doc.Descendants(SNIPPET)
-                         select e).ToDictionary(e => e.Attribute(NAME).Value, 
-                            (e) => { return new Snippet(e.Attribute(NAME).Value, 
-                                                        e.Value, 
-                                                        bool.Parse(e.Attribute(ISSHOW)?.Value ?? "true"), 
-                                                        e.Attribute(CATEGORY)?.Value, 
-                                                        e.Attribute(FILEEXT)?.Value,
-                                                        e.Attribute(SHORTNAME)?.Value
-                                                        );
+                         select e).ToDictionary(e => e.Attribute(NAME).Value,
+                            (e) =>
+                            {
+                                return new Snippet(e.Attribute(NAME).Value,
+                                                   e.Value,
+                                                   bool.Parse(e.Attribute(ISSHOW)?.Value ?? "true"),
+                                                   e.Attribute(CATEGORY)?.Value,
+                                                   e.Attribute(FILEEXT)?.Value,
+                                                   e.Attribute(SHORTNAME)?.Value
+                                                   );
                             });
         }
 
@@ -197,6 +201,26 @@ namespace NppKate.Modules.SnippetFeature
             }
             result.Sort();
             return result;
+        }
+
+        public void AddOrUpdate(Snippet snippet)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Remove(Snippet snippet)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Remove(string snippetName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Snippet FindByName(string snippetName)
+        {
+            throw new NotImplementedException();
         }
     }
 }

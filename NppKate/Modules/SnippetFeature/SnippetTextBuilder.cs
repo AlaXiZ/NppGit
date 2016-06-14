@@ -31,7 +31,7 @@ namespace NppKate.Modules.SnippetFeature
 {
     public class SnippetTextBuilder : ISnippetTextBuilder
     {
-        public string BuildText(Snippet Object)
+        public string BuildText(Snippet snippet)
         {
             throw new NotImplementedException();
         }
