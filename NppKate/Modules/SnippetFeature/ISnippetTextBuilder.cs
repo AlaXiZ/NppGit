@@ -29,6 +29,6 @@ namespace NppKate.Modules.SnippetFeature
 {
     public interface ISnippetTextBuilder
     {
-        string BuildText(Snippet snippet);
+        string BuildText(Snippet snippet, string paramString);
     }
 }

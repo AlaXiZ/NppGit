@@ -35,6 +35,30 @@ using System.Xml.Linq;
 
 namespace NppKate.Modules.SnippetFeature
 {
+
+    [Serializable]
+    public class NameExistsException : Exception
+    {
+        public NameExistsException() { }
+        public NameExistsException(string message) : base(message) { }
+        public NameExistsException(string message, Exception inner) : base(message, inner) { }
+        protected NameExistsException(
+          System.Runtime.Serialization.SerializationInfo info,
+          System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
+    }
+
+
+    [Serializable]
+    public class ShortNameExistsException : Exception
+    {
+        public ShortNameExistsException() { }
+        public ShortNameExistsException(string message) : base(message) { }
+        public ShortNameExistsException(string message, Exception inner) : base(message, inner) { }
+        protected ShortNameExistsException(
+          System.Runtime.Serialization.SerializationInfo info,
+          System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
+    }
+
     public class SnippetManager : ISnippetManager
     {
         private const string SNIPPETS = "Snippets";

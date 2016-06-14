@@ -25,15 +25,40 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+using NLog;
 using System;
+using System.Text.RegularExpressions;
 
 namespace NppKate.Modules.SnippetFeature
 {
+
+
+    [Serializable]
+    public class ParamCountException : Exception
+    {
+        public ParamCountException() { }
+        public ParamCountException(string message) : base(message) { }
+        public ParamCountException(string message, Exception inner) : base(message, inner) { }
+        protected ParamCountException(
+          System.Runtime.Serialization.SerializationInfo info,
+          System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
+    }
+
     public class SnippetValidator : ISnippetValidator
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly Regex _paramsSearch = new Regex(@"[{]\d+[}]");
+        private static readonly Regex _wrongParam = new Regex(@"([{]+)|([}]+)");
+
         public bool SnippetIsValid(Snippet snippet)
         {
-            throw new NotImplementedException();
+            CheckCountParam(snippet.Text);
+            return true;
+        }
+
+        private static void CheckCountParam(string text)
+        {
+
         }
     }
 }

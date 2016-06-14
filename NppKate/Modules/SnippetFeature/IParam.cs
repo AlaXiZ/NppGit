@@ -25,15 +25,17 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+using System.Text;
+
 namespace NppKate.Modules.SnippetFeature
 {
-    interface IParam
+    public interface IParam
     {
         /// <summary>
         /// Обработка текста
         /// </summary>
         /// <param name="text">Текст, в которым необходимо заменить параметры</param>
         /// <returns>Обработанный текст</returns>
-        string Process(string text);
+        void Process(ref StringBuilder buffer);
     }
 }

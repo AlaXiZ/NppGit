@@ -147,6 +147,7 @@
     <Compile Include="Modules\SnippetFeature\ISnippetManager.cs" />
     <Compile Include="Modules\SnippetFeature\ISnippetTextBuilder.cs" />
     <Compile Include="Modules\SnippetFeature\ISnippetValidator.cs" />
+    <Compile Include="Modules\SnippetFeature\ParamFactory.cs" />
     <Compile Include="Modules\SnippetFeature\SnippetEdit.cs">
       <SubType>Form</SubType>
     </Compile>

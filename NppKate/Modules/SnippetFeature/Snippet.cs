@@ -223,9 +223,9 @@ namespace NppKate.Modules.SnippetFeature
             for (byte i = 0; i < 64; i++)
             {
                 matchCount += (byte)((mask >> i) & 1);
-                logger.Debug("mask >> {0} & 1 = {1}", i, (mask >> i) & 1);
+                //logger.Debug($"mask >> {i} & 1 = {(mask >> i) & 1}");
             }
-            logger.Debug("In snippet {0} param(s), max param number {1}", matchCount, maxParam);
+            logger.Debug($"In snippet {matchCount} param(s), max param number {maxParam}");
             result = matchCount == maxParam + 1;
             return result;
         }

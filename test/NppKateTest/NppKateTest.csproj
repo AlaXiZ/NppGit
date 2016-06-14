@@ -57,6 +57,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SnippetTest\SnippetTest.cs" />
+    <Compile Include="SnippetTest\SnippetTextBuilderTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\NppKate\NppKate.csproj">

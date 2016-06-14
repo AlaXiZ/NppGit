@@ -27,7 +27,7 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace NppKate.Modules.SnippetFeature
 {
-    interface IParamFactory
+    public interface IParamFactory
     {
         /// <summary>
         /// Получение параметра по имени
