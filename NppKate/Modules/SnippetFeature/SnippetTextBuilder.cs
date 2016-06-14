@@ -25,6 +25,7 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -37,6 +38,7 @@ namespace NppKate.Modules.SnippetFeature
         // Class static private
         private static readonly Regex _simpleParam = new Regex(@"([{])(\d+)([}])");
         private static readonly Regex _autoParam = new Regex(@"($\()(\D+)(\))");
+        private static readonly Regex _multyLine = new Regex(@"({{)(.*?)(}})", RegexOptions.Multiline);
         // Class private
         private readonly IParamFactory _paramFactory;
         private readonly bool _replaceAsEmpty;
@@ -58,9 +60,35 @@ namespace NppKate.Modules.SnippetFeature
 
         private string[] SplitParam(string paramString)
         {
+            var buffer = new StringBuilder(paramString);
+            var match = _multyLine.Match(paramString);
+            var paramNumber = -1;
+            var mlParams = new List<string>();
+            while (match.Success)
+            {
+                paramNumber++;
+                buffer.Replace(match.Value, $"$_{paramNumber}");
+                mlParams.Add(match.Groups[2].Value);
+                match = match.NextMatch();
+            }
             // Заменить все пробелы шириной 2 и более или "," окруженные на единичные пробелы,
-            // а затем поделить строку на параметры
-            return Regex.Replace(paramString.Trim(), @"(\s{2,})|(\s*[,]\s*)", " ").Split(' ');
+            // а затем поделить строку на параметры         
+            var outParams = Regex.Replace(buffer.ToString().Trim(), @"(\s{2,})|(\s*[,]\s*)", " ").Split(' ');
+            // Заменим $_{N} на многострочный текст
+            if (paramNumber >= 0)
+            {
+                var paramStr = $"$_{paramNumber}";
+                for (int i = outParams.Length - 1; i >= 0 && paramNumber >= 0; i--)
+                {
+                    if (outParams[i] == paramStr)
+                    {
+                        outParams[i] = mlParams[paramNumber];
+                        paramNumber--;
+                        paramStr = $"$_{paramNumber}";
+                    }
+                }
+            }
+            return outParams;
         }
 
         private void ReplaceSimpleParam(ref StringBuilder buffer, string text, string[] parameters)
