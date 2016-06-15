@@ -47,7 +47,7 @@ namespace NppKate.Modules.SnippetFeature
         private static Regex _paramsSearch = new Regex(@"[{]\d+[}]");
         private static Regex _wrongParam = new Regex(@"[{]\D*[}]");
         private static Logger logger = LogManager.GetCurrentClassLogger();
-        public static readonly Snippet Null = new Snippet("");
+        public static readonly Snippet Null = new Snippet("", "", "");
 
         public string Name { get; set; }
         [Obsolete("This property is deprecated.", false)]

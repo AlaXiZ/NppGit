@@ -34,21 +34,26 @@ namespace NppKate.Modules.SnippetFeature
 
 
     [Serializable]
-    public class ParamCountException : Exception
+    public class ParamException : Exception
     {
-        public ParamCountException() { }
-        public ParamCountException(string message) : base(message) { }
-        public ParamCountException(string message, Exception inner) : base(message, inner) { }
-        protected ParamCountException(
+        public ParamException() { }
+        public ParamException(string message) : base(message) { }
+        public ParamException(string message, Exception inner) : base(message, inner) { }
+        protected ParamException(
           System.Runtime.Serialization.SerializationInfo info,
           System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
     }
 
     public class SnippetValidator : ISnippetValidator
     {
+        public const string ParameterNumberAbove = "Parameter number above max number";
+        public const string ParameterNumberBelow = "Parameter number below zero";
+        public const string ParameterMissing = "Parameter is missing";
+
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        private static readonly Regex _paramsSearch = new Regex(@"[{]\d+[}]");
+        private static readonly Regex _paramsSearch = new Regex(@"([{])(-?\d+)([}])");
         private static readonly Regex _wrongParam = new Regex(@"([{]+)|([}]+)");
+        const int MaxParamCount = 1024;
 
         public bool SnippetIsValid(Snippet snippet)
         {
@@ -58,7 +63,46 @@ namespace NppKate.Modules.SnippetFeature
 
         private static void CheckCountParam(string text)
         {
-
+            /*var match = _wrongParam.Match(text);
+            result = !match.Success;
+            if (!result)
+            {
+                logger.Debug("Wrong param in text: {0}", text);
+            }*/
+            // Amount of params
+            int param = -1;
+            int maxParam = -1;
+            byte[] mask = new byte[MaxParamCount + 4];
+            mask.Initialize();
+            var match = _paramsSearch.Match(text);
+            while (match.Success)
+            {
+                if (int.TryParse(match.Groups[2].Value, out param))
+                {
+                    if (param >= MaxParamCount)
+                    {
+                        var error = $"{ParameterNumberAbove} ({param} > {MaxParamCount})";
+                        logger.Info(error);
+                        throw new ParamException(error);
+                    }
+                    if (param < 0)
+                    {
+                        var error = $"{ParameterNumberBelow} ({param} < 0)";
+                        logger.Info(error);
+                        throw new ParamException(error);
+                    }
+                    maxParam = maxParam < param ? param : maxParam;
+                    mask[param] = 1;
+                }
+                match = match.NextMatch();
+            }
+            var zeroIndex = Array.IndexOf<byte>(mask, 0);
+            if (zeroIndex < maxParam)
+            {
+                var error = $"{ParameterMissing} ({zeroIndex})";
+                logger.Info(error);
+                throw new ParamException(error);
+            }
         }
     }
 }

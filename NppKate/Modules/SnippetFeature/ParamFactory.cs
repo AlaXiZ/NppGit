@@ -25,6 +25,8 @@ namespace NppKate.Modules.SnippetFeature
             {
                 if (_paramCache[name].IsAlive)
                     outParam = _paramCache[name].Target as IParam;
+                else
+                    _paramCache.Remove(name);
             }
             if (outParam == null)
             {
@@ -39,12 +41,12 @@ namespace NppKate.Modules.SnippetFeature
             var iparam = typeof(IParam);
             var type = AppDomain.CurrentDomain.GetAssemblies()
                         .SelectMany(s => s.GetTypes())
-                        .Where(p => iparam.IsAssignableFrom(p))
-                        .Where(p => p.IsClass)                    // Нужны только классы
-                        .Where(p => p.Name.Contains(name)         // Ищем по имени
+                        .Where(t => iparam.IsAssignableFrom(t))
+                        .Where(t => t.IsClass)                    // Нужны только классы
+                        .Where(t => t.Name.Contains(name)         // Ищем по имени
                         ).FirstOrDefault();
-
             if (type == null) return Empty;
+
             return (IParam)Activator.CreateInstance(type);
         }
     }
@@ -58,7 +60,8 @@ namespace NppKate.Modules.SnippetFeature
     {
         public void Process(ref StringBuilder buffer)
         {
-            throw new NotImplementedException();
+            var username = Interop.Win32.GetUserNameEx(Interop.ExtendedNameFormat.NameDisplay);
+            buffer.Replace("$(USERNAME)", username);
         }
     }
 
@@ -68,6 +71,15 @@ namespace NppKate.Modules.SnippetFeature
         {
             var date = DateTime.Now.ToString("dd.MM.yyyy");
             buffer.Replace("$(DATE)", date);
+        }
+    }
+
+    internal class FilenameParam : IParam
+    {
+        public void Process(ref StringBuilder buffer)
+        {
+            var filename = Npp.NppUtils.CurrentFileName;
+            buffer.Replace("$(FILENAME)", filename);
         }
     }
 }
