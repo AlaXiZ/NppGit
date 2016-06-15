@@ -59,12 +59,24 @@ namespace NppKate.Modules.SnippetFeature
           System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
     }
 
+
+    [Serializable]
+    public class ValidationException : Exception
+    {
+        public ValidationException() { }
+        public ValidationException(string message) : base(message) { }
+        public ValidationException(string message, Exception inner) : base(message, inner) { }
+        protected ValidationException(
+          System.Runtime.Serialization.SerializationInfo info,
+          System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
+    }
+
     public class SnippetManager : ISnippetManager
     {
         private const string SNIPPETS = "Snippets";
         private const string SNIPPET = "Snippet";
         private const string NAME = "Name";
-        private const string ISSHOW = "IsShowInMenu";
+        private const string ISSHOW = "IsVisible";
         private const string CATEGORY = "Category";
         private const string FILEEXT = "FileExt";
         private const string SHORTNAME = "ShortName";
@@ -114,9 +126,9 @@ namespace NppKate.Modules.SnippetFeature
             {
                 _snippets.Add(snippet.Name, snippet);
                 var root = _doc.Root;
-                var element = new XElement(SNIPPET, snippet.SnippetText,
+                var element = new XElement(SNIPPET, snippet.Text,
                                             new XAttribute(NAME, snippet.Name),
-                                            new XAttribute(ISSHOW, snippet.IsShowInMenu),
+                                            new XAttribute(ISSHOW, snippet.IsVisible),
                                             new XAttribute(CATEGORY, snippet.Category),
                                             new XAttribute(FILEEXT, snippet.FileExt),
                                             new XAttribute(SHORTNAME, snippet.ShortName)
@@ -196,11 +208,11 @@ namespace NppKate.Modules.SnippetFeature
                             (e) =>
                             {
                                 return new Snippet(e.Attribute(NAME).Value,
+                                                   e.Attribute(SHORTNAME)?.Value,
                                                    e.Value,
                                                    bool.Parse(e.Attribute(ISSHOW)?.Value ?? "true"),
                                                    e.Attribute(CATEGORY)?.Value,
-                                                   e.Attribute(FILEEXT)?.Value,
-                                                   e.Attribute(SHORTNAME)?.Value
+                                                   e.Attribute(FILEEXT)?.Value
                                                    );
                             });
         }

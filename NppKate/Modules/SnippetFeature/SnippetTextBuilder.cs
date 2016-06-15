@@ -36,7 +36,7 @@ namespace NppKate.Modules.SnippetFeature
         // Constants
         const string EmptyStringConst = "EMPTY_STRING";
         // Class static private
-        private static readonly Regex _simpleParam = new Regex(@"([{])(\d+)([}])");
+        private static readonly Regex _simpleParam = new Regex(@"([{])(\d+?)([}])");
         private static readonly Regex _autoParam = new Regex(@"($\()(\D+)(\))");
         private static readonly Regex _multyLine = new Regex(@"({{)(.*?)(}})", RegexOptions.Multiline);
         // Class private

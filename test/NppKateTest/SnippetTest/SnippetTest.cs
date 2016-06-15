@@ -50,7 +50,7 @@ namespace NppKateTest.SnippetTest
         public void SnippetCheckDefaultMenuVisible()
         {
             var snippet = CreateSnippetDefaultCtor();
-            Assert.IsTrue(!snippet.IsShowInMenu);
+            Assert.IsTrue(!snippet.IsVisible);
         }
 
         [TestMethod]
@@ -71,7 +71,7 @@ namespace NppKateTest.SnippetTest
         public void SnippetCheckMenuVisible()
         {
             var snippet = CreateSnippetFull();
-            Assert.IsTrue(snippet.IsShowInMenu);
+            Assert.IsTrue(snippet.IsVisible);
         }
 
         private Snippet CreateSnippetDefaultCtor()

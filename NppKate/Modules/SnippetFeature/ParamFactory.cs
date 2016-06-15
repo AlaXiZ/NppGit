@@ -82,4 +82,17 @@ namespace NppKate.Modules.SnippetFeature
             buffer.Replace("$(FILENAME)", filename);
         }
     }
+
+    internal class SnippetParam : IParamSnippet
+    {
+        public void Process(ref StringBuilder buffer)
+        {
+            Process2(ref buffer, null);
+        }
+
+        public void Process2(ref StringBuilder buffer, ISnippetManager snippetMessage)
+        {
+            //throw new NotImplementedException();
+        }
+    }
 }

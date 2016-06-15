@@ -31,8 +31,6 @@ using System.Text.RegularExpressions;
 
 namespace NppKate.Modules.SnippetFeature
 {
-
-
     [Serializable]
     public class ParamException : Exception
     {
@@ -51,7 +49,7 @@ namespace NppKate.Modules.SnippetFeature
         public const string ParameterMissing = "Parameter is missing";
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        private static readonly Regex _paramsSearch = new Regex(@"([{])(-?\d+)([}])");
+        private static readonly Regex _paramsSearch = new Regex(@"([{])(-?\d+?)([}])");
         private static readonly Regex _wrongParam = new Regex(@"([{]+)|([}]+)");
         const int MaxParamCount = 1024;
 
@@ -63,13 +61,6 @@ namespace NppKate.Modules.SnippetFeature
 
         private static void CheckCountParam(string text)
         {
-            /*var match = _wrongParam.Match(text);
-            result = !match.Success;
-            if (!result)
-            {
-                logger.Debug("Wrong param in text: {0}", text);
-            }*/
-            // Amount of params
             int param = -1;
             int maxParam = -1;
             byte[] mask = new byte[MaxParamCount + 4];

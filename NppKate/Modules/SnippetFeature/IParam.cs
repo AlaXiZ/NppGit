@@ -38,4 +38,14 @@ namespace NppKate.Modules.SnippetFeature
         /// <returns>Обработанный текст</returns>
         void Process(ref StringBuilder buffer);
     }
+
+    public interface IParamSnippet : IParam
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="snippetMessage"></param>
+        void Process2(ref StringBuilder buffer, ISnippetManager snippetMessage);
+    }
 }

@@ -29,7 +29,6 @@ using NLog;
 using NppKate.Common;
 using NppKate.Npp;
 using System.Linq;
-using System.Windows.Forms;
 
 namespace NppKate.Modules.SnippetFeature
 {
@@ -42,6 +41,7 @@ namespace NppKate.Modules.SnippetFeature
         private IModuleManager _manager;
         private int _snipManagerId;
         private Forms.SnippetsManagerForm _managerForm;
+        private ISnippetManager _snippetManager;
 
         public bool IsNeedRun => Settings.Modules.Snippets;
 
@@ -54,9 +54,9 @@ namespace NppKate.Modules.SnippetFeature
             _manager = manager;
             var selfName = GetType().Name;
             // Load snippets ---------------------------------------------------
-            foreach(var i in SnippetManager.Instance.Snippets)
+            foreach (var i in SnippetManager.Instance.Snippets)
             {
-                if (i.Value.IsShowInMenu)
+                if (i.Value.IsVisible)
                 {
                     _manager.CommandManager.RegisterCommand(selfName, i.Value.Name, () => { Logger.Debug("Snippet clicked"); });
                 }
@@ -67,14 +67,14 @@ namespace NppKate.Modules.SnippetFeature
             _snipManagerId = _manager.CommandManager.RegisterCommand(selfName, "Snippet manager", DoSnippetsManager, Settings.Panels.SnippetsPanelVisible);
 
             //_manager.RegisterDockForm(typeof(Forms.SnippetsManagerForm), _snipManagerId, false);
-//            _manager.RegisterDockForm(_snipManagerId, new DockDialogData
-//            {
-//                Class = typeof(Forms.SnippetsManagerForm),
-//                IconResourceName = Resources.ExternalResourceName.IDB_SNIPPETS,
-//                Title = "Snippets manager",
-//                uMask = NppTbMsg.DWS_PARAMSALL | NppTbMsg.DWS_DF_CONT_RIGHT
-//            });
-            
+            //            _manager.RegisterDockForm(_snipManagerId, new DockDialogData
+            //            {
+            //                Class = typeof(Forms.SnippetsManagerForm),
+            //                IconResourceName = Resources.ExternalResourceName.IDB_SNIPPETS,
+            //                Title = "Snippets manager",
+            //                uMask = NppTbMsg.DWS_PARAMSALL | NppTbMsg.DWS_DF_CONT_RIGHT
+            //            });
+
             _manager.CommandManager.RegisterSeparator(selfName);
 
             _manager.OnToolbarRegisterEvent += ToolbarRegister;
@@ -107,13 +107,14 @@ namespace NppKate.Modules.SnippetFeature
             if (!SnippetManager.Instance.Contains(snippetName)) return;
             Logger.Debug($"Insert snippet {snippetName}");
             var snip = SnippetManager.Instance[snippetName];
-            var outLines = snip.Assemble(NppUtils.GetSelectedText());
-            NppUtils.ReplaceSelectedText(outLines);
+            // TODO: Change
+            //var outLines = snip.Assemble(NppUtils.GetSelectedText());
+            //NppUtils.ReplaceSelectedText(outLines);
         }
         // ---------------------------------------------------------------------
         private void DoSnippetsManager()
         {
-            
+
             if (_managerForm == null)
             {
                 var icon = _manager.ResourceManager.LoadToolbarIcon(Resources.ExternalResourceName.IDB_SNIPPETS);
@@ -134,8 +135,9 @@ namespace NppKate.Modules.SnippetFeature
             var snip = SnippetManager.Instance[inputParams[0]];
             if (snip == Snippet.Null) return;
             var param = inputParams.Length > 1 ? inputParams.Where(s => s != inputParams[0]).Aggregate((s1, s2) => s1 + " " + s2) : "";
-            var outLines = snip.Assemble(param);
-            NppUtils.ReplaceSelectedText(outLines);
+            // TODO: Change
+            //var outLines = snip.Assemble(param);
+            //NppUtils.ReplaceSelectedText(outLines);
         }
         // ---------------------------------------------------------------------
         public static void SetSnippet(string snippet)

@@ -42,30 +42,31 @@ namespace NppKate.Forms
 
         private void bOk_Click(object sender, EventArgs e)
         {
-            if (!Snippet.CheckCorrectSnippet(tbSnippet.Text))
-            {
-                MessageBox.Show("Snippet is bad!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                DialogResult = DialogResult.None;
-                return;
-            }
-            try
-            {
-                var newSnippet = new Snippet(tbName.Text, tbSnippet.Text.Replace("\r\n", "\n"), chbIsShowInMenu.Checked, cbCategory.Text, cbExtention.Text, tbShortName.Text);
-                if (string.IsNullOrEmpty(_snippet))
-                {
-                    SnippetManager.Instance.AddSnippet(newSnippet);
-                }
-                else
-                {
-                    SnippetManager.Instance.UpdateSnippet(_snippet, newSnippet);
-                }
-                _snippet = newSnippet.Name;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                DialogResult = DialogResult.None;
-            }
+            // TODO : Change
+            //if (!Snippet.CheckCorrectSnippet(tbSnippet.Text))
+            //{
+            //    MessageBox.Show("Snippet is bad!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            //    DialogResult = DialogResult.None;
+            //    return;
+            //}
+            //try
+            //{
+            //    var newSnippet = new Snippet(tbName.Text, tbSnippet.Text.Replace("\r\n", "\n"), chbIsShowInMenu.Checked, cbCategory.Text, cbExtention.Text, tbShortName.Text);
+            //    if (string.IsNullOrEmpty(_snippet))
+            //    {
+            //        SnippetManager.Instance.AddSnippet(newSnippet);
+            //    }
+            //    else
+            //    {
+            //        SnippetManager.Instance.UpdateSnippet(_snippet, newSnippet);
+            //    }
+            //    _snippet = newSnippet.Name;
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show(ex.Message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            //    DialogResult = DialogResult.None;
+            //}
         }
 
         private void LoadSnippet()
@@ -73,8 +74,8 @@ namespace NppKate.Forms
             var s = SnippetManager.Instance.Snippets[_snippet];
             tbName.Text = s.Name;
             tbShortName.Text = s.ShortName;
-            tbSnippet.Text = s.SnippetText.Replace("\n", "\r\n");
-            chbIsShowInMenu.Checked = s.IsShowInMenu;
+            tbSnippet.Text = s.Text.Replace("\n", "\r\n");
+            chbIsShowInMenu.Checked = s.IsVisible;
             cbCategory.Text = s.Category;
             cbExtention.Text = s.FileExt;
         }
