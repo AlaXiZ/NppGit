@@ -25,6 +25,8 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+using NppKate.Npp;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -35,10 +37,14 @@ namespace NppKate.Modules.SnippetFeature
     {
         // Constants
         const string EmptyStringConst = "EMPTY_STRING";
+        const string AutoDate = "$(DATE)";
+        const string AutoFileName = "$(FILENAME)";
+        const string AutoUsername = "$(USERNAME)";
         // Class static private
         private static readonly Regex _simpleParam = new Regex(@"([{])(\d+?)([}])");
         private static readonly Regex _autoParam = new Regex(@"($\()(\D+)(\))");
         private static readonly Regex _multyLine = new Regex(@"({{)(.*?)(}})", RegexOptions.Multiline);
+        private static readonly Regex _snippetParam = new Regex(@"(\$\(SNIPPET:)(.*?)(\))", RegexOptions.IgnoreCase);
         // Class private
         private readonly ISnippetManager _snippetManager;
         private readonly bool _replaceAsEmpty;
@@ -54,6 +60,8 @@ namespace NppKate.Modules.SnippetFeature
             var buffer = new StringBuilder(snippet.Text.Length * 2);
             var parametes = SplitParam(paramString);
             ReplaceSimpleParam(ref buffer, snippet.Text, parametes);
+            ExpandSnippet(ref buffer);
+            ReplaceAutoParam(ref buffer);
             return buffer.ToString();
         }
 
@@ -138,13 +146,24 @@ namespace NppKate.Modules.SnippetFeature
 
         private void ExpandSnippet(ref StringBuilder buffer)
         {
-            // TODO: Implement
             if (_snippetManager == null) return;
+            var match = _snippetParam.Match(buffer.ToString());
+            while (match.Success)
+            {
+                var snippet = _snippetManager.FindByBothName(match.Groups[2].Value);
+                if (snippet != Snippet.Null)
+                {
+                    buffer.Replace(match.Value, snippet.Text);
+                }
+                match = match.NextMatch();
+            }
         }
 
         private void ReplaceAutoParam(ref StringBuilder buffer)
         {
-            // TODO: Implement
+            buffer.Replace(AutoDate, DateTime.Now.ToString("dd.MM.yyyy"));
+            buffer.Replace(AutoFileName, NppUtils.CurrentFileName);
+            buffer.Replace(AutoUsername, Interop.Win32.GetUserNameEx(Interop.ExtendedNameFormat.NameDisplay));
         }
     }
 }

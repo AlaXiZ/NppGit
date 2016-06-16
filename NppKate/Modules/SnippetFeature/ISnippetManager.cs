@@ -31,12 +31,49 @@ namespace NppKate.Modules.SnippetFeature
 {
     public interface ISnippetManager
     {
+        /// <summary>
+        /// Метод добавляет/обновляет сниппет
+        /// </summary>
+        /// <param name="snippet">Сниппет</param>
         void AddOrUpdate(Snippet snippet);
+        /// <summary>
+        /// Метод удаляет сниппет
+        /// </summary>
+        /// <param name="snippet">Сниппет</param>
         void Remove(Snippet snippet);
+        /// <summary>
+        /// Метод удаляет сниппет
+        /// </summary>
+        /// <param name="snippetName">Имя сниппета</param>
         void Remove(string snippetName);
+        /// <summary>
+        /// Метод ищет сниппет по ПОЛНОМУ имени
+        /// </summary>
+        /// <param name="snippetName">Полное имя сниппета</param>
+        /// <returns>Возвращается сниппет или Snippet.Null</returns>
         Snippet FindByName(string snippetName);
+        /// <summary>
+        /// Метод ищет сниппет по СОКРАЩЕННОМУ имени
+        /// </summary>
+        /// <param name="snippetShortName">Сокращенное имя сниппета</param>
+        /// <returns>Возвращается сниппет или Snippet.Null</returns>
         Snippet FindByShortName(string snippetShortName);
+        /// <summary>
+        /// Метод ищет сниппет по ПОЛНОМУ и СОКРАЩЕННОМУ именам
+        /// </summary>
+        /// <param name="name">Полное или сокращенное имя сниппета</param>
+        /// <returns>Возвращается сниппет или Snippet.Null</returns>
         Snippet FindByBothName(string name);
+        /// <summary>
+        /// Полный список сниппетов
+        /// </summary>
+        /// <returns>Список сниппетов</returns>
         List<Snippet> GetAllSnippets();
+        /// <summary>
+        /// Метод проверяет существует ли сниппет с таким ПОЛНЫМ или СОКРАЩЕННЫМ именем
+        /// </summary>
+        /// <param name="name">Полное или сокращенное имя сниппета</param>
+        /// <returns></returns>
+        bool Contains(string name);
     }
 }

@@ -26,7 +26,6 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 using NLog;
-using NppKate.Npp;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -73,32 +72,19 @@ namespace NppKate.Modules.SnippetFeature
 
     public class SnippetManager : ISnippetManager
     {
-        private const string SNIPPETS = "Snippets";
-        private const string SNIPPET = "Snippet";
-        private const string NAME = "Name";
-        private const string ISSHOW = "IsVisible";
-        private const string CATEGORY = "Category";
-        private const string FILEEXT = "FileExt";
-        private const string SHORTNAME = "ShortName";
+        private const string SnippetsTag = "Snippets";
+        private const string SnippetTag = "Snippet";
+        private const string NameTag = "Name";
+        private const string ShowTag = "IsVisible";
+        private const string CategoryName = "Category";
+        private const string FileExtTag = "FileExt";
+        private const string ShortNameTag = "ShortName";
 
-        private static SnippetManager _instance;
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
         private Dictionary<string, Snippet> _snippets;
         private XDocument _doc;
         private string _fileName;
-
-        public static SnippetManager Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    _instance = new SnippetManager(Path.Combine(NppUtils.ConfigDir, Properties.Resources.PluginName, Properties.Resources.SnippetsXml));
-                }
-                return _instance;
-            }
-        }
 
         public SnippetManager(string fileName)
         {
@@ -116,49 +102,38 @@ namespace NppKate.Modules.SnippetFeature
                     Directory.CreateDirectory(Path.GetDirectoryName(fileName));
                 }
                 _doc = new XDocument();
-                _doc.Add(new XElement(SNIPPETS));
+                _doc.Add(new XElement(SnippetsTag));
             }
         }
 
-        public void AddSnippet(Snippet snippet)
+        public void AddOrUpdate(Snippet snippet)
         {
-            if (!_snippets.ContainsKey(snippet.Name))
+            if (_snippets.ContainsKey(snippet.Name))
             {
-                _snippets.Add(snippet.Name, snippet);
-                var root = _doc.Root;
-                var element = new XElement(SNIPPET, snippet.Text,
-                                            new XAttribute(NAME, snippet.Name),
-                                            new XAttribute(ISSHOW, snippet.IsVisible),
-                                            new XAttribute(CATEGORY, snippet.Category),
-                                            new XAttribute(FILEEXT, snippet.FileExt),
-                                            new XAttribute(SHORTNAME, snippet.ShortName)
-                                            );
-                root.Add(element);
-                Save();
+                Remove(snippet.Name);
             }
-            else
-            {
-                throw new Exception(string.Format("Snippent with name '{0}' exists", snippet.Name));
-            }
+
+            _snippets.Add(snippet.Name, snippet);
+            var root = _doc.Root;
+            var element = new XElement(SnippetTag, snippet.Text,
+                                        new XAttribute(NameTag, snippet.Name),
+                                        new XAttribute(ShowTag, snippet.IsVisible),
+                                        new XAttribute(CategoryName, snippet.Category),
+                                        new XAttribute(FileExtTag, snippet.FileExt),
+                                        new XAttribute(ShortNameTag, snippet.ShortName)
+                                        );
+            root.Add(element);
+            Save();
         }
 
-        public void UpdateSnippet(string snippetName, Snippet snippet)
-        {
-            if (_snippets.ContainsKey(snippetName))
-            {
-                RemoveSnippet(snippetName);
-            }
-            AddSnippet(snippet);
-        }
-
-        public void RemoveSnippet(string snippetName)
+        public void Remove(string snippetName)
         {
             if (_snippets.ContainsKey(snippetName))
             {
                 _snippets.Remove(snippetName);
-                foreach (var x in _doc.Root.Elements(SNIPPET))
+                foreach (var x in _doc.Root.Elements(SnippetTag))
                 {
-                    if (x.Attribute(NAME).Value == snippetName)
+                    if (x.Attribute(NameTag).Value == snippetName)
                     {
                         x.Remove();
                         Save();
@@ -168,110 +143,55 @@ namespace NppKate.Modules.SnippetFeature
             }
         }
 
-        public Snippet this[string index]
-        {
-            get
-            {
-                // Full name
-                if (_snippets.ContainsKey(index))
-                    return _snippets[index];
-                else
-                {
-                    var snip = _snippets.Values.Where(s => s.ShortName == index)?.FirstOrDefault();
-                    // Short name
-                    if (snip != null)
-                        return snip;
-                }
-                return Snippet.Null;
-            }
-        }
-
-        public Dictionary<string, Snippet> Snippets
-        {
-            get { return _snippets; }
-        }
-
-        public bool Contains(string snippet)
-        {
-            return _snippets.ContainsKey(snippet);
-        }
-
         private void Save()
         {
             _doc.Save(_fileName);
         }
 
+        public bool Contains(string name)
+        {
+            return _snippets.Values.FirstOrDefault(s => s.Name == name || s.ShortName == name) != null;
+        }
+
         private void LoadSnippets()
         {
-            _snippets = (from e in _doc.Descendants(SNIPPET)
-                         select e).ToDictionary(e => e.Attribute(NAME).Value,
+            _snippets = (from e in _doc.Descendants(SnippetTag)
+                         select e).ToDictionary(e => e.Attribute(NameTag).Value,
                             (e) =>
                             {
-                                return new Snippet(e.Attribute(NAME).Value,
-                                                   e.Attribute(SHORTNAME)?.Value,
+                                return new Snippet(e.Attribute(NameTag).Value,
+                                                   e.Attribute(ShortNameTag)?.Value,
                                                    e.Value,
-                                                   bool.Parse(e.Attribute(ISSHOW)?.Value ?? "true"),
-                                                   e.Attribute(CATEGORY)?.Value,
-                                                   e.Attribute(FILEEXT)?.Value
+                                                   bool.Parse(e.Attribute(ShowTag)?.Value ?? "true"),
+                                                   e.Attribute(CategoryName)?.Value,
+                                                   e.Attribute(FileExtTag)?.Value
                                                    );
                             });
         }
 
-        public List<string> GetCategories()
-        {
-            List<string> result;
-            result = (from s in _snippets.Values
-                      select s.Category).Distinct().ToList();
-            result.Sort();
-            return result;
-        }
-
-        public List<string> GetExt()
-        {
-            List<string> result;
-            result = (from s in _snippets.Values
-                      select s.FileExt).Distinct().ToList();
-            if (!result.Contains("*"))
-            {
-                result.Add("*");
-            }
-            result.Sort();
-            return result;
-        }
-
-        public void AddOrUpdate(Snippet snippet)
-        {
-            throw new NotImplementedException();
-        }
-
         public void Remove(Snippet snippet)
         {
-            throw new NotImplementedException();
-        }
-
-        public void Remove(string snippetName)
-        {
-            throw new NotImplementedException();
+            Remove(snippet.Name);
         }
 
         public Snippet FindByName(string snippetName)
         {
-            throw new NotImplementedException();
+            return _snippets.Values.FirstOrDefault(s => s.Name == snippetName) ?? Snippet.Null;
         }
 
         public Snippet FindByShortName(string snippetShortName)
         {
-            throw new NotImplementedException();
+            return _snippets.Values.FirstOrDefault(s => s.ShortName == snippetShortName) ?? Snippet.Null;
         }
 
         public List<Snippet> GetAllSnippets()
         {
-            throw new NotImplementedException();
+            return _snippets.Values.ToList();
         }
 
         public Snippet FindByBothName(string name)
         {
-            throw new NotImplementedException();
+            return _snippets.Values.FirstOrDefault(s => s.Name == name || s.ShortName == name) ?? Snippet.Null;
         }
     }
 }

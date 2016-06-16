@@ -25,7 +25,6 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-using NppKate.Modules.SnippetFeature;
 using System;
 using System.Windows.Forms;
 
@@ -36,8 +35,9 @@ namespace NppKate.Forms
         public SnippetEdit()
         {
             InitializeComponent();
-            cbCategory.Items.AddRange(SnippetManager.Instance.GetCategories().ToArray());
-            cbExtention.Items.AddRange(SnippetManager.Instance.GetExt().ToArray());
+            // TODO: Change
+            //cbCategory.Items.AddRange(SnippetManager.Instance.GetCategories().ToArray());
+            //cbExtention.Items.AddRange(SnippetManager.Instance.GetExt().ToArray());
         }
 
         private void bOk_Click(object sender, EventArgs e)
@@ -54,11 +54,11 @@ namespace NppKate.Forms
             //    var newSnippet = new Snippet(tbName.Text, tbSnippet.Text.Replace("\r\n", "\n"), chbIsShowInMenu.Checked, cbCategory.Text, cbExtention.Text, tbShortName.Text);
             //    if (string.IsNullOrEmpty(_snippet))
             //    {
-            //        SnippetManager.Instance.AddSnippet(newSnippet);
+            //        SnippetManager.Instance.AddOrUpdate(newSnippet);
             //    }
             //    else
             //    {
-            //        SnippetManager.Instance.UpdateSnippet(_snippet, newSnippet);
+            //        SnippetManager.Instance.AddOrUpdate(_snippet, newSnippet);
             //    }
             //    _snippet = newSnippet.Name;
             //}
@@ -71,13 +71,14 @@ namespace NppKate.Forms
 
         private void LoadSnippet()
         {
-            var s = SnippetManager.Instance.Snippets[_snippet];
-            tbName.Text = s.Name;
-            tbShortName.Text = s.ShortName;
-            tbSnippet.Text = s.Text.Replace("\n", "\r\n");
-            chbIsShowInMenu.Checked = s.IsVisible;
-            cbCategory.Text = s.Category;
-            cbExtention.Text = s.FileExt;
+            // TODO: Change
+            //var s = SnippetManager.Instance.Snippets[_snippet];
+            //tbName.Text = s.Name;
+            //tbShortName.Text = s.ShortName;
+            //tbSnippet.Text = s.Text.Replace("\n", "\r\n");
+            //chbIsShowInMenu.Checked = s.IsVisible;
+            //cbCategory.Text = s.Category;
+            //cbExtention.Text = s.FileExt;
         }
 
         private string _snippet;

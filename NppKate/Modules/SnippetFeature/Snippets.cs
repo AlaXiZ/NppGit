@@ -60,11 +60,11 @@ namespace NppKate.Modules.SnippetFeature
 
             var selfName = GetType().Name;
             // Load snippets ---------------------------------------------------
-            foreach (var i in SnippetManager.Instance.Snippets)
+            foreach (var i in _snippetManager.GetAllSnippets())
             {
-                if (i.Value.IsVisible)
+                if (i.IsVisible)
                 {
-                    _manager.CommandManager.RegisterCommand(selfName, i.Value.Name, () => { Logger.Debug("Snippet clicked"); });
+                    _manager.CommandManager.RegisterCommand(selfName, i.Name, () => { Logger.Debug("Snippet clicked"); });
                 }
             }
             // -----------------------------------------------------------------
