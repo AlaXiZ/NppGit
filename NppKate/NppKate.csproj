@@ -142,12 +142,9 @@
       <DependentUpon>SettingsDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Modules\GitCore\RepositoryChangedEventArgs.cs" />
-    <Compile Include="Modules\SnippetFeature\IParam.cs" />
-    <Compile Include="Modules\SnippetFeature\IParamFactory.cs" />
     <Compile Include="Modules\SnippetFeature\ISnippetManager.cs" />
     <Compile Include="Modules\SnippetFeature\ISnippetTextBuilder.cs" />
     <Compile Include="Modules\SnippetFeature\ISnippetValidator.cs" />
-    <Compile Include="Modules\SnippetFeature\ParamFactory.cs" />
     <Compile Include="Modules\SnippetFeature\SnippetEdit.cs">
       <SubType>Form</SubType>
     </Compile>

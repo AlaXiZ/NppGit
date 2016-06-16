@@ -100,7 +100,7 @@ namespace NppKate.Modules.SnippetFeature
             }
         }
 
-        private SnippetManager(string fileName)
+        public SnippetManager(string fileName)
         {
             _snippets = new Dictionary<string, Snippet>();
             _fileName = fileName;
@@ -255,6 +255,21 @@ namespace NppKate.Modules.SnippetFeature
         }
 
         public Snippet FindByName(string snippetName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Snippet FindByShortName(string snippetShortName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Snippet> GetAllSnippets()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Snippet FindByBothName(string name)
         {
             throw new NotImplementedException();
         }

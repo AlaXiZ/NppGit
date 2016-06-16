@@ -28,6 +28,7 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using NLog;
 using NppKate.Common;
 using NppKate.Npp;
+using System.IO;
 using System.Linq;
 
 namespace NppKate.Modules.SnippetFeature
@@ -52,6 +53,11 @@ namespace NppKate.Modules.SnippetFeature
         public void Init(IModuleManager manager)
         {
             _manager = manager;
+
+            _snippetManager = new SnippetManager(Path.Combine(NppUtils.ConfigDir, Properties.Resources.PluginName, Properties.Resources.SnippetsXml));
+
+            _manager.RegisterService(typeof(ISnippetManager), _snippetManager);
+
             var selfName = GetType().Name;
             // Load snippets ---------------------------------------------------
             foreach (var i in SnippetManager.Instance.Snippets)
@@ -96,17 +102,17 @@ namespace NppKate.Modules.SnippetFeature
             _manager.AddToolbarButton(_snipManagerId, Resources.ExternalResourceName.IDB_SNIPPETS);
         }
 
-        private static void ManagerOnMenuItemClick(object sender, CommandItemClickEventArgs args)
+        private void ManagerOnMenuItemClick(object sender, CommandItemClickEventArgs args)
         {
             SnippetsOnInsertSnippetEvent(args.CommandName);
         }
 
-        private static void SnippetsOnInsertSnippetEvent(string snippetName)
+        private void SnippetsOnInsertSnippetEvent(string snippetName)
         {
             // Insert 
-            if (!SnippetManager.Instance.Contains(snippetName)) return;
+            var snippet = _snippetManager.FindByName(snippetName);
+            if (snippet == Snippet.Null) return;
             Logger.Debug($"Insert snippet {snippetName}");
-            var snip = SnippetManager.Instance[snippetName];
             // TODO: Change
             //var outLines = snip.Assemble(NppUtils.GetSelectedText());
             //NppUtils.ReplaceSelectedText(outLines);
@@ -128,12 +134,12 @@ namespace NppKate.Modules.SnippetFeature
             }
         }
 
-        private static void DoExpandSnippet()
+        private void DoExpandSnippet()
         {
             var inputParams = NppUtils.GetSelectedText().Trim().Split(' ');
             if (inputParams.Length == 0) return;
-            var snip = SnippetManager.Instance[inputParams[0]];
-            if (snip == Snippet.Null) return;
+            var snippet = _snippetManager.FindByBothName(inputParams[0]);
+            if (snippet == Snippet.Null) return;
             var param = inputParams.Length > 1 ? inputParams.Where(s => s != inputParams[0]).Aggregate((s1, s2) => s1 + " " + s2) : "";
             // TODO: Change
             //var outLines = snip.Assemble(param);

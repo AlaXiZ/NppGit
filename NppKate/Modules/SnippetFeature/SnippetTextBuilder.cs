@@ -40,12 +40,12 @@ namespace NppKate.Modules.SnippetFeature
         private static readonly Regex _autoParam = new Regex(@"($\()(\D+)(\))");
         private static readonly Regex _multyLine = new Regex(@"({{)(.*?)(}})", RegexOptions.Multiline);
         // Class private
-        private readonly IParamFactory _paramFactory;
+        private readonly ISnippetManager _snippetManager;
         private readonly bool _replaceAsEmpty;
 
-        public SnippetTextBuilder(IParamFactory paramFactory, bool replaceAsEmpty)
+        public SnippetTextBuilder(ISnippetManager snippetManager, bool replaceAsEmpty)
         {
-            _paramFactory = paramFactory;
+            _snippetManager = snippetManager;
             _replaceAsEmpty = replaceAsEmpty;
         }
 
@@ -54,7 +54,6 @@ namespace NppKate.Modules.SnippetFeature
             var buffer = new StringBuilder(snippet.Text.Length * 2);
             var parametes = SplitParam(paramString);
             ReplaceSimpleParam(ref buffer, snippet.Text, parametes);
-
             return buffer.ToString();
         }
 
@@ -137,14 +136,15 @@ namespace NppKate.Modules.SnippetFeature
             }
         }
 
+        private void ExpandSnippet(ref StringBuilder buffer)
+        {
+            // TODO: Implement
+            if (_snippetManager == null) return;
+        }
+
         private void ReplaceAutoParam(ref StringBuilder buffer)
         {
-            var match = _autoParam.Match(buffer.ToString());
-            while (match.Success)
-            {
-
-                match = match.NextMatch();
-            }
+            // TODO: Implement
         }
     }
 }

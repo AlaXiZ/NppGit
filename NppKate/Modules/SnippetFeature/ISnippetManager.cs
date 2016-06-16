@@ -25,6 +25,8 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+using System.Collections.Generic;
+
 namespace NppKate.Modules.SnippetFeature
 {
     public interface ISnippetManager
@@ -33,5 +35,8 @@ namespace NppKate.Modules.SnippetFeature
         void Remove(Snippet snippet);
         void Remove(string snippetName);
         Snippet FindByName(string snippetName);
+        Snippet FindByShortName(string snippetShortName);
+        Snippet FindByBothName(string name);
+        List<Snippet> GetAllSnippets();
     }
 }
