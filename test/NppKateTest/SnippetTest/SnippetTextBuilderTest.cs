@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NppKate.Modules.SnippetFeature;
+using System;
 
 namespace NppKateTest.SnippetTest
 {
@@ -10,6 +11,8 @@ namespace NppKateTest.SnippetTest
         private readonly Snippet _zeroParamSnippet;
         private readonly Snippet _oneParamSnippet;
         private readonly Snippet _twoParamSnippet;
+        private readonly Snippet _autoDateSnippet;
+        private readonly ISnippetManager _manager;
 
         public SnippetTextBuilderTest()
         {
@@ -17,6 +20,7 @@ namespace NppKateTest.SnippetTest
             _zeroParamSnippet = new Snippet("_", "_", "TEXT");
             _oneParamSnippet = new Snippet("_", "_", "{0}");
             _twoParamSnippet = new Snippet("_", "_", "{0} {1}");
+            _autoDateSnippet = new Snippet("_", "_", "$(DATE)");
         }
 
         [TestMethod]
@@ -100,14 +104,21 @@ namespace NppKateTest.SnippetTest
         public void TextBuilderOneParamOneInNotComma3()
         {
             var outStr = _snippetTextBuilder.BuildText(_oneParamSnippet, "1 ; 2");
-            Assert.AreEqual(outStr, "1\r\n;\r\n2");
+            Assert.AreEqual("1\r\n;\r\n2", outStr);
         }
 
         [TestMethod]
         public void TextBuilderTwoParamEmpty()
         {
             var outStr = _snippetTextBuilder.BuildText(_twoParamSnippet, "");
-            Assert.AreEqual(outStr, " ");
+            Assert.AreEqual(" ", outStr);
+        }
+
+        [TestMethod]
+        public void TextBuilderAutoParamDate()
+        {
+            var outStr = _snippetTextBuilder.BuildText(_autoDateSnippet, "");
+            Assert.AreEqual(DateTime.Now.ToString("dd.MM.yyyy"), outStr);
         }
     }
 }
