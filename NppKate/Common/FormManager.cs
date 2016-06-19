@@ -31,10 +31,11 @@ namespace NppKate.Common
 {
     public class FormManager : IFormManager
     {        
-        public T BuildForm<T>(int commandIndex, NppTbMsg dockParam, IntPtr iconHandle) where T : DockDialog, new()
+        public T BuildForm<T>(int commandIndex, NppTbMsg dockParam, IntPtr iconHandle, IDockableManager dockableManager) where T : DockDialog, new()
         {
             var formInst = new T();
             var cmdId = Npp.NppInfo.Instance.SearchCmdIdByIndex(commandIndex);
+            formInst.init(dockableManager, cmdId);
             var nppTbData = new NppTbData
             {
                 hClient = formInst.Handle,

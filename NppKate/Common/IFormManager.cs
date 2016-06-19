@@ -44,7 +44,8 @@ namespace NppKate.Common
         /// <param name="commandIndex">Номер команды</param>
         /// <param name="dockParam">Параметры для менеджера окон</param>
         /// <param name="iconHandle">Ссылка на иконку в закладке</param>
+        /// <param name="dockableManager">Ссылка на IDockableManager</param>
         /// <returns>Экзепляр формы</returns>
-        T BuildForm<T>(int commandIndex, NppTbMsg dockParam, IntPtr iconHandle) where T : DockDialog, new();
+        T BuildForm<T>(int commandIndex, NppTbMsg dockParam, IntPtr iconHandle, IDockableManager dockableManager = null) where T : DockDialog, new();
     }
 }

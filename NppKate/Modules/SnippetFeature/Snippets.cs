@@ -115,8 +115,8 @@ namespace NppKate.Modules.SnippetFeature
             if (_managerForm == null)
             {
                 var icon = _manager.ResourceManager.LoadToolbarIcon(Resources.ExternalResourceName.IDB_SNIPPETS);
-                _managerForm = _manager.FormManager.BuildForm<Forms.SnippetsManagerForm>(_snipManagerId, NppTbMsg.DWS_PARAMSALL | NppTbMsg.DWS_DF_CONT_RIGHT, icon.Handle);
-                _managerForm.init((IDockableManager)_manager, _manager.CommandManager.GetIdByIndex(_snipManagerId));
+                _managerForm = _manager.FormManager.BuildForm<Forms.SnippetsManagerForm>(_snipManagerId, NppTbMsg.DWS_PARAMSALL | NppTbMsg.DWS_DF_CONT_RIGHT, icon.Handle, (IDockableManager)_manager);
+                Settings.Panels.SnippetsPanelVisible = true;
             }
             else
             {
@@ -139,7 +139,7 @@ namespace NppKate.Modules.SnippetFeature
 
         private ISnippetTextBuilder GetTextBuilder()
         {
-            ISnippetTextBuilder builder = null;
+            ISnippetTextBuilder builder;
             if (_builderLink != null && _builderLink.IsAlive)
             {
                 builder = _builderLink.Target as ISnippetTextBuilder;

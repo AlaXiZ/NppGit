@@ -42,32 +42,32 @@ namespace NppKate.Modules.GitCore
 {
     public partial class RepoBrowser : DockDialog, FormDockable
     {
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
 
         #region Node names
-        private const string LOCAL_FOLDER = "LOCAL";
-        private const string REMOTE_FOLDER = "REMOTE";
-        private const string LOAD_ITEM = "LOAD";
-        private const string CURRENT_BRANCH = "CURRENT";
+        private const string LocalFolder = "LOCAL";
+        private const string RemoteFolder = "REMOTE";
+        private const string LoadItem = "LOAD";
+        private const string CurrentBranch = "CURRENT";
         #endregion
 
         #region Image key
-        private const string REPO_INDEX = "REPO";
-        private const string BRANCH_INDEX = "BRANCH";
-        private const string EMPTY_INDEX = "EMPTY";
-        private const string CURBRANCH_INDEX = "CURRENT_BRANCH";
-        private const string BRANCH_FOLDER_INDEX = "BRANCH_FOLDER";
-        private const string REMOTE_BRANCH_INDEX = "REMOTE_BRANCH";
-        private const string LOADING_INDEX = "LOADING";
+        private const string RepoIndex = "REPO";
+        private const string BranchIndex = "BRANCH";
+        private const string EmptyIndex = "EMPTY";
+        private const string CurbranchIndex = "CURRENT_BRANCH";
+        private const string BranchFolderIndex = "BRANCH_FOLDER";
+        private const string RemoteBranchIndex = "REMOTE_BRANCH";
+        private const string LoadingIndex = "LOADING";
         #endregion
 
         #region File hook
-        private const string FILE_LOCK = "head.lock";
-        private const string HOOK_FILTER = "*.lock";
+        private const string FileLock = "head.lock";
+        private const string HookFilter = "*.lock";
         #endregion
 
-        private readonly Color DocumentRepoColor = Color.DeepSkyBlue;
+        private readonly Color _documentRepoColor = Color.DeepSkyBlue;
 
         private string _lastActiveRepo = null;
         private string _lastDocumentRepo = null;
@@ -76,18 +76,18 @@ namespace NppKate.Modules.GitCore
         private bool _isInitialized = false;
         private ITortoiseCommand _commandRuner;
 
-        private Dictionary<string, FileSystemWatcher> _watchers;
+        private readonly Dictionary<string, FileSystemWatcher> _watchers;
 
         protected override void OnSwitchIn()
         {
-            _logger.Trace("Switch in repository browser");
+            Logger.Trace("Switch in repository browser");
             if (_isInitialized)
                 UpdateState();
         }
 
         protected override void OnSwitchOut()
         {
-            _logger.Trace("Switch out repository browser");
+            Logger.Trace("Switch out repository browser");
         }
 
         public RepoBrowser()
@@ -116,7 +116,7 @@ namespace NppKate.Modules.GitCore
             var node = tvRepositories.Nodes[e.RepositoryName];
             if (node.Name == _lastActiveRepo)
             {
-                var otherNode = node.PrevVisibleNode != null ? node.PrevVisibleNode : node.NextVisibleNode;
+                var otherNode = node.PrevVisibleNode ?? node.NextVisibleNode;
                 GitCore.Instance.SwitchByName(otherNode.Name);
             }
             _watchers[node.Name].EnableRaisingEvents = false;
@@ -151,7 +151,7 @@ namespace NppKate.Modules.GitCore
             if (!string.IsNullOrEmpty(repoName))
             {
                 var nodeNew = tvRepositories.Nodes[repoName];
-                nodeNew.ForeColor = DocumentRepoColor;
+                nodeNew.ForeColor = _documentRepoColor;
                 nodeNew.Text = nodeNew.Name + "*";
             }
             _lastDocumentRepo = repoName;
@@ -191,7 +191,7 @@ namespace NppKate.Modules.GitCore
 
         private void tvRepositories_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
-            if (e.Button == MouseButtons.Left && e.Node.ImageKey == REPO_INDEX && !(e.Node.NodeFont?.Bold ?? false))
+            if (e.Button == MouseButtons.Left && e.Node.ImageKey == RepoIndex && !(e.Node.NodeFont?.Bold ?? false))
             {
                 GitCore.Instance.SwitchByName(e.Node.Name);
             }
@@ -199,13 +199,13 @@ namespace NppKate.Modules.GitCore
 
         private void FillContent(TreeNode node, RepositoryLink link)
         {
-            var currentBranch = node.Nodes.Add(CURRENT_BRANCH, "", CURBRANCH_INDEX, CURBRANCH_INDEX);
-            var local = node.Nodes.Add(LOCAL_FOLDER, Properties.Resources.RsLocal, BRANCH_FOLDER_INDEX, BRANCH_FOLDER_INDEX);
+            var currentBranch = node.Nodes.Add(CurrentBranch, "", CurbranchIndex, CurbranchIndex);
+            var local = node.Nodes.Add(LocalFolder, Properties.Resources.RsLocal, BranchFolderIndex, BranchFolderIndex);
             local.Tag = 0;
-            CreateNode(LOAD_ITEM, Properties.Resources.RsLoading, LOADING_INDEX, local);
-            var remote = node.Nodes.Add(REMOTE_FOLDER, Properties.Resources.RsRemote, BRANCH_FOLDER_INDEX, BRANCH_FOLDER_INDEX);
+            CreateNode(LoadItem, Properties.Resources.RsLoading, LoadingIndex, local);
+            var remote = node.Nodes.Add(RemoteFolder, Properties.Resources.RsRemote, BranchFolderIndex, BranchFolderIndex);
             remote.Tag = 0;
-            CreateNode(LOAD_ITEM, Properties.Resources.RsLoading, LOADING_INDEX, remote);
+            CreateNode(LoadItem, Properties.Resources.RsLoading, LoadingIndex, remote);
             using (var r = new Repository(link.Path))
             {
                 currentBranch.Text = r.Head.Name;
@@ -215,10 +215,10 @@ namespace NppKate.Modules.GitCore
         private TreeNode CreateRepoNode(RepositoryLink link)
         {
             if (link == null) return null;
-            var node = CreateNode(link.Name, link.Name, REPO_INDEX, null, cmRepositories);
+            var node = CreateNode(link.Name, link.Name, RepoIndex, null, cmRepositories);
             FillContent(node, link);
             // Create file watcher
-            var watcher = new FileSystemWatcher(Path.Combine(link.Path, ".git"), HOOK_FILTER);
+            var watcher = new FileSystemWatcher(Path.Combine(link.Path, ".git"), HookFilter);
             watcher.NotifyFilter = NotifyFilters.FileName;
             watcher.Deleted += WatchersOnChange;
             watcher.EnableRaisingEvents = true;
@@ -229,7 +229,7 @@ namespace NppKate.Modules.GitCore
 
         private void WatchersOnChange(object sender, FileSystemEventArgs e)
         {
-            if (e.ChangeType == WatcherChangeTypes.Deleted && FILE_LOCK.Equals(e.Name, System.StringComparison.InvariantCultureIgnoreCase))
+            if (e.ChangeType == WatcherChangeTypes.Deleted && FileLock.Equals(e.Name, System.StringComparison.InvariantCultureIgnoreCase))
             {
                 UpdateBranch(GitCore.GetRepoName(GitCore.GetRootDir(e.FullPath)));
             }
@@ -278,14 +278,14 @@ namespace NppKate.Modules.GitCore
         private void UpdateBranch(string repoName)
         {
             if (string.IsNullOrEmpty(repoName)) return;
-            _logger.Debug($"Update branches for repo {repoName}");
+            Logger.Debug($"Update branches for repo {repoName}");
             var node = tvRepositories.Nodes[repoName];
             var link = GitCore.Instance.GetRepositoryByName(repoName);
             using (var r = new Repository(link.Path))
             {
-                var currentBranch = node.Nodes[CURRENT_BRANCH];
-                var local = node.Nodes[LOCAL_FOLDER];
-                var remote = node.Nodes[REMOTE_FOLDER];
+                var currentBranch = node.Nodes[CurrentBranch];
+                var local = node.Nodes[LocalFolder];
+                var remote = node.Nodes[RemoteFolder];
 
                 tvRepositories.Invoke(new Action(() =>
                 {
@@ -305,7 +305,7 @@ namespace NppKate.Modules.GitCore
                                 {
                                     tvRepositories.Invoke(new Action(() =>
                                     {
-                                        CreateNode(b.Name, b.Name, BRANCH_INDEX, local);
+                                        CreateNode(b.Name, b.Name, BranchIndex, local);
                                     }));
                                 }
                                 var branch = local.Nodes[b.Name];
@@ -313,8 +313,8 @@ namespace NppKate.Modules.GitCore
                                 {
                                     tvRepositories.Invoke(new Action(() =>
                                     {
-                                        branch.ImageKey = CURBRANCH_INDEX;
-                                        branch.SelectedImageKey = CURBRANCH_INDEX;
+                                        branch.ImageKey = CurbranchIndex;
+                                        branch.SelectedImageKey = CurbranchIndex;
                                         branch.Text += string.Empty;
                                     }));
                                 }
@@ -322,8 +322,8 @@ namespace NppKate.Modules.GitCore
                                 {
                                     tvRepositories.Invoke(new Action(() =>
                                     {
-                                        branch.ImageKey = BRANCH_INDEX;
-                                        branch.SelectedImageKey = BRANCH_INDEX;
+                                        branch.ImageKey = BranchIndex;
+                                        branch.SelectedImageKey = BranchIndex;
                                         branch.Text += string.Empty;
                                     }));
                                 }
@@ -335,7 +335,7 @@ namespace NppKate.Modules.GitCore
                                 {
                                     tvRepositories.Invoke(new Action(() =>
                                     {
-                                        CreateNode(b.Name, b.Name, REMOTE_BRANCH_INDEX, remote);
+                                        CreateNode(b.Name, b.Name, RemoteBranchIndex, remote);
                                     }));
                                 }
                             }
@@ -426,14 +426,12 @@ namespace NppKate.Modules.GitCore
 
         private void tvRepositories_MouseDown(object sender, MouseEventArgs e)
         {
-            int delta = (int)DateTime.Now.Subtract(_lastMouseDown).TotalMilliseconds;
+            var delta = (int)DateTime.Now.Subtract(_lastMouseDown).TotalMilliseconds;
             _hasDoubleClick = (delta < SystemInformation.DoubleClickTime);
             _lastMouseDown = DateTime.Now;
-            if (_hasDoubleClick)
-            {
-                var node = tvRepositories.GetNodeAt(e.Location);
-                _hasDoubleClick = node?.ImageKey == REPO_INDEX;
-            }
+            if (!_hasDoubleClick) return;
+            var node = tvRepositories.GetNodeAt(e.Location);
+            _hasDoubleClick = node?.ImageKey == RepoIndex;
         }
 
         private void RepoBrowser_VisibleChanged(object sender, EventArgs e)
@@ -446,10 +444,10 @@ namespace NppKate.Modules.GitCore
 
         private void tvRepositories_AfterExpand(object sender, TreeViewEventArgs e)
         {
-            if (e.Node.ImageKey == BRANCH_FOLDER_INDEX && (int)e.Node.Tag == 0)
+            if (e.Node.ImageKey == BranchFolderIndex && (int)e.Node.Tag == 0)
             {
                 e.Node.Tag = 1;
-                e.Node.Nodes.RemoveByKey(LOAD_ITEM);
+                e.Node.Nodes.RemoveByKey(LoadItem);
                 new Task(() =>
                 {
                     UpdateBranch(e.Node.Parent.Name);
