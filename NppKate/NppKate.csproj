@@ -109,6 +109,9 @@
     <Compile Include="Common\IFormManager.cs" />
     <Compile Include="Common\LoggerUtil.cs" />
     <Compile Include="Common\ResourceManager.cs" />
+    <Compile Include="Common\SimpleDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="DllExport\DllExportAttribute.cs" />
     <Compile Include="Forms\FormDockable.cs" />
     <Compile Include="Forms\About.cs">

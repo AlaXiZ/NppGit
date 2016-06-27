@@ -59,6 +59,7 @@ namespace NppKate.Modules.SnippetFeature
             _snippetManager = new SnippetManager(Path.Combine(NppUtils.ConfigDir, Properties.Resources.PluginName, Properties.Resources.SnippetsXml));
 
             _manager.RegisterService(typeof(ISnippetManager), _snippetManager);
+            _manager.RegisterService(typeof(ISnippetValidator), new SnippetValidator());
 
             var selfName = GetType().Name;
             // Load snippets ---------------------------------------------------

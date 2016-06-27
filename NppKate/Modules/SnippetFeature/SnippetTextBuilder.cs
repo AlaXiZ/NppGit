@@ -57,10 +57,10 @@ namespace NppKate.Modules.SnippetFeature
 
         public string BuildText(Snippet snippet, string paramString)
         {
-            var buffer = new StringBuilder(snippet.Text.Length * 2);
-            var parametes = SplitParam(paramString);
-            ReplaceSimpleParam(ref buffer, snippet.Text, parametes);
+            var buffer = new StringBuilder(snippet.Text);
             ExpandSnippet(ref buffer);
+            var parametes = SplitParam(paramString);
+            ReplaceSimpleParam(ref buffer, parametes);
             ReplaceAutoParam(ref buffer);
             return buffer.ToString();
         }
@@ -98,8 +98,10 @@ namespace NppKate.Modules.SnippetFeature
             return outParams;
         }
 
-        private void ReplaceSimpleParam(ref StringBuilder buffer, string text, string[] parameters)
+        private void ReplaceSimpleParam(ref StringBuilder buffer, string[] parameters)
         {
+            var text = buffer.ToString();
+            buffer.Clear();
             // Определяем количество параметров
             // Считаем, что сниппет был провалидирован
             int countParams = -1;

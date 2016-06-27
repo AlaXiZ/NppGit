@@ -90,6 +90,8 @@ namespace NppKate.Modules.SnippetFeature
         {
             _snippets = new Dictionary<string, Snippet>();
             _fileName = fileName;
+            if (string.IsNullOrEmpty(_fileName)) return;
+
             if (File.Exists(fileName))
             {
                 _doc = XDocument.Load(fileName);
@@ -114,6 +116,8 @@ namespace NppKate.Modules.SnippetFeature
             }
 
             _snippets.Add(snippet.Name, snippet);
+
+            if (string.IsNullOrEmpty(_fileName)) return;
             var root = _doc.Root;
             var element = new XElement(SnippetTag, snippet.Text,
                                         new XAttribute(NameTag, snippet.Name),
@@ -131,6 +135,8 @@ namespace NppKate.Modules.SnippetFeature
             if (_snippets.ContainsKey(snippetName))
             {
                 _snippets.Remove(snippetName);
+
+                if (string.IsNullOrEmpty(_fileName)) return;
                 foreach (var x in _doc.Root.Elements(SnippetTag))
                 {
                     if (x.Attribute(NameTag).Value == snippetName)

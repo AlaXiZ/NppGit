@@ -109,17 +109,10 @@ namespace NppKate.Forms
         private void miAdd_Click(object sender, EventArgs e)
         {
             var dlg = new SnippetEdit();
-            Npp.NppUtils.RegisterAsDialog(dlg.Handle);
-            try
+            dlg.Init(_manager);
+            if (dlg.ShowDialog() == DialogResult.OK)
             {
-                if (dlg.ShowDialog() == DialogResult.OK)
-                {
-                    SaveSnippet(_snippetManager.FindByName(dlg.SnippetName));
-                }
-            }
-            finally
-            {
-                Npp.NppUtils.UnregisterAsDialog(dlg.Handle);
+                SaveSnippet(_snippetManager.FindByName(dlg.SnippetName));
             }
         }
 
@@ -183,27 +176,24 @@ namespace NppKate.Forms
         {
             var selectedSnippet = tvSnippets.SelectedNode?.Tag as Snippet;
             if (selectedSnippet == null) return;
-            var dlg = new SnippetEdit { SnippetName = selectedSnippet.Name };
-            Npp.NppUtils.RegisterAsDialog(dlg.Handle);
-            try
+            var dlg = new SnippetEdit();
+            dlg.Init(_manager);
+            dlg.SnippetName = selectedSnippet.Name;
+            dlg.Action = SnippetEditAction.Update;
+
+            if (dlg.ShowDialog() == DialogResult.OK)
             {
-                if (dlg.ShowDialog() == DialogResult.OK)
+                if (dlg.SnippetName == selectedSnippet.Name)
                 {
-                    if (dlg.SnippetName == selectedSnippet.Name)
-                    {
-                        SaveSnippet(_snippetManager.FindByName(selectedSnippet.Name));
-                    }
-                    else
-                    {
-                        RemoveSnippet(selectedSnippet);
-                        SaveSnippet(_snippetManager.FindByName(dlg.SnippetName));
-                    }
+                    SaveSnippet(_snippetManager.FindByName(selectedSnippet.Name));
+                }
+                else
+                {
+                    RemoveSnippet(selectedSnippet);
+                    SaveSnippet(_snippetManager.FindByName(dlg.SnippetName));
                 }
             }
-            finally
-            {
-                Npp.NppUtils.UnregisterAsDialog(dlg.Handle);
-            }
+
         }
 
         private void miInsert_Click(object sender, EventArgs e)

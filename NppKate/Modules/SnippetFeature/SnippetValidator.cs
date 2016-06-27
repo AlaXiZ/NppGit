@@ -55,11 +55,15 @@ namespace NppKate.Modules.SnippetFeature
 
         public bool SnippetIsValid(Snippet snippet)
         {
-            CheckCountParam(snippet.Text);
+            var paramCount = CheckCountParam(snippet.Text) + 1;
+            if (paramCount > 0)
+            {
+                CheckSyntaxCorrect(snippet.Text, paramCount);
+            }
             return true;
         }
 
-        private static void CheckCountParam(string text)
+        private static int CheckCountParam(string text)
         {
             int param = -1;
             int maxParam = -1;
@@ -94,6 +98,13 @@ namespace NppKate.Modules.SnippetFeature
                 logger.Info(error);
                 throw new ParamException(error);
             }
+            return maxParam;
+        }
+
+        private static void CheckSyntaxCorrect(string text, int paramCount)
+        {
+            byte[] parameters = new byte[paramCount];
+            string.Format(text, parameters);
         }
     }
 }

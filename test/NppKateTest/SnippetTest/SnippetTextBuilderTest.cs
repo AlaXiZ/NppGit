@@ -12,15 +12,27 @@ namespace NppKateTest.SnippetTest
         private readonly Snippet _oneParamSnippet;
         private readonly Snippet _twoParamSnippet;
         private readonly Snippet _autoDateSnippet;
+        private readonly Snippet _snipInSnipFullSnippet;
+        private readonly Snippet _snipInSnipShortSnippet;
         private readonly ISnippetManager _manager;
 
         public SnippetTextBuilderTest()
         {
-            _snippetTextBuilder = new SnippetTextBuilder(null, true);
-            _zeroParamSnippet = new Snippet("_", "_", "TEXT");
-            _oneParamSnippet = new Snippet("_", "_", "{0}");
-            _twoParamSnippet = new Snippet("_", "_", "{0} {1}");
-            _autoDateSnippet = new Snippet("_", "_", "$(DATE)");
+            _manager = new SnippetManager("");
+            _snippetTextBuilder = new SnippetTextBuilder(_manager, true);
+            _zeroParamSnippet = new Snippet("ZeroParam", "zp", "TEXT");
+            _oneParamSnippet = new Snippet("OneParam", "op", "{0}");
+            _twoParamSnippet = new Snippet("TwoParam", "tp", "{0} {1}");
+            _autoDateSnippet = new Snippet("AutoDateParam", "adp", "$(DATE)");
+            _snipInSnipFullSnippet = new Snippet("SnippetInFullSnippet", "sisf", "$(SNIPPET:ZeroParam)");
+            _snipInSnipShortSnippet = new Snippet("SnippetInShortSnippet", "siss", "$(SNIPPET:zp)");
+
+            _manager.AddOrUpdate(_zeroParamSnippet);
+            _manager.AddOrUpdate(_oneParamSnippet);
+            _manager.AddOrUpdate(_twoParamSnippet);
+            _manager.AddOrUpdate(_autoDateSnippet);
+            _manager.AddOrUpdate(_snipInSnipFullSnippet);
+            _manager.AddOrUpdate(_snipInSnipShortSnippet);
         }
 
         [TestMethod]
@@ -119,6 +131,20 @@ namespace NppKateTest.SnippetTest
         {
             var outStr = _snippetTextBuilder.BuildText(_autoDateSnippet, "");
             Assert.AreEqual(DateTime.Now.ToString("dd.MM.yyyy"), outStr);
+        }
+
+        [TestMethod]
+        public void TextBuilderSnippetInSnippetFullName()
+        {
+            var outStr = _snippetTextBuilder.BuildText(_snipInSnipFullSnippet, "");
+            Assert.AreEqual(_zeroParamSnippet.Text, outStr);
+        }
+
+        [TestMethod]
+        public void TextBuilderSnippetInSnippetShortName()
+        {
+            var outStr = _snippetTextBuilder.BuildText(_snipInSnipShortSnippet, "");
+            Assert.AreEqual(_zeroParamSnippet.Text, outStr);
         }
     }
 }
