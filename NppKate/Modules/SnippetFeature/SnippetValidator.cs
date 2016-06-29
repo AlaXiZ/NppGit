@@ -49,7 +49,7 @@ namespace NppKate.Modules.SnippetFeature
         public const string ParameterMissing = "Parameter is missing";
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        private static readonly Regex _paramsSearch = new Regex(@"([{])(-?\d+?)([}])");
+        private static readonly Regex _paramsSearch = new Regex(@"({)(-?\d+?)(})");
         private static readonly Regex _wrongParam = new Regex(@"([{]+)|([}]+)");
         const int MaxParamCount = 1024;
 

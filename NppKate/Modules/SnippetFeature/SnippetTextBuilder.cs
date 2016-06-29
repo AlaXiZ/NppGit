@@ -41,8 +41,8 @@ namespace NppKate.Modules.SnippetFeature
         const string AutoFileName = "$(FILENAME)";
         const string AutoUsername = "$(USERNAME)";
         // Class static private
-        private static readonly Regex _simpleParam = new Regex(@"([{])(\d+?)([}])");
-        private static readonly Regex _autoParam = new Regex(@"($\()(\D+)(\))");
+        private static readonly Regex _simpleParam = new Regex(@"({)(\d+?)(})");
+        private static readonly Regex _autoParam = new Regex(@"(\$\()(\D+)(\))");
         private static readonly Regex _multyLine = new Regex(@"({{)(.*?)(}})", RegexOptions.Multiline);
         private static readonly Regex _snippetParam = new Regex(@"(\$\(SNIPPET:)(.*?)(\))", RegexOptions.IgnoreCase);
         // Class private
