@@ -57,8 +57,8 @@ namespace NppKate.Modules.GitCore
             if (_repoBrowser == null)
             {
                 var icon = _manager.ResourceManager.LoadToolbarIcon(Resources.ExternalResourceName.IDB_REPOSITORIES);
-                _repoBrowser = _manager.FormManager.BuildForm<RepoBrowser>(_browserCmdId, NppTbMsg.DWS_PARAMSALL | NppTbMsg.DWS_DF_CONT_RIGHT, icon.Handle);
-                _repoBrowser.init((IDockableManager)_manager, _manager.CommandManager.GetIdByIndex(_browserCmdId));
+                _repoBrowser = _manager.FormManager.BuildForm<RepoBrowser>(_browserCmdId, NppTbMsg.DWS_PARAMSALL | NppTbMsg.DWS_DF_CONT_RIGHT, icon.Handle, (IDockableManager)_manager);
+                Settings.Panels.RepoBrowserPanelVisible = true;
             }
             else
             {
@@ -115,7 +115,7 @@ namespace NppKate.Modules.GitCore
         {
             get
             {
-                ctor();
+                Ctor();
                 return _instance;
             }
         }
@@ -130,12 +130,12 @@ namespace NppKate.Modules.GitCore
                 {
                     throw new FieldAccessException("Property Module using only in Plugin class");
                 }
-                ctor();
+                Ctor();
                 return _instance;
             }
         }
 
-        private static void ctor()
+        private static void Ctor()
         {
             if (_instance != null) return;
             lock (ObjLock)

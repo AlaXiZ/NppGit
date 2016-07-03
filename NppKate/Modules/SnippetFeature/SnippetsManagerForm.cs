@@ -25,15 +25,15 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+using NLog;
+using NppKate.Common;
 using NppKate.Modules.SnippetFeature;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Windows.Forms;
-using NppKate.Common;
 using System.Linq;
-using NLog;
-using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace NppKate.Forms
 {
@@ -51,6 +51,7 @@ namespace NppKate.Forms
         private bool _isNewTree = true;
         private List<TreeNode> _needShow = new List<TreeNode>();
         private List<TreeNode> _needHide = new List<TreeNode>();
+        private ISnippetManager _snippetManager;
 
         private string _currentExt = UNDEFINED_EXT;
 
@@ -94,6 +95,11 @@ namespace NppKate.Forms
             _currentExt = UNDEFINED_EXT;
         }
 
+        protected override void AfterInit()
+        {
+            _snippetManager = _manager.ModuleManager.GetService(typeof(ISnippetManager)) as ISnippetManager;
+        }
+
         private void contextMenuSnippets_Opening(object sender, CancelEventArgs e)
         {
             var node = tvSnippets.SelectedNode;
@@ -103,9 +109,10 @@ namespace NppKate.Forms
         private void miAdd_Click(object sender, EventArgs e)
         {
             var dlg = new SnippetEdit();
+            dlg.Init(_manager);
             if (dlg.ShowDialog() == DialogResult.OK)
             {
-                SaveSnippet(SnippetManager.Instance[dlg.SnippetName]);
+                SaveSnippet(_snippetManager.FindByName(dlg.SnippetName));
             }
         }
 
@@ -128,8 +135,8 @@ namespace NppKate.Forms
                     tvSnippets.EndUpdate();
                 }
             }
-            var filtered = Settings.Snippets.IsHideByExtention && _currentExt != ALL_EXT ? SnippetManager.Instance.Snippets.Values.Where(s => s.FileExt.Contains(_currentExt) || s.FileExt.Contains(ALL_EXT)) :
-                SnippetManager.Instance.Snippets.Values.Where(s => true);
+            var snippetList = _snippetManager.GetAllSnippets();
+            var filtered = Settings.Snippets.IsHideByExtention && _currentExt != ALL_EXT ? snippetList.Where(s => s.FileExt.Contains(_currentExt) || s.FileExt.Contains(ALL_EXT)) : snippetList;
             var allSnippets = _isGrouping ? filtered.OrderBy(s => s.Category).ThenBy(s => s.Name) : filtered.OrderBy(s => s.Name);
 
             tvSnippets.BeginUpdate();
@@ -161,7 +168,7 @@ namespace NppKate.Forms
                 MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 RemoveSnippet(selectedSnippet);
-                SnippetManager.Instance.RemoveSnippet(selectedSnippet.Name);
+                _snippetManager.Remove(selectedSnippet.Name);
             }
         }
 
@@ -169,19 +176,24 @@ namespace NppKate.Forms
         {
             var selectedSnippet = tvSnippets.SelectedNode?.Tag as Snippet;
             if (selectedSnippet == null) return;
-            var dlg = new SnippetEdit { SnippetName = selectedSnippet.Name };
+            var dlg = new SnippetEdit();
+            dlg.Init(_manager);
+            dlg.SnippetName = selectedSnippet.Name;
+            dlg.Action = SnippetEditAction.Update;
+
             if (dlg.ShowDialog() == DialogResult.OK)
             {
                 if (dlg.SnippetName == selectedSnippet.Name)
                 {
-                    SaveSnippet(SnippetManager.Instance[selectedSnippet.Name]);
+                    SaveSnippet(_snippetManager.FindByName(selectedSnippet.Name));
                 }
                 else
                 {
                     RemoveSnippet(selectedSnippet);
-                    SaveSnippet(SnippetManager.Instance[dlg.SnippetName]);
+                    SaveSnippet(_snippetManager.FindByName(dlg.SnippetName));
                 }
             }
+
         }
 
         private void miInsert_Click(object sender, EventArgs e)

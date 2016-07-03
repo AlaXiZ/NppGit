@@ -5,7 +5,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <DevEnvDir Condition=" '$(DevEnvDir)' == '' ">C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\</DevEnvDir>
+    <DevEnvDir Condition=" '$(DevEnvDir)' == '' ">D:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\</DevEnvDir>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{E56F6E12-089C-40ED-BCFD-923E5FA121A1}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -109,6 +109,9 @@
     <Compile Include="Common\IFormManager.cs" />
     <Compile Include="Common\LoggerUtil.cs" />
     <Compile Include="Common\ResourceManager.cs" />
+    <Compile Include="Common\SimpleDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="DllExport\DllExportAttribute.cs" />
     <Compile Include="Forms\FormDockable.cs" />
     <Compile Include="Forms\About.cs">
@@ -142,12 +145,16 @@
       <DependentUpon>SettingsDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Modules\GitCore\RepositoryChangedEventArgs.cs" />
+    <Compile Include="Modules\SnippetFeature\ISnippetManager.cs" />
+    <Compile Include="Modules\SnippetFeature\ISnippetTextBuilder.cs" />
+    <Compile Include="Modules\SnippetFeature\ISnippetValidator.cs" />
     <Compile Include="Modules\SnippetFeature\SnippetEdit.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Modules\SnippetFeature\SnippetEdit.Designer.cs">
       <DependentUpon>SnippetEdit.cs</DependentUpon>
     </Compile>
+    <Compile Include="Modules\SnippetFeature\SnippetManager.cs" />
     <Compile Include="Modules\SnippetFeature\SnippetsManagerForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -169,6 +176,8 @@
     <Compile Include="Interop\LocalWinEventHook.cs" />
     <Compile Include="Interop\Win32.cs" />
     <Compile Include="Main.cs" />
+    <Compile Include="Modules\SnippetFeature\SnippetTextBuilder.cs" />
+    <Compile Include="Modules\SnippetFeature\SnippetValidator.cs" />
     <Compile Include="Modules\TortoiseGitFeatures\ITortoiseCommand.cs" />
     <Compile Include="Modules\TortoiseGitFeatures\TortoiseGitCommand.cs" />
     <Compile Include="Npp\NppInfo.cs" />
@@ -199,7 +208,6 @@
     <Compile Include="Interop\UnmanagedExports.cs" />
     <Compile Include="Modules\GitFeatures\Git.cs" />
     <Compile Include="Modules\SnippetFeature\Snippet.cs" />
-    <Compile Include="Modules\SnippetFeature\SnippetManager.cs" />
     <Compile Include="Common\TabEventArgs.cs" />
     <Compile Include="Modules\GitCore\GitCore.cs" />
   </ItemGroup>

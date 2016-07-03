@@ -25,31 +25,36 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+using NLog;
+using System;
+using System.IO;
 
-namespace NppKate.Modules.SnippetFeature
+namespace NppKate.Utils
 {
-    public class Snippet
+    public static class StreamHelper
     {
-        public const string DefaultCategory = "default";
-        public const string DefaultFileExtention = "*";
+        private static Logger logger = LogManager.GetCurrentClassLogger();
 
-        public static readonly Snippet Null = new Snippet("", "", "");
-
-        public string Name { get; set; }
-        public bool IsVisible { get; set; }
-        public string Category { get; set; }
-        public string FileExt { get; set; }
-        public string ShortName { get; set; }
-        public string Text { get; set; }
-
-        public Snippet(string name, string shortName, string text, bool isVisible = false, string category = DefaultCategory, string fileExt = DefaultFileExtention)
+        public static string SaveStreamToFile(Stream input, string fileName, string directory = null)
         {
-            Name = name;
-            ShortName = !string.IsNullOrEmpty(shortName) ? shortName : name;
-            Text = text;
-            IsVisible = isVisible;
-            Category = !string.IsNullOrEmpty(category) ? category : DefaultCategory;
-            FileExt = !string.IsNullOrEmpty(fileExt) ? fileExt : DefaultFileExtention;
+            if (string.IsNullOrEmpty(directory))
+            {
+                directory = Path.GetTempPath();
+            }
+            var result = Path.Combine(directory, fileName);
+            try
+            {
+                using (var outFile = File.Create(result))
+                {
+                    input.Seek(0, SeekOrigin.Begin);
+                    input.CopyTo(outFile);
+                }
+            }
+            catch (Exception e)
+            {
+                logger.Debug(e, "Stack Trace: ", e.StackTrace);
+            }
+            return result;
         }
     }
 }

@@ -1,4 +1,4 @@
-/*
+﻿/*
 Copyright (c) 2015-2016, Schadin Alexey (schadin@gmail.com)
 All rights reserved.
 
@@ -25,31 +25,10 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-
 namespace NppKate.Modules.SnippetFeature
 {
-    public class Snippet
+    public interface ISnippetTextBuilder
     {
-        public const string DefaultCategory = "default";
-        public const string DefaultFileExtention = "*";
-
-        public static readonly Snippet Null = new Snippet("", "", "");
-
-        public string Name { get; set; }
-        public bool IsVisible { get; set; }
-        public string Category { get; set; }
-        public string FileExt { get; set; }
-        public string ShortName { get; set; }
-        public string Text { get; set; }
-
-        public Snippet(string name, string shortName, string text, bool isVisible = false, string category = DefaultCategory, string fileExt = DefaultFileExtention)
-        {
-            Name = name;
-            ShortName = !string.IsNullOrEmpty(shortName) ? shortName : name;
-            Text = text;
-            IsVisible = isVisible;
-            Category = !string.IsNullOrEmpty(category) ? category : DefaultCategory;
-            FileExt = !string.IsNullOrEmpty(fileExt) ? fileExt : DefaultFileExtention;
-        }
+        string BuildText(Snippet snippet, string paramString);
     }
 }

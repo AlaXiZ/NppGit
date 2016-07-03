@@ -48,6 +48,12 @@ namespace NppKate.Forms
         public SettingsDialog()
         {
             InitializeComponent();
+
+            for (short i = 1; i < 1025; i++)
+            {
+                udNestedLEvel.Items.Add(i);
+            }
+
             LoadSettings();
         }
 
@@ -81,6 +87,7 @@ namespace NppKate.Forms
             chbHideByExt.Checked = Settings.Snippets.IsHideByExtention;
             chbExpand.Checked = Settings.Snippets.IsExpanAfterCreate;
             chbInsertEmpty.Checked = Settings.Snippets.InsertEmpty;
+            udNestedLEvel.SelectedIndex = Settings.Snippets.MaxLevel - 1;
 
             LoadTortoiseCommands();
         }
@@ -131,6 +138,7 @@ namespace NppKate.Forms
             Settings.Snippets.IsHideByExtention = chbHideByExt.Checked;
             Settings.Snippets.IsExpanAfterCreate = chbExpand.Checked;
             Settings.Snippets.InsertEmpty = chbInsertEmpty.Checked;
+            Settings.Snippets.MaxLevel = (ushort)(udNestedLEvel.SelectedIndex + 1);
         }
 
         private void bOk_Click(object sender, EventArgs e)
