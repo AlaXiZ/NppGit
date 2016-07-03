@@ -147,7 +147,7 @@ namespace NppKate.Common
                     m.Init(this);
             }
 
-            //RegisterCommandItem(new CommandItem { Name = "Sample context menu", Hint = "Sample context menu", Action = DoContextMenu });
+            _commandManager.RegisterCommand("ModuleManager", "Sample context menu", DoContextMenu);// RegisterCommandItem(new CommandItem { Name = "Sample context menu", Hint = "Sample context menu", Action = DoContextMenu });
 
             winHookProcRet = new LocalWindowsHook(HookType.WH_CALLWNDPROCRET);
             winHookProcRet.HookInvoked += WinHookHookInvoked;
@@ -250,25 +250,12 @@ namespace NppKate.Common
         }
 
         #region "Context menu"
-        private static readonly string ItemTemplate = "<Item FolderName=\"{0}\" PluginEntryName=\"{1}\" PluginCommandItemName=\"{2}\" ItemNameAs=\"{3}\"/>";
-        private static readonly string ItemSeparator = "<Item FolderName=\"{0}\" id = \"0\" />";
-        private static readonly string ItemSeparator2 = "<Item id=\"0\" />";
-
-        private static string GetItemTemplate(string folder = "", string itemName = "---", string itemNameAs = "---")
-        {
-            if (itemName == "---" && itemNameAs == "---")
-                return ItemSeparator2;
-            else if (itemName == "-")
-                return string.Format(ItemSeparator, folder);
-            else
-                return string.Format(ItemTemplate, folder, Properties.Resources.PluginName, itemName, itemNameAs);
-        }
 
         public void DoContextMenu()
         {
-            /*
-            var dlg = new Forms.CommandList();
-            dlg.Commands = _cmdList;
+            
+            var dlg = new CommandList();
+            dlg.Commands = _commandManager.GetCommands();
             if (dlg.Commands.Count == 0)
             {
                 MessageBox.Show("Нет доступных команд", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -280,32 +267,13 @@ namespace NppKate.Common
                 NppUtils.NewFile();
                 NppUtils.AppendText("\t\t<!--Sample menu -->");
                 NppUtils.NewLine();
-                var countItem = 1;
-                foreach (var folder in dlg.Commands.Keys)
+                foreach (var command in dlg.GetCommandXML())
                 {
-                    if (countItem > 0)
-                    {
-                        NppUtils.AppendText(GetItemTemplate());
-                        NppUtils.NewLine();
-                        countItem = 0;
-                    }
-
-                    foreach (var command in dlg.Commands[folder])
-                    {
-                        if (command.Hint != "-" && command.Selected)
-                        {
-                            NppUtils.AppendText(GetItemTemplate(folder, command.Name, command.Hint));
-                            NppUtils.NewLine();
-                            countItem++;
-                        }
-                    }
+                    NppUtils.AppendText(command);
+                    NppUtils.NewLine();
                 }
-
-                NppUtils.AppendText(GetItemTemplate());
-                NppUtils.NewLine();
                 NppUtils.SetLang(LangType.L_XML);
             }
-            */
         }
         #endregion
 

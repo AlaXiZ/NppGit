@@ -94,7 +94,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\AssemblyLoader.cs" />
-    <Compile Include="Common\CommandItem.cs" />
     <Compile Include="Common\CommandManager.cs" />
     <Compile Include="Common\CommandMenuItem.cs" />
     <Compile Include="Common\DockDialog.cs">
@@ -339,6 +338,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\menurelocate.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Modules\QuickCommandFeatures\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildProjectDirectory)\DllExport\NppPlugin.DllExport.targets" />
