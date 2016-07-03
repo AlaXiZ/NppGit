@@ -5,7 +5,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <DevEnvDir Condition=" '$(DevEnvDir)' == '' ">D:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\</DevEnvDir>
+    <DevEnvDir Condition=" '$(DevEnvDir)' == '' ">C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\</DevEnvDir>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{E56F6E12-089C-40ED-BCFD-923E5FA121A1}</ProjectGuid>
     <OutputType>Library</OutputType>
