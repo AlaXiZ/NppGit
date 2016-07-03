@@ -94,12 +94,12 @@ namespace NppKate.Modules.SnippetFeature
             _manager.AddToolbarButton(_snipManagerId, Resources.ExternalResourceName.IDB_SNIPPETS);
         }
 
-        private static void ManagerOnMenuItemClick(object sender, CommandItemClickEventArgs args)
+        private void ManagerOnMenuItemClick(object sender, CommandItemClickEventArgs args)
         {
             SnippetsOnInsertSnippetEvent(args.CommandName);
         }
 
-        private static void SnippetsOnInsertSnippetEvent(string snippetName)
+        private void SnippetsOnInsertSnippetEvent(string snippetName)
         {
             // Insert 
             var snippet = _snippetManager.FindByName(snippetName);
@@ -126,7 +126,7 @@ namespace NppKate.Modules.SnippetFeature
             }
         }
 
-        private static void DoExpandSnippet()
+        private void DoExpandSnippet()
         {
             var inputParams = NppUtils.GetSelectedText().Trim().Split(' ');
             if (inputParams.Length == 0) return;
