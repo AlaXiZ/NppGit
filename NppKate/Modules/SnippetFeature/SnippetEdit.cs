@@ -66,7 +66,7 @@ namespace NppKate.Forms
 
         private void bOk_Click(object sender, EventArgs e)
         {
-            var snippet = new Snippet(tbName.Text, tbShortName.Text, tbSnippet.Text.Replace("\r\n", "\n"), chbIsShowInMenu.Checked, cbCategory.Text, cbExtention.Text);
+            var snippet = new Snippet(tbName.Text, tbShortName.Text, tbSnippet.Text.Replace("\r\n", "\n"), chbIsShowInMenu.Checked, cbCategory.Text, tbFileExt.Text);
             try
             {
                 _snippetValidator.SnippetIsValid(snippet);
@@ -88,7 +88,7 @@ namespace NppKate.Forms
             tbSnippet.Text = _oldSnippet.Text.Replace("\n", "\r\n");
             chbIsShowInMenu.Checked = _oldSnippet.IsVisible;
             cbCategory.Text = _oldSnippet.Category;
-            cbExtention.Text = _oldSnippet.FileExt;
+            tbFileExt.Text = _oldSnippet.FileExt;
         }
 
         private string _snippet;

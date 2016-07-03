@@ -58,6 +58,7 @@ namespace NppKate.Forms
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SnippetEdit));
             this.pTop = new System.Windows.Forms.Panel();
+            this.tbFileExt = new System.Windows.Forms.TextBox();
             this.btnSnippet = new System.Windows.Forms.Button();
             this.btnFileName = new System.Windows.Forms.Button();
             this.btnUserName = new System.Windows.Forms.Button();
@@ -66,7 +67,6 @@ namespace NppKate.Forms
             this.tbShortName = new System.Windows.Forms.TextBox();
             this.lExt = new System.Windows.Forms.Label();
             this.lCategory = new System.Windows.Forms.Label();
-            this.cbExtention = new System.Windows.Forms.ComboBox();
             this.cbCategory = new System.Windows.Forms.ComboBox();
             this.chbIsShowInMenu = new System.Windows.Forms.CheckBox();
             this.lSnippet = new System.Windows.Forms.Label();
@@ -86,6 +86,7 @@ namespace NppKate.Forms
             // 
             // pTop
             // 
+            this.pTop.Controls.Add(this.tbFileExt);
             this.pTop.Controls.Add(this.btnSnippet);
             this.pTop.Controls.Add(this.btnFileName);
             this.pTop.Controls.Add(this.btnUserName);
@@ -94,7 +95,6 @@ namespace NppKate.Forms
             this.pTop.Controls.Add(this.tbShortName);
             this.pTop.Controls.Add(this.lExt);
             this.pTop.Controls.Add(this.lCategory);
-            this.pTop.Controls.Add(this.cbExtention);
             this.pTop.Controls.Add(this.cbCategory);
             this.pTop.Controls.Add(this.chbIsShowInMenu);
             this.pTop.Controls.Add(this.lSnippet);
@@ -106,12 +106,19 @@ namespace NppKate.Forms
             this.pTop.Size = new System.Drawing.Size(784, 81);
             this.pTop.TabIndex = 0;
             // 
+            // tbFileExt
+            // 
+            this.tbFileExt.Location = new System.Drawing.Point(572, 28);
+            this.tbFileExt.Name = "tbFileExt";
+            this.tbFileExt.Size = new System.Drawing.Size(70, 20);
+            this.tbFileExt.TabIndex = 3;
+            // 
             // btnSnippet
             // 
             this.btnSnippet.Location = new System.Drawing.Point(486, 54);
             this.btnSnippet.Name = "btnSnippet";
             this.btnSnippet.Size = new System.Drawing.Size(80, 23);
-            this.btnSnippet.TabIndex = 13;
+            this.btnSnippet.TabIndex = 8;
             this.btnSnippet.Text = "$(SNIPPET)";
             this.btnSnippet.UseVisualStyleBackColor = true;
             this.btnSnippet.Click += new System.EventHandler(this.btnSnippet_Click);
@@ -121,7 +128,7 @@ namespace NppKate.Forms
             this.btnFileName.Location = new System.Drawing.Point(387, 54);
             this.btnFileName.Name = "btnFileName";
             this.btnFileName.Size = new System.Drawing.Size(93, 23);
-            this.btnFileName.TabIndex = 12;
+            this.btnFileName.TabIndex = 7;
             this.btnFileName.Text = "$(FILENAME)";
             this.btnFileName.UseVisualStyleBackColor = true;
             this.btnFileName.Click += new System.EventHandler(this.AutoParamInsert);
@@ -131,7 +138,7 @@ namespace NppKate.Forms
             this.btnUserName.Location = new System.Drawing.Point(291, 54);
             this.btnUserName.Name = "btnUserName";
             this.btnUserName.Size = new System.Drawing.Size(90, 23);
-            this.btnUserName.TabIndex = 11;
+            this.btnUserName.TabIndex = 6;
             this.btnUserName.Text = "$(USERNAME)";
             this.btnUserName.UseVisualStyleBackColor = true;
             this.btnUserName.Click += new System.EventHandler(this.AutoParamInsert);
@@ -141,7 +148,7 @@ namespace NppKate.Forms
             this.btnDate.Location = new System.Drawing.Point(228, 55);
             this.btnDate.Name = "btnDate";
             this.btnDate.Size = new System.Drawing.Size(57, 23);
-            this.btnDate.TabIndex = 10;
+            this.btnDate.TabIndex = 5;
             this.btnDate.Text = "$(DATE)";
             this.btnDate.UseVisualStyleBackColor = true;
             this.btnDate.Click += new System.EventHandler(this.AutoParamInsert);
@@ -180,16 +187,6 @@ namespace NppKate.Forms
             this.lCategory.Size = new System.Drawing.Size(52, 13);
             this.lCategory.TabIndex = 6;
             this.lCategory.Text = "Category:";
-            // 
-            // cbExtention
-            // 
-            this.cbExtention.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.cbExtention.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
-            this.cbExtention.FormattingEnabled = true;
-            this.cbExtention.Location = new System.Drawing.Point(572, 27);
-            this.cbExtention.Name = "cbExtention";
-            this.cbExtention.Size = new System.Drawing.Size(72, 21);
-            this.cbExtention.TabIndex = 3;
             // 
             // cbCategory
             // 
@@ -354,7 +351,6 @@ namespace NppKate.Forms
         private System.Windows.Forms.CheckBox chbIsShowInMenu;
         private System.Windows.Forms.Label lExt;
         private System.Windows.Forms.Label lCategory;
-        private System.Windows.Forms.ComboBox cbExtention;
         private System.Windows.Forms.ComboBox cbCategory;
         private System.Windows.Forms.Label lShortName;
         private System.Windows.Forms.TextBox tbShortName;
@@ -364,5 +360,6 @@ namespace NppKate.Forms
         private System.Windows.Forms.Button btnDate;
         private System.Windows.Forms.Button btnSnippet;
         private System.Windows.Forms.ContextMenuStrip cmsSnippets;
+        private System.Windows.Forms.TextBox tbFileExt;
     }
 }

@@ -48,11 +48,13 @@ namespace NppKate.Modules.SnippetFeature
         // Class private
         private readonly ISnippetManager _snippetManager;
         private readonly bool _replaceAsEmpty;
+        private readonly ushort _maxNestedLevel;
 
-        public SnippetTextBuilder(ISnippetManager snippetManager, bool replaceAsEmpty)
+        public SnippetTextBuilder(ISnippetManager snippetManager, bool replaceAsEmpty, ushort maxNestedLevel = 5)
         {
             _snippetManager = snippetManager;
             _replaceAsEmpty = replaceAsEmpty;
+            _maxNestedLevel = maxNestedLevel;
         }
 
         public string BuildText(Snippet snippet, string paramString)
@@ -149,15 +151,18 @@ namespace NppKate.Modules.SnippetFeature
         private void ExpandSnippet(ref StringBuilder buffer)
         {
             if (_snippetManager == null) return;
-            var match = _snippetParam.Match(buffer.ToString());
-            while (match.Success)
+            for (int i = 0; i < _maxNestedLevel && i < 1024; i++)
             {
-                var snippet = _snippetManager.FindByBothName(match.Groups[2].Value);
-                if (snippet != Snippet.Null)
+                var match = _snippetParam.Match(buffer.ToString());
+                while (match.Success)
                 {
-                    buffer.Replace(match.Value, snippet.Text);
+                    var snippet = _snippetManager.FindByBothName(match.Groups[2].Value);
+                    if (snippet != Snippet.Null)
+                    {
+                        buffer.Replace(match.Value, snippet.Text);
+                    }
+                    match = match.NextMatch();
                 }
-                match = match.NextMatch();
             }
         }
 

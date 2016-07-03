@@ -89,6 +89,8 @@ namespace NppKate.Forms
             this.llWiki = new System.Windows.Forms.LinkLabel();
             this.chbRestartNpp = new System.Windows.Forms.CheckBox();
             this.pMain = new System.Windows.Forms.Panel();
+            this.udNestedLEvel = new System.Windows.Forms.DomainUpDown();
+            this.label4 = new System.Windows.Forms.Label();
             this.tbSettings.SuspendLayout();
             this.tpCommon.SuspendLayout();
             this.gbUsingModules.SuspendLayout();
@@ -361,6 +363,8 @@ namespace NppKate.Forms
             // 
             // tpSnippets
             // 
+            this.tpSnippets.Controls.Add(this.label4);
+            this.tpSnippets.Controls.Add(this.udNestedLEvel);
             this.tpSnippets.Controls.Add(this.chbInsertEmpty);
             this.tpSnippets.Controls.Add(this.chbExpand);
             this.tpSnippets.Controls.Add(this.chbHideByExt);
@@ -456,6 +460,24 @@ namespace NppKate.Forms
             this.pMain.Size = new System.Drawing.Size(409, 227);
             this.pMain.TabIndex = 6;
             // 
+            // udNestedLEvel
+            // 
+            this.udNestedLEvel.Location = new System.Drawing.Point(101, 98);
+            this.udNestedLEvel.Name = "udNestedLEvel";
+            this.udNestedLEvel.ReadOnly = true;
+            this.udNestedLEvel.Size = new System.Drawing.Size(65, 20);
+            this.udNestedLEvel.TabIndex = 4;
+            this.udNestedLEvel.Text = "5";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(8, 100);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(87, 13);
+            this.label4.TabIndex = 5;
+            this.label4.Text = "Max nested level";
+            // 
             // SettingsDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -529,5 +551,7 @@ namespace NppKate.Forms
         private System.Windows.Forms.TabPage tpToolbar;
         private System.Windows.Forms.TreeView tvMenuCommand;
         private System.Windows.Forms.TreeView tvToolbarCommand;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.DomainUpDown udNestedLEvel;
     }
 }

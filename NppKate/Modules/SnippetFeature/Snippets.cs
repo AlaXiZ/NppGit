@@ -44,7 +44,6 @@ namespace NppKate.Modules.SnippetFeature
         private int _snipManagerId;
         private Forms.SnippetsManagerForm _managerForm;
         private ISnippetManager _snippetManager;
-        private WeakReference _builderLink;
 
         public bool IsNeedRun => Settings.Modules.Snippets;
 
@@ -140,17 +139,7 @@ namespace NppKate.Modules.SnippetFeature
 
         private ISnippetTextBuilder GetTextBuilder()
         {
-            ISnippetTextBuilder builder;
-            if (_builderLink != null && _builderLink.IsAlive)
-            {
-                builder = _builderLink.Target as ISnippetTextBuilder;
-            }
-            else
-            {
-                builder = new SnippetTextBuilder(_snippetManager, Settings.Snippets.InsertEmpty);
-                _builderLink = new WeakReference(builder);
-            }
-            return builder;
+            return new SnippetTextBuilder(_snippetManager, Settings.Snippets.InsertEmpty, Settings.Snippets.MaxLevel);
         }
         // ---------------------------------------------------------------------
         public static void SetSnippet(string snippet)

@@ -304,6 +304,14 @@ namespace NppKate
                 [MethodImpl(MethodImplOptions.NoInlining)]
                 set { Set(value); }
             }
+
+            public static ushort MaxLevel
+            {
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                get { return Get<ushort>(5); }
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                set { Set(value); }
+            }
         }
         #endregion
     }
