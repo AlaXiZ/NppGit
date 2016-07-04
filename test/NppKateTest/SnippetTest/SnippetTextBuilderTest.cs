@@ -146,5 +146,26 @@ namespace NppKateTest.SnippetTest
             var outStr = _snippetTextBuilder.BuildText(_snipInSnipShortSnippet, "");
             Assert.AreEqual(_zeroParamSnippet.Text, outStr);
         }
+
+        [TestMethod]
+        public void TextBuilderSnippetSingleLineOneMultiParam()
+        {
+            var outStr = _snippetTextBuilder.BuildText(_oneParamSnippet, "{{1 2 3}}");
+            Assert.AreEqual("1 2 3", outStr);
+        }
+
+        [TestMethod]
+        public void TextBuilderSnippetMultyLineOneMultiParam()
+        {
+            var outStr = _snippetTextBuilder.BuildText(_oneParamSnippet, "{{1\r\n2}}");
+            Assert.AreEqual("1\r\n2", outStr);
+        }
+
+        [TestMethod]
+        public void TextBuilderSnippetMultyLineTwoMultiParam()
+        {
+            var outStr = _snippetTextBuilder.BuildText(_twoParamSnippet, "{{1\r\n2}} {{2\r\n3}}");
+            Assert.AreEqual("1\r\n2 2\r\n3", outStr);
+        }
     }
 }

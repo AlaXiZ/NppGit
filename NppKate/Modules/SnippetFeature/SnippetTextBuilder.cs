@@ -43,7 +43,7 @@ namespace NppKate.Modules.SnippetFeature
         // Class static private
         private static readonly Regex _simpleParam = new Regex(@"({)(\d+?)(})");
         private static readonly Regex _autoParam = new Regex(@"(\$\()(\D+)(\))");
-        private static readonly Regex _multyLine = new Regex(@"({{)(.*?)(}})", RegexOptions.Multiline);
+        private static readonly Regex _multyLine = new Regex(@"({{)([\w\d\s\r\n\W\D\S]+?)(}})", RegexOptions.Multiline);
         private static readonly Regex _snippetParam = new Regex(@"(\$\(SNIPPET:)(.*?)(\))", RegexOptions.IgnoreCase);
         // Class private
         private readonly ISnippetManager _snippetManager;
