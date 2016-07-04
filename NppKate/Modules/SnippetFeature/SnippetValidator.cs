@@ -103,7 +103,7 @@ namespace NppKate.Modules.SnippetFeature
 
         private static void CheckSyntaxCorrect(string text, int paramCount)
         {
-            byte[] parameters = new byte[paramCount];
+            var parameters = new object[paramCount];
             string.Format(text, parameters);
         }
     }

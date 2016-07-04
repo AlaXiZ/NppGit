@@ -72,10 +72,10 @@ namespace NppKate.Modules.SnippetFeature
 
     public class SnippetManager : ISnippetManager
     {
-        private const string SnippetsTag = "Snippets";
+        private const string RootTag = "Snippets";
         private const string SnippetTag = "Snippet";
         private const string NameTag = "Name";
-        private const string ShowTag = "IsVisible";
+        private const string ShowTag = "IsShowInMenu";
         private const string CategoryName = "Category";
         private const string FileExtTag = "FileExt";
         private const string ShortNameTag = "ShortName";
@@ -104,7 +104,7 @@ namespace NppKate.Modules.SnippetFeature
                     Directory.CreateDirectory(Path.GetDirectoryName(fileName));
                 }
                 _doc = new XDocument();
-                _doc.Add(new XElement(SnippetsTag));
+                _doc.Add(new XElement(RootTag));
             }
         }
 
