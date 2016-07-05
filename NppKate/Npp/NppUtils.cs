@@ -278,18 +278,19 @@ namespace NppKate.Npp
         {
             StringBuilder buf = new StringBuilder("");
             // Определяем начало выделения
-            var selcount = execute(SciMsg.SCI_GETSELECTIONS, 0);
-            var startPos = execute(SciMsg.SCI_GETSELECTIONNSTART, 0);
+            var selcount = execute(SciMsg.SCI_GETSELECTIONS);
+            var startPos = execute(SciMsg.SCI_GETSELECTIONNSTART);
             var startPos_e = execute(SciMsg.SCI_GETSELECTIONNSTART, selcount - 1);
             startPos = Math.Min(startPos, startPos_e);
             // Определяем начальную позицию выделения: строку:столбец
             var line = execute(SciMsg.SCI_LINEFROMPOSITION, startPos);
             var col = execute(SciMsg.SCI_GETCOLUMN, startPos);
+            var fillString = new string(' ', col);
 
-            execute(SciMsg.SCI_BEGINUNDOACTION, 0); // стартуем действие, чтобы выглядело отменить одним Ctrl+Z
+            execute(SciMsg.SCI_BEGINUNDOACTION); // стартуем действие, чтобы можно было отменить одним Ctrl+Z
             try
             {
-                if (execute(SciMsg.SCI_GETSELECTIONMODE, 0) > 0)
+                if (execute(SciMsg.SCI_GETSELECTIONMODE) > 0)
                 {
                     Win32.SendMessage(CurrentScintilla, SciMsg.SCI_REPLACESEL, buf.Length, buf);
                     foreach (var str in lines)
@@ -305,8 +306,11 @@ namespace NppKate.Npp
                     var count = lines.Length - 1;
                     for (int i = 0; i <= count; i++)
                     {
-                        //var linePos = execute(SciMsg.SCI_FINDCOLUMN, line, col);
-                        SendText(SciMsg.SCI_ADDTEXT, lines[i], 0);
+                        var linePos = execute(SciMsg.SCI_FINDCOLUMN, line, 1);
+                        line++;
+                        var str = (i == 0 ? "" : fillString) + lines[i];
+                        execute(SciMsg.SCI_HOME);
+                        SendText(SciMsg.SCI_ADDTEXT, str);
                         if (i < count)
                             NewLine();
                     }
@@ -314,7 +318,7 @@ namespace NppKate.Npp
             }
             finally
             {
-                execute(SciMsg.SCI_ENDUNDOACTION, 0); // сообщаем об окончании действия
+                execute(SciMsg.SCI_ENDUNDOACTION); // сообщаем об окончании действия
             }
         }
 
@@ -323,7 +327,7 @@ namespace NppKate.Npp
             ReplaceSelectedText(text.Replace(GetEOL(), "\n").Split('\n'));
         }
 
-        static int execute(SciMsg msg, int wParam, int lParam = 0)
+        static int execute(SciMsg msg, int wParam = 0, int lParam = 0)
         {
             IntPtr sci = CurrentScintilla;
             return (int)Win32.SendMessage(sci, msg, wParam, lParam);
