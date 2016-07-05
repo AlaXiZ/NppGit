@@ -447,11 +447,13 @@ namespace NppKate.Modules.GitCore
             if (e.Node.ImageKey == BranchFolderIndex && (int)e.Node.Tag == 0)
             {
                 e.Node.Tag = 1;
-                e.Node.Nodes.RemoveByKey(LoadItem);
-                new Task(() =>
-                {
-                    UpdateBranch(e.Node.Parent.Name);
-                }).Start();
+                var task = Task.Factory.StartNew(() =>
+               {
+                   UpdateBranch(e.Node.Parent.Name);
+               }).ContinueWith((r) =>
+               {
+                   e.Node.Nodes.RemoveByKey(LoadItem);
+               }, TaskScheduler.FromCurrentSynchronizationContext());
             }
         }
 
