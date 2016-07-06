@@ -168,7 +168,7 @@ namespace NppKate.Modules.SnippetFeature
                                 return new Snippet(e.Attribute(NameTag).Value,
                                                    e.Attribute(ShortNameTag)?.Value,
                                                    e.Value,
-                                                   bool.Parse(e.Attribute(ShowTag)?.Value ?? "true"),
+                                                   bool.Parse(e.Attribute(ShowTag)?.Value ?? "false"),
                                                    e.Attribute(CategoryName)?.Value,
                                                    e.Attribute(FileExtTag)?.Value
                                                    );
