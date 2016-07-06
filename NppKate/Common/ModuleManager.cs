@@ -31,6 +31,7 @@ using NppKate.Interop;
 using NppKate.Npp;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -222,9 +223,16 @@ namespace NppKate.Common
                 _modules.AddLast(item);
             }
         }
-   
+
         public void AddToolbarButton(int cmdId, string iconName)
         {
+            var mth = new StackTrace().GetFrame(1).GetMethod();
+            var module = mth.ReflectedType.Name;
+            var commandName = _commandManager.GetNameByIndex(module, cmdId);
+            if (!Settings.CommonSettings.GetCommandState(module, commandName) ||
+                !Settings.CommonSettings.GetToolbarCommandState(module, commandName))
+                return;
+
             toolbarIcons tbIcons = new toolbarIcons();
             tbIcons.hToolbarBmp = _resourceManager.LoadImage(iconName, TOOLBAR_ICON_SIZE, TOOLBAR_ICON_SIZE);
             IntPtr pTbIcons = Marshal.AllocHGlobal(Marshal.SizeOf(tbIcons));
@@ -232,7 +240,7 @@ namespace NppKate.Common
             Win32.SendMessage(NppInfo.Instance.NppHandle, NppMsg.NPPM_ADDTOOLBARICON, NppInfo.Instance.SearchCmdIdByIndex(cmdId), pTbIcons);
             Marshal.FreeHGlobal(pTbIcons);
         }
-           
+
         public object GetService(Type interfaceType)
         {
             return _services[interfaceType];
@@ -253,7 +261,7 @@ namespace NppKate.Common
 
         public void DoContextMenu()
         {
-            
+
             var dlg = new CommandList();
             dlg.Commands = _commandManager.GetCommands();
             if (dlg.Commands.Count == 0)
