@@ -70,5 +70,12 @@ namespace NppKate.Common
         /// <param name="commandIndex">Номер команды</param>
         /// <returns>Идентификатор команды</returns>
         int GetIdByIndex(int commandIndex);
+        /// <summary>
+        /// Получить имя команды по ее номеру
+        /// </summary>
+        /// <param name="module">Имя модуля</param>
+        /// <param name="commandIndex">Номер команды</param>
+        /// <returns>Имя команды</returns>
+        string GetNameByIndex(string module, int commandIndex);
     }
 }

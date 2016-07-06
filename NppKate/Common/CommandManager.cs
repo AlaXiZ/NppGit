@@ -27,6 +27,7 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace NppKate.Common
 {
@@ -58,6 +59,11 @@ namespace NppKate.Common
         public int GetIdByIndex(int commandIndex)
         {
             return Npp.NppInfo.Instance.SearchCmdIdByIndex(commandIndex);
+        }
+
+        public string GetNameByIndex(string module, int commandIndex)
+        {
+            return _commandIndexes[module].Where(cm => cm.CommandIndex == commandIndex).Select(cm => cm.Name).FirstOrDefault() ?? "";
         }
 
         public int RegisterCommand(string module, string name, Action commandHandler = null, bool isCheckedWithStart = false, ShortcutKey? shortcut = null)
