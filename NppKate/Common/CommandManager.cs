@@ -34,6 +34,7 @@ namespace NppKate.Common
     public class CommandManager : ICommandManager
     {
         const int DefaultCapacity = 5;
+        private volatile int HiddenIndex = -1;
 
         private Dictionary<string, List<CommandMenuItem>> _commandIndexes;
 
@@ -77,6 +78,9 @@ namespace NppKate.Common
             int cmdIndex = 0;
             if (Settings.CommonSettings.GetCommandState(module, name))
                 cmdIndex = Npp.NppInfo.Instance.AddCommand(name, commandHandler, shortcut, isCheckedWithStart);
+            else
+                cmdIndex = HiddenIndex--;
+
             _commandIndexes[module].Add(new CommandMenuItem
             {
                 Name = name,

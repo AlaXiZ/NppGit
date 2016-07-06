@@ -56,7 +56,14 @@ namespace NppKate
             LoadModules();
             mm.AddModule(GitCore.Module); // TODO: Переделать на автоматическую загрузку
 
-            mm.Init();
+            try
+            {
+                mm.Init();
+            }
+            catch (Exception ex)
+            {
+                LoggerUtil.Error(_logger, ex, "Init", null);
+            }
 
             NppInfo.Instance.AddCommand("Restart Notepad++", NppUtils.Restart);
             NppInfo.Instance.AddCommand("Settings", DoSettings);
