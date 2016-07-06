@@ -523,20 +523,16 @@ namespace NppKate.Modules.TortoiseGitFeatures
                 logger.Info("TortoiseGit found");
 
                 var cmdId = _manager.CommandManager.RegisterCommand(selfName, "Pull", GitPull, false, new ShortcutKey("Alt+P"));
-                if ((btnMask & (uint)TortoiseGitCommand.Pull) > 0)
-                    _icons.Add(cmdId, ExternalResourceName.IDB_PULL);
+                _icons.Add(cmdId, ExternalResourceName.IDB_PULL);
 
                 cmdId = _manager.CommandManager.RegisterCommand(selfName, "Push", GitPush, false, new ShortcutKey("Ctrl+Alt+P"));
-                if ((btnMask & (uint)TortoiseGitCommand.Push) > 0)
-                    _icons.Add(cmdId, ExternalResourceName.IDB_PUSH);
+                _icons.Add(cmdId, ExternalResourceName.IDB_PUSH);
 
                 cmdId = _manager.CommandManager.RegisterCommand(selfName, "Commit", GitCommit, false, new ShortcutKey("Ctrl+Alt+Shift+C"));
-                if ((btnMask & (uint)TortoiseGitCommand.Commit) > 0)
-                    _icons.Add(cmdId, ExternalResourceName.IDB_COMMIT);
+                _icons.Add(cmdId, ExternalResourceName.IDB_COMMIT);
 
                 cmdId = _manager.CommandManager.RegisterCommand(selfName, "Fetch", GitFetch, false, new ShortcutKey("Ctrl+Alt+Shift+F"));
-                if ((btnMask & (uint)TortoiseGitCommand.Fetch) > 0)
-                    _icons.Add(cmdId, ExternalResourceName.IDB_PULL);
+                _icons.Add(cmdId, ExternalResourceName.IDB_PULL);
                 /**********************************************************************************/
                 _manager.CommandManager.RegisterCommand(selfName, "Diff", GitDiffUnified);
                 _manager.CommandManager.RegisterCommand(selfName, "Compare", GitDiff);
@@ -544,30 +540,25 @@ namespace NppKate.Modules.TortoiseGitFeatures
                 _manager.CommandManager.RegisterCommand(selfName, "Log file", GitLogFile, false, new ShortcutKey("Ctrl+Shift+L"));
                 _manager.CommandManager.RegisterCommand(selfName, "Log path", GitLogPath);
                 cmdId = _manager.CommandManager.RegisterCommand(selfName, "Log repository", GitLogRepo, false, new ShortcutKey("Ctrl+Alt+Shift+L"));
-                if ((btnMask & (uint)TortoiseGitCommand.Log) > 0)
-                    _icons.Add(cmdId, ExternalResourceName.IDB_LOG);
+                _icons.Add(cmdId, ExternalResourceName.IDB_LOG);
 
                 _manager.CommandManager.RegisterCommand(selfName, "Show Reflog", GitRefLog);
                 cmdId = _manager.CommandManager.RegisterCommand(selfName, "Blame file", GitBlame, false, new ShortcutKey("Ctrl+Alt+B"));
-                if ((btnMask & (uint)TortoiseGitCommand.Blame) > 0)
-                    _icons.Add(cmdId, ExternalResourceName.IDB_BLAME);
+                _icons.Add(cmdId, ExternalResourceName.IDB_BLAME);
 
                 _manager.CommandManager.RegisterCommand(selfName, "Blame line", GitBlameCurrentLine, false, new ShortcutKey("Ctrl+Alt+Shift+B"));
                 cmdId = _manager.CommandManager.RegisterCommand(selfName, "Check for modifications", GitRepoStatus);
-                if ((btnMask & (uint)TortoiseGitCommand.RepoStatus) > 0)
-                    _icons.Add(cmdId, ExternalResourceName.IDB_REPO_BROWSER);
+                _icons.Add(cmdId, ExternalResourceName.IDB_REPO_BROWSER);
 
                 _manager.CommandManager.RegisterCommand(selfName, "Rebase", GitRebase);
                 _manager.CommandManager.RegisterCommand(selfName, "Repo-browser", GitRepoBrowser);
                 _manager.CommandManager.RegisterCommand(selfName, "Reference browser", GitRefBrowse);
                 _manager.CommandManager.RegisterCommand(selfName, "Revision graph", GitRevisionGraph);
                 cmdId = _manager.CommandManager.RegisterCommand(selfName, "Stash save", GitStashSave);
-                if ((btnMask & (uint)TortoiseGitCommand.StashSave) > 0)
-                    _icons.Add(cmdId, ExternalResourceName.IDB_STASH_SAVE);
+                _icons.Add(cmdId, ExternalResourceName.IDB_STASH_SAVE);
 
                 cmdId = _manager.CommandManager.RegisterCommand(selfName, "Stash pop", GitStashPop);
-                if ((btnMask & (uint)TortoiseGitCommand.StashPop) > 0)
-                    _icons.Add(cmdId, ExternalResourceName.IDB_STASH_POP);
+                _icons.Add(cmdId, ExternalResourceName.IDB_STASH_POP);
 
                 _manager.CommandManager.RegisterCommand(selfName, "Stash apply", GitStashApply);
                 _manager.CommandManager.RegisterCommand(selfName, "Stash list", GitStashList);
@@ -582,8 +573,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                 _manager.CommandManager.RegisterCommand(selfName, "Clean up", GitCleanup);
                 /**********************************************************************************/
                 cmdId = _manager.CommandManager.RegisterCommand(selfName, "Switch", GitSwitch);
-                if ((btnMask & (uint)TortoiseGitCommand.Switch) > 0)
-                    _icons.Add(cmdId, ExternalResourceName.IDB_SWITCH);
+                _icons.Add(cmdId, ExternalResourceName.IDB_SWITCH);
 
                 _manager.CommandManager.RegisterCommand(selfName, "Merge", GitMerge);
                 _manager.CommandManager.RegisterCommand(selfName, "Tag", GitTag);
