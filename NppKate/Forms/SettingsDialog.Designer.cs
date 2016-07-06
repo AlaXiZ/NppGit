@@ -81,6 +81,8 @@ namespace NppKate.Forms
             this.chbFileInOtherView = new System.Windows.Forms.CheckBox();
             this.mtxbSHACount = new System.Windows.Forms.MaskedTextBox();
             this.tpSnippets = new System.Windows.Forms.TabPage();
+            this.label4 = new System.Windows.Forms.Label();
+            this.udNestedLEvel = new System.Windows.Forms.DomainUpDown();
             this.chbInsertEmpty = new System.Windows.Forms.CheckBox();
             this.chbExpand = new System.Windows.Forms.CheckBox();
             this.chbHideByExt = new System.Windows.Forms.CheckBox();
@@ -89,8 +91,6 @@ namespace NppKate.Forms
             this.llWiki = new System.Windows.Forms.LinkLabel();
             this.chbRestartNpp = new System.Windows.Forms.CheckBox();
             this.pMain = new System.Windows.Forms.Panel();
-            this.udNestedLEvel = new System.Windows.Forms.DomainUpDown();
-            this.label4 = new System.Windows.Forms.Label();
             this.tbSettings.SuspendLayout();
             this.tpCommon.SuspendLayout();
             this.gbUsingModules.SuspendLayout();
@@ -242,7 +242,7 @@ namespace NppKate.Forms
             this.tpMenu.Padding = new System.Windows.Forms.Padding(3);
             this.tpMenu.Size = new System.Drawing.Size(377, 126);
             this.tpMenu.TabIndex = 0;
-            this.tpMenu.Text = "In menu";
+            this.tpMenu.Text = "In menu *";
             this.tpMenu.UseVisualStyleBackColor = true;
             // 
             // tvMenuCommand
@@ -252,6 +252,7 @@ namespace NppKate.Forms
             this.tvMenuCommand.Name = "tvMenuCommand";
             this.tvMenuCommand.Size = new System.Drawing.Size(371, 120);
             this.tvMenuCommand.TabIndex = 0;
+            this.tvMenuCommand.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.tvMenuCommand_AfterCheck);
             // 
             // tpToolbar
             // 
@@ -261,11 +262,12 @@ namespace NppKate.Forms
             this.tpToolbar.Padding = new System.Windows.Forms.Padding(3);
             this.tpToolbar.Size = new System.Drawing.Size(377, 126);
             this.tpToolbar.TabIndex = 1;
-            this.tpToolbar.Text = "In toolbar";
+            this.tpToolbar.Text = "In toolbar *";
             this.tpToolbar.UseVisualStyleBackColor = true;
             // 
             // tvToolbarCommand
             // 
+            this.tvToolbarCommand.CheckBoxes = true;
             this.tvToolbarCommand.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tvToolbarCommand.Location = new System.Drawing.Point(3, 3);
             this.tvToolbarCommand.Name = "tvToolbarCommand";
@@ -377,6 +379,24 @@ namespace NppKate.Forms
             this.tpSnippets.Text = "Snippets";
             this.tpSnippets.UseVisualStyleBackColor = true;
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(8, 100);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(87, 13);
+            this.label4.TabIndex = 5;
+            this.label4.Text = "Max nested level";
+            // 
+            // udNestedLEvel
+            // 
+            this.udNestedLEvel.Location = new System.Drawing.Point(101, 98);
+            this.udNestedLEvel.Name = "udNestedLEvel";
+            this.udNestedLEvel.ReadOnly = true;
+            this.udNestedLEvel.Size = new System.Drawing.Size(65, 20);
+            this.udNestedLEvel.TabIndex = 4;
+            this.udNestedLEvel.Text = "5";
+            // 
             // chbInsertEmpty
             // 
             this.chbInsertEmpty.AutoSize = true;
@@ -459,24 +479,6 @@ namespace NppKate.Forms
             this.pMain.Name = "pMain";
             this.pMain.Size = new System.Drawing.Size(409, 227);
             this.pMain.TabIndex = 6;
-            // 
-            // udNestedLEvel
-            // 
-            this.udNestedLEvel.Location = new System.Drawing.Point(101, 98);
-            this.udNestedLEvel.Name = "udNestedLEvel";
-            this.udNestedLEvel.ReadOnly = true;
-            this.udNestedLEvel.Size = new System.Drawing.Size(65, 20);
-            this.udNestedLEvel.TabIndex = 4;
-            this.udNestedLEvel.Text = "5";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(8, 100);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(87, 13);
-            this.label4.TabIndex = 5;
-            this.label4.Text = "Max nested level";
             // 
             // SettingsDialog
             // 

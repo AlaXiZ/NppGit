@@ -39,7 +39,8 @@ namespace NppKate
     class Main
     {
         #region "Fields"
-        private static ModuleManager mm = new ModuleManager(new CommandManager(), new FormManager());
+        private static CommandManager cm = new CommandManager();
+        private static ModuleManager mm = new ModuleManager(cm, new FormManager());
         private static readonly IList<Type> _excludedTypes = new ReadOnlyCollection<Type>(
             new List<Type> {
                 typeof(GitCore)
@@ -121,14 +122,30 @@ namespace NppKate
         #region "Menu functions"
         private static void DoSettings()
         {
-            var dlg = new Forms.SettingsDialog();
-            dlg.ShowDialog();
+            var dlg = new Forms.SettingsDialog(cm);
+            NppUtils.RegisterAsDialog(dlg.Handle);
+            try
+            {
+                dlg.ShowDialog();
+            }
+            finally
+            {
+                NppUtils.UnregisterAsDialog(dlg.Handle);
+            }
         }
 
         private static void DoAbout()
         {
             var dlg = new Forms.About();
-            dlg.ShowDialog();
+            NppUtils.RegisterAsDialog(dlg.Handle);
+            try
+            {
+                dlg.ShowDialog();
+            }
+            finally
+            {
+                NppUtils.UnregisterAsDialog(dlg.Handle);
+            }
         }
         #endregion
     }

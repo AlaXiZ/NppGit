@@ -25,6 +25,8 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+using NppKate.Common;
+using NppKate.Modules.TortoiseGitFeatures;
 using NppKate.Npp;
 using System;
 using System.Collections.Generic;
@@ -45,7 +47,9 @@ namespace NppKate.Forms
             NLog.LogLevel.Trace
         };
 
-        public SettingsDialog()
+        private CommandManager _commandManager;
+
+        public SettingsDialog(CommandManager commandManager = null)
         {
             InitializeComponent();
 
@@ -53,7 +57,7 @@ namespace NppKate.Forms
             {
                 udNestedLEvel.Items.Add(i);
             }
-
+            _commandManager = commandManager;
             LoadSettings();
         }
 
@@ -67,6 +71,8 @@ namespace NppKate.Forms
             //    chlButtons.SetItemChecked(i, (mask & (1u << i)) > 0);
             //}
             tbTGProcPath.Text = Settings.TortoiseGitProc.Path;
+            LoadTortoiseCommands();
+
             chbDefaultShortcut.Checked = Settings.CommonSettings.IsSetDefaultShortcut;
             mtxbSHACount.Text = Settings.Functions.SHACount.ToString();
             chbFileInOtherView.Checked = Settings.Functions.OpenFileInOtherView;
@@ -89,7 +95,6 @@ namespace NppKate.Forms
             chbInsertEmpty.Checked = Settings.Snippets.InsertEmpty;
             udNestedLEvel.SelectedIndex = Settings.Snippets.MaxLevel - 1;
 
-            LoadTortoiseCommands();
         }
 
         private uint GetButtonMask()
@@ -105,6 +110,27 @@ namespace NppKate.Forms
         private void LoadTortoiseCommands()
         {
             // TODO: Load command in tree view
+            if (_commandManager == null) return;
+            var tgName = typeof(TortoiseGitHelper).Name;
+            var commands = _commandManager.GetCommandsByModule(tgName);
+
+            tvMenuCommand.BeginUpdate();
+            tvToolbarCommand.BeginUpdate();
+            try
+            {
+                foreach (var cmd in commands)
+                {
+                    tvMenuCommand.Nodes.Add(cmd.Name).Checked = Settings.CommonSettings.GetCommandState(tgName, cmd.Name);
+                    tvToolbarCommand.Nodes.Add(cmd.Name).Checked = Settings.CommonSettings.GetToolbarCommandState(tgName, cmd.Name);
+                }
+            }
+            finally
+            {
+                tvMenuCommand.EndUpdate();
+                tvToolbarCommand.EndUpdate();
+            }
+            tvMenuCommand.CheckBoxes = true;
+            tvToolbarCommand.CheckBoxes = true;
         }
 
         private void chbTGToolbar_CheckedChanged(object sender, EventArgs e)
@@ -123,6 +149,7 @@ namespace NppKate.Forms
             //Settings.TortoiseGitProc.ShowToolbar = chbTGToolbar.Checked;
             //Settings.TortoiseGitProc.ButtonMask = GetButtonMask();
             Settings.TortoiseGitProc.Path = tbTGProcPath.Text;
+            SaveTortoiseGitCommand();
             Settings.Functions.SHACount = byte.Parse(mtxbSHACount.Text);
             Settings.Functions.OpenFileInOtherView = chbFileInOtherView.Checked;
             Settings.GitCore.AutoExpand = chbAutoExpand.Checked;
@@ -139,6 +166,21 @@ namespace NppKate.Forms
             Settings.Snippets.IsExpanAfterCreate = chbExpand.Checked;
             Settings.Snippets.InsertEmpty = chbInsertEmpty.Checked;
             Settings.Snippets.MaxLevel = (ushort)(udNestedLEvel.SelectedIndex + 1);
+        }
+
+        private void SaveTortoiseGitCommand()
+        {
+            if (_commandManager == null) return;
+            var tgName = typeof(TortoiseGitHelper).Name;
+
+            foreach (TreeNode node in tvMenuCommand.Nodes)
+            {
+                Settings.CommonSettings.SetCommandState(tgName, node.Text, node.Checked);
+            }
+            foreach (TreeNode node in tvToolbarCommand.Nodes)
+            {
+                Settings.CommonSettings.SetToolbarCommandState(tgName, node.Text, node.Checked);
+            }
         }
 
         private void bOk_Click(object sender, EventArgs e)
@@ -187,6 +229,11 @@ namespace NppKate.Forms
         {
             llWiki.LinkVisited = true;
             System.Diagnostics.Process.Start("https://github.com/schadin/NppKate/wiki");
+        }
+
+        private void tvMenuCommand_AfterCheck(object sender, TreeViewEventArgs e)
+        {
+
         }
     }
 }
