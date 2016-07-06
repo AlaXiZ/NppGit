@@ -309,7 +309,8 @@ namespace NppKate.Npp
                         var linePos = execute(SciMsg.SCI_FINDCOLUMN, line, 1);
                         line++;
                         var str = (i == 0 ? "" : fillString) + lines[i];
-                        execute(SciMsg.SCI_HOME);
+                        if (i > 0)
+                            execute(SciMsg.SCI_HOME);
                         SendText(SciMsg.SCI_ADDTEXT, str);
                         if (i < count)
                             NewLine();
