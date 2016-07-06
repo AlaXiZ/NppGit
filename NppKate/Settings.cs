@@ -241,6 +241,7 @@ namespace NppKate
 
         public static class CommonSettings
         {
+            const string ToolbarCommandSuffix = "_ToolbarCommand";
             public static bool IsSetDefaultShortcut
             {
                 [MethodImpl(MethodImplOptions.NoInlining)]
@@ -268,6 +269,16 @@ namespace NppKate
             public static void SetCommandState(string module, string command, bool value)
             {
                 Set(value, module, command);
+            }
+
+            public static bool GetToolbarCommandState(string module, string command)
+            {
+                return Get(false, module, command + ToolbarCommandSuffix);
+            }
+
+            public static void SetToolbarCommandState(string module, string command, bool value)
+            {
+                Set(value, module, command + ToolbarCommandSuffix);
             }
         }
 
