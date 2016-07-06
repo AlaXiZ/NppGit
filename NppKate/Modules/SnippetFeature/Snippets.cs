@@ -28,10 +28,8 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using NLog;
 using NppKate.Common;
 using NppKate.Npp;
-using System;
 using System.IO;
 using System.Linq;
-using System.Windows.Forms;
 
 namespace NppKate.Modules.SnippetFeature
 {
@@ -39,6 +37,10 @@ namespace NppKate.Modules.SnippetFeature
 
     public class Snippets : IModule
     {
+        #region Commands Name
+        const string ExpandSnippet = "Expand snippet";
+        const string SnippetManager = "Snippet manager";
+        #endregion
         private static event InsertSnippet InsertSnippetEvent;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private IModuleManager _manager;
@@ -71,14 +73,17 @@ namespace NppKate.Modules.SnippetFeature
                 }
             }
             // -----------------------------------------------------------------
-            _manager.CommandManager.RegisterCommand(selfName, "Expand snippet", DoExpandSnippet, false, new ShortcutKey("Ctrl+Shift+X"));
-            _snipManagerId = _manager.CommandManager.RegisterCommand(selfName, "Snippet manager", DoSnippetsManager, Settings.Panels.SnippetsPanelVisible);
+            _manager.CommandManager.RegisterCommand(selfName, ExpandSnippet, DoExpandSnippet, false, new ShortcutKey("Ctrl+Shift+X"));
+            _snipManagerId = _manager.CommandManager.RegisterCommand(selfName, SnippetManager, DoSnippetsManager, Settings.Panels.SnippetsPanelVisible);
 
             _manager.CommandManager.RegisterSeparator(selfName);
             _manager.OnToolbarRegisterEvent += ToolbarRegister;
             _manager.OnCommandItemClick += ManagerOnMenuItemClick;
             _manager.OnSystemInit += ManagerOnSystemInit;
             InsertSnippetEvent += SnippetsOnInsertSnippetEvent;
+
+            if (!Settings.CommonSettings.GetToolbarCommandState(selfName, SnippetManager))
+                Settings.CommonSettings.SetToolbarCommandState(selfName, SnippetManager, true);
         }
 
         private void ManagerOnSystemInit()

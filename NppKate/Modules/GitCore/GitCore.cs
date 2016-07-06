@@ -78,8 +78,11 @@ namespace NppKate.Modules.GitCore
             var selfName = GetType().Name;
 
             _browserCmdId = manager.CommandManager.RegisterCommand(selfName, Properties.Resources.CmdRepositoryBrowser, DoBrowser, Settings.Panels.RepoBrowserPanelVisible);
-            
+
             manager.CommandManager.RegisterSeparator(selfName);
+
+            if (!Settings.CommonSettings.GetToolbarCommandState(selfName, Properties.Resources.CmdRepositoryBrowser))
+                Settings.CommonSettings.SetToolbarCommandState(selfName, Properties.Resources.CmdRepositoryBrowser, true);
         }
 
         private void ManagerOnToolbarRegisterEvent()
