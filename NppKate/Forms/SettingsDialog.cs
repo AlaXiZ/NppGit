@@ -36,6 +36,8 @@ namespace NppKate.Forms
 {
     public partial class SettingsDialog : Form
     {
+        readonly System.Drawing.Color DisableColor = System.Drawing.Color.Gray;
+
         private static readonly List<NLog.LogLevel> _logLevel = new List<NLog.LogLevel>
         {
             NLog.LogLevel.Off,
@@ -120,8 +122,10 @@ namespace NppKate.Forms
             {
                 foreach (var cmd in commands)
                 {
-                    tvMenuCommand.Nodes.Add(cmd.Name).Checked = Settings.CommonSettings.GetCommandState(tgName, cmd.Name);
-                    tvToolbarCommand.Nodes.Add(cmd.Name).Checked = Settings.CommonSettings.GetToolbarCommandState(tgName, cmd.Name);
+                    var node2 = tvToolbarCommand.Nodes.Add(cmd.Name, cmd.Name);
+                    var node = tvMenuCommand.Nodes.Add(cmd.Name, cmd.Name);
+                    node2.Checked = Settings.CommonSettings.GetToolbarCommandState(tgName, cmd.Name);
+                    node.Checked = Settings.CommonSettings.GetCommandState(tgName, cmd.Name);
                 }
             }
             finally
@@ -233,7 +237,16 @@ namespace NppKate.Forms
 
         private void tvMenuCommand_AfterCheck(object sender, TreeViewEventArgs e)
         {
+            var node = tvToolbarCommand.Nodes[e.Node.Name];
+            node.ForeColor = e.Node.Checked ? tvToolbarCommand.ForeColor : DisableColor;
+        }
 
+        private void tvToolbarCommand_BeforeCheck(object sender, TreeViewCancelEventArgs e)
+        {
+            if (e.Node.ForeColor == DisableColor)
+            {
+                e.Cancel = true;
+            }
         }
     }
 }

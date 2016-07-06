@@ -273,6 +273,8 @@ namespace NppKate.Forms
             this.tvToolbarCommand.Name = "tvToolbarCommand";
             this.tvToolbarCommand.Size = new System.Drawing.Size(371, 120);
             this.tvToolbarCommand.TabIndex = 1;
+            this.tvToolbarCommand.BeforeCheck += new System.Windows.Forms.TreeViewCancelEventHandler(this.tvToolbarCommand_BeforeCheck);
+            this.tvToolbarCommand.BeforeSelect += new System.Windows.Forms.TreeViewCancelEventHandler(this.tvToolbarCommand_BeforeCheck);
             // 
             // bSelectFolder
             // 
