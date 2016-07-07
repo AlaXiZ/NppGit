@@ -535,7 +535,8 @@ namespace NppKate.Modules.TortoiseGitFeatures
                 _icons.Add(cmdId, ExternalResourceName.IDB_PULL);
                 /**********************************************************************************/
                 _manager.CommandManager.RegisterCommand(selfName, "Diff", GitDiffUnified);
-                _manager.CommandManager.RegisterCommand(selfName, "Compare", GitDiff);
+                cmdId = _manager.CommandManager.RegisterCommand(selfName, "Compare", GitDiff);
+                _icons.Add(cmdId, ExternalResourceName.IDB_COMPARE);
                 /**********************************************************************************/
                 _manager.CommandManager.RegisterCommand(selfName, "Log file", GitLogFile, false, new ShortcutKey("Ctrl+Shift+L"));
                 _manager.CommandManager.RegisterCommand(selfName, "Log path", GitLogPath);
@@ -575,14 +576,18 @@ namespace NppKate.Modules.TortoiseGitFeatures
                 cmdId = _manager.CommandManager.RegisterCommand(selfName, "Switch", GitSwitch);
                 _icons.Add(cmdId, ExternalResourceName.IDB_SWITCH);
 
-                _manager.CommandManager.RegisterCommand(selfName, "Merge", GitMerge);
+                cmdId = _manager.CommandManager.RegisterCommand(selfName, "Merge", GitMerge);
+                _icons.Add(cmdId, ExternalResourceName.IDB_MERGE);
                 _manager.CommandManager.RegisterCommand(selfName, "Tag", GitTag);
-                _manager.CommandManager.RegisterCommand(selfName, "Export", GitExport);
+                cmdId = _manager.CommandManager.RegisterCommand(selfName, "Export", GitExport);
+                _icons.Add(cmdId, ExternalResourceName.IDB_EXPORT);
                 _manager.CommandManager.RegisterCommand(selfName, "Clone", GitClone);
                 _manager.CommandManager.RegisterCommand(selfName, "Create repository", GitRepoCreate);
                 /**********************************************************************************/
                 cmdId = _manager.CommandManager.RegisterCommand(selfName, "Create patch", GitCreatePatchSerial);
+                _icons.Add(cmdId, ExternalResourceName.IDB_PATCH_CREATE);
                 cmdId = _manager.CommandManager.RegisterCommand(selfName, "Apply patch", GitApplyPatchSerial);
+                _icons.Add(cmdId, ExternalResourceName.IDB_PATCH_APPLY);
             }
             else
             {

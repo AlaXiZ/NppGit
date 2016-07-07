@@ -48,6 +48,24 @@ namespace NppKate.Forms
             NLog.LogLevel.Debug,
             NLog.LogLevel.Trace
         };
+        private static readonly List<string> _tgCommands = new List<string>
+        {
+            "Pull",
+            "Push",
+            "Commit",
+            "Fetch",
+            "Compare",
+            "Log repository",
+            "Blame file",
+            "Check for modifications",
+            "Stash save",
+            "Stash pop",
+            "Switch",
+            "Merge",
+            "Export",
+            "Create patch",
+            "Apply patch"
+        };
 
         private CommandManager _commandManager;
 
@@ -122,9 +140,15 @@ namespace NppKate.Forms
             {
                 foreach (var cmd in commands)
                 {
-                    var node2 = tvToolbarCommand.Nodes.Add(cmd.Name, cmd.Name);
-                    var node = tvMenuCommand.Nodes.Add(cmd.Name, cmd.Name);
-                    node2.Checked = Settings.CommonSettings.GetToolbarCommandState(tgName, cmd.Name);
+                    TreeNode node;
+                    // TODO: Пока прибито гвоздями, нужно сделать системный механизм
+                    if (_tgCommands.Contains(cmd.Name))
+                    {
+                        node = tvToolbarCommand.Nodes.Add(cmd.Name, cmd.Name);
+                        node.Checked = Settings.CommonSettings.GetToolbarCommandState(tgName, cmd.Name);
+                    }
+
+                    node = tvMenuCommand.Nodes.Add(cmd.Name, cmd.Name);
                     node.Checked = Settings.CommonSettings.GetCommandState(tgName, cmd.Name);
                 }
             }
@@ -238,7 +262,8 @@ namespace NppKate.Forms
         private void tvMenuCommand_AfterCheck(object sender, TreeViewEventArgs e)
         {
             var node = tvToolbarCommand.Nodes[e.Node.Name];
-            node.ForeColor = e.Node.Checked ? tvToolbarCommand.ForeColor : DisableColor;
+            if (node != null)
+                node.ForeColor = e.Node.Checked ? tvToolbarCommand.ForeColor : DisableColor;
         }
 
         private void tvToolbarCommand_BeforeCheck(object sender, TreeViewCancelEventArgs e)
