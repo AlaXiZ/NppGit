@@ -38,8 +38,6 @@
             this.miRemoveRepo = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.tortoiseGitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.cmBranch = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.miSwitchTo = new System.Windows.Forms.ToolStripMenuItem();
             this.cmTortoiseGit = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.fetchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pullToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -60,9 +58,11 @@
             this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mergeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmBranch = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.miSwitchTo = new System.Windows.Forms.ToolStripMenuItem();
             this.cmRepositories.SuspendLayout();
-            this.cmBranch.SuspendLayout();
             this.cmTortoiseGit.SuspendLayout();
+            this.cmBranch.SuspendLayout();
             this.SuspendLayout();
             // 
             // tvRepositories
@@ -105,7 +105,7 @@
             this.tortoiseGitToolStripMenuItem});
             this.cmRepositories.Name = "cmRepositories";
             this.cmRepositories.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-            this.cmRepositories.Size = new System.Drawing.Size(174, 120);
+            this.cmRepositories.Size = new System.Drawing.Size(174, 98);
             this.cmRepositories.Opening += new System.ComponentModel.CancelEventHandler(this.cmRepositories_Opening);
             // 
             // miSetActive
@@ -146,21 +146,6 @@
             this.tortoiseGitToolStripMenuItem.Text = "Tortoise Git";
             this.tortoiseGitToolStripMenuItem.Visible = false;
             // 
-            // cmBranch
-            // 
-            this.cmBranch.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.miSwitchTo});
-            this.cmBranch.Name = "cmBranch";
-            this.cmBranch.Size = new System.Drawing.Size(124, 26);
-            // 
-            // miSwitchTo
-            // 
-            this.miSwitchTo.Enabled = false;
-            this.miSwitchTo.Image = global::NppKate.Properties.Resources.checkout;
-            this.miSwitchTo.Name = "miSwitchTo";
-            this.miSwitchTo.Size = new System.Drawing.Size(123, 22);
-            this.miSwitchTo.Text = "Switch to";
-            // 
             // cmTortoiseGit
             // 
             this.cmTortoiseGit.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -184,7 +169,6 @@
             this.mergeToolStripMenuItem,
             this.settingsToolStripMenuItem});
             this.cmTortoiseGit.Name = "cmTortoiseGit";
-            this.cmTortoiseGit.OwnerItem = this.tortoiseGitToolStripMenuItem;
             this.cmTortoiseGit.Size = new System.Drawing.Size(197, 444);
             // 
             // fetchToolStripMenuItem
@@ -193,7 +177,7 @@
             this.fetchToolStripMenuItem.Name = "fetchToolStripMenuItem";
             this.fetchToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
             this.fetchToolStripMenuItem.Text = "Fetch";
-            this.fetchToolStripMenuItem.Click += new System.EventHandler(this.syncToolStripMenuItem_Click);
+            this.fetchToolStripMenuItem.Click += new System.EventHandler(this.fetchToolStripMenuItem_Click);
             // 
             // pullToolStripMenuItem
             // 
@@ -201,6 +185,7 @@
             this.pullToolStripMenuItem.Name = "pullToolStripMenuItem";
             this.pullToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
             this.pullToolStripMenuItem.Text = "Pull";
+            this.pullToolStripMenuItem.Click += new System.EventHandler(this.pullToolStripMenuItem_Click);
             // 
             // commitToolStripMenuItem
             // 
@@ -264,7 +249,7 @@
             this.stashPopToolStripMenuItem.Name = "stashPopToolStripMenuItem";
             this.stashPopToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
             this.stashPopToolStripMenuItem.Text = "Stash Pop";
-            this.stashPopToolStripMenuItem.Click += new System.EventHandler(this.stashSaveToolStripMenuItem_Click);
+            this.stashPopToolStripMenuItem.Click += new System.EventHandler(this.stashPopToolStripMenuItem_Click);
             // 
             // stashListToolStripMenuItem
             // 
@@ -340,6 +325,21 @@
             this.settingsToolStripMenuItem.Text = "Settings";
             this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
             // 
+            // cmBranch
+            // 
+            this.cmBranch.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.miSwitchTo});
+            this.cmBranch.Name = "cmBranch";
+            this.cmBranch.Size = new System.Drawing.Size(124, 26);
+            // 
+            // miSwitchTo
+            // 
+            this.miSwitchTo.Enabled = false;
+            this.miSwitchTo.Image = global::NppKate.Properties.Resources.checkout;
+            this.miSwitchTo.Name = "miSwitchTo";
+            this.miSwitchTo.Size = new System.Drawing.Size(123, 22);
+            this.miSwitchTo.Text = "Switch to";
+            // 
             // RepoBrowser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -350,8 +350,8 @@
             this.Text = "Repositories";
             this.VisibleChanged += new System.EventHandler(this.RepoBrowser_VisibleChanged);
             this.cmRepositories.ResumeLayout(false);
-            this.cmBranch.ResumeLayout(false);
             this.cmTortoiseGit.ResumeLayout(false);
+            this.cmBranch.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
