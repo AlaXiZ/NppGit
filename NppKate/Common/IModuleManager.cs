@@ -26,7 +26,6 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 using System;
-using System.Drawing;
 
 namespace NppKate.Common
 {
@@ -37,13 +36,14 @@ namespace NppKate.Common
         event EventHandler<TabEventArgs> OnTabChangeEvent;
         event EventHandler<CommandItemClickEventArgs> OnCommandItemClick;
 
-        int RegisterCommandItem(CommandItem menuItem);
-        void RegisterDockForm(Type formClass, int cmdId, bool updateWithChangeContext, NppTbMsg uMask = NppTbMsg.DWS_PARAMSALL | NppTbMsg.DWS_DF_CONT_RIGHT, IntPtr? hBitmap = null);
-        void RegisterDockForm(int indexId, DockDialogData dlgData);
         void AddToolbarButton(int cmdId, string iconName);
-        bool ToogleFormState(int cmdId);
-        void SetCheckedMenu(int cmdId, bool isChecked);
+
+        object GetService(Type interfaceType);
+        void RegisterService(Type interfaceType, object instance);
+        bool ServiceExists(Type interfaceName);
 
         ResourceManager ResourceManager { get; }
+        ICommandManager CommandManager { get; }
+        IFormManager FormManager { get; }
     }
 }

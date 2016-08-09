@@ -25,187 +25,31 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-using NLog;
-using NppKate.Npp;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Text.RegularExpressions;
 
 namespace NppKate.Modules.SnippetFeature
 {
     public class Snippet
     {
-        const string AUTO_DATE = "$(DATE)";
-        const string AUTO_FILENAME = "$(FILENAME)";
+        public const string DefaultCategory = "default";
+        public const string DefaultFileExtention = "*";
 
-        string _snippetText = "";
-        private static Regex _paramsSearch = new Regex(@"[{]\d+[}]");
-        private static Regex _wrongParam = new Regex(@"[{]\D*[}]");
-        private static Logger logger = LogManager.GetCurrentClassLogger();
-        public static readonly Snippet Null = new Snippet("");
+        public static readonly Snippet Null = new Snippet("", "", "");
 
         public string Name { get; set; }
-        public bool IsSimpleSnippet { get { return ParamCount == 0; } }
-        public uint ParamCount { get; protected set; }
-        public string SnippetText
-        {
-            get { return _snippetText; }
-            set
-            {
-                _snippetText = value;
-                ParamCount = CalcParamCount(_snippetText);
-            }
-        }
-        public bool IsShowInMenu { get; set; }
+        public bool IsVisible { get; set; }
         public string Category { get; set; }
         public string FileExt { get; set; }
+        public string ShortName { get; set; }
+        public string Text { get; set; }
 
-        public Snippet(string name, string snippet, bool isShowInMenu, string category = null, string fileExt = null)
+        public Snippet(string name, string shortName, string text, bool isVisible = false, string category = DefaultCategory, string fileExt = DefaultFileExtention)
         {
             Name = name;
-            SnippetText = snippet;
-            IsShowInMenu = isShowInMenu;
-            Category = category ?? "default";
-            FileExt = fileExt ?? "*";
-        }
-
-        public Snippet(string name) : this(name, "", false) { }
-
-        public string[] Assemble(string param)
-        {
-            var snippetText = ReplaceAutoParam(_snippetText);
-
-            if (ParamCount > 0)
-            {
-                param = Regex.Replace(param.Trim(), @"(\s+)|(\s*[,;]\s*)", " ");
-                var formatArgs = new string[ParamCount];
-                var outStrings = new List<string>();
-                if (string.IsNullOrEmpty(param))
-                {
-                    for (int i = 0; i < formatArgs.Length; i++)
-                    {
-                        formatArgs[i] = "EMPTY_PARAM";
-                    }
-                    outStrings.Add(string.Format(snippetText, formatArgs));
-                }
-                else
-                {
-                    uint count = 0;
-                    var args = param.Split(' ');
-                    for (int i = 0; i < args.Length; i++)
-                    {
-                        formatArgs[count] = args[i];
-                        count++;
-                        if (i + 1 == args.Length)
-                        {
-                            for (uint j = count; j < ParamCount; j++)
-                            {
-                                formatArgs[j] = "EMPTY_PARAM";
-                            }
-                            count = ParamCount;
-                        }
-                        if (count == ParamCount)
-                        {
-                            outStrings.Add(string.Format(snippetText, formatArgs));
-                            count = 0;
-                        }
-                    }
-                }
-                return outStrings.ToArray();
-            }
-            else
-            {
-                return snippetText.Replace("\r", "").Split('\n'); // split by line
-            }
-        }
-
-        private static string ReplaceAutoParam(string source)
-        {
-            var result = new StringBuilder(source);
-
-            if (source.Contains(AUTO_DATE))
-            {
-                result.Replace(AUTO_DATE, DateTime.Now.ToString("dd.MM.yyyy"));
-            }
-            if (source.Contains(AUTO_FILENAME))
-            {
-                result.Replace(AUTO_FILENAME, NppUtils.CurrentFileName);
-            }
-
-            return result.ToString();
-        }
-        
-        private static byte CalcParamCount(string snippet)
-        {
-            byte param = 0;
-            long mask = 0;
-            var m = _paramsSearch.Match(snippet);
-            while (m.Success)
-            {
-                if (byte.TryParse(m.Value.Replace("{", "").Replace("}", ""), out param))
-                {
-                    if (param > 63)
-                    {
-                        throw new Exception("Amount of parameters above 64");
-                    }
-                    mask |= (1L << param);
-                    logger.Debug("Match: {0}", m.Value);
-                }
-                m = m.NextMatch();
-
-            }
-            byte matchCount = 0;
-            for (byte i = 0; i < 64; i++)
-            {
-                matchCount += (byte)((mask >> i) & 1);
-            }
-            logger.Debug("In snippet {0} params", matchCount);
-            return matchCount;
-        }
-
-        public static bool CheckCorrectSnippet(string snippet)
-        {
-            var result = true;
-            var match = _wrongParam.Match(snippet);
-            result = !match.Success;
-            if (!result)
-            {
-                logger.Debug("Wrong param in snippet: {0}", snippet);
-                return result;
-            }
-            // Amount of params
-            byte param = 0;
-            long mask = 0;
-            short maxParam = -1;
-            match = _paramsSearch.Match(snippet);
-            while (match.Success)
-            {
-                if (byte.TryParse(match.Value.Replace("{", "").Replace("}", ""), out param))
-                {
-                    if (param > 63)
-                    {
-                        logger.Debug("Param number above 63 ({0})", param);
-                        result = false;
-                        break;
-                    }
-                    mask |= (1L << param);
-                    maxParam = Math.Max(param, maxParam);
-                }
-                match = match.NextMatch();
-
-            }
-            if (!result)
-                return result;
-            byte matchCount = 0;
-            for (byte i = 0; i < 64; i++)
-            {
-                matchCount += (byte)((mask >> i) & 1);
-                logger.Debug("mask >> {0} & 1 = {1}", i, (mask >> i) & 1);
-            }
-            logger.Debug("In snippet {0} param(s), max param number {1}", matchCount, maxParam);
-            result = matchCount == maxParam + 1;
-            return result;
+            ShortName = !string.IsNullOrEmpty(shortName) ? shortName : name;
+            Text = text;
+            IsVisible = isVisible;
+            Category = !string.IsNullOrEmpty(category) ? category : DefaultCategory;
+            FileExt = !string.IsNullOrEmpty(fileExt) ? fileExt : DefaultFileExtention;
         }
     }
 }

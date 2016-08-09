@@ -25,16 +25,16 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-using System;
+using LibGit2Sharp;
+using NLog;
 using NppKate.Common;
+using NppKate.Npp;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
-using System.Diagnostics;
-using LibGit2Sharp;
-using NppKate.Npp;
-using NLog;
 
 namespace NppKate.Modules.GitCore
 {
@@ -45,6 +45,7 @@ namespace NppKate.Modules.GitCore
         private IModuleManager _manager = null;
         private int _browserCmdId;
         private Repository _currRepo = null;
+        private RepoBrowser _repoBrowser = null;
 
         public void Final()
         {
@@ -53,7 +54,17 @@ namespace NppKate.Modules.GitCore
 
         private void DoBrowser()
         {
-            Settings.Panels.RepoBrowserPanelVisible = _manager.ToogleFormState(_browserCmdId);
+            if (_repoBrowser == null)
+            {
+                var icon = _manager.ResourceManager.LoadToolbarIcon(Resources.ExternalResourceName.IDB_REPOSITORIES);
+                _repoBrowser = _manager.FormManager.BuildForm<RepoBrowser>(_browserCmdId, NppTbMsg.DWS_PARAMSALL | NppTbMsg.DWS_DF_CONT_RIGHT, icon.Handle, (IDockableManager)_manager);
+                Settings.Panels.RepoBrowserPanelVisible = true;
+            }
+            else
+            {
+                Settings.Panels.RepoBrowserPanelVisible = _manager.FormManager.ToogleVisibleDockableForm(_repoBrowser.Handle);
+                _manager.CommandManager.SetCommandChekedState(_browserCmdId, Settings.Panels.RepoBrowserPanelVisible);
+            }
         }
 
         public void Init(IModuleManager manager)
@@ -64,29 +75,14 @@ namespace NppKate.Modules.GitCore
             manager.OnSystemInit += ManagerOnSystemInit;
             manager.OnToolbarRegisterEvent += ManagerOnToolbarRegisterEvent;
 
-            _browserCmdId = manager.RegisterCommandItem(new CommandItem
-            {
-                Name = "Repository browser",
-                Hint = "Repository browser",
-                Action = DoBrowser,
-                Checked = Settings.Panels.RepoBrowserPanelVisible
-            });
+            var selfName = GetType().Name;
 
-            manager.RegisterDockForm(_browserCmdId, new DockDialogData
-            {
-                Class = typeof(RepoBrowser),
-                IconResourceName = Resources.ExternalResourceName.IDB_REPOSITORIES,
-                Title = "Repository browser",
-                uMask = NppTbMsg.DWS_PARAMSALL | NppTbMsg.DWS_DF_CONT_LEFT
-            });
-            //manager.RegisterDockForm(typeof(RepoBrowser), _browserCmdId, false);
+            _browserCmdId = manager.CommandManager.RegisterCommand(selfName, Properties.Resources.CmdRepositoryBrowser, DoBrowser, Settings.Panels.RepoBrowserPanelVisible);
 
-            manager.RegisterCommandItem(new CommandItem
-            {
-                Name = "-",
-                Hint = "-",
-                Action = null
-            });
+            manager.CommandManager.RegisterSeparator(selfName);
+
+            if (!Settings.CommonSettings.GetToolbarCommandState(selfName, Properties.Resources.CmdRepositoryBrowser))
+                Settings.CommonSettings.SetToolbarCommandState(selfName, Properties.Resources.CmdRepositoryBrowser, true);
         }
 
         private void ManagerOnToolbarRegisterEvent()
@@ -122,7 +118,7 @@ namespace NppKate.Modules.GitCore
         {
             get
             {
-                ctor();
+                Ctor();
                 return _instance;
             }
         }
@@ -137,12 +133,12 @@ namespace NppKate.Modules.GitCore
                 {
                     throw new FieldAccessException("Property Module using only in Plugin class");
                 }
-                ctor();
+                Ctor();
                 return _instance;
             }
         }
 
-        private static void ctor()
+        private static void Ctor()
         {
             if (_instance != null) return;
             lock (ObjLock)
@@ -160,7 +156,14 @@ namespace NppKate.Modules.GitCore
             {
                 _doc = XDocument.Load(fileName);
                 _repos = (from e in _doc.Descendants("Repository")
-                             select e).ToDictionary(e => e.Attribute("Name").Value, (e) => new RepositoryLink(e.Value));
+                          select e).ToDictionary(e => e.Attribute("Name").Value, (e) => new RepositoryLink(e.Value));
+                foreach (var name in _repos.Keys.ToList())
+                {
+                    if (_repos[name].Name == null)
+                    {
+                        _repos.Remove(name);
+                    }
+                }
                 foreach (var name in  _repos.Keys.ToList())
                 {
                     if (_repos[name].Name == null)
@@ -289,7 +292,7 @@ namespace NppKate.Modules.GitCore
 
         #endregion
 
-        private void SaveRepo(RepositoryLink repoLink) 
+        private void SaveRepo(RepositoryLink repoLink)
         {
             _logger.Trace($"Save repo Name={repoLink.Name}, Path={repoLink.Path}");
             _repos.Add(repoLink.Name, repoLink);
@@ -300,7 +303,8 @@ namespace NppKate.Modules.GitCore
             try
             {
                 _doc.Save(_filename);
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 _logger.Error(ex);
             }

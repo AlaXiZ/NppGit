@@ -88,7 +88,7 @@ namespace NppKate.Common
             }
             catch { }
 
-            SimpleConfigurator.ConfigureForTargetLogging((AsyncTargetWrapper)asyncWrapper, LogLevel.FromString(Settings.InnerSettings.LogLevel));
+            SimpleConfigurator.ConfigureForTargetLogging((AsyncTargetWrapper)asyncWrapper, LogLevel.FromString(Settings.CommonSettings.LogLevel));
             LogManager.GetCurrentClassLogger().Info("Logger initialized");
         }
 

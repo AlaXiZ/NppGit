@@ -29,6 +29,6 @@ namespace NppKate.Common
 {
     public interface IDockableManager
     {
-
+        IModuleManager ModuleManager { get; }
     }
 }

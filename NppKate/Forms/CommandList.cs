@@ -29,13 +29,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using NppKate.Common;
 
 namespace NppKate.Forms
 {
     public partial class CommandList : Form
     {
-        private Dictionary<string, List<Common.CommandItem>> _cmdList;
-        public Dictionary<string, List<Common.CommandItem>> Commands
+        private Dictionary<string, List<CommandMenuItem>> _cmdList;
+        public Dictionary<string, List<CommandMenuItem>> Commands
         {
             get { return _cmdList; }
             set
@@ -45,28 +46,29 @@ namespace NppKate.Forms
                 RefreshCommands();
             }
         }
-
+        
         private void RefreshCommands()
         {
             tvCommands.BeginUpdate();
             tvCommands.Nodes.Clear();
+            
             foreach(var k in _cmdList.Keys)
             {
-                var item = tvCommands.Nodes.Add(k);
+                var item = new TreeNode(k);
                 item.Checked = true;
                 item.Name = k;
                 foreach (var i in _cmdList[k])
                 {
                     if (i.Name != "-")
                     {
-                        var subitem = item.Nodes.Add(i.Hint);
+                        var subitem = item.Nodes.Add(i.Name);
                         subitem.Name = i.Name;
                         subitem.Checked = true;
                     }
                 }
-                if (item.Nodes.Count == 0)
+                if (item.Nodes.Count > 0)
                 {
-                    tvCommands.Nodes.Remove(item);
+                    tvCommands.Nodes.Add(item);
                 }
             }
             tvCommands.EndUpdate();
@@ -80,6 +82,7 @@ namespace NppKate.Forms
 
         private void bOk_Click(object sender, EventArgs e)
         {
+            /*
             foreach (var k in _cmdList.Keys)
             {
                 var clazz = tvCommands.Nodes.Find(k, true).FirstOrDefault();
@@ -95,7 +98,45 @@ namespace NppKate.Forms
                     }
                 }
             }
+            */
             DialogResult = DialogResult.OK;
+        }
+
+        public string[] GetCommandXML()
+        {
+            var result = new List<string>();
+
+            foreach (var k in _cmdList.Keys)
+            {
+                var clazz = tvCommands.Nodes.Find(k, true).FirstOrDefault();
+                if (clazz != null)
+                {
+                    for (var i = 0; i < _cmdList[k].Count - 1; i++)
+                    {
+                        if (_cmdList[k][i].Name != "-")
+                        {
+                            var item = tvCommands.Nodes.Find(_cmdList[k][i].Name, true).FirstOrDefault();
+                            if (item != null && item.Checked)
+                                result.Add(GetItemTemplate(clazz.Text, item.Text, item.Text));
+                        }
+                    }
+                }
+            }
+            return result.ToArray();
+        }
+
+        private static readonly string ItemTemplate = "<Item FolderName=\"{0}\" PluginEntryName=\"{1}\" PluginCommandItemName=\"{2}\" ItemNameAs=\"{3}\"/>";
+        private static readonly string ItemSeparator = "<Item FolderName=\"{0}\" id = \"0\" />";
+        private static readonly string ItemSeparator2 = "<Item id=\"0\" />";
+
+        private static string GetItemTemplate(string folder = "", string itemName = "---", string itemNameAs = "---")
+        {
+            if (itemName == "---" && itemNameAs == "---")
+                return ItemSeparator2;
+            else if (itemName == "-")
+                return string.Format(ItemSeparator, folder);
+            else
+                return string.Format(ItemTemplate, folder, Properties.Resources.PluginName, itemName, itemNameAs);
         }
 
         private void bCancel_Click(object sender, EventArgs e)

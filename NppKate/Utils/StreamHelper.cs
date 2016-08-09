@@ -1,4 +1,4 @@
-﻿/*
+/*
 Copyright (c) 2015-2016, Schadin Alexey (schadin@gmail.com)
 All rights reserved.
 
@@ -25,46 +25,36 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+using NLog;
 using System;
+using System.IO;
 
-namespace NppKate.Common
+namespace NppKate.Utils
 {
-    public class CommandItem
+    public static class StreamHelper
     {
-        public string Name
-        {
-            get;
-            set;
-        }
+        private static Logger logger = LogManager.GetCurrentClassLogger();
 
-        public string Hint
+        public static string SaveStreamToFile(Stream input, string fileName, string directory = null)
         {
-            get;
-            set;
-        }
-
-        public ShortcutKey? ShortcutKey
-        {
-            get;
-            set;
-        }
-
-        public Action Action
-        {
-            get;
-            set;
-        }
-
-        public bool Checked
-        {
-            get;
-            set;
-        }
-
-        public bool Selected
-        {
-            get;
-            set;
+            if (string.IsNullOrEmpty(directory))
+            {
+                directory = Path.GetTempPath();
+            }
+            var result = Path.Combine(directory, fileName);
+            try
+            {
+                using (var outFile = File.Create(result))
+                {
+                    input.Seek(0, SeekOrigin.Begin);
+                    input.CopyTo(outFile);
+                }
+            }
+            catch (Exception e)
+            {
+                logger.Debug(e, "Stack Trace: ", e.StackTrace);
+            }
+            return result;
         }
     }
 }

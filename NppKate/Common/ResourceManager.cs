@@ -26,28 +26,32 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace NppKate.Common
 {
     public class ResourceManager : IDisposable
     {
-        private IntPtr _hResourceDll = IntPtr.Zero;
+        private const int ToolbarIconSize = 16;
+        private readonly IntPtr _hResourceDll;
+        private readonly Dictionary<string, IntPtr> _resourceCache;
 
         public ResourceManager()
         {
+            _resourceCache = new Dictionary<string, IntPtr>();
             var dllPath = Path.Combine(Npp.NppUtils.PluginDir, Properties.Resources.ExternalResourceDll);
             if (!File.Exists(dllPath))
             {
-                throw new Exception(string.Format("File with resources {0} not exists!", dllPath));
+                throw new Exception($"File with resources {dllPath} not exists!");
             }
-            else
+
+            _hResourceDll = Interop.Win32.LoadLibraryEx(dllPath, IntPtr.Zero, Interop.LoadLibraryFlags.LOAD_LIBRARY_AS_DATAFILE);
+            if (_hResourceDll == IntPtr.Zero)
             {
-                _hResourceDll = Interop.Win32.LoadLibraryEx(dllPath, IntPtr.Zero, Interop.LoadLibraryFlags.LOAD_LIBRARY_AS_DATAFILE);
-                if (_hResourceDll == IntPtr.Zero)
-                {
-                    throw new Exception(string.Format("Library {0} not loaded!", dllPath));
-                }
+                throw new Exception($"Library {dllPath} not loaded!");
             }
         }
 
@@ -57,12 +61,29 @@ namespace NppKate.Common
             {
                 Interop.Win32.FreeLibrary(_hResourceDll);
             }
+            foreach (var h in _resourceCache.Values)
+            {
+                Marshal.FreeHGlobal(h);
+            }
+            _resourceCache.Clear();
+        }
+
+        public Icon LoadToolbarIcon(string resourceName)
+        {
+            return Npp.NppUtils.NppBitmapToIcon(LoadImage(resourceName, ToolbarIconSize, ToolbarIconSize));
         }
 
         public IntPtr LoadImage(string resourceName, int width, int height)
         {
-            return Interop.Win32.LoadImage(_hResourceDll, resourceName, Interop.Win32.IMAGE_BITMAP, 
+            if (_resourceCache.ContainsKey(resourceName))
+                return _resourceCache[resourceName];
+
+            var handle = Interop.Win32.LoadImage(_hResourceDll, resourceName, Interop.Win32.IMAGE_BITMAP,
                 width, height, Interop.Win32.LR_LOADMAP3DCOLORS | Interop.Win32.LR_LOADTRANSPARENT);
+            _resourceCache.Add(resourceName, handle);
+            return handle;
         }
+
+
     }
 }

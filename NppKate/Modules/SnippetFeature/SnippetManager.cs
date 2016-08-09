@@ -26,7 +26,6 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 using NLog;
-using NppKate.Npp;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -35,90 +34,112 @@ using System.Xml.Linq;
 
 namespace NppKate.Modules.SnippetFeature
 {
-    public class SnippetManager
-    {
-        private const string SNIPPETS = "Snippets";
-        private const string SNIPPET = "Snippet";
-        private const string NAME = "Name";
-        private const string ISSHOW = "IsShowInMenu";
-        private const string CATEGORY = "Category";
-        private const string FILEEXT = "FileExt";
 
-        private static SnippetManager _instance;
+    [Serializable]
+    public class NameExistsException : Exception
+    {
+        public NameExistsException() { }
+        public NameExistsException(string message) : base(message) { }
+        public NameExistsException(string message, Exception inner) : base(message, inner) { }
+        protected NameExistsException(
+          System.Runtime.Serialization.SerializationInfo info,
+          System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
+    }
+
+
+    [Serializable]
+    public class ShortNameExistsException : Exception
+    {
+        public ShortNameExistsException() { }
+        public ShortNameExistsException(string message) : base(message) { }
+        public ShortNameExistsException(string message, Exception inner) : base(message, inner) { }
+        protected ShortNameExistsException(
+          System.Runtime.Serialization.SerializationInfo info,
+          System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
+    }
+
+
+    [Serializable]
+    public class ValidationException : Exception
+    {
+        public ValidationException() { }
+        public ValidationException(string message) : base(message) { }
+        public ValidationException(string message, Exception inner) : base(message, inner) { }
+        protected ValidationException(
+          System.Runtime.Serialization.SerializationInfo info,
+          System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
+    }
+
+    public class SnippetManager : ISnippetManager
+    {
+        private const string RootTag = "Snippets";
+        private const string SnippetTag = "Snippet";
+        private const string NameTag = "Name";
+        private const string ShowTag = "IsShowInMenu";
+        private const string CategoryName = "Category";
+        private const string FileExtTag = "FileExt";
+        private const string ShortNameTag = "ShortName";
+
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
         private Dictionary<string, Snippet> _snippets;
         private XDocument _doc;
         private string _fileName;
 
-        public static SnippetManager Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    _instance = new SnippetManager(Path.Combine(NppUtils.ConfigDir, Properties.Resources.PluginName, Properties.Resources.SnippetsXml));
-                }
-                return _instance;
-            }
-        }
-
-        private SnippetManager(string fileName)
+        public SnippetManager(string fileName)
         {
             _snippets = new Dictionary<string, Snippet>();
             _fileName = fileName;
+            if (string.IsNullOrEmpty(_fileName)) return;
+
             if (File.Exists(fileName))
             {
                 _doc = XDocument.Load(fileName);
                 LoadSnippets();
-            } else
+            }
+            else
             {
                 if (!Directory.Exists(Path.GetDirectoryName(fileName)))
                 {
                     Directory.CreateDirectory(Path.GetDirectoryName(fileName));
                 }
                 _doc = new XDocument();
-                _doc.Add(new XElement(SNIPPETS));
+                _doc.Add(new XElement(RootTag));
             }
         }
 
-        public void AddSnippet(Snippet snippet)
+        public void AddOrUpdate(Snippet snippet)
         {
-            if (!_snippets.ContainsKey(snippet.Name))
+            if (_snippets.ContainsKey(snippet.Name))
             {
-                _snippets.Add(snippet.Name, snippet);
-                var root = _doc.Root;
-                var element = new XElement(SNIPPET, snippet.SnippetText, 
-                                            new XAttribute(NAME, snippet.Name), 
-                                            new XAttribute(ISSHOW, snippet.IsShowInMenu),
-                                            new XAttribute(CATEGORY, snippet.Category),
-                                            new XAttribute(FILEEXT, snippet.FileExt)
-                                            );
-                root.Add(element);
-                Save();
-            } else
-            {
-                throw new Exception(string.Format("Snippent with name '{0}' exists", snippet.Name));
+                Remove(snippet.Name);
             }
+
+            _snippets.Add(snippet.Name, snippet);
+
+            if (string.IsNullOrEmpty(_fileName)) return;
+            var root = _doc.Root;
+            var element = new XElement(SnippetTag, snippet.Text,
+                                        new XAttribute(NameTag, snippet.Name),
+                                        new XAttribute(ShowTag, snippet.IsVisible),
+                                        new XAttribute(CategoryName, snippet.Category),
+                                        new XAttribute(FileExtTag, snippet.FileExt),
+                                        new XAttribute(ShortNameTag, snippet.ShortName)
+                                        );
+            root.Add(element);
+            Save();
         }
 
-        public void UpdateSnippet(string snippetName, Snippet snippet)
-        {
-            if (_snippets.ContainsKey(snippetName))
-            {
-                RemoveSnippet(snippetName);
-            }
-            AddSnippet(snippet);
-        }
-
-        public void RemoveSnippet(string snippetName)
+        public void Remove(string snippetName)
         {
             if (_snippets.ContainsKey(snippetName))
             {
                 _snippets.Remove(snippetName);
-                foreach(var x in _doc.Root.Elements(SNIPPET))
+
+                if (string.IsNullOrEmpty(_fileName)) return;
+                foreach (var x in _doc.Root.Elements(SnippetTag))
                 {
-                    if (x.Attribute(NAME).Value == snippetName)
+                    if (x.Attribute(NameTag).Value == snippetName)
                     {
                         x.Remove();
                         Save();
@@ -128,58 +149,55 @@ namespace NppKate.Modules.SnippetFeature
             }
         }
 
-        public Snippet this[string index]
-        {
-            get { return _snippets.ContainsKey(index) ? _snippets[index] : Snippet.Null; }
-        }
-
-        public Dictionary<string, Snippet> Snippets
-        {
-            get { return _snippets; }
-        }
-
-        public bool Contains(string snippet)
-        {
-            return _snippets.ContainsKey(snippet);
-        }
-
         private void Save()
         {
             _doc.Save(_fileName);
         }
 
+        public bool Contains(string name)
+        {
+            return _snippets.Values.FirstOrDefault(s => s.Name == name || s.ShortName == name) != null;
+        }
+
         private void LoadSnippets()
         {
-            _snippets = (from e in _doc.Descendants(SNIPPET)
-                         select e).ToDictionary(e => e.Attribute(NAME).Value, 
-                            (e) => { return new Snippet(e.Attribute(NAME).Value, 
-                                                        e.Value, 
-                                                        bool.Parse(e.Attribute(ISSHOW)?.Value ?? "true"), 
-                                                        e.Attribute(CATEGORY)?.Value, 
-                                                        e.Attribute(FILEEXT)?.Value);
+            _snippets = (from e in _doc.Descendants(SnippetTag)
+                         select e).ToDictionary(e => e.Attribute(NameTag).Value,
+                            (e) =>
+                            {
+                                return new Snippet(e.Attribute(NameTag).Value,
+                                                   e.Attribute(ShortNameTag)?.Value,
+                                                   e.Value,
+                                                   bool.Parse(e.Attribute(ShowTag)?.Value ?? "false"),
+                                                   e.Attribute(CategoryName)?.Value,
+                                                   e.Attribute(FileExtTag)?.Value
+                                                   );
                             });
         }
 
-        public List<string> GetCategories()
+        public void Remove(Snippet snippet)
         {
-            List<string> result;
-            result = (from s in _snippets.Values
-                      select s.Category).Distinct().ToList();
-            result.Sort();
-            return result;
+            Remove(snippet.Name);
         }
 
-        public List<string> GetExt()
+        public Snippet FindByName(string snippetName)
         {
-            List<string> result;
-            result = (from s in _snippets.Values
-                      select s.FileExt).Distinct().ToList();
-            if (!result.Contains("*"))
-            {
-                result.Add("*");
-            }
-            result.Sort();
-            return result;
+            return _snippets.Values.FirstOrDefault(s => s.Name == snippetName) ?? Snippet.Null;
+        }
+
+        public Snippet FindByShortName(string snippetShortName)
+        {
+            return _snippets.Values.FirstOrDefault(s => s.ShortName == snippetShortName) ?? Snippet.Null;
+        }
+
+        public List<Snippet> GetAllSnippets()
+        {
+            return _snippets.Values.ToList();
+        }
+
+        public Snippet FindByBothName(string name)
+        {
+            return _snippets.Values.FirstOrDefault(s => s.Name == name || s.ShortName == name) ?? Snippet.Null;
         }
     }
 }

@@ -25,51 +25,69 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-using System.Drawing;
-using System.Windows.Forms;
 using LibGit2Sharp;
 using NLog;
 using NppKate.Common;
 using NppKate.Forms;
-using System.Collections.Generic;
-using System.IO;
+using NppKate.Modules.TortoiseGitFeatures;
 using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace NppKate.Modules.GitCore
 {
     public partial class RepoBrowser : DockDialog, FormDockable
     {
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        private const string REPO_INDEX = "REPO";
-        private const string BRANCH_INDEX = "BRANCH";
-        private const string EMPTY_INDEX = "EMPTY";
-        private const string CURBRANCH_INDEX = "CURRENT_BRANCH";
-        private const string BRANCH_FOLDER_INDEX = "BRANCH_FOLDER";
-        private const string REMOTE_BRANCH_INDEX = "REMOTE_BRANCH";
 
-        private const string FILE_LOCK = "head.lock";
+        #region Node names
+        private const string LocalFolder = "LOCAL";
+        private const string RemoteFolder = "REMOTE";
+        private const string LoadItem = "LOAD";
+        private const string CurrentBranch = "CURRENT";
+        #endregion
 
-        //private readonly Color CurrentBranchColor = Color.FromArgb(10,192,56);
-        private readonly Color DocumentRepoColor = Color.DeepSkyBlue;
+        #region Image key
+        private const string RepoIndex = "REPO";
+        private const string BranchIndex = "BRANCH";
+        private const string EmptyIndex = "EMPTY";
+        private const string CurbranchIndex = "CURRENT_BRANCH";
+        private const string BranchFolderIndex = "BRANCH_FOLDER";
+        private const string RemoteBranchIndex = "REMOTE_BRANCH";
+        private const string LoadingIndex = "LOADING";
+        #endregion
+
+        #region File hook
+        private const string FileLock = "head.lock";
+        private const string HookFilter = "*.lock";
+        #endregion
+
+        private readonly Color _documentRepoColor = Color.DeepSkyBlue;
 
         private string _lastActiveRepo = null;
         private string _lastDocumentRepo = null;
         private bool _hasDoubleClick = false;
         private DateTime _lastMouseDown = DateTime.Now;
         private bool _isInitialized = false;
+        private ITortoiseCommand _commandRuner;
 
-        private Dictionary<string, FileSystemWatcher> _watchers;
+        private readonly Dictionary<string, FileSystemWatcher> _watchers;
 
         protected override void OnSwitchIn()
         {
-            _logger.Trace("Switch in repository browser");
-            UpdateState();
+            Logger.Trace("Switch in repository browser");
+            if (_isInitialized)
+                UpdateState();
         }
 
         protected override void OnSwitchOut()
         {
-            _logger.Trace("Switch out repository browser");
+            Logger.Trace("Switch out repository browser");
         }
 
         public RepoBrowser()
@@ -82,10 +100,15 @@ namespace NppKate.Modules.GitCore
             GitCore.Instance.OnRepositoryRemoved += GitCoreOnRepositoryRemoved;
 
             _watchers = new Dictionary<string, FileSystemWatcher>();
-            LoadTree();
-            UpdateState();
+        }
 
-            tvRepositories.Update();
+        protected override void AfterInit()
+        {
+            if (_manager.ModuleManager.ServiceExists(typeof(ITortoiseCommand)))
+            {
+                _commandRuner = (ITortoiseCommand)_manager.ModuleManager.GetService(typeof(ITortoiseCommand));
+                tortoiseGitToolStripMenuItem.Visible = true;
+            }
         }
 
         private void GitCoreOnRepositoryRemoved(object sender, RepositoryChangedEventArgs e)
@@ -93,7 +116,7 @@ namespace NppKate.Modules.GitCore
             var node = tvRepositories.Nodes[e.RepositoryName];
             if (node.Name == _lastActiveRepo)
             {
-                var otherNode = node.PrevVisibleNode != null ? node.PrevVisibleNode : node.NextVisibleNode;
+                var otherNode = node.PrevVisibleNode ?? node.NextVisibleNode;
                 GitCore.Instance.SwitchByName(otherNode.Name);
             }
             _watchers[node.Name].EnableRaisingEvents = false;
@@ -128,7 +151,7 @@ namespace NppKate.Modules.GitCore
             if (!string.IsNullOrEmpty(repoName))
             {
                 var nodeNew = tvRepositories.Nodes[repoName];
-                nodeNew.ForeColor = DocumentRepoColor;
+                nodeNew.ForeColor = _documentRepoColor;
                 nodeNew.Text = nodeNew.Name + "*";
             }
             _lastDocumentRepo = repoName;
@@ -138,10 +161,7 @@ namespace NppKate.Modules.GitCore
 
         public string Title => "Repository browser";
 
-        public void ChangeContext()
-        { 
-            // TODO: ? 
-        }
+        public void ChangeContext() { }
 
         private void GitCoreOnActiveRepositoryChanged(object sender, RepositoryChangedEventArgs e)
         {
@@ -151,21 +171,27 @@ namespace NppKate.Modules.GitCore
 
         private void ActiverRepositoryUpdate(string repoName)
         {
+            var isAutoExpand = Settings.GitCore.AutoExpand;
+
             if (repoName.Equals(_lastActiveRepo)) return;
             if (!string.IsNullOrEmpty(_lastActiveRepo))
             {
                 var nodeOld = tvRepositories.Nodes[_lastActiveRepo];
                 nodeOld.NodeFont = new Font(nodeOld.NodeFont ?? tvRepositories.Font, FontStyle.Regular);
+                if (isAutoExpand)
+                    nodeOld.Collapse();
             }
             var nodeNew = tvRepositories.Nodes[repoName];
             nodeNew.NodeFont = new Font(nodeNew.NodeFont ?? tvRepositories.Font, FontStyle.Bold);
             nodeNew.Text += string.Empty;
+            if (isAutoExpand)
+                nodeNew.Expand();
             _lastActiveRepo = repoName;
         }
 
         private void tvRepositories_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
-            if (e.Button == MouseButtons.Left && e.Node.ImageKey == REPO_INDEX && !(e.Node.NodeFont?.Bold ?? false))
+            if (e.Button == MouseButtons.Left && e.Node.ImageKey == RepoIndex && !(e.Node.NodeFont?.Bold ?? false))
             {
                 GitCore.Instance.SwitchByName(e.Node.Name);
             }
@@ -173,43 +199,26 @@ namespace NppKate.Modules.GitCore
 
         private void FillContent(TreeNode node, RepositoryLink link)
         {
-            var currentBranch = node.Nodes.Add("CURRENT", "", CURBRANCH_INDEX, CURBRANCH_INDEX);
-            //currentBranch.ForeColor = CurrentBranchColor;
-            var local = node.Nodes.Add("LOCAL", "local", BRANCH_FOLDER_INDEX, BRANCH_FOLDER_INDEX);
-            var remote = node.Nodes.Add("REMOTE", "remote", BRANCH_FOLDER_INDEX, BRANCH_FOLDER_INDEX);
+            var currentBranch = node.Nodes.Add(CurrentBranch, "", CurbranchIndex, CurbranchIndex);
+            var local = node.Nodes.Add(LocalFolder, Properties.Resources.RsLocal, BranchFolderIndex, BranchFolderIndex);
+            local.Tag = 0;
+            CreateNode(LoadItem, Properties.Resources.RsLoading, LoadingIndex, local);
+            var remote = node.Nodes.Add(RemoteFolder, Properties.Resources.RsRemote, BranchFolderIndex, BranchFolderIndex);
+            remote.Tag = 0;
+            CreateNode(LoadItem, Properties.Resources.RsLoading, LoadingIndex, remote);
             using (var r = new Repository(link.Path))
             {
-                foreach (var b in r.Branches)
-                {
-                    if (b.IsRemote)
-                    {
-                        if (!b.Name.EndsWith("/HEAD", System.StringComparison.InvariantCultureIgnoreCase))
-                        {
-                            CreateNode(b.Name, b.Name, REMOTE_BRANCH_INDEX, remote, null);
-                        }
-                    }
-                    else
-                    {
-                        var branchNode = CreateNode(b.Name, b.Name, BRANCH_INDEX, local, cmBranch);
-                        if (b.IsCurrentRepositoryHead)
-                        {
-                            branchNode.ImageKey = CURBRANCH_INDEX;
-                            branchNode.SelectedImageKey = CURBRANCH_INDEX;
-                            currentBranch.Text = b.Name;
-                        }
-                    }
-                }
+                currentBranch.Text = r.Head.Name;
             }
         }
 
         private TreeNode CreateRepoNode(RepositoryLink link)
         {
             if (link == null) return null;
-
-            var node = CreateNode(link.Name, link.Name, REPO_INDEX, null, cmRepositories);
+            var node = CreateNode(link.Name, link.Name, RepoIndex, null, cmRepositories);
             FillContent(node, link);
             // Create file watcher
-            var watcher = new FileSystemWatcher(Path.Combine(link.Path, ".git"), "*.lock");
+            var watcher = new FileSystemWatcher(Path.Combine(link.Path, ".git"), HookFilter);
             watcher.NotifyFilter = NotifyFilters.FileName;
             watcher.Deleted += WatchersOnChange;
             watcher.EnableRaisingEvents = true;
@@ -220,7 +229,7 @@ namespace NppKate.Modules.GitCore
 
         private void WatchersOnChange(object sender, FileSystemEventArgs e)
         {
-            if (e.ChangeType == WatcherChangeTypes.Deleted && FILE_LOCK.Equals(e.Name, System.StringComparison.InvariantCultureIgnoreCase))
+            if (e.ChangeType == WatcherChangeTypes.Deleted && FileLock.Equals(e.Name, System.StringComparison.InvariantCultureIgnoreCase))
             {
                 UpdateBranch(GitCore.GetRepoName(GitCore.GetRootDir(e.FullPath)));
             }
@@ -229,7 +238,31 @@ namespace NppKate.Modules.GitCore
         private void LoadTree()
         {
             var repoList = GitCore.Instance.Repositories;
-            repoList.ForEach(r => tvRepositories.Nodes.Add(CreateRepoNode(r)));
+            var task = new Task<List<TreeNode>>(() =>
+            {
+                var result = new List<TreeNode>();
+                repoList.ForEach(r => result.Add(CreateRepoNode(r)));
+                return result;
+            });
+            task.ContinueWith((t) =>
+            {
+                Invoke(new Action(() =>
+                {
+                    tvRepositories.BeginUpdate();
+                    try
+                    {
+                        t.Result.ForEach(n => tvRepositories.Nodes.Add(n));
+                        UpdateState();
+                    }
+                    finally
+                    {
+                        tvRepositories.EndUpdate();
+                        _isInitialized = true;
+                        tvRepositories.Nodes[_lastActiveRepo].Text += string.Empty;
+                    }
+                }));
+            });
+            task.Start();
         }
 
         private void UpdateState()
@@ -245,57 +278,76 @@ namespace NppKate.Modules.GitCore
         private void UpdateBranch(string repoName)
         {
             if (string.IsNullOrEmpty(repoName)) return;
-            _logger.Debug($"Update branches for repo {repoName}");
+            Logger.Debug($"Update branches for repo {repoName}");
             var node = tvRepositories.Nodes[repoName];
             var link = GitCore.Instance.GetRepositoryByName(repoName);
             using (var r = new Repository(link.Path))
             {
-                var currentBranch = node.Nodes["CURRENT"];
-                var local = node.Nodes["LOCAL"];
-                var remote = node.Nodes["REMOTE"];
-                foreach(var b in r.Branches)
+                var currentBranch = node.Nodes[CurrentBranch];
+                var local = node.Nodes[LocalFolder];
+                var remote = node.Nodes[RemoteFolder];
+
+                tvRepositories.Invoke(new Action(() =>
                 {
-                    if (!b.IsRemote)
+                    tvRepositories.BeginUpdate();
+                    currentBranch.Text = r.Head.Name;
+                }));
+
+                try
+                {
+                    if ((int)local.Tag != 0 || (int)remote.Tag != 0)
                     {
-                        if (!local.Nodes.ContainsKey(b.Name))
+                        foreach (var b in r.Branches.OrderBy(b => b.Name))
                         {
-                            tvRepositories.Invoke(new Action(() =>
+                            if (!b.IsRemote && (int)local.Tag == 1)
                             {
-                                CreateNode(b.Name, b.Name, BRANCH_INDEX, local);
-                            }));
-                        }
-                        var branch = local.Nodes[b.Name];
-                        if (b.IsCurrentRepositoryHead)
-                        {
-                            tvRepositories.Invoke(new Action(() =>
+                                if (!local.Nodes.ContainsKey(b.Name))
+                                {
+                                    tvRepositories.Invoke(new Action(() =>
+                                    {
+                                        CreateNode(b.Name, b.Name, BranchIndex, local);
+                                    }));
+                                }
+                                var branch = local.Nodes[b.Name];
+                                if (b.IsCurrentRepositoryHead)
+                                {
+                                    tvRepositories.Invoke(new Action(() =>
+                                    {
+                                        branch.ImageKey = CurbranchIndex;
+                                        branch.SelectedImageKey = CurbranchIndex;
+                                        branch.Text += string.Empty;
+                                    }));
+                                }
+                                else
+                                {
+                                    tvRepositories.Invoke(new Action(() =>
+                                    {
+                                        branch.ImageKey = BranchIndex;
+                                        branch.SelectedImageKey = BranchIndex;
+                                        branch.Text += string.Empty;
+                                    }));
+                                }
+                            }
+                            else if (b.IsRemote && (int)remote.Tag == 1)
                             {
-                                currentBranch.Text = b.Name;
-                                branch.ImageKey = CURBRANCH_INDEX;
-                                branch.SelectedImageKey = CURBRANCH_INDEX;
-                                branch.Text += string.Empty;
-                            }));
-                        }
-                        else
-                        {
-                            tvRepositories.Invoke(new Action(() =>
-                            {
-                                branch.ImageKey = BRANCH_INDEX;
-                                branch.SelectedImageKey = BRANCH_INDEX;
-                                branch.Text += string.Empty;
-                            }));
+                                if (!b.Name.EndsWith("/HEAD", StringComparison.InvariantCultureIgnoreCase) &&
+                                    !remote.Nodes.ContainsKey(b.Name))
+                                {
+                                    tvRepositories.Invoke(new Action(() =>
+                                    {
+                                        CreateNode(b.Name, b.Name, RemoteBranchIndex, remote);
+                                    }));
+                                }
+                            }
                         }
                     }
-                    else
+                }
+                finally
+                {
+                    tvRepositories.Invoke(new Action(() =>
                     {
-                        if (!b.Name.EndsWith("/HEAD", StringComparison.InvariantCultureIgnoreCase) && 
-                            !remote.Nodes.ContainsKey(b.Name))
-                        {
-                            tvRepositories.Invoke(new Action(() =>
-                            {
-                                CreateNode(b.Name, b.Name, REMOTE_BRANCH_INDEX, remote);
-                            }));
-                        }
-                    }
+                        tvRepositories.EndUpdate();
+                    }));
                 }
             }
         }
@@ -325,6 +377,12 @@ namespace NppKate.Modules.GitCore
             var node = tvRepositories.SelectedNode;
             miSetActive.Enabled = _lastActiveRepo != node?.Name;
             miRemoveRepo.Enabled = _lastDocumentRepo != node?.Name;
+
+            var inRepo = GitCore.IsValidGitRepo(Npp.NppUtils.CurrentFileDir);
+
+            blameToolStripMenuItem.Enabled = inRepo;
+            showLogFileToolStripMenuItem.Enabled = inRepo;
+
         }
 
         private void tvRepositories_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
@@ -339,7 +397,7 @@ namespace NppKate.Modules.GitCore
         {
             var openDlg = new FolderBrowserDialog()
             {
-                Description = "Select git-repository folder",
+                Description = Properties.Resources.RsSelectGitDir,
                 ShowNewFolderButton = false
             };
             if (openDlg.ShowDialog() == DialogResult.OK)
@@ -368,23 +426,145 @@ namespace NppKate.Modules.GitCore
 
         private void tvRepositories_MouseDown(object sender, MouseEventArgs e)
         {
-            int delta = (int)DateTime.Now.Subtract(_lastMouseDown).TotalMilliseconds;
+            var delta = (int)DateTime.Now.Subtract(_lastMouseDown).TotalMilliseconds;
             _hasDoubleClick = (delta < SystemInformation.DoubleClickTime);
             _lastMouseDown = DateTime.Now;
-            if (_hasDoubleClick)
-            {
-                var node = tvRepositories.GetNodeAt(e.Location);
-                _hasDoubleClick = node?.ImageKey == REPO_INDEX;
-            }
+            if (!_hasDoubleClick) return;
+            var node = tvRepositories.GetNodeAt(e.Location);
+            _hasDoubleClick = node?.ImageKey == RepoIndex;
         }
 
         private void RepoBrowser_VisibleChanged(object sender, EventArgs e)
         {
             if (Visible && !_isInitialized)
             {
-                _isInitialized = true;
-                tvRepositories.Nodes[_lastActiveRepo].Text += string.Empty;
+                LoadTree();
             }
+        }
+
+        private void tvRepositories_AfterExpand(object sender, TreeViewEventArgs e)
+        {
+            if (e.Node.ImageKey == BranchFolderIndex && (int)e.Node.Tag == 0)
+            {
+                e.Node.Tag = 1;
+                var task = Task.Factory.StartNew(() =>
+               {
+                   UpdateBranch(e.Node.Parent.Name);
+               }).ContinueWith((r) =>
+               {
+                   e.Node.Nodes.RemoveByKey(LoadItem);
+               }, TaskScheduler.FromCurrentSynchronizationContext());
+            }
+        }
+
+        private void RunTortoiseCommandForRepo(TortoiseGitCommand cmd)
+        {
+            var node = tvRepositories.SelectedNode;
+            var path = GitCore.Instance.GetRepositoryByName(node?.Name)?.Path;
+            if (path != null)
+                _commandRuner.RunCommand(cmd, path);
+        }
+
+        private void RunTortoiseCommandCurrentFile(TortoiseGitCommand cmd)
+        {
+            var path = Npp.NppUtils.CurrentFilePath;
+            if (path != null)
+                _commandRuner.RunCommand(cmd, path);
+        }
+
+        private void fetchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RunTortoiseCommandForRepo(TortoiseGitCommand.Fetch);
+        }
+
+        private void pullToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RunTortoiseCommandForRepo(TortoiseGitCommand.Pull);
+        }
+
+        private void commitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RunTortoiseCommandForRepo(TortoiseGitCommand.Commit);
+        }
+
+        private void pushToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RunTortoiseCommandForRepo(TortoiseGitCommand.Push);
+        }
+
+        private void syncToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RunTortoiseCommandForRepo(TortoiseGitCommand.Sync);
+        }
+
+        private void showLogToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RunTortoiseCommandForRepo(TortoiseGitCommand.Log);
+        }
+
+        private void showReflogToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RunTortoiseCommandForRepo(TortoiseGitCommand.RefLog);
+        }
+
+        private void stashSaveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RunTortoiseCommandForRepo(TortoiseGitCommand.StashSave);
+        }
+
+        private void stashPopToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RunTortoiseCommandForRepo(TortoiseGitCommand.StashPop);
+        }
+
+        private void stashListToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // ???
+        }
+
+        private void repoBrowserToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RunTortoiseCommandForRepo(TortoiseGitCommand.RepoBrowser);
+        }
+
+        private void checkForModificationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RunTortoiseCommandForRepo(TortoiseGitCommand.RepoStatus);
+        }
+
+        private void browseReferenceToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RunTortoiseCommandForRepo(TortoiseGitCommand.RefBrowse);
+        }
+
+        private void switchCheckoutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RunTortoiseCommandForRepo(TortoiseGitCommand.Switch);
+        }
+
+        private void blameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RunTortoiseCommandCurrentFile(TortoiseGitCommand.Blame);
+        }
+
+        private void exportToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RunTortoiseCommandForRepo(TortoiseGitCommand.Export);
+        }
+
+        private void mergeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RunTortoiseCommandForRepo(TortoiseGitCommand.Merge);
+        }
+
+        private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RunTortoiseCommandForRepo(TortoiseGitCommand.Settings);
+        }
+
+        private void showLogFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RunTortoiseCommandCurrentFile(TortoiseGitCommand.Log);
         }
     }
 

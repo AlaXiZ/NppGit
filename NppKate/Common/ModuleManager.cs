@@ -40,30 +40,41 @@ namespace NppKate.Common
     public class ModuleManager : IModuleManager, IDockableManager
     {
         private const int TOOLBAR_ICON_SIZE = 16;
+
         private static Logger logger = LogManager.GetCurrentClassLogger();
+
         private LinkedList<IModule> _modules;
-        private Dictionary<int, DockForm> _forms;
-        private Dictionary<int, DockDialogData> _dockDialog;
-        private Dictionary<int, IntPtr> _hwnds;
-        private Dictionary<string, List<CommandItem>> _cmdList;
-        private Dictionary<uint, string> _menuCache;
         private bool _canEvent = false;
         private ulong _currentFormId = ulong.MaxValue;
-        private ResourceManager _resManager = null;
         private LocalWindowsHook winHookProcRet;
         private LocalWindowsHook winHookProc;
+        private Dictionary<Type, object> _services;
+        private ResourceManager _resourceManager = null;
+        private ICommandManager _commandManager = null;
+        private IFormManager _formManager = null;
+
+        public ResourceManager ResourceManager => _resourceManager;
+
+        public ICommandManager CommandManager => _commandManager;
+
+        public IFormManager FormManager => _formManager;
+
+        IModuleManager IDockableManager.ModuleManager => this;
+
         public event Action OnToolbarRegisterEvent;
         public event Action OnSystemInit;
         public event EventHandler<TabEventArgs> OnTabChangeEvent;
         public event EventHandler<CommandItemClickEventArgs> OnCommandItemClick;
-        public ModuleManager()
+
+        public ModuleManager(ICommandManager commandManager, IFormManager formManager)
         {
             _modules = new LinkedList<IModule>();
-            _forms = new Dictionary<int, DockForm>();
-            _cmdList = new Dictionary<string, List<CommandItem>>();
-            _menuCache = new Dictionary<uint, string>();
-            _dockDialog = new Dictionary<int, DockDialogData>();
-            _hwnds = new Dictionary<int, IntPtr>();
+            _services = new Dictionary<Type, object>();
+            //
+            _commandManager = commandManager;
+            _formManager = formManager;
+            //
+
         }
 
         public void MessageProc(SCNotification sn)
@@ -74,34 +85,33 @@ namespace NppKate.Common
             {
                 case (uint)NppMsg.NPPN_FILEOPENED:
                 case (uint)NppMsg.NPPN_FILESAVED:
-                {
-                    _currentFormId = 0;
-                    DoTabChangeEvent(sn.nmhdr.idFrom);
-                    break;
-                }
-
-                case (uint)NppMsg.NPPN_BUFFERACTIVATED:
-                {
-                    if (sn.nmhdr.idFrom != _currentFormId)
                     {
-                        _currentFormId = sn.nmhdr.idFrom;
+                        _currentFormId = 0;
                         DoTabChangeEvent(sn.nmhdr.idFrom);
+                        break;
                     }
 
-                    break;
-                }
+                case (uint)NppMsg.NPPN_BUFFERACTIVATED:
+                    {
+                        if (sn.nmhdr.idFrom != _currentFormId)
+                        {
+                            _currentFormId = sn.nmhdr.idFrom;
+                            DoTabChangeEvent(sn.nmhdr.idFrom);
+                        }
+                        break;
+                    }
 
                 case (uint)NppMsg.NPPN_READY:
-                {
-                    DoSystemInit();
-                    break;
-                }
+                    {
+                        DoSystemInit();
+                        break;
+                    }
 
                 case (uint)NppMsg.NPPN_SHUTDOWN:
-                {
-                    logger.Debug("Notepad++ is shutdown");
-                    break;
-                }
+                    {
+                        logger.Debug("Notepad++ is shutdown");
+                        break;
+                    }
             }
         }
 
@@ -131,20 +141,23 @@ namespace NppKate.Common
 
         public void Init()
         {
-            _resManager = new ResourceManager();
+            _resourceManager = new ResourceManager();
             foreach (var m in _modules)
             {
                 if (m.IsNeedRun)
                     m.Init(this);
             }
 
-            RegisterCommandItem(new CommandItem{Name = "Sample context menu", Hint = "Sample context menu", Action = DoContextMenu});
+            _commandManager.RegisterCommand("ModuleManager", "Sample context menu", DoContextMenu);// RegisterCommandItem(new CommandItem { Name = "Sample context menu", Hint = "Sample context menu", Action = DoContextMenu });
+
             winHookProcRet = new LocalWindowsHook(HookType.WH_CALLWNDPROCRET);
             winHookProcRet.HookInvoked += WinHookHookInvoked;
             winHookProcRet.Install();
+
             winHookProc = new LocalWindowsHook(HookType.WH_GETMESSAGE);
             winHookProc.HookInvoked += WinHookHookInvoked_GetMsg;
             winHookProc.Install();
+
             _canEvent = true;
         }
 
@@ -152,7 +165,7 @@ namespace NppKate.Common
         {
             if (!_canEvent)
                 return;
-            Interop.MSG msg = (Interop.MSG)Marshal.PtrToStructure(e.lParam, typeof (Interop.MSG));
+            MSG msg = (Interop.MSG)Marshal.PtrToStructure(e.lParam, typeof(Interop.MSG));
             if (msg.message == (uint)WinMsg.WM_COMMAND)
             {
                 // Item click
@@ -167,7 +180,7 @@ namespace NppKate.Common
         {
             if (!_canEvent)
                 return;
-            CWPRETSTRUCT msg = (CWPRETSTRUCT)Marshal.PtrToStructure(e.lParam, typeof (CWPRETSTRUCT));
+            CWPRETSTRUCT msg = (CWPRETSTRUCT)Marshal.PtrToStructure(e.lParam, typeof(CWPRETSTRUCT));
             if (msg.message == (uint)WinMsg.WM_COMMAND)
             {
                 // Shortcut
@@ -181,22 +194,14 @@ namespace NppKate.Common
         private void DoMenuItem(uint menuId)
         {
             string menuName = "";
-            if (!_menuCache.ContainsKey(menuId))
-            {
-                foreach (var item in NppInfo.Instance.FuncItems.Items)
-                {
-                    if (item._cmdID == menuId)
-                    {
-                        menuName = item._itemName;
-                        break;
-                    }
-                }
 
-                _menuCache.Add(menuId, menuName);
-            }
-            else
+            foreach (var item in NppInfo.Instance.FuncItems.Items)
             {
-                menuName = _menuCache[menuId];
+                if (item._cmdID == menuId)
+                {
+                    menuName = item._itemName;
+                    break;
+                }
             }
 
             logger.Debug("MenuID = {0}, MenuName = {1}", menuId, menuName);
@@ -219,175 +224,49 @@ namespace NppKate.Common
             }
         }
 
-        public int RegisterCommandItem(CommandItem menuItem)
-        {
-            menuItem.Selected = false;
-            if (!Settings.InnerSettings.IsSetDefaultShortcut)
-                menuItem.ShortcutKey = null;
-            logger.Debug("Register menu item: {0}, {1}, {2}", menuItem.Name == "-" ? "Separator" : menuItem.Name, menuItem.ShortcutKey == null ? "<null>" : menuItem.ShortcutKey.Value.ToString(), menuItem.Checked);
-            var mth = new StackTrace().GetFrame(1).GetMethod();
-            var className = mth.ReflectedType.Name;
-            if (!_cmdList.ContainsKey(className))
-            {
-                _cmdList.Add(className, new List<CommandItem>());
-            }
-
-            _cmdList[className].Add(menuItem);
-            return NppInfo.Instance.AddCommand(menuItem.Name, menuItem.Action, menuItem.ShortcutKey, menuItem.Checked);
-        }
-
-        public void RegisterDockForm(Type formClass, int cmdId, bool updateWithChangeContext, NppTbMsg uMask = NppTbMsg.DWS_PARAMSALL | NppTbMsg.DWS_DF_CONT_RIGHT, IntPtr? hBitmap = null)
-        {
-            logger.Debug("Reigister form: Class={0} CmdID = {1} UpdateWithChangeContext={2}", formClass.Name, cmdId, updateWithChangeContext);
-            if (!_forms.ContainsKey(cmdId))
-            {
-                _forms.Add(cmdId, new DockForm{Type = formClass, Form = null, UpdateWithChangeContext = updateWithChangeContext, uMask = uMask, hBitmap = hBitmap ?? IntPtr.Zero});
-                if (updateWithChangeContext)
-                {
-                    OnTabChangeEvent += (o, a) =>
-                    {
-                        if (_forms[cmdId].Form != null)
-                        {
-                            (_forms[cmdId].Form as FormDockable).ChangeContext();
-                        }
-                    }
-
-                    ;
-                }
-            }
-        }
-
-        public bool ToogleFormState(int cmdId)
-        {
-            logger.Debug("Toogle form state: CmdID={0}", cmdId);
-            IntPtr hwnd = IntPtr.Zero;
-            bool isReg = false;
-            if (_forms.ContainsKey(cmdId))
-            {
-                /* old logic */
-                var form = _forms[cmdId];
-                if (form.Form == null)
-                {
-                    isReg = true;
-                    form.Form = Activator.CreateInstance(form.Type) as Form;
-                    form.TabIcon = NppUtils.NppBitmapToIcon((form.Form as FormDockable).TabIcon);
-                    NppTbData _nppTbData = new NppTbData();
-                    _nppTbData.hClient = form.Form.Handle;
-                    _nppTbData.pszName = (form.Form as FormDockable).Title;
-                    _nppTbData.dlgID = NppInfo.Instance.SearchCmdIdByIndex(cmdId);
-                    _nppTbData.uMask = form.uMask;
-                    _nppTbData.hIconTab = form.hBitmap == IntPtr.Zero ? (uint)form.TabIcon.Handle : (uint)form.hBitmap;
-                    _nppTbData.pszModuleName = Properties.Resources.PluginName;
-                    NppUtils.RegisterAsDockDialog(_nppTbData);
-                }
-
-                hwnd = form.Form?.Handle ?? IntPtr.Zero;
-            }
-            // New logic
-            else if (_dockDialog.ContainsKey(cmdId))
-            {
-                isReg = true;
-                var data = _dockDialog[cmdId];
-                Form wnd = Activator.CreateInstance(data.Class) as Form;
-                if (wnd != null)
-                {
-                    NppTbData _nppTbData = new NppTbData{hClient = wnd.Handle, dlgID = NppInfo.Instance.SearchCmdIdByIndex(cmdId), hIconTab = (uint)NppUtils.NppBitmapToIcon(_resManager.LoadImage(data.IconResourceName, TOOLBAR_ICON_SIZE, TOOLBAR_ICON_SIZE))?.Handle, pszModuleName = Properties.Resources.PluginName, pszName = data.Title, uMask = data.uMask};
-                    NppUtils.RegisterAsDockDialog(_nppTbData);
-                    _dockDialog.Remove(cmdId);
-                    _hwnds.Add(cmdId, wnd.Handle);
-                    (wnd as IDockDialog).init(this, NppInfo.Instance.SearchCmdIdByIndex(cmdId));
-                    hwnd = wnd.Handle;
-                }
-            // TODO: delete return
-            //return false;
-            }
-            else if (_hwnds.ContainsKey(cmdId))
-            {
-                // TODO: delete return
-                hwnd = _hwnds[cmdId];
-            //
-            //return false;
-            }
-            else
-            {
-                logger.Error("Form with command ID = {0} not found", cmdId);
-                return false;
-            }
-
-            if (hwnd != IntPtr.Zero)
-            {
-                if (!isReg)
-                {
-                    if (Win32.IsWindowVisible(hwnd))
-                    {
-                        Win32.SendMessage(NppInfo.Instance.NppHandle, NppMsg.NPPM_DMMHIDE, 0, hwnd);
-                    }
-                    else
-                    {
-                        Win32.SendMessage(NppInfo.Instance.NppHandle, NppMsg.NPPM_DMMSHOW, 0, hwnd);
-                    }
-                }
-            }
-            else
-            {
-                logger.Error("Handle of window with command ID = {0} not found", cmdId);
-                return false;
-            }
-
-            NppUtils.SetCheckedMenu(NppInfo.Instance.SearchCmdIdByIndex(cmdId), Win32.IsWindowVisible(hwnd));
-            return Win32.IsWindowVisible(hwnd);
-        }
-
         public void AddToolbarButton(int cmdId, string iconName)
         {
+            var mth = new StackTrace().GetFrame(1).GetMethod();
+            var module = mth.ReflectedType.Name;
+            var commandName = _commandManager.GetNameByIndex(module, cmdId);
+            if (!Settings.CommonSettings.GetCommandState(module, commandName) ||
+                !Settings.CommonSettings.GetToolbarCommandState(module, commandName))
+                return;
+
             toolbarIcons tbIcons = new toolbarIcons();
-            tbIcons.hToolbarBmp = _resManager.LoadImage(iconName, TOOLBAR_ICON_SIZE, TOOLBAR_ICON_SIZE);
+            tbIcons.hToolbarBmp = _resourceManager.LoadImage(iconName, TOOLBAR_ICON_SIZE, TOOLBAR_ICON_SIZE);
             IntPtr pTbIcons = Marshal.AllocHGlobal(Marshal.SizeOf(tbIcons));
             Marshal.StructureToPtr(tbIcons, pTbIcons, false);
             Win32.SendMessage(NppInfo.Instance.NppHandle, NppMsg.NPPM_ADDTOOLBARICON, NppInfo.Instance.SearchCmdIdByIndex(cmdId), pTbIcons);
             Marshal.FreeHGlobal(pTbIcons);
         }
 
-        public void SetCheckedMenu(int cmdId, bool isChecked)
+        public object GetService(Type interfaceType)
         {
-            logger.Debug("Menu cmdId={0}, state={1}", cmdId, isChecked);
-            Win32.SendMessage(NppInfo.Instance.NppHandle, NppMsg.NPPM_SETMENUITEMCHECK, NppInfo.Instance.SearchCmdIdByIndex(cmdId), isChecked ? 1 : 0);
+            return _services[interfaceType];
         }
 
-        public void RegisterDockForm(int indexId, DockDialogData dlgData)
+        public void RegisterService(Type interfaceType, object instance)
         {
-            _dockDialog.Add(indexId, dlgData);
+            if (_services.ContainsKey(interfaceType)) return;
+            _services.Add(interfaceType, instance);
         }
 
-#region "Context menu"
-        private static readonly string ItemTemplate = "<Item FolderName=\"{0}\" PluginEntryName=\"{1}\" PluginCommandItemName=\"{2}\" ItemNameAs=\"{3}\"/>";
-        private static readonly string ItemSeparator = "<Item FolderName=\"{0}\" id = \"0\" />";
-        private static readonly string ItemSeparator2 = "<Item id=\"0\" />";
-        public ResourceManager ResourceManager
+        public bool ServiceExists(Type interfaceType)
         {
-            get
-            {
-                return _resManager;
-            }
+            return _services.ContainsKey(interfaceType);
         }
 
-        private static string GetItemTemplate(string folder = "", string itemName = "---", string itemNameAs = "---")
-        {
-            if (itemName == "---" && itemNameAs == "---")
-                return ItemSeparator2;
-            else if (itemName == "-")
-                return string.Format(ItemSeparator, folder);
-            else
-                return string.Format(ItemTemplate, folder, Properties.Resources.PluginName, itemName, itemNameAs);
-        }
+        #region "Context menu"
 
         public void DoContextMenu()
         {
-            var dlg = new Forms.CommandList();
-            dlg.Commands = _cmdList;
+
+            var dlg = new CommandList();
+            dlg.Commands = _commandManager.GetCommands();
             if (dlg.Commands.Count == 0)
             {
-                System.Windows.Forms.MessageBox.Show("Нет доступных команд", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Нет доступных команд", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -396,39 +275,15 @@ namespace NppKate.Common
                 NppUtils.NewFile();
                 NppUtils.AppendText("\t\t<!--Sample menu -->");
                 NppUtils.NewLine();
-                var countItem = 1;
-                foreach (var folder in dlg.Commands.Keys)
+                foreach (var command in dlg.GetCommandXML())
                 {
-                    if (countItem > 0)
-                    {
-                        NppUtils.AppendText(GetItemTemplate());
-                        NppUtils.NewLine();
-                        countItem = 0;
-                    }
-
-                    foreach (var command in dlg.Commands[folder])
-                    {
-                        if (command.Hint != "-" && command.Selected)
-                        {
-                            NppUtils.AppendText(GetItemTemplate(folder, command.Name, command.Hint));
-                            NppUtils.NewLine();
-                            countItem++;
-                        }
-                    }
+                    NppUtils.AppendText(command);
+                    NppUtils.NewLine();
                 }
-
-                NppUtils.AppendText(GetItemTemplate());
-                NppUtils.NewLine();
-                /*
-                for (int i = 0; i < PluginUtils._funcItems.Items.Count; i++)
-                {
-                    PluginUtils.AppendText(GetItemTemplate(PluginUtils._funcItems.Items[i]._itemName));
-                    PluginUtils.NewLine();
-                }
-                */
                 NppUtils.SetLang(LangType.L_XML);
             }
         }
-#endregion
+        #endregion
+
     }
 }

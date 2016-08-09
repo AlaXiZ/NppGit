@@ -58,14 +58,14 @@ namespace NppKate.Forms
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SnippetsManagerForm));
             this.contextMenuSnippets = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.miRefresh = new System.Windows.Forms.ToolStripMenuItem();
             this.miInsert = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.miAdd = new System.Windows.Forms.ToolStripMenuItem();
             this.miEdit = new System.Windows.Forms.ToolStripMenuItem();
             this.miDelete = new System.Windows.Forms.ToolStripMenuItem();
-            this.lbSnippets = new System.Windows.Forms.ListBox();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.tvSnippets = new System.Windows.Forms.TreeView();
+            this.ilImages = new System.Windows.Forms.ImageList(this.components);
             this.contextMenuSnippets.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -73,82 +73,87 @@ namespace NppKate.Forms
             // contextMenuSnippets
             // 
             this.contextMenuSnippets.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.miRefresh,
             this.miInsert,
-            this.toolStripMenuItem1,
             this.miAdd,
             this.miEdit,
             this.miDelete});
             this.contextMenuSnippets.Name = "contextMenuSnippets";
-            this.contextMenuSnippets.Size = new System.Drawing.Size(108, 98);
+            this.contextMenuSnippets.Size = new System.Drawing.Size(114, 114);
             this.contextMenuSnippets.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuSnippets_Opening);
+            // 
+            // miRefresh
+            // 
+            this.miRefresh.Image = global::NppKate.Properties.Resources.arrow_circle_315;
+            this.miRefresh.Name = "miRefresh";
+            this.miRefresh.Size = new System.Drawing.Size(113, 22);
+            this.miRefresh.Text = "Refresh";
+            this.miRefresh.Click += new System.EventHandler(this.miRefresh_Click);
             // 
             // miInsert
             // 
-            this.miInsert.Image = ((System.Drawing.Image)(resources.GetObject("miInsert.Image")));
+            this.miInsert.Image = global::NppKate.Properties.Resources.tick_button;
             this.miInsert.Name = "miInsert";
-            this.miInsert.Size = new System.Drawing.Size(107, 22);
+            this.miInsert.Size = new System.Drawing.Size(113, 22);
             this.miInsert.Text = "Insert";
             this.miInsert.Click += new System.EventHandler(this.miInsert_Click);
             // 
-            // toolStripMenuItem1
-            // 
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(104, 6);
-            // 
             // miAdd
             // 
-            this.miAdd.Image = ((System.Drawing.Image)(resources.GetObject("miAdd.Image")));
+            this.miAdd.Image = global::NppKate.Properties.Resources.plus_button;
             this.miAdd.Name = "miAdd";
-            this.miAdd.Size = new System.Drawing.Size(107, 22);
+            this.miAdd.Size = new System.Drawing.Size(113, 22);
             this.miAdd.Text = "Add";
             this.miAdd.Click += new System.EventHandler(this.miAdd_Click);
             // 
             // miEdit
             // 
-            this.miEdit.Image = ((System.Drawing.Image)(resources.GetObject("miEdit.Image")));
+            this.miEdit.Image = global::NppKate.Properties.Resources.pencil_button;
             this.miEdit.Name = "miEdit";
-            this.miEdit.Size = new System.Drawing.Size(107, 22);
+            this.miEdit.Size = new System.Drawing.Size(113, 22);
             this.miEdit.Text = "Edit";
             this.miEdit.Click += new System.EventHandler(this.miEdit_Click);
             // 
             // miDelete
             // 
-            this.miDelete.Image = ((System.Drawing.Image)(resources.GetObject("miDelete.Image")));
+            this.miDelete.Image = global::NppKate.Properties.Resources.minus_button;
             this.miDelete.Name = "miDelete";
-            this.miDelete.Size = new System.Drawing.Size(107, 22);
+            this.miDelete.Size = new System.Drawing.Size(113, 22);
             this.miDelete.Text = "Delete";
             this.miDelete.Click += new System.EventHandler(this.miDelete_Click);
             // 
-            // lbSnippets
-            // 
-            this.lbSnippets.ContextMenuStrip = this.contextMenuSnippets;
-            this.lbSnippets.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbSnippets.FormattingEnabled = true;
-            this.lbSnippets.Location = new System.Drawing.Point(0, 0);
-            this.lbSnippets.Name = "lbSnippets";
-            this.lbSnippets.Size = new System.Drawing.Size(405, 352);
-            this.lbSnippets.TabIndex = 1;
-            this.lbSnippets.DoubleClick += new System.EventHandler(this.lbSnippets_DoubleClick);
-            // 
-            // comboBox1
-            // 
-            this.comboBox1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(0, 0);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(405, 21);
-            this.comboBox1.TabIndex = 2;
-            this.comboBox1.Visible = false;
-            // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.lbSnippets);
+            this.panel1.Controls.Add(this.tvSnippets);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(0, 21);
+            this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(405, 352);
+            this.panel1.Size = new System.Drawing.Size(405, 373);
             this.panel1.TabIndex = 3;
+            // 
+            // tvSnippets
+            // 
+            this.tvSnippets.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tvSnippets.ImageIndex = 0;
+            this.tvSnippets.ImageList = this.ilImages;
+            this.tvSnippets.ItemHeight = 18;
+            this.tvSnippets.Location = new System.Drawing.Point(0, 0);
+            this.tvSnippets.Name = "tvSnippets";
+            this.tvSnippets.SelectedImageIndex = 0;
+            this.tvSnippets.Size = new System.Drawing.Size(405, 373);
+            this.tvSnippets.TabIndex = 0;
+            this.tvSnippets.AfterCollapse += new System.Windows.Forms.TreeViewEventHandler(this.tvSnippets_AfterCollapse);
+            this.tvSnippets.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.tvSnippets_AfterExpand);
+            this.tvSnippets.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.tvSnippets_NodeMouseClick);
+            this.tvSnippets.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.tvSnippets_NodeMouseDoubleClick);
+            // 
+            // ilImages
+            // 
+            this.ilImages.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ilImages.ImageStream")));
+            this.ilImages.TransparentColor = System.Drawing.Color.Transparent;
+            this.ilImages.Images.SetKeyName(0, "SNIPPET");
+            this.ilImages.Images.SetKeyName(1, "CATEGORY");
+            this.ilImages.Images.SetKeyName(2, "CATEGORY_OPEN");
             // 
             // SnippetsManagerForm
             // 
@@ -156,10 +161,8 @@ namespace NppKate.Forms
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(405, 373);
             this.Controls.Add(this.panel1);
-            this.Controls.Add(this.comboBox1);
             this.Name = "SnippetsManagerForm";
-            this.Text = "SnippetsManagerForm";
-            this.VisibleChanged += new System.EventHandler(this.SnippetsManagerForm_VisibleChanged);
+            this.Text = "Snippets";
             this.contextMenuSnippets.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -169,12 +172,12 @@ namespace NppKate.Forms
         #endregion
         private System.Windows.Forms.ContextMenuStrip contextMenuSnippets;
         private System.Windows.Forms.ToolStripMenuItem miInsert;
-        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem miAdd;
         private System.Windows.Forms.ToolStripMenuItem miEdit;
         private System.Windows.Forms.ToolStripMenuItem miDelete;
-        private System.Windows.Forms.ListBox lbSnippets;
-        private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.TreeView tvSnippets;
+        private System.Windows.Forms.ImageList ilImages;
+        private System.Windows.Forms.ToolStripMenuItem miRefresh;
     }
 }

@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "restart", "restart\restart.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KateResource", "KateResource\KateResource.vcxproj", "{CBA0747E-9E1E-421E-8926-E104BF0192EB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NppKateTest", "test\NppKateTest\NppKateTest.csproj", "{B0CB2D51-063D-4CF2-AB39-10201E87AD14}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -39,6 +41,10 @@ Global
 		{CBA0747E-9E1E-421E-8926-E104BF0192EB}.Debug|x86.Build.0 = Debug|Win32
 		{CBA0747E-9E1E-421E-8926-E104BF0192EB}.Release|x86.ActiveCfg = Release|Win32
 		{CBA0747E-9E1E-421E-8926-E104BF0192EB}.Release|x86.Build.0 = Release|Win32
+		{B0CB2D51-063D-4CF2-AB39-10201E87AD14}.Debug|x86.ActiveCfg = Debug|x86
+		{B0CB2D51-063D-4CF2-AB39-10201E87AD14}.Debug|x86.Build.0 = Debug|x86
+		{B0CB2D51-063D-4CF2-AB39-10201E87AD14}.Release|x86.ActiveCfg = Release|x86
+		{B0CB2D51-063D-4CF2-AB39-10201E87AD14}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
