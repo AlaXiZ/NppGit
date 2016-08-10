@@ -1,8 +1,8 @@
-version: 0.4.2.{build}
+version: 0.5.1.{build}
 branches:
   only:
   - master
-skip_non_tags: true
+skip_tags: true
 configuration: Release
 platform: x86
 clone_folder: c:\projects\kate
@@ -17,7 +17,7 @@ assembly_info:
 environment:
   BUILD_SUFFIX: RELEASE
 install:
-- ps: cinst cs-script
+- ps: cinst cs-script -y
 before_build:
 - cmd: nuget restore
 build:
