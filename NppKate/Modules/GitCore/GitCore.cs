@@ -25,16 +25,16 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-using LibGit2Sharp;
-using NLog;
-using NppKate.Common;
-using NppKate.Npp;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
+using LibGit2Sharp;
+using NLog;
+using NppKate.Common;
+using NppKate.Npp;
 
 namespace NppKate.Modules.GitCore
 {
@@ -219,10 +219,19 @@ namespace NppKate.Modules.GitCore
             {
                 return false;
             }
+
             var newRepo = new RepositoryLink(newPath);
+
+            var oldName = FindRepoByPath(newPath);
+            if (!string.IsNullOrWhiteSpace(oldName))
+            {
+                UpdateRepository(oldName, newRepo);
+            }
+
             if (_currentRepo != null)
             {
-                if (_currentRepo.Name.Equals(newRepo.Name, StringComparison.InvariantCultureIgnoreCase))
+                // По пути сравнить надежнее, чем по имени
+                if (_currentRepo.Path.Equals(newRepo.Path, StringComparison.InvariantCultureIgnoreCase))
                 {
                     return false;
                 }
@@ -235,6 +244,17 @@ namespace NppKate.Modules.GitCore
             SaveRepo(newRepo);
             DoActiveRepository();
             return true;
+        }
+
+        private string FindRepoByPath(string path)
+        {
+            return _repos.Values.Where(r => r.Path == path).FirstOrDefault()?.Name ?? string.Empty;
+        }
+
+        private void UpdateRepository(string name, RepositoryLink link)
+        {
+            if (InnerRemoveRepository(name))
+                SaveRepo(link);
         }
 
         public bool SwitchByName(string name)
@@ -355,12 +375,10 @@ namespace NppKate.Modules.GitCore
             return _repos[name];
         }
 
-        public void RemoveRepository(string name)
+        private bool InnerRemoveRepository(string name)
         {
-            var root = _doc.Root;
-            if (root == null) return;
-            var element = root.Descendants("Repository").Where(e => e.Attribute("Name").Value == name).FirstOrDefault();
-            if (element != null)
+            XElement root, element;
+            if ((root = _doc.Root) != null && (element = root.Descendants("Repository").Where(e => e.Attribute("Name").Value == name).FirstOrDefault()) != null)
             {
                 _repos.Remove(name);
                 element.Remove();
@@ -368,12 +386,20 @@ namespace NppKate.Modules.GitCore
                 try
                 {
                     _doc.Save(_filename);
+                    return true;
                 }
                 catch (Exception ex)
                 {
                     _logger.Error(ex);
                 }
             }
+            return false;
+
+        }
+
+        public void RemoveRepository(string name)
+        {
+            InnerRemoveRepository(name);
         }
     }
 }
