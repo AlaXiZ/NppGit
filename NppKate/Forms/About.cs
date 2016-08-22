@@ -26,6 +26,7 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 using System;
+using System.Text;
 using System.Windows.Forms;
 
 namespace NppKate.Forms
@@ -41,13 +42,32 @@ namespace NppKate.Forms
         {
             lPluginName.Text = Properties.Resources.PluginName;
             lVersion.Text = this.GetType().Assembly.GetName().Version.ToString();
+            //tbChangeLog.Text = Properties.Resources.ChangeLog;
+            Encoding destEnc = Encoding.GetEncoding(1251);
+            Encoding srcEnc = Encoding.UTF8;
+
+            // Convert the string into a byte array.
+            byte[] srcBytes = srcEnc.GetBytes(Properties.Resources.ChangeLog);
+
+            // Perform the conversion from one encoding to the other.
+            byte[] dstBytes = Encoding.Convert(srcEnc, destEnc, srcBytes);
+
+            // Convert the new byte[] into a char[] and then into a string.
+            char[] dstChars = new char[destEnc.GetCharCount(dstBytes, 0, dstBytes.Length)];
+            destEnc.GetChars(dstBytes, 0, dstBytes.Length, dstChars, 0);
+            string dstString = new string(dstChars);
+
+            tbChangeLog.Text = dstString;
+
             tbChangeLog.Text = Properties.Resources.ChangeLog;
+
             tbLicense.Text = Properties.Resources.LICENSE;
+
         }
 
         private void llMail_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            llMail.LinkVisited = true; 
+            llMail.LinkVisited = true;
             System.Diagnostics.Process.Start("mailto:" + llMail.Text + "?subject=NppKate");
         }
 
