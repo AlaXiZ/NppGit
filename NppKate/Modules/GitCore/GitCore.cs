@@ -79,6 +79,8 @@ namespace NppKate.Modules.GitCore
 
             _browserCmdId = manager.CommandManager.RegisterCommand(selfName, Properties.Resources.CmdRepositoryBrowser, DoBrowser, Settings.Panels.RepoBrowserPanelVisible);
 
+            manager.CommandManager.RegisterCommand(selfName, Properties.Resources.CmdQuickSearch, DoQuickSearch, false, new ShortcutKey(false, true, false, System.Windows.Forms.Keys.F));
+
             manager.CommandManager.RegisterSeparator(selfName);
 
             if (!Settings.CommonSettings.GetToolbarCommandState(selfName, Properties.Resources.CmdRepositoryBrowser))
@@ -106,6 +108,19 @@ namespace NppKate.Modules.GitCore
         }
 
         public bool IsNeedRun => true;
+
+        private void DoQuickSearch()
+        {
+            var path = ActiveRepository?.Path;
+            if (path != null)
+            {
+                var searchDialog = new TortoiseLogSearch();
+                searchDialog.Init((IDockableManager)_manager);
+                searchDialog.RepositoryPath = path;
+                searchDialog.SearchText = NppUtils.GetSelectedText();
+                searchDialog.Show();
+            }
+        }
         #endregion
 
         private readonly XDocument _doc;

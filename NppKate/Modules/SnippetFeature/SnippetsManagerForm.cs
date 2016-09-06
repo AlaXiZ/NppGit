@@ -25,15 +25,15 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-using NLog;
-using NppKate.Common;
-using NppKate.Modules.SnippetFeature;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using NLog;
+using NppKate.Common;
+using NppKate.Modules.SnippetFeature;
 
 namespace NppKate.Forms
 {

@@ -39,6 +39,7 @@
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.tortoiseGitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cmTortoiseGit = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.findInLogMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fetchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pullToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.commitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -149,6 +150,7 @@
             // cmTortoiseGit
             // 
             this.cmTortoiseGit.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.findInLogMenuItem,
             this.fetchToolStripMenuItem,
             this.pullToolStripMenuItem,
             this.commitToolStripMenuItem,
@@ -169,7 +171,16 @@
             this.mergeToolStripMenuItem,
             this.settingsToolStripMenuItem});
             this.cmTortoiseGit.Name = "cmTortoiseGit";
-            this.cmTortoiseGit.Size = new System.Drawing.Size(197, 444);
+            this.cmTortoiseGit.Size = new System.Drawing.Size(197, 466);
+            // 
+            // findInLogMenuItem
+            // 
+            this.findInLogMenuItem.Image = global::NppKate.Properties.Resources.Search_32;
+            this.findInLogMenuItem.Name = "findInLogMenuItem";
+            this.findInLogMenuItem.ShortcutKeyDisplayString = "";
+            this.findInLogMenuItem.Size = new System.Drawing.Size(196, 22);
+            this.findInLogMenuItem.Text = "Quick search";
+            this.findInLogMenuItem.Click += new System.EventHandler(this.findInLogMenuItem_Click);
             // 
             // fetchToolStripMenuItem
             // 
@@ -388,5 +399,6 @@
         private System.Windows.Forms.ToolStripMenuItem exportToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem mergeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem findInLogMenuItem;
     }
 }

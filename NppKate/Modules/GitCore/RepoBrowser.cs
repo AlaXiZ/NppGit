@@ -25,11 +25,6 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-using LibGit2Sharp;
-using NLog;
-using NppKate.Common;
-using NppKate.Forms;
-using NppKate.Modules.TortoiseGitFeatures;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -37,6 +32,11 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using LibGit2Sharp;
+using NLog;
+using NppKate.Common;
+using NppKate.Forms;
+using NppKate.Modules.TortoiseGitFeatures;
 
 namespace NppKate.Modules.GitCore
 {
@@ -109,6 +109,7 @@ namespace NppKate.Modules.GitCore
                 _commandRuner = (ITortoiseCommand)_manager.ModuleManager.GetService(typeof(ITortoiseCommand));
                 tortoiseGitToolStripMenuItem.Visible = true;
             }
+            findInLogMenuItem.Enabled = _manager.ModuleManager.ServiceExists(typeof(ITortoiseGitSearch));
         }
 
         private void GitCoreOnRepositoryRemoved(object sender, RepositoryChangedEventArgs e)
@@ -565,6 +566,19 @@ namespace NppKate.Modules.GitCore
         private void showLogFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
             RunTortoiseCommandCurrentFile(TortoiseGitCommand.Log);
+        }
+
+        private void findInLogMenuItem_Click(object sender, EventArgs e)
+        {
+            var node = tvRepositories.SelectedNode;
+            var path = GitCore.Instance.GetRepositoryByName(node?.Name)?.Path;
+            if (path != null)
+            {
+                var searchDialog = new TortoiseLogSearch();
+                searchDialog.Init(_manager);
+                searchDialog.RepositoryPath = path;
+                searchDialog.Show();
+            }
         }
     }
 

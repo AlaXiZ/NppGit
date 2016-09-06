@@ -25,18 +25,18 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-using NLog;
-using NppKate.Common;
-using NppKate.Npp;
-using NppKate.Resources;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Forms;
+using NLog;
+using NppKate.Common;
+using NppKate.Npp;
+using NppKate.Resources;
 
 namespace NppKate.Modules.TortoiseGitFeatures
 {
-    public class TortoiseGitHelper : IModule, ITortoiseCommand
+    public class TortoiseGitHelper : IModule, ITortoiseCommand, ITortoiseGitSearch
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -66,6 +66,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                 Logger.Info("TortoiseGit found");
 
                 _manager.RegisterService(typeof(ITortoiseCommand), this);
+                _manager.RegisterService(typeof(ITortoiseGitSearch), this);
 
                 var cmdId = _manager.CommandManager.RegisterCommand(selfName, "Pull", GitPull, false, new ShortcutKey("Alt+P"));
                 _icons.Add(cmdId, ExternalResourceName.IDB_PULL);
@@ -160,7 +161,6 @@ namespace NppKate.Modules.TortoiseGitFeatures
 
         public void RunCommand(TortoiseGitCommand command, string path, string logMessage = null, bool isAutoClose = false)
         {
-
             StartCommand(BuildCommandString(command, path, logMessage, (byte)(isAutoClose ? 1 : 0)));
         }
 
@@ -498,16 +498,16 @@ namespace NppKate.Modules.TortoiseGitFeatures
             }
         }
 
-/*
-        private static void GitPGPfp()
-        {
-            if (CheckRepoAndShowError())
-            {
-                var path = GitCore.GitCore.Instance.ActiveRepository.Path;
-                StartCommand(BuildCommandString(TortoiseGitCommand.PGPfp, path));
-            }
-        }
-*/
+        /*
+                private static void GitPGPfp()
+                {
+                    if (CheckRepoAndShowError())
+                    {
+                        var path = GitCore.GitCore.Instance.ActiveRepository.Path;
+                        StartCommand(BuildCommandString(TortoiseGitCommand.PGPfp, path));
+                    }
+                }
+        */
 
         private static string SelectFolder(string title)
         {
@@ -616,6 +616,12 @@ namespace NppKate.Modules.TortoiseGitFeatures
         private static void StartCommand(string command)
         {
             System.Diagnostics.Process.Start(_tortoiseGitProc, command);
+        }
+
+        public void RunSearch(TortoiseGitFindType findType, string path, string findString)
+        {
+            var findTypeInt = (int)findType;
+            StartCommand(BuildCommandString(TortoiseGitCommand.Log, path, "", 0, $"/findstring:\"{findString}\" /findtype:{findTypeInt}"));
         }
     }
 }
