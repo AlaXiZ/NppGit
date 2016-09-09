@@ -1,0 +1,6 @@
+{
+  "name": "NppKate",
+  "tagline": "Easy coding",
+  "body": "# NppKate\r\nПлагин для Notepad++, призванный упростить разработку коду в Notepad++.\r\n##Собранный плагин\r\nСкачать последний релиз плагина можно [здесь](https://github.com/schadin/NppKate/releases/latest)\r\n##Статус сборки веток\r\n<table border=\"0px\" style=\"border-color=transparent\">\r\n<tr>\r\n  <td>master</td>\r\n  <td> <img src=\"https://ci.appveyor.com/api/projects/status/56onb24oa6g7x585?svg=true&passingText=master%20-%20success&pendingText=master%20-%20pending&failingText=master%20-%20fail\" width=\"160\"/> </td>\r\n</tr>\r\n<tr>\r\n  <td>develop</td>\r\n  <td> <img src=\"https://ci.appveyor.com/api/projects/status/0juypbxi4ew49ug5?svg=true&passingText=develop%20-%20success&pendingText=develop%20-%20pending&failingText=develop%20-%20fail\" width=\"160\"/> </td>\r\n</tr>\r\n</table>\r\n##Как пользоваться?\r\nНа [вики](https://github.com/schadin/NppKate/wiki) вы найдете всю необходимую информацию, хотя 99% функций интуитивно понятны, если вы когда либо работали с git. Информация на вики постоянно пополняется и актуализируется.\r\n##Список изменений\r\nСписок изменений в версиях всегда можно найти на странице [#3 Changelog](https://github.com/schadin/NppKate/wiki/%233-Changelog)\r\n",
+  "note": "Don't delete this file! It's used internally to help with page regeneration."
+}
