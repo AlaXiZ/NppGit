@@ -34,7 +34,7 @@ namespace NppKate.Common
     {
         private static void ErrorEx(Logger logger, Exception ex)
         {
-            logger.Error("Exception\r\nMessage: {0}\r\nSource: {1}\r\nStack trance: {2}\r\n Has inner exception: {3}",
+            logger.Error("Exception\r\nMessage: {0}\r\nSource: {1}\r\nStacktrace: {2}\r\n Has inner exception: {3}",
                 ex.Message, ex.Source, ex.StackTrace, ex.InnerException != null);
             if (ex.InnerException != null)
                 ErrorEx(logger, ex.InnerException);

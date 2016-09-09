@@ -40,6 +40,7 @@ namespace NppKate.Modules.GitCore
 {
     public class GitCore : IModule, IGitCore
     {
+        private const string CErrorEventTemplate = "Error in event {0}";
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         #region IModule
         private IModuleManager _manager = null;
@@ -281,29 +282,65 @@ namespace NppKate.Modules.GitCore
         private void DoActiveRepository()
         {
             _currRepo?.Dispose();
-            _currRepo = new Repository(_currentRepo.Path);
-
-            Settings.GitCore.LastActiveRepository = _currentRepo.Name;
-            var args = new RepositoryChangedEventArgs(_currentRepo.Name);
-            OnActiveRepositoryChanged?.Invoke(this, args);
+            _currRepo = null;
+            RepositoryChangedEventArgs args;
+            if (_currentRepo != null)
+            {
+                _currRepo = new Repository(_currentRepo.Path);
+                Settings.GitCore.LastActiveRepository = _currentRepo.Name;
+                args = new RepositoryChangedEventArgs(_currentRepo.Name);
+            }
+            else
+            {
+                args = new RepositoryChangedEventArgs(null);
+            }
+            try
+            {
+                OnActiveRepositoryChanged?.Invoke(this, args);
+            }
+            catch (Exception ex)
+            {
+                LoggerUtil.Error(Logger, ex, CErrorEventTemplate, "OnActiveRepositoryChanged");
+            }
         }
 
         private void DoDocumentRepositiry(string repoName)
         {
             var args = new RepositoryChangedEventArgs(repoName);
-            OnDocumentReposituryChanged?.Invoke(this, args);
+            try
+            {
+                OnDocumentReposituryChanged?.Invoke(this, args);
+            }
+            catch (Exception ex)
+            {
+                LoggerUtil.Error(Logger, ex, CErrorEventTemplate, "OnDocumentReposituryChanged");
+            }
         }
 
         private void DoRepoAdded(string repoName)
         {
             var args = new RepositoryChangedEventArgs(repoName);
-            OnRepositoryAdded?.Invoke(this, args);
+            try
+            {
+                OnRepositoryAdded?.Invoke(this, args);
+            }
+            catch (Exception ex)
+            {
+                LoggerUtil.Error(Logger, ex, CErrorEventTemplate, "OnDocumentReposituryChanged");
+            }
         }
 
         private void DoRepoRemoved(string repoName)
         {
             var args = new RepositoryChangedEventArgs(repoName);
-            OnRepositoryRemoved?.Invoke(this, args);
+            try
+            {
+                OnRepositoryRemoved?.Invoke(this, args);
+            }
+            catch (Exception ex)
+            {
+                LoggerUtil.Error(Logger, ex, CErrorEventTemplate, "OnDocumentReposituryChanged");
+            }
         }
 
         public FileStatus GetFileStatus(string filePath)
@@ -396,6 +433,12 @@ namespace NppKate.Modules.GitCore
             {
                 _repos.Remove(name);
                 element.Remove();
+                if (_currentRepo?.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase) ?? false)
+                {
+                    _currentRepo = null;
+                    DoActiveRepository();
+                }
+
                 DoRepoRemoved(name);
                 try
                 {
