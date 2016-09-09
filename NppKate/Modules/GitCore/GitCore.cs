@@ -40,7 +40,7 @@ namespace NppKate.Modules.GitCore
 {
     public class GitCore : IModule, IGitCore
     {
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         #region IModule
         private IModuleManager _manager = null;
         private int _browserCmdId;
@@ -112,14 +112,12 @@ namespace NppKate.Modules.GitCore
         private void DoQuickSearch()
         {
             var path = ActiveRepository?.Path;
-            if (path != null)
-            {
-                var searchDialog = new TortoiseLogSearch();
-                searchDialog.Init((IDockableManager)_manager);
-                searchDialog.RepositoryPath = path;
-                searchDialog.SearchText = NppUtils.GetSelectedText();
-                searchDialog.Show();
-            }
+            if (path == null) return;
+            var searchDialog = new TortoiseLogSearch();
+            searchDialog.Init((IDockableManager)_manager);
+            searchDialog.RepositoryPath = path;
+            searchDialog.SearchText = NppUtils.GetSelectedText();
+            searchDialog.Show();
         }
         #endregion
 
@@ -171,7 +169,7 @@ namespace NppKate.Modules.GitCore
             {
                 _doc = XDocument.Load(fileName);
                 _repos = (from e in _doc.Descendants("Repository")
-                          select e).ToDictionary(e => e.Attribute("Name").Value, (e) => new RepositoryLink(e.Value));
+                          select e).ToDictionary(e => e.Attribute("Name")?.Value, (e) => new RepositoryLink(e.Value));
                 foreach (var name in _repos.Keys.ToList())
                 {
                     if (_repos[name].Name == null)
@@ -263,7 +261,7 @@ namespace NppKate.Modules.GitCore
 
         private string FindRepoByPath(string path)
         {
-            return _repos.Values.Where(r => r.Path == path).FirstOrDefault()?.Name ?? string.Empty;
+            return _repos.Values.FirstOrDefault(r => r.Path == path)?.Name ?? string.Empty;
         }
 
         private void UpdateRepository(string name, RepositoryLink link)
@@ -322,7 +320,7 @@ namespace NppKate.Modules.GitCore
 
         private void SaveRepo(RepositoryLink repoLink)
         {
-            _logger.Trace($"Save repo Name={repoLink.Name}, Path={repoLink.Path}");
+            Logger.Trace($"Save repo Name={repoLink.Name}, Path={repoLink.Path}");
             _repos.Add(repoLink.Name, repoLink);
             DoRepoAdded(repoLink.Name);
             var root = _doc.Root;
@@ -334,37 +332,38 @@ namespace NppKate.Modules.GitCore
             }
             catch (Exception ex)
             {
-                _logger.Error(ex);
+                Logger.Error(ex);
             }
         }
 
         public static bool IsValidGitRepo(string path)
         {
-            _logger.Trace($"IsValidGitRepo path={path}");
+            Logger.Trace($"IsValidGitRepo path={path}");
             var repoDir = GetRootDir(path);
             return !string.IsNullOrEmpty(repoDir) && Repository.IsValid(repoDir);
         }
 
         public static string GetRootDir(string path)
         {
-            _logger.Trace($"GetRootDir path={path}");
-            var search = Path.Combine(path, ".git");
-            if (Directory.Exists(search) || File.Exists(search))
+            while (true)
             {
-                return path;
+                Logger.Trace($"GetRootDir path={path}");
+                var search = Path.Combine(path, ".git");
+                if (Directory.Exists(search) || File.Exists(search))
+                {
+                    return path;
+                }
+                if (string.IsNullOrEmpty(path) || Directory.GetParent(path) == null || !Path.IsPathRooted(path))
+                    return null;
+                path = Directory.GetParent(path).FullName;
             }
-            if (!string.IsNullOrEmpty(path) && Directory.GetParent(path) != null && Path.IsPathRooted(path))
-            {
-                return GetRootDir(Directory.GetParent(path).FullName);
-            }
-            return null;
         }
 
         public static string GetRepoName(string repoDir)
         {
             if (!Directory.Exists(repoDir)) return null;
 
-            _logger.Trace($"GetRepoName path={repoDir}");
+            Logger.Trace($"GetRepoName path={repoDir}");
             var remote = "";
             using (var repo = new Repository(repoDir))
             {
@@ -380,14 +379,14 @@ namespace NppKate.Modules.GitCore
                 {
                     remote = new DirectoryInfo(repoDir).Name;
                 }
-                _logger.Trace($"return {remote}");
+                Logger.Trace($"return {remote}");
                 return remote;
             }
         }
 
         public RepositoryLink GetRepositoryByName(string name)
         {
-            return _repos[name];
+            return _repos.ContainsKey(name) ? _repos[name] : null;
         }
 
         private bool InnerRemoveRepository(string name)
@@ -405,7 +404,7 @@ namespace NppKate.Modules.GitCore
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(ex);
+                    Logger.Error(ex);
                 }
             }
             return false;
