@@ -118,12 +118,14 @@ namespace NppKate.Modules.GitCore
             if (node.Name == _lastActiveRepo)
             {
                 var otherNode = node.PrevVisibleNode ?? node.NextVisibleNode;
-                GitCore.Instance.SwitchByName(otherNode.Name);
+                if (!GitCore.Instance.SwitchByName(otherNode.Name))
+                    _lastActiveRepo = null;
             }
             _watchers[node.Name].EnableRaisingEvents = false;
             _watchers[node.Name].Dispose();
             _watchers.Remove(node.Name);
             node.Remove();
+
 
         }
 
@@ -174,7 +176,7 @@ namespace NppKate.Modules.GitCore
         {
             var isAutoExpand = Settings.GitCore.AutoExpand;
 
-            if (repoName.Equals(_lastActiveRepo)) return;
+            if (repoName != null && repoName.Equals(_lastActiveRepo, StringComparison.InvariantCultureIgnoreCase) || repoName == _lastActiveRepo) return;
             if (!string.IsNullOrEmpty(_lastActiveRepo))
             {
                 var nodeOld = tvRepositories.Nodes[_lastActiveRepo];
@@ -182,11 +184,14 @@ namespace NppKate.Modules.GitCore
                 if (isAutoExpand)
                     nodeOld.Collapse();
             }
-            var nodeNew = tvRepositories.Nodes[repoName];
-            nodeNew.NodeFont = new Font(nodeNew.NodeFont ?? tvRepositories.Font, FontStyle.Bold);
-            nodeNew.Text += string.Empty;
-            if (isAutoExpand)
-                nodeNew.Expand();
+            if (!string.IsNullOrEmpty(repoName))
+            {
+                var nodeNew = tvRepositories.Nodes[repoName];
+                nodeNew.NodeFont = new Font(nodeNew.NodeFont ?? tvRepositories.Font, FontStyle.Bold);
+                nodeNew.Text += string.Empty;
+                if (isAutoExpand)
+                    nodeNew.Expand();
+            }
             _lastActiveRepo = repoName;
         }
 
@@ -259,7 +264,8 @@ namespace NppKate.Modules.GitCore
                     {
                         tvRepositories.EndUpdate();
                         _isInitialized = true;
-                        tvRepositories.Nodes[_lastActiveRepo].Text += string.Empty;
+                        if (_lastActiveRepo != null)
+                            tvRepositories.Nodes[_lastActiveRepo].Text += string.Empty;
                     }
                 }));
             });
