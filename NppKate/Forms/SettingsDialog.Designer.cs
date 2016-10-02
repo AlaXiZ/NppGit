@@ -109,6 +109,7 @@ namespace NppKate.Forms
             // 
             this.label1.AutoSize = true;
             this.label1.Dock = System.Windows.Forms.DockStyle.Left;
+            this.label1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.label1.Location = new System.Drawing.Point(3, 3);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(167, 13);
@@ -119,10 +120,13 @@ namespace NppKate.Forms
             // bOk
             // 
             this.bOk.Dock = System.Windows.Forms.DockStyle.Right;
-            this.bOk.Location = new System.Drawing.Point(331, 3);
+            this.bOk.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.bOk.Location = new System.Drawing.Point(346, 3);
             this.bOk.Margin = new System.Windows.Forms.Padding(5);
+            this.bOk.MaximumSize = new System.Drawing.Size(60, 25);
+            this.bOk.MinimumSize = new System.Drawing.Size(60, 25);
             this.bOk.Name = "bOk";
-            this.bOk.Size = new System.Drawing.Size(75, 29);
+            this.bOk.Size = new System.Drawing.Size(60, 25);
             this.bOk.TabIndex = 3;
             this.bOk.Text = "OK";
             this.bOk.UseVisualStyleBackColor = true;
@@ -158,6 +162,7 @@ namespace NppKate.Forms
             // gbUsingModules
             // 
             this.gbUsingModules.Controls.Add(this.chlModules);
+            this.gbUsingModules.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.gbUsingModules.Location = new System.Drawing.Point(8, 56);
             this.gbUsingModules.Name = "gbUsingModules";
             this.gbUsingModules.Size = new System.Drawing.Size(389, 65);
@@ -184,6 +189,7 @@ namespace NppKate.Forms
             // label2
             // 
             this.label2.AutoSize = true;
+            this.label2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.label2.Location = new System.Drawing.Point(3, 32);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(122, 13);
@@ -193,6 +199,7 @@ namespace NppKate.Forms
             // cbLogLevel
             // 
             this.cbLogLevel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbLogLevel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cbLogLevel.FormattingEnabled = true;
             this.cbLogLevel.Location = new System.Drawing.Point(136, 29);
             this.cbLogLevel.Name = "cbLogLevel";
@@ -202,9 +209,10 @@ namespace NppKate.Forms
             // chbDefaultShortcut
             // 
             this.chbDefaultShortcut.AutoSize = true;
+            this.chbDefaultShortcut.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.chbDefaultShortcut.Location = new System.Drawing.Point(6, 6);
             this.chbDefaultShortcut.Name = "chbDefaultShortcut";
-            this.chbDefaultShortcut.Size = new System.Drawing.Size(184, 17);
+            this.chbDefaultShortcut.Size = new System.Drawing.Size(181, 17);
             this.chbDefaultShortcut.TabIndex = 0;
             this.chbDefaultShortcut.Text = "Горячие кнопки по умолчанию*";
             this.chbDefaultShortcut.UseVisualStyleBackColor = true;
@@ -278,6 +286,7 @@ namespace NppKate.Forms
             // 
             // bSelectFolder
             // 
+            this.bSelectFolder.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bSelectFolder.Location = new System.Drawing.Point(366, 18);
             this.bSelectFolder.Name = "bSelectFolder";
             this.bSelectFolder.Size = new System.Drawing.Size(28, 23);
@@ -297,6 +306,7 @@ namespace NppKate.Forms
             // label3
             // 
             this.label3.AutoSize = true;
+            this.label3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.label3.Location = new System.Drawing.Point(0, 4);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(146, 13);
@@ -318,9 +328,10 @@ namespace NppKate.Forms
             // chbAutoExpand
             // 
             this.chbAutoExpand.AutoSize = true;
+            this.chbAutoExpand.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.chbAutoExpand.Location = new System.Drawing.Point(15, 77);
             this.chbAutoExpand.Name = "chbAutoExpand";
-            this.chbAutoExpand.Size = new System.Drawing.Size(201, 17);
+            this.chbAutoExpand.Size = new System.Drawing.Size(198, 17);
             this.chbAutoExpand.TabIndex = 7;
             this.chbAutoExpand.Text = "Auto expand/collapse after activated";
             this.chbAutoExpand.UseVisualStyleBackColor = true;
@@ -330,6 +341,7 @@ namespace NppKate.Forms
             this.gbFileInBranch.Controls.Add(this.lSHACount);
             this.gbFileInBranch.Controls.Add(this.chbFileInOtherView);
             this.gbFileInBranch.Controls.Add(this.mtxbSHACount);
+            this.gbFileInBranch.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.gbFileInBranch.Location = new System.Drawing.Point(6, 6);
             this.gbFileInBranch.Name = "gbFileInBranch";
             this.gbFileInBranch.Size = new System.Drawing.Size(388, 65);
@@ -340,6 +352,7 @@ namespace NppKate.Forms
             // lSHACount
             // 
             this.lSHACount.AutoSize = true;
+            this.lSHACount.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.lSHACount.Location = new System.Drawing.Point(6, 16);
             this.lSHACount.Name = "lSHACount";
             this.lSHACount.Size = new System.Drawing.Size(217, 13);
@@ -349,9 +362,10 @@ namespace NppKate.Forms
             // chbFileInOtherView
             // 
             this.chbFileInOtherView.AutoSize = true;
+            this.chbFileInOtherView.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.chbFileInOtherView.Location = new System.Drawing.Point(9, 41);
             this.chbFileInOtherView.Name = "chbFileInOtherView";
-            this.chbFileInOtherView.Size = new System.Drawing.Size(172, 17);
+            this.chbFileInOtherView.Size = new System.Drawing.Size(169, 17);
             this.chbFileInOtherView.TabIndex = 4;
             this.chbFileInOtherView.Text = "Открывать в другой области";
             this.chbFileInOtherView.UseVisualStyleBackColor = true;
@@ -384,6 +398,7 @@ namespace NppKate.Forms
             // label4
             // 
             this.label4.AutoSize = true;
+            this.label4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.label4.Location = new System.Drawing.Point(8, 100);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(87, 13);
@@ -402,9 +417,10 @@ namespace NppKate.Forms
             // chbInsertEmpty
             // 
             this.chbInsertEmpty.AutoSize = true;
+            this.chbInsertEmpty.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.chbInsertEmpty.Location = new System.Drawing.Point(8, 75);
             this.chbInsertEmpty.Name = "chbInsertEmpty";
-            this.chbInsertEmpty.Size = new System.Drawing.Size(136, 17);
+            this.chbInsertEmpty.Size = new System.Drawing.Size(133, 17);
             this.chbInsertEmpty.TabIndex = 3;
             this.chbInsertEmpty.Text = "Insert EMPTY_PARAM";
             this.chbInsertEmpty.UseVisualStyleBackColor = true;
@@ -412,9 +428,10 @@ namespace NppKate.Forms
             // chbExpand
             // 
             this.chbExpand.AutoSize = true;
+            this.chbExpand.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.chbExpand.Location = new System.Drawing.Point(8, 52);
             this.chbExpand.Name = "chbExpand";
-            this.chbExpand.Size = new System.Drawing.Size(119, 17);
+            this.chbExpand.Size = new System.Drawing.Size(116, 17);
             this.chbExpand.TabIndex = 2;
             this.chbExpand.Text = "Expand after create";
             this.chbExpand.UseVisualStyleBackColor = true;
@@ -422,9 +439,10 @@ namespace NppKate.Forms
             // chbHideByExt
             // 
             this.chbHideByExt.AutoSize = true;
+            this.chbHideByExt.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.chbHideByExt.Location = new System.Drawing.Point(8, 29);
             this.chbHideByExt.Name = "chbHideByExt";
-            this.chbHideByExt.Size = new System.Drawing.Size(118, 17);
+            this.chbHideByExt.Size = new System.Drawing.Size(115, 17);
             this.chbHideByExt.TabIndex = 1;
             this.chbHideByExt.Text = "Hiding by extension";
             this.chbHideByExt.UseVisualStyleBackColor = true;
@@ -432,9 +450,10 @@ namespace NppKate.Forms
             // chbGroupByCategory
             // 
             this.chbGroupByCategory.AutoSize = true;
+            this.chbGroupByCategory.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.chbGroupByCategory.Location = new System.Drawing.Point(8, 6);
             this.chbGroupByCategory.Name = "chbGroupByCategory";
-            this.chbGroupByCategory.Size = new System.Drawing.Size(127, 17);
+            this.chbGroupByCategory.Size = new System.Drawing.Size(124, 17);
             this.chbGroupByCategory.TabIndex = 0;
             this.chbGroupByCategory.Text = "Grouping by category";
             this.chbGroupByCategory.UseVisualStyleBackColor = true;
@@ -466,9 +485,10 @@ namespace NppKate.Forms
             // chbRestartNpp
             // 
             this.chbRestartNpp.AutoSize = true;
+            this.chbRestartNpp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.chbRestartNpp.Location = new System.Drawing.Point(206, 8);
             this.chbRestartNpp.Name = "chbRestartNpp";
-            this.chbRestartNpp.Size = new System.Drawing.Size(116, 17);
+            this.chbRestartNpp.Size = new System.Drawing.Size(113, 17);
             this.chbRestartNpp.TabIndex = 4;
             this.chbRestartNpp.Text = "Restart Notepad++";
             this.chbRestartNpp.UseVisualStyleBackColor = true;

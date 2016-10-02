@@ -76,18 +76,18 @@ namespace NppKate.Forms
 
         private void lbItems_DoubleClick(object sender, EventArgs e)
         {
-            OK();
+            Ok();
         }
 
         private void lbItems_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter && lbItems.SelectedItem != null)
             {
-                OK();
+                Ok();
             }
         }
 
-        private void OK()
+        private void Ok()
         {
             SelectedItem = (string)lbItems.SelectedItem;
             DialogResult = DialogResult.OK;
@@ -95,7 +95,7 @@ namespace NppKate.Forms
 
         private void bOk_Click(object sender, EventArgs e)
         {
-            OK();
+            Ok();
         }
 
         private void bCancel_Click(object sender, EventArgs e)
