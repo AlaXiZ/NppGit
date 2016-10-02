@@ -214,7 +214,7 @@ namespace NppKate.Modules.GitCore
             CreateNode(LoadItem, Properties.Resources.RsLoading, LoadingIndex, remote);
             using (var r = new Repository(link.Path))
             {
-                currentBranch.Text = r.Head.Name;
+                currentBranch.Text = r.Head.CanonicalName;
             }
         }
 
@@ -297,25 +297,25 @@ namespace NppKate.Modules.GitCore
                 tvRepositories.Invoke(new Action(() =>
                 {
                     tvRepositories.BeginUpdate();
-                    currentBranch.Text = r.Head.Name;
+                    currentBranch.Text = r.Head.CanonicalName;
                 }));
 
                 try
                 {
                     if ((int)local.Tag != 0 || (int)remote.Tag != 0)
                     {
-                        foreach (var b in r.Branches.OrderBy(b => b.Name))
+                        foreach (var b in r.Branches.OrderBy(b => b.CanonicalName))
                         {
                             if (!b.IsRemote && (int)local.Tag == 1)
                             {
-                                if (!local.Nodes.ContainsKey(b.Name))
+                                if (!local.Nodes.ContainsKey(b.CanonicalName))
                                 {
                                     tvRepositories.Invoke(new Action(() =>
                                     {
-                                        CreateNode(b.Name, b.Name, BranchIndex, local);
+                                        CreateNode(b.CanonicalName, b.CanonicalName, BranchIndex, local);
                                     }));
                                 }
-                                var branch = local.Nodes[b.Name];
+                                var branch = local.Nodes[b.CanonicalName];
                                 if (b.IsCurrentRepositoryHead)
                                 {
                                     tvRepositories.Invoke(new Action(() =>
@@ -337,12 +337,12 @@ namespace NppKate.Modules.GitCore
                             }
                             else if (b.IsRemote && (int)remote.Tag == 1)
                             {
-                                if (!b.Name.EndsWith("/HEAD", StringComparison.InvariantCultureIgnoreCase) &&
-                                    !remote.Nodes.ContainsKey(b.Name))
+                                if (!b.CanonicalName.EndsWith("/HEAD", StringComparison.InvariantCultureIgnoreCase) &&
+                                    !remote.Nodes.ContainsKey(b.CanonicalName))
                                 {
                                     tvRepositories.Invoke(new Action(() =>
                                     {
-                                        CreateNode(b.Name, b.Name, RemoteBranchIndex, remote);
+                                        CreateNode(b.CanonicalName, b.CanonicalName, RemoteBranchIndex, remote);
                                     }));
                                 }
                             }

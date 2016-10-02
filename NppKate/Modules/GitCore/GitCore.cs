@@ -213,7 +213,7 @@ namespace NppKate.Modules.GitCore
 
         public List<RepositoryLink> Repositories => _repos.Values.ToList();
 
-        public string CurrentBranch => _currRepo?.Head.Name ?? "";
+        public string CurrentBranch => _currRepo?.Head.CanonicalName ?? "";
 
         public RepositoryLink DocumentRepository
         {

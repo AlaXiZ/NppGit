@@ -74,7 +74,7 @@ namespace NppKate.Modules
                         Branch branch = null;
                         foreach (var b in repo.Branches)
                         {
-                            if (b.Name == dlg.SelectedItem)
+                            if (b.CanonicalName == dlg.SelectedItem)
                             {
                                 branch = b;
                                 break;
