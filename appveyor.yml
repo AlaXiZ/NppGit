@@ -3,7 +3,9 @@ skip_tags: true
 configuration:
 - Debug
 - Release
-platform: x86
+platform:
+- x86
+- x64
 clone_folder: c:\projects\kate
 init:
 - cmd: git config --global core.autocrlf "false"
