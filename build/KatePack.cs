@@ -62,10 +62,12 @@ class Script
             System.Console.WriteLine("Root directory: {0}", _rootDir);
             _config = System.Environment.GetEnvironmentVariable("CONFIGURATION");
             System.Console.WriteLine("Config: {0}", _config);
-            _suffix = System.Environment.GetEnvironmentVariable("BUILD_SUFFIX");
-            System.Console.WriteLine("Suffix: {0}", _suffix);
             _version = System.Environment.GetEnvironmentVariable("APPVEYOR_BUILD_VERSION");
             System.Console.WriteLine("Build version: {0}", _version);
+            _suffix = System.Environment.GetEnvironmentVariable("APPVEYOR_REPO_BRANCH") + "_" 
+                + System.Environment.GetEnvironmentVariable("PLATFORM");
+            //_suffix = System.Environment.GetEnvironmentVariable("BUILD_SUFFIX");
+            System.Console.WriteLine("Suffix: {0}", _suffix);
         }
         if (string.IsNullOrEmpty(_rootDir)) {
             _rootDir = System.IO.Directory.GetCurrentDirectory();
