@@ -104,6 +104,7 @@ namespace NppKate.Forms
         {
             var node = tvSnippets.SelectedNode;
             miInsert.Enabled = miEdit.Enabled = miDelete.Enabled = node?.ImageKey == SNIPPET_INDEX;
+            miExtract.Enabled = Npp.NppUtils.HasSelected;
         }
 
         private void miAdd_Click(object sender, EventArgs e)
@@ -305,6 +306,17 @@ namespace NppKate.Forms
             if (tvSnippets.SelectedNode != e.Node)
             {
                 tvSnippets.SelectedNode = e.Node;
+            }
+        }
+
+        private void miExtract_Click(object sender, EventArgs e)
+        {
+            var dlg = new SnippetEdit();
+            dlg.Init(_manager);
+            dlg.SnippetText = Npp.NppUtils.GetSelectedText();
+            if (dlg.ShowDialog() == DialogResult.OK)
+            {
+                SaveSnippet(_snippetManager.FindByName(dlg.SnippetName));
             }
         }
     }

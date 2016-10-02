@@ -105,6 +105,18 @@ namespace NppKate.Forms
 
         public SnippetEditAction Action { get; set; }
 
+        public string SnippetText
+        {
+            get
+            {
+                return tbSnippet.Text;
+            }
+            set
+            {
+                tbSnippet.Text = value;
+            }
+        }
+
         private void NameValidating(object sender, System.ComponentModel.CancelEventArgs e)
         {
             var name = (sender as TextBox).Text;

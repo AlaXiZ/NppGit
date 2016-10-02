@@ -60,6 +60,7 @@ namespace NppKate.Forms
             this.contextMenuSnippets = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.miRefresh = new System.Windows.Forms.ToolStripMenuItem();
             this.miInsert = new System.Windows.Forms.ToolStripMenuItem();
+            this.miExtract = new System.Windows.Forms.ToolStripMenuItem();
             this.miAdd = new System.Windows.Forms.ToolStripMenuItem();
             this.miEdit = new System.Windows.Forms.ToolStripMenuItem();
             this.miDelete = new System.Windows.Forms.ToolStripMenuItem();
@@ -75,11 +76,12 @@ namespace NppKate.Forms
             this.contextMenuSnippets.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.miRefresh,
             this.miInsert,
+            this.miExtract,
             this.miAdd,
             this.miEdit,
             this.miDelete});
             this.contextMenuSnippets.Name = "contextMenuSnippets";
-            this.contextMenuSnippets.Size = new System.Drawing.Size(114, 114);
+            this.contextMenuSnippets.Size = new System.Drawing.Size(114, 136);
             this.contextMenuSnippets.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuSnippets_Opening);
             // 
             // miRefresh
@@ -97,6 +99,14 @@ namespace NppKate.Forms
             this.miInsert.Size = new System.Drawing.Size(113, 22);
             this.miInsert.Text = "Insert";
             this.miInsert.Click += new System.EventHandler(this.miInsert_Click);
+            // 
+            // miExtract
+            // 
+            this.miExtract.Image = global::NppKate.Properties.Resources.arrow_curve;
+            this.miExtract.Name = "miExtract";
+            this.miExtract.Size = new System.Drawing.Size(113, 22);
+            this.miExtract.Text = "Extract";
+            this.miExtract.Click += new System.EventHandler(this.miExtract_Click);
             // 
             // miAdd
             // 
@@ -179,5 +189,6 @@ namespace NppKate.Forms
         private System.Windows.Forms.TreeView tvSnippets;
         private System.Windows.Forms.ImageList ilImages;
         private System.Windows.Forms.ToolStripMenuItem miRefresh;
+        private System.Windows.Forms.ToolStripMenuItem miExtract;
     }
 }
