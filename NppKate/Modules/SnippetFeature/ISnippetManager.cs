@@ -35,7 +35,8 @@ namespace NppKate.Modules.SnippetFeature
         /// Метод добавляет/обновляет сниппет
         /// </summary>
         /// <param name="snippet">Сниппет</param>
-        void AddOrUpdate(Snippet snippet);
+        /// <param name="oldName">Старое имя снипптеа</param>
+        void AddOrUpdate(Snippet snippet, string oldName = "");
         /// <summary>
         /// Метод удаляет сниппет
         /// </summary>

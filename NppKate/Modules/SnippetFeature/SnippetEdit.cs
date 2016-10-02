@@ -70,7 +70,7 @@ namespace NppKate.Forms
             try
             {
                 _snippetValidator.SnippetIsValid(snippet);
-                _snippetManager.AddOrUpdate(snippet);
+                _snippetManager.AddOrUpdate(snippet, _oldSnippet?.Name);
                 _snippet = snippet.Name;
             }
             catch (Exception ex)
