@@ -124,7 +124,7 @@ namespace NppKate
                     {
                         if (br.IsCurrentRepositoryHead)
                         {
-                            lBranch.Text = string.Format(RS_CURBRANCH, br.CanonicalName);
+                            lBranch.Text = string.Format(RS_CURBRANCH, br.FriendlyName);
                             break;
                         }
                     }

@@ -214,7 +214,7 @@ namespace NppKate.Modules.GitCore
             CreateNode(LoadItem, Properties.Resources.RsLoading, LoadingIndex, remote);
             using (var r = new Repository(link.Path))
             {
-                currentBranch.Text = r.Head.CanonicalName;
+                currentBranch.Text = r.Head.FriendlyName;
             }
         }
 
@@ -297,25 +297,25 @@ namespace NppKate.Modules.GitCore
                 tvRepositories.Invoke(new Action(() =>
                 {
                     tvRepositories.BeginUpdate();
-                    currentBranch.Text = r.Head.CanonicalName;
+                    currentBranch.Text = r.Head.FriendlyName;
                 }));
 
                 try
                 {
                     if ((int)local.Tag != 0 || (int)remote.Tag != 0)
                     {
-                        foreach (var b in r.Branches.OrderBy(b => b.CanonicalName))
+                        foreach (var b in r.Branches.OrderBy(b => b.FriendlyName))
                         {
                             if (!b.IsRemote && (int)local.Tag == 1)
                             {
-                                if (!local.Nodes.ContainsKey(b.CanonicalName))
+                                if (!local.Nodes.ContainsKey(b.FriendlyName))
                                 {
                                     tvRepositories.Invoke(new Action(() =>
                                     {
-                                        CreateNode(b.CanonicalName, b.CanonicalName, BranchIndex, local);
+                                        CreateNode(b.FriendlyName, b.FriendlyName, BranchIndex, local);
                                     }));
                                 }
-                                var branch = local.Nodes[b.CanonicalName];
+                                var branch = local.Nodes[b.FriendlyName];
                                 if (b.IsCurrentRepositoryHead)
                                 {
                                     tvRepositories.Invoke(new Action(() =>
@@ -337,12 +337,12 @@ namespace NppKate.Modules.GitCore
                             }
                             else if (b.IsRemote && (int)remote.Tag == 1)
                             {
-                                if (!b.CanonicalName.EndsWith("/HEAD", StringComparison.InvariantCultureIgnoreCase) &&
-                                    !remote.Nodes.ContainsKey(b.CanonicalName))
+                                if (!b.FriendlyName.EndsWith("/HEAD", StringComparison.InvariantCultureIgnoreCase) &&
+                                    !remote.Nodes.ContainsKey(b.FriendlyName))
                                 {
                                     tvRepositories.Invoke(new Action(() =>
                                     {
-                                        CreateNode(b.CanonicalName, b.CanonicalName, RemoteBranchIndex, remote);
+                                        CreateNode(b.FriendlyName, b.FriendlyName, RemoteBranchIndex, remote);
                                     }));
                                 }
                             }
