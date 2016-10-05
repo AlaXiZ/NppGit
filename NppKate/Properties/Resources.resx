@@ -151,20 +151,26 @@
   <data name="refresh" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\view-refresh.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="repo" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\repo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="remove_4075" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\remove_4075.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="RsLocal" xml:space="preserve">
     <value>local</value>
   </data>
+  <data name="Git" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Git.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="edit-code" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\edit-code.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Search-32" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Search-32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="blue-document-export" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\blue-document-export.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="RsRemote" xml:space="preserve">
-    <value>remote</value>
+  <data name="database--arrow" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\database--arrow.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="edit_4515" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\edit_4515.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="button_cancel_8865" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\button_cancel_8865.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -181,8 +187,8 @@
   <data name="bookmark_repo" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\bookmark-repo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="minus-button" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\minus-button.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="arrow-curve" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\arrow-curve.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="CmdRepositoryBrowser" xml:space="preserve">
     <value>Repository browser</value>
@@ -190,14 +196,11 @@
   <data name="RepositoriesXml" xml:space="preserve">
     <value>repositories.xml</value>
   </data>
-  <data name="edit_4515" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\edit_4515.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="database--minus" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\database--minus.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="remove_4075" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\remove_4075.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="RsRemote" xml:space="preserve">
+    <value>remote</value>
   </data>
   <data name="tick-button" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\tick-button.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -214,20 +217,20 @@
   <data name="menushowchanged" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\menushowchanged.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="menuswitch" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\menuswitch.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="minus-button" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\minus-button.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="CmdQuickSearch" xml:space="preserve">
     <value>Quick search</value>
   </data>
-  <data name="Git" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Git.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="magnifier-left" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\magnifier-left.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="RsLoading" xml:space="preserve">
     <value>loading...</value>
   </data>
-  <data name="pencil-button" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\pencil-button.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="menuexport" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\menuexport.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="push" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\push.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -244,8 +247,8 @@
   <data name="pull" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\pull.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="database--arrow" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\database--arrow.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Search-32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Search-32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="button_ok_7197" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\button_ok_7197.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -253,14 +256,17 @@
   <data name="stashpop" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\stashpop.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="menuswitch" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\menuswitch.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="pencil-button" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\pencil-button.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="repo" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\repo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Tortoise" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Tortoise.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="menuexport" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\menuexport.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="magnifier-left" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\magnifier-left.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="PluginName" xml:space="preserve">
     <value>NppKate</value>
@@ -274,7 +280,7 @@
   <data name="checkout" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\switch.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="arrow-curve" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\arrow-curve.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="blue-document-import" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\blue-document-import.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

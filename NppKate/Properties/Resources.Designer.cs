@@ -103,6 +103,26 @@ namespace NppKate.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap blue_document_export {
+            get {
+                object obj = ResourceManager.GetObject("blue-document-export", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap blue_document_import {
+            get {
+                object obj = ResourceManager.GetObject("blue-document-import", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap bookmark_repo {
             get {
                 object obj = ResourceManager.GetObject("bookmark_repo", resourceCulture);

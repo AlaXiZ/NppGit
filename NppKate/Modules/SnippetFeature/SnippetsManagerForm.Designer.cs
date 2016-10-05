@@ -64,6 +64,9 @@ namespace NppKate.Forms
             this.miAdd = new System.Windows.Forms.ToolStripMenuItem();
             this.miEdit = new System.Windows.Forms.ToolStripMenuItem();
             this.miDelete = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
+            this.miExport = new System.Windows.Forms.ToolStripMenuItem();
+            this.miImport = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
             this.tvSnippets = new System.Windows.Forms.TreeView();
             this.ilImages = new System.Windows.Forms.ImageList(this.components);
@@ -79,16 +82,19 @@ namespace NppKate.Forms
             this.miExtract,
             this.miAdd,
             this.miEdit,
-            this.miDelete});
+            this.miDelete,
+            this.toolStripMenuItem1,
+            this.miExport,
+            this.miImport});
             this.contextMenuSnippets.Name = "contextMenuSnippets";
-            this.contextMenuSnippets.Size = new System.Drawing.Size(114, 136);
+            this.contextMenuSnippets.Size = new System.Drawing.Size(159, 208);
             this.contextMenuSnippets.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuSnippets_Opening);
             // 
             // miRefresh
             // 
             this.miRefresh.Image = global::NppKate.Properties.Resources.arrow_circle_315;
             this.miRefresh.Name = "miRefresh";
-            this.miRefresh.Size = new System.Drawing.Size(113, 22);
+            this.miRefresh.Size = new System.Drawing.Size(158, 22);
             this.miRefresh.Text = "Refresh";
             this.miRefresh.Click += new System.EventHandler(this.miRefresh_Click);
             // 
@@ -96,7 +102,7 @@ namespace NppKate.Forms
             // 
             this.miInsert.Image = global::NppKate.Properties.Resources.tick_button;
             this.miInsert.Name = "miInsert";
-            this.miInsert.Size = new System.Drawing.Size(113, 22);
+            this.miInsert.Size = new System.Drawing.Size(158, 22);
             this.miInsert.Text = "Insert";
             this.miInsert.Click += new System.EventHandler(this.miInsert_Click);
             // 
@@ -104,7 +110,7 @@ namespace NppKate.Forms
             // 
             this.miExtract.Image = global::NppKate.Properties.Resources.arrow_curve;
             this.miExtract.Name = "miExtract";
-            this.miExtract.Size = new System.Drawing.Size(113, 22);
+            this.miExtract.Size = new System.Drawing.Size(158, 22);
             this.miExtract.Text = "Extract";
             this.miExtract.Click += new System.EventHandler(this.miExtract_Click);
             // 
@@ -112,7 +118,7 @@ namespace NppKate.Forms
             // 
             this.miAdd.Image = global::NppKate.Properties.Resources.plus_button;
             this.miAdd.Name = "miAdd";
-            this.miAdd.Size = new System.Drawing.Size(113, 22);
+            this.miAdd.Size = new System.Drawing.Size(158, 22);
             this.miAdd.Text = "Add";
             this.miAdd.Click += new System.EventHandler(this.miAdd_Click);
             // 
@@ -120,7 +126,7 @@ namespace NppKate.Forms
             // 
             this.miEdit.Image = global::NppKate.Properties.Resources.pencil_button;
             this.miEdit.Name = "miEdit";
-            this.miEdit.Size = new System.Drawing.Size(113, 22);
+            this.miEdit.Size = new System.Drawing.Size(158, 22);
             this.miEdit.Text = "Edit";
             this.miEdit.Click += new System.EventHandler(this.miEdit_Click);
             // 
@@ -128,9 +134,28 @@ namespace NppKate.Forms
             // 
             this.miDelete.Image = global::NppKate.Properties.Resources.minus_button;
             this.miDelete.Name = "miDelete";
-            this.miDelete.Size = new System.Drawing.Size(113, 22);
+            this.miDelete.Size = new System.Drawing.Size(158, 22);
             this.miDelete.Text = "Delete";
             this.miDelete.Click += new System.EventHandler(this.miDelete_Click);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(155, 6);
+            // 
+            // miExport
+            // 
+            this.miExport.Image = global::NppKate.Properties.Resources.blue_document_export;
+            this.miExport.Name = "miExport";
+            this.miExport.Size = new System.Drawing.Size(158, 22);
+            this.miExport.Text = "Export to file";
+            // 
+            // miImport
+            // 
+            this.miImport.Image = global::NppKate.Properties.Resources.blue_document_import;
+            this.miImport.Name = "miImport";
+            this.miImport.Size = new System.Drawing.Size(158, 22);
+            this.miImport.Text = "Import from file";
             // 
             // panel1
             // 
@@ -190,5 +215,8 @@ namespace NppKate.Forms
         private System.Windows.Forms.ImageList ilImages;
         private System.Windows.Forms.ToolStripMenuItem miRefresh;
         private System.Windows.Forms.ToolStripMenuItem miExtract;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem miExport;
+        private System.Windows.Forms.ToolStripMenuItem miImport;
     }
 }

@@ -194,6 +194,7 @@
     <Compile Include="Modules\SnippetFeature\SnippetEdit.Designer.cs">
       <DependentUpon>SnippetEdit.cs</DependentUpon>
     </Compile>
+    <Compile Include="Modules\SnippetFeature\SnippetEI.cs" />
     <Compile Include="Modules\SnippetFeature\SnippetManager.cs" />
     <Compile Include="Modules\SnippetFeature\SnippetsManagerForm.cs">
       <SubType>Form</SubType>
@@ -399,6 +400,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\arrow-curve.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\blue-document-export.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\blue-document-import.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildProjectDirectory)\DllExport\NppPlugin.DllExport.targets" />
