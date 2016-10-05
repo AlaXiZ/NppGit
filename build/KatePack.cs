@@ -68,8 +68,8 @@ class Script
 
             _branch = System.Environment.GetEnvironmentVariable("APPVEYOR_REPO_BRANCH");
 
-            _branch = string.Join("",_branch.Split(System.IO.Path.GetInvalidPathChars, StringSplitOptions.RemoveEmptyEntries));
-            _branch = string.Join("",_branch.Split(System.IO.Path.GetInvalidFileNameChars, StringSplitOptions.RemoveEmptyEntries));
+            _branch = string.Join("_",_branch.Split(System.IO.Path.GetInvalidPathChars(), StringSplitOptions.RemoveEmptyEntries));
+            _branch = string.Join("_",_branch.Split(System.IO.Path.GetInvalidFileNameChars(), StringSplitOptions.RemoveEmptyEntries));
 
             System.Environment.SetEnvironmentVariable("APPVEYOR_REPO_BRANCH", _branch, EnvironmentVariableTarget.User);
 
