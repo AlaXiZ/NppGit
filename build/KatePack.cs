@@ -71,9 +71,9 @@ class Script
             _branch = string.Join("_",_branch.Split(System.IO.Path.GetInvalidPathChars(), StringSplitOptions.RemoveEmptyEntries));
             _branch = string.Join("_",_branch.Split(System.IO.Path.GetInvalidFileNameChars(), StringSplitOptions.RemoveEmptyEntries));
 
-            System.Environment.SetEnvironmentVariable("APPVEYOR_REPO_BRANCH", _branch, EnvironmentVariableTarget.User);
+            System.Environment.SetEnvironmentVariable("APPVEYOR_REPO_BRANCH", _branch, EnvironmentVariableTarget.Machine);
 
-            _suffix = System.Environment.GetEnvironmentVariable("APPVEYOR_REPO_BRANCH") + "_" 
+            _suffix = _branch + "_" 
                 + System.Environment.GetEnvironmentVariable("PLATFORM");
             //_suffix = System.Environment.GetEnvironmentVariable("BUILD_SUFFIX");
             System.Console.WriteLine("Suffix: {0}", _suffix);
