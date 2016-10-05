@@ -27,6 +27,7 @@ class Script
     private static string _suffix = "Release";
     private static bool _fromEnv = true;
     private static string _version = "";
+    private static string _branch = "";
     
     [STAThread]
     static public void Main(string[] args)
@@ -64,6 +65,14 @@ class Script
             System.Console.WriteLine("Config: {0}", _config);
             _version = System.Environment.GetEnvironmentVariable("APPVEYOR_BUILD_VERSION");
             System.Console.WriteLine("Build version: {0}", _version);
+
+            _branch = System.Environment.GetEnvironmentVariable("APPVEYOR_REPO_BRANCH");
+
+            _branch = string.Join("",_branch.Split(System.IO.Path.GetInvalidPathChars, StringSplitOptions.RemoveEmptyEntries));
+            _branch = string.Join("",_branch.Split(System.IO.Path.GetInvalidFileNameChars, StringSplitOptions.RemoveEmptyEntries));
+
+            System.Environment.SetEnvironmentVariable("APPVEYOR_REPO_BRANCH", _branch, EnvironmentVariableTarget.User);
+
             _suffix = System.Environment.GetEnvironmentVariable("APPVEYOR_REPO_BRANCH") + "_" 
                 + System.Environment.GetEnvironmentVariable("PLATFORM");
             //_suffix = System.Environment.GetEnvironmentVariable("BUILD_SUFFIX");
