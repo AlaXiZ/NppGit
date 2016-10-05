@@ -71,6 +71,8 @@ class Script
             _branch = string.Join("_",_branch.Split(System.IO.Path.GetInvalidPathChars(), StringSplitOptions.RemoveEmptyEntries));
             _branch = string.Join("_",_branch.Split(System.IO.Path.GetInvalidFileNameChars(), StringSplitOptions.RemoveEmptyEntries));
 
+            System.Diagnostics.Process.Start("appveyor", $"SetVariable -Name \"APPVEYOR_REPO_BRANCH\" -Value \"{_branch}\"");
+
             System.Environment.SetEnvironmentVariable("APPVEYOR_REPO_BRANCH", _branch, EnvironmentVariableTarget.Machine);
 
             _suffix = _branch + "_" 
