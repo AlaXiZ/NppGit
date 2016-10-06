@@ -12,7 +12,7 @@ class Script
 {
     private const string DEPLOY_DIR = "Deploy";
     private const string DEPLOY_DLL_DIR = "NppKate";
-    private const string DEPLOY_ARCHIVE = "NppKate_{0}_{1}.zip";
+    private const string DEPLOY_ARCHIVE = "NppKate_{0}{1}.zip";
     private static readonly IList<string> _exclude = new ReadOnlyCollection<string>(
             new List<string> {
                 ".pdb", ".lib", ".exp", ".config", ".xml", "linux", "osx", ".iobj", ".ipdb"
@@ -68,18 +68,14 @@ class Script
 
             _branch = System.Environment.GetEnvironmentVariable("APPVEYOR_REPO_BRANCH");
 
-            _branch = string.Join("_",_branch.Split(System.IO.Path.GetInvalidPathChars(), StringSplitOptions.RemoveEmptyEntries));
-            _branch = string.Join("_",_branch.Split(System.IO.Path.GetInvalidFileNameChars(), StringSplitOptions.RemoveEmptyEntries));
-
-            System.Diagnostics.Process.Start("appveyor", "SetVariable -Name \"APPVEYOR_REPO_BRANCH\" -Value \"" + _branch + "\"");
-
-            System.Environment.SetEnvironmentVariable("APPVEYOR_REPO_BRANCH", _branch, EnvironmentVariableTarget.Machine);
-
-            _suffix = _branch + "_" 
+            _suffix = (_branch == "master" ? "" : _branch == "develop" ? "b" : "a") + "_" 
                 + System.Environment.GetEnvironmentVariable("PLATFORM");
-            //_suffix = System.Environment.GetEnvironmentVariable("BUILD_SUFFIX");
             System.Console.WriteLine("Suffix: {0}", _suffix);
+            
+            System.Diagnostics.Process.Start("appveyor", "SetVariable -Name \"ZIP_NAME\" -Value \"" + _suffix + "\"");
         }
+        var deployName = string.Format(DEPLOY_ARCHIVE, _version, _suffix);
+        
         if (string.IsNullOrEmpty(_rootDir)) {
             _rootDir = System.IO.Directory.GetCurrentDirectory();
         }
@@ -105,7 +101,7 @@ class Script
         ClearDir(deployDir);
         System.Console.WriteLine("Copying files...");
         CopyFiles(configDir, deployDir, deployDll);
-        Archive(deployDir);
+        Archive(deployDir, deployName);
     }
     
     private static void ClearDir(DirectoryInfo dirInfo) 
@@ -177,10 +173,10 @@ class Script
         }
     }
     
-    private static void Archive(DirectoryInfo deployDir) 
+    private static void Archive(DirectoryInfo deployDir, string deployName) 
     {
         System.Console.WriteLine("Compressing directory: {0}", deployDir.FullName);
-        var archName = Path.Combine(_rootDir, "bin", string.Format(DEPLOY_ARCHIVE, _version, _suffix));
+        var archName = Path.Combine(_rootDir, "bin", deployName);
         if (File.Exists(archName)) {
             System.Console.WriteLine("File exists: {0}", archName);
             new FileInfo(archName).Delete();
