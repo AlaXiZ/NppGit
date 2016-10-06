@@ -72,9 +72,10 @@ class Script
                 + System.Environment.GetEnvironmentVariable("PLATFORM");
             System.Console.WriteLine("Suffix: {0}", _suffix);
             
-            System.Diagnostics.Process.Start("appveyor", "SetVariable -Name \"ZIP_NAME\" -Value \"" + _suffix + "\"");
         }
         var deployName = string.Format(DEPLOY_ARCHIVE, _version, _suffix);
+        System.Console.WriteLine("ZIP_NAME: {0}", deployName);
+        System.Diagnostics.Process.Start("appveyor", "SetVariable -Name \"ZIP_NAME\" -Value \"" + deployName + "\"");
         
         if (string.IsNullOrEmpty(_rootDir)) {
             _rootDir = System.IO.Directory.GetCurrentDirectory();
