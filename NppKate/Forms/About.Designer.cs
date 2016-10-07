@@ -61,7 +61,6 @@ namespace NppKate.Forms
             this.lAuthor = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.llMail = new System.Windows.Forms.LinkLabel();
-            this.tbChangeLog = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.llIssue = new System.Windows.Forms.LinkLabel();
             this.tbLicense = new System.Windows.Forms.TextBox();
@@ -72,6 +71,7 @@ namespace NppKate.Forms
             this.lBoard = new System.Windows.Forms.Label();
             this.llWiki = new System.Windows.Forms.LinkLabel();
             this.lWiki = new System.Windows.Forms.Label();
+            this.lChangelog = new System.Windows.Forms.LinkLabel();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -104,10 +104,10 @@ namespace NppKate.Forms
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Image = global::NppKate.Properties.Resources.NppGit_Logo;
             this.pictureBox1.Location = new System.Drawing.Point(12, 12);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(124, 238);
+            this.pictureBox1.Image = Properties.Resources.NppGit_Logo;
+            this.pictureBox1.Size = new System.Drawing.Size(124, 91);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 3;
             this.pictureBox1.TabStop = false;
@@ -122,18 +122,6 @@ namespace NppKate.Forms
             this.llMail.TabStop = true;
             this.llMail.Text = "schadin@gmail.com";
             this.llMail.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.llMail_LinkClicked);
-            // 
-            // tbChangeLog
-            // 
-            this.tbChangeLog.BackColor = System.Drawing.Color.White;
-            this.tbChangeLog.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.tbChangeLog.Location = new System.Drawing.Point(145, 97);
-            this.tbChangeLog.Multiline = true;
-            this.tbChangeLog.Name = "tbChangeLog";
-            this.tbChangeLog.ReadOnly = true;
-            this.tbChangeLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbChangeLog.Size = new System.Drawing.Size(335, 153);
-            this.tbChangeLog.TabIndex = 5;
             // 
             // label1
             // 
@@ -159,7 +147,7 @@ namespace NppKate.Forms
             // 
             this.tbLicense.BackColor = System.Drawing.Color.White;
             this.tbLicense.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.tbLicense.Location = new System.Drawing.Point(12, 256);
+            this.tbLicense.Location = new System.Drawing.Point(12, 109);
             this.tbLicense.Multiline = true;
             this.tbLicense.Name = "tbLicense";
             this.tbLicense.ReadOnly = true;
@@ -170,7 +158,7 @@ namespace NppKate.Forms
             // lblIcons
             // 
             this.lblIcons.AutoSize = true;
-            this.lblIcons.Location = new System.Drawing.Point(12, 469);
+            this.lblIcons.Location = new System.Drawing.Point(12, 322);
             this.lblIcons.Name = "lblIcons";
             this.lblIcons.Size = new System.Drawing.Size(468, 13);
             this.lblIcons.TabIndex = 9;
@@ -180,7 +168,7 @@ namespace NppKate.Forms
             // llYusuke
             // 
             this.llYusuke.AutoSize = true;
-            this.llYusuke.Location = new System.Drawing.Point(87, 469);
+            this.llYusuke.Location = new System.Drawing.Point(87, 322);
             this.llYusuke.Name = "llYusuke";
             this.llYusuke.Size = new System.Drawing.Size(106, 13);
             this.llYusuke.TabIndex = 10;
@@ -191,7 +179,7 @@ namespace NppKate.Forms
             // llCCA30L
             // 
             this.llCCA30L.AutoSize = true;
-            this.llCCA30L.Location = new System.Drawing.Point(277, 469);
+            this.llCCA30L.Location = new System.Drawing.Point(277, 322);
             this.llCCA30L.Name = "llCCA30L";
             this.llCCA30L.Size = new System.Drawing.Size(203, 13);
             this.llCCA30L.TabIndex = 11;
@@ -239,12 +227,24 @@ namespace NppKate.Forms
             this.lWiki.TabIndex = 14;
             this.lWiki.Text = "Wiki:";
             // 
+            // lChangelog
+            // 
+            this.lChangelog.AutoSize = true;
+            this.lChangelog.Location = new System.Drawing.Point(142, 90);
+            this.lChangelog.Name = "lChangelog";
+            this.lChangelog.Size = new System.Drawing.Size(58, 13);
+            this.lChangelog.TabIndex = 16;
+            this.lChangelog.TabStop = true;
+            this.lChangelog.Text = "Changelog";
+            this.lChangelog.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lChangelog_LinkClicked);
+            // 
             // About
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(492, 491);
+            this.ClientSize = new System.Drawing.Size(492, 344);
+            this.Controls.Add(this.lChangelog);
             this.Controls.Add(this.llWiki);
             this.Controls.Add(this.lWiki);
             this.Controls.Add(this.llBoard);
@@ -255,7 +255,6 @@ namespace NppKate.Forms
             this.Controls.Add(this.tbLicense);
             this.Controls.Add(this.llIssue);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.tbChangeLog);
             this.Controls.Add(this.llMail);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.lAuthor);
@@ -283,7 +282,6 @@ namespace NppKate.Forms
         private System.Windows.Forms.Label lAuthor;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.LinkLabel llMail;
-        private System.Windows.Forms.TextBox tbChangeLog;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.LinkLabel llIssue;
         private System.Windows.Forms.TextBox tbLicense;
@@ -294,5 +292,6 @@ namespace NppKate.Forms
         private System.Windows.Forms.Label lBoard;
         private System.Windows.Forms.LinkLabel llWiki;
         private System.Windows.Forms.Label lWiki;
+        private System.Windows.Forms.LinkLabel lChangelog;
     }
 }
