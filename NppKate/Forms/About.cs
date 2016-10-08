@@ -40,14 +40,14 @@ namespace NppKate.Forms
         private void About_Load(object sender, EventArgs e)
         {
             lPluginName.Text = Properties.Resources.PluginName;
-            lVersion.Text = this.GetType().Assembly.GetName().Version.ToString();
-            tbChangeLog.Text = Properties.Resources.ChangeLog;
+            var version = this.GetType().Assembly.GetName().Version;
+            lVersion.Text = $"v{version.Major}.{version.Minor}.{version.Build} build {version.Revision}";
             tbLicense.Text = Properties.Resources.LICENSE;
         }
 
         private void llMail_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            llMail.LinkVisited = true; 
+            llMail.LinkVisited = true;
             System.Diagnostics.Process.Start("mailto:" + llMail.Text + "?subject=NppKate");
         }
 
@@ -80,6 +80,12 @@ namespace NppKate.Forms
         {
             llWiki.LinkVisited = true;
             System.Diagnostics.Process.Start("https://github.com/schadin/NppKate/wiki");
+        }
+
+        private void lChangelog_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            lChangelog.LinkVisited = true;
+            System.Diagnostics.Process.Start("https://github.com/schadin/NppKate/wiki/%233-Changelog");
         }
     }
 }

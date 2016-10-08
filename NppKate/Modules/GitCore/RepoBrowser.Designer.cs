@@ -39,6 +39,7 @@
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.tortoiseGitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cmTortoiseGit = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.findInLogMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fetchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pullToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.commitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -60,13 +61,17 @@
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cmBranch = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.miSwitchTo = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmTreeView = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.miAddRepo2 = new System.Windows.Forms.ToolStripMenuItem();
             this.cmRepositories.SuspendLayout();
             this.cmTortoiseGit.SuspendLayout();
             this.cmBranch.SuspendLayout();
+            this.cmTreeView.SuspendLayout();
             this.SuspendLayout();
             // 
             // tvRepositories
             // 
+            this.tvRepositories.ContextMenuStrip = this.cmTreeView;
             this.tvRepositories.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tvRepositories.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tvRepositories.ImageIndex = 0;
@@ -104,7 +109,6 @@
             this.toolStripMenuItem1,
             this.tortoiseGitToolStripMenuItem});
             this.cmRepositories.Name = "cmRepositories";
-            this.cmRepositories.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
             this.cmRepositories.Size = new System.Drawing.Size(174, 98);
             this.cmRepositories.Opening += new System.ComponentModel.CancelEventHandler(this.cmRepositories_Opening);
             // 
@@ -149,6 +153,7 @@
             // cmTortoiseGit
             // 
             this.cmTortoiseGit.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.findInLogMenuItem,
             this.fetchToolStripMenuItem,
             this.pullToolStripMenuItem,
             this.commitToolStripMenuItem,
@@ -169,7 +174,17 @@
             this.mergeToolStripMenuItem,
             this.settingsToolStripMenuItem});
             this.cmTortoiseGit.Name = "cmTortoiseGit";
+            this.cmTortoiseGit.OwnerItem = this.tortoiseGitToolStripMenuItem;
             this.cmTortoiseGit.Size = new System.Drawing.Size(197, 444);
+            // 
+            // findInLogMenuItem
+            // 
+            this.findInLogMenuItem.Image = global::NppKate.Properties.Resources.Search_32;
+            this.findInLogMenuItem.Name = "findInLogMenuItem";
+            this.findInLogMenuItem.ShortcutKeyDisplayString = "";
+            this.findInLogMenuItem.Size = new System.Drawing.Size(196, 22);
+            this.findInLogMenuItem.Text = "Quick search";
+            this.findInLogMenuItem.Click += new System.EventHandler(this.findInLogMenuItem_Click);
             // 
             // fetchToolStripMenuItem
             // 
@@ -340,6 +355,21 @@
             this.miSwitchTo.Size = new System.Drawing.Size(123, 22);
             this.miSwitchTo.Text = "Switch to";
             // 
+            // cmTreeView
+            // 
+            this.cmTreeView.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.miAddRepo2});
+            this.cmTreeView.Name = "cmTreeView";
+            this.cmTreeView.Size = new System.Drawing.Size(153, 26);
+            // 
+            // miAddRepo2
+            // 
+            this.miAddRepo2.Image = global::NppKate.Properties.Resources.database__plus;
+            this.miAddRepo2.Name = "miAddRepo2";
+            this.miAddRepo2.Size = new System.Drawing.Size(152, 22);
+            this.miAddRepo2.Text = "Add repository";
+            this.miAddRepo2.Click += new System.EventHandler(this.miAddRepo_Click);
+            // 
             // RepoBrowser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -352,6 +382,7 @@
             this.cmRepositories.ResumeLayout(false);
             this.cmTortoiseGit.ResumeLayout(false);
             this.cmBranch.ResumeLayout(false);
+            this.cmTreeView.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -388,5 +419,8 @@
         private System.Windows.Forms.ToolStripMenuItem exportToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem mergeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem findInLogMenuItem;
+        private System.Windows.Forms.ContextMenuStrip cmTreeView;
+        private System.Windows.Forms.ToolStripMenuItem miAddRepo2;
     }
 }

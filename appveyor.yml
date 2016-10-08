@@ -1,10 +1,15 @@
-version: 0.5.0.{build}
+version: 0.5.1.{build}
 branches:
-  only:
-  - master
-skip_non_tags: true
-configuration: Release
-platform: x86
+  except:
+  - wiki-content
+  - gh-pages
+skip_tags: true
+configuration:
+- Debug
+- Release
+platform:
+- x86
+# - x64
 clone_folder: c:\projects\kate
 init:
 - cmd: git config --global core.autocrlf "false"
@@ -14,30 +19,32 @@ assembly_info:
   assembly_version: '{version}'
   assembly_file_version: '{version}'
   assembly_informational_version: '{version}'
-environment:
-  BUILD_SUFFIX: RELEASE
 install:
-- ps: cinst cs-script
+- ps: cinst cs-script -y
 before_build:
 - cmd: nuget restore
 build:
   project: NppKate.sln
-  verbosity: minimal
+  parallel: true
+  verbosity: quiet
 after_build:
 - cmd: cscs build\KatePack.cs
 artifacts:
-- path: bin\NppKate_$(APPVEYOR_BUILD_VERSION)_$(BUILD_SUFFIX).zip
+- path: bin\$(ZIP_NAME)
   name: ARCHIVE-BUILD
-deploy:
-- provider: GitHub
-  tag: $(APPVEYOR_BUILD_VERSION)
-  release: NppKate v$(APPVEYOR_BUILD_VERSION)
-  description: $(APPVEYOR_REPO_COMMIT_MESSAGE_EXTENDED)
-  auth_token:
-    secure: yF5rZFueiDl3K06rjEWayGHlURF+EPfEs43TStNa6Bbak7iNWvzolpbV/6LV540E
-  artifact: ARCHIVE-BUILD
-  draft: true
-  prerelease: false
-  force_update: true
-  on:
-    branch: master
+deploy: off
+notifications:
+- provider: Email
+  to:
+  - schadin@gmail.com
+  subject: Build success
+  on_build_success: true
+  on_build_failure: false
+  on_build_status_changed: false
+- provider: Email
+  to:
+  - schadin@gmail.com
+  subject: Build failure
+  on_build_success: false
+  on_build_failure: true
+  on_build_status_changed: false

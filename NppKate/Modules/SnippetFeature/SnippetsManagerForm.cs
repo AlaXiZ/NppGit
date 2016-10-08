@@ -25,15 +25,15 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-using NLog;
-using NppKate.Common;
-using NppKate.Modules.SnippetFeature;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using NLog;
+using NppKate.Common;
+using NppKate.Modules.SnippetFeature;
 
 namespace NppKate.Forms
 {
@@ -104,6 +104,7 @@ namespace NppKate.Forms
         {
             var node = tvSnippets.SelectedNode;
             miInsert.Enabled = miEdit.Enabled = miDelete.Enabled = node?.ImageKey == SNIPPET_INDEX;
+            miExtract.Enabled = Npp.NppUtils.HasSelected;
         }
 
         private void miAdd_Click(object sender, EventArgs e)
@@ -305,6 +306,17 @@ namespace NppKate.Forms
             if (tvSnippets.SelectedNode != e.Node)
             {
                 tvSnippets.SelectedNode = e.Node;
+            }
+        }
+
+        private void miExtract_Click(object sender, EventArgs e)
+        {
+            var dlg = new SnippetEdit();
+            dlg.Init(_manager);
+            dlg.SnippetText = Npp.NppUtils.GetSelectedText();
+            if (dlg.ShowDialog() == DialogResult.OK)
+            {
+                SaveSnippet(_snippetManager.FindByName(dlg.SnippetName));
             }
         }
     }

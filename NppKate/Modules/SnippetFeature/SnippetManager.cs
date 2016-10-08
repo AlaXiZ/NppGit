@@ -108,8 +108,12 @@ namespace NppKate.Modules.SnippetFeature
             }
         }
 
-        public void AddOrUpdate(Snippet snippet)
+        public void AddOrUpdate(Snippet snippet, string oldName = "")
         {
+            if (!string.IsNullOrEmpty(oldName) && _snippets.ContainsKey(oldName))
+            {
+                Remove(oldName);
+            }
             if (_snippets.ContainsKey(snippet.Name))
             {
                 Remove(snippet.Name);

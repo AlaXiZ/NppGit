@@ -70,7 +70,7 @@ namespace NppKate.Forms
             try
             {
                 _snippetValidator.SnippetIsValid(snippet);
-                _snippetManager.AddOrUpdate(snippet);
+                _snippetManager.AddOrUpdate(snippet, _oldSnippet?.Name);
                 _snippet = snippet.Name;
             }
             catch (Exception ex)
@@ -104,6 +104,18 @@ namespace NppKate.Forms
         }
 
         public SnippetEditAction Action { get; set; }
+
+        public string SnippetText
+        {
+            get
+            {
+                return tbSnippet.Text;
+            }
+            set
+            {
+                tbSnippet.Text = value;
+            }
+        }
 
         private void NameValidating(object sender, System.ComponentModel.CancelEventArgs e)
         {

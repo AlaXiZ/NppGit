@@ -328,6 +328,14 @@ namespace NppKate.Npp
             ReplaceSelectedText(text.Replace(GetEOL(), "\n").Split('\n'));
         }
 
+        public static bool HasSelected
+        {
+            get
+            {
+                return !string.IsNullOrEmpty(GetSelectedText());
+            }
+        }
+
         static int execute(SciMsg msg, int wParam = 0, int lParam = 0)
         {
             IntPtr sci = CurrentScintilla;

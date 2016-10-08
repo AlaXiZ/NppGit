@@ -25,12 +25,12 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-using NppKate.Common;
-using NppKate.Npp;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
+using NppKate.Common;
+using NppKate.Npp;
 
 namespace NppKate
 {
@@ -121,6 +121,14 @@ namespace NppKate
             {
                 [MethodImpl(MethodImplOptions.NoInlining)]
                 get { return Get(false); }
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                set { Set(value); }
+            }
+
+            public static int SearchFlags
+            {
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                get { return Get(0xffff); }
                 [MethodImpl(MethodImplOptions.NoInlining)]
                 set { Set(value); }
             }

@@ -73,6 +73,26 @@ namespace NppKate.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap arrow_curve {
+            get {
+                object obj = ResourceManager.GetObject("arrow-curve", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap arrow_curve_180_left {
+            get {
+                object obj = ResourceManager.GetObject("arrow-curve-180-left", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap blame {
             get {
                 object obj = ResourceManager.GetObject("blame", resourceCulture);
@@ -111,37 +131,21 @@ namespace NppKate.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to * Версия 0.4.2
-        ///Доработки
-        ///- Переименование проекта
-        ///- Дерево репозиториев
-        ///- Автовычисляемые параметры в сниппетах
-        ///- Стабильность плагина
-        ///- Автоматизация сборки
-        ///Исправления
-        ///- Не работает функция Restart
-        ///- Иконки на тулбаре отображаются черными квадратами
-        ///- Проблема со шрифтом при открытии в списке репозиториев
-        ///- Проблема при открытии несуществующих репозиториев
-        ///- Проблема добавления сниппетов с нуля
-        ///* Версия 0.3.10.2
-        ///Исправления:
-        ///- Ошибка в формировании заголовка
-        ///- Автозакрытие форм Tortoise Gi [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string ChangeLog {
-            get {
-                return ResourceManager.GetString("ChangeLog", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap checkout {
             get {
                 object obj = ResourceManager.GetObject("checkout", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Quick search.
+        /// </summary>
+        internal static string CmdQuickSearch {
+            get {
+                return ResourceManager.GetString("CmdQuickSearch", resourceCulture);
             }
         }
         
@@ -275,6 +279,16 @@ namespace NppKate.Properties {
         internal static System.Drawing.Bitmap log {
             get {
                 object obj = ResourceManager.GetObject("log", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap magnifier_left {
+            get {
+                object obj = ResourceManager.GetObject("magnifier-left", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -490,6 +504,16 @@ namespace NppKate.Properties {
         internal static string RsSelectGitDir {
             get {
                 return ResourceManager.GetString("RsSelectGitDir", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Search_32 {
+            get {
+                object obj = ResourceManager.GetObject("Search-32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

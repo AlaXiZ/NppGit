@@ -25,11 +25,6 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-using LibGit2Sharp;
-using NLog;
-using NppKate.Common;
-using NppKate.Forms;
-using NppKate.Modules.TortoiseGitFeatures;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -37,6 +32,11 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using LibGit2Sharp;
+using NLog;
+using NppKate.Common;
+using NppKate.Forms;
+using NppKate.Modules.TortoiseGitFeatures;
 
 namespace NppKate.Modules.GitCore
 {
@@ -109,6 +109,7 @@ namespace NppKate.Modules.GitCore
                 _commandRuner = (ITortoiseCommand)_manager.ModuleManager.GetService(typeof(ITortoiseCommand));
                 tortoiseGitToolStripMenuItem.Visible = true;
             }
+            findInLogMenuItem.Enabled = _manager.ModuleManager.ServiceExists(typeof(ITortoiseGitSearch));
         }
 
         private void GitCoreOnRepositoryRemoved(object sender, RepositoryChangedEventArgs e)
@@ -117,12 +118,14 @@ namespace NppKate.Modules.GitCore
             if (node.Name == _lastActiveRepo)
             {
                 var otherNode = node.PrevVisibleNode ?? node.NextVisibleNode;
-                GitCore.Instance.SwitchByName(otherNode.Name);
+                if (!GitCore.Instance.SwitchByName(otherNode.Name))
+                    _lastActiveRepo = null;
             }
             _watchers[node.Name].EnableRaisingEvents = false;
             _watchers[node.Name].Dispose();
             _watchers.Remove(node.Name);
             node.Remove();
+
 
         }
 
@@ -173,7 +176,7 @@ namespace NppKate.Modules.GitCore
         {
             var isAutoExpand = Settings.GitCore.AutoExpand;
 
-            if (repoName.Equals(_lastActiveRepo)) return;
+            if (repoName != null && repoName.Equals(_lastActiveRepo, StringComparison.InvariantCultureIgnoreCase) || repoName == _lastActiveRepo) return;
             if (!string.IsNullOrEmpty(_lastActiveRepo))
             {
                 var nodeOld = tvRepositories.Nodes[_lastActiveRepo];
@@ -181,11 +184,14 @@ namespace NppKate.Modules.GitCore
                 if (isAutoExpand)
                     nodeOld.Collapse();
             }
-            var nodeNew = tvRepositories.Nodes[repoName];
-            nodeNew.NodeFont = new Font(nodeNew.NodeFont ?? tvRepositories.Font, FontStyle.Bold);
-            nodeNew.Text += string.Empty;
-            if (isAutoExpand)
-                nodeNew.Expand();
+            if (!string.IsNullOrEmpty(repoName))
+            {
+                var nodeNew = tvRepositories.Nodes[repoName];
+                nodeNew.NodeFont = new Font(nodeNew.NodeFont ?? tvRepositories.Font, FontStyle.Bold);
+                nodeNew.Text += string.Empty;
+                if (isAutoExpand)
+                    nodeNew.Expand();
+            }
             _lastActiveRepo = repoName;
         }
 
@@ -208,7 +214,7 @@ namespace NppKate.Modules.GitCore
             CreateNode(LoadItem, Properties.Resources.RsLoading, LoadingIndex, remote);
             using (var r = new Repository(link.Path))
             {
-                currentBranch.Text = r.Head.Name;
+                currentBranch.Text = r.Head.FriendlyName;
             }
         }
 
@@ -258,7 +264,8 @@ namespace NppKate.Modules.GitCore
                     {
                         tvRepositories.EndUpdate();
                         _isInitialized = true;
-                        tvRepositories.Nodes[_lastActiveRepo].Text += string.Empty;
+                        if (_lastActiveRepo != null)
+                            tvRepositories.Nodes[_lastActiveRepo].Text += string.Empty;
                     }
                 }));
             });
@@ -290,25 +297,25 @@ namespace NppKate.Modules.GitCore
                 tvRepositories.Invoke(new Action(() =>
                 {
                     tvRepositories.BeginUpdate();
-                    currentBranch.Text = r.Head.Name;
+                    currentBranch.Text = r.Head.FriendlyName;
                 }));
 
                 try
                 {
                     if ((int)local.Tag != 0 || (int)remote.Tag != 0)
                     {
-                        foreach (var b in r.Branches.OrderBy(b => b.Name))
+                        foreach (var b in r.Branches.OrderBy(b => b.FriendlyName))
                         {
                             if (!b.IsRemote && (int)local.Tag == 1)
                             {
-                                if (!local.Nodes.ContainsKey(b.Name))
+                                if (!local.Nodes.ContainsKey(b.FriendlyName))
                                 {
                                     tvRepositories.Invoke(new Action(() =>
                                     {
-                                        CreateNode(b.Name, b.Name, BranchIndex, local);
+                                        CreateNode(b.FriendlyName, b.FriendlyName, BranchIndex, local);
                                     }));
                                 }
-                                var branch = local.Nodes[b.Name];
+                                var branch = local.Nodes[b.FriendlyName];
                                 if (b.IsCurrentRepositoryHead)
                                 {
                                     tvRepositories.Invoke(new Action(() =>
@@ -330,12 +337,12 @@ namespace NppKate.Modules.GitCore
                             }
                             else if (b.IsRemote && (int)remote.Tag == 1)
                             {
-                                if (!b.Name.EndsWith("/HEAD", StringComparison.InvariantCultureIgnoreCase) &&
-                                    !remote.Nodes.ContainsKey(b.Name))
+                                if (!b.FriendlyName.EndsWith("/HEAD", StringComparison.InvariantCultureIgnoreCase) &&
+                                    !remote.Nodes.ContainsKey(b.FriendlyName))
                                 {
                                     tvRepositories.Invoke(new Action(() =>
                                     {
-                                        CreateNode(b.Name, b.Name, RemoteBranchIndex, remote);
+                                        CreateNode(b.FriendlyName, b.FriendlyName, RemoteBranchIndex, remote);
                                     }));
                                 }
                             }
@@ -565,6 +572,19 @@ namespace NppKate.Modules.GitCore
         private void showLogFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
             RunTortoiseCommandCurrentFile(TortoiseGitCommand.Log);
+        }
+
+        private void findInLogMenuItem_Click(object sender, EventArgs e)
+        {
+            var node = tvRepositories.SelectedNode;
+            var path = GitCore.Instance.GetRepositoryByName(node?.Name)?.Path;
+            if (path != null)
+            {
+                var searchDialog = new TortoiseLogSearch();
+                searchDialog.Init(_manager);
+                searchDialog.RepositoryPath = path;
+                searchDialog.Show();
+            }
         }
     }
 

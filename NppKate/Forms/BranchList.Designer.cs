@@ -77,9 +77,10 @@ namespace NppKate.Forms
             // 
             this.rbAll.AutoSize = true;
             this.rbAll.Checked = true;
+            this.rbAll.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.rbAll.Location = new System.Drawing.Point(12, 269);
             this.rbAll.Name = "rbAll";
-            this.rbAll.Size = new System.Drawing.Size(44, 17);
+            this.rbAll.Size = new System.Drawing.Size(43, 17);
             this.rbAll.TabIndex = 1;
             this.rbAll.TabStop = true;
             this.rbAll.Text = "Все";
@@ -89,9 +90,10 @@ namespace NppKate.Forms
             // rbLocal
             // 
             this.rbLocal.AutoSize = true;
+            this.rbLocal.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.rbLocal.Location = new System.Drawing.Point(54, 269);
             this.rbLocal.Name = "rbLocal";
-            this.rbLocal.Size = new System.Drawing.Size(83, 17);
+            this.rbLocal.Size = new System.Drawing.Size(82, 17);
             this.rbLocal.TabIndex = 2;
             this.rbLocal.Text = "Локальные";
             this.rbLocal.UseVisualStyleBackColor = true;
@@ -100,9 +102,10 @@ namespace NppKate.Forms
             // rbRemote
             // 
             this.rbRemote.AutoSize = true;
+            this.rbRemote.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.rbRemote.Location = new System.Drawing.Point(143, 269);
             this.rbRemote.Name = "rbRemote";
-            this.rbRemote.Size = new System.Drawing.Size(83, 17);
+            this.rbRemote.Size = new System.Drawing.Size(82, 17);
             this.rbRemote.TabIndex = 3;
             this.rbRemote.Text = "Удаленные";
             this.rbRemote.UseVisualStyleBackColor = true;
@@ -110,6 +113,7 @@ namespace NppKate.Forms
             // 
             // bOk
             // 
+            this.bOk.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bOk.Location = new System.Drawing.Point(313, 266);
             this.bOk.Name = "bOk";
             this.bOk.Size = new System.Drawing.Size(75, 23);
@@ -121,6 +125,7 @@ namespace NppKate.Forms
             // bCancel
             // 
             this.bCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.bCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bCancel.Location = new System.Drawing.Point(232, 266);
             this.bCancel.Name = "bCancel";
             this.bCancel.Size = new System.Drawing.Size(75, 23);
