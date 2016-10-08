@@ -1,4 +1,8 @@
 version: 0.5.1.{build}
+branches:
+  except:
+  - wiki-content
+  - gh-pages
 skip_tags: true
 configuration:
 - Debug
