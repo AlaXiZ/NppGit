@@ -3,9 +3,9 @@
 ##Собранный плагин
 Скачать последний релиз плагина можно [здесь](https://github.com/schadin/NppKate/releases/latest)
 ##Статус сборки
-### Ветка master
+##### Ветка master
 [![Build status master](https://ci.appveyor.com/api/projects/status/0juypbxi4ew49ug5/branch/master?svg=true)](https://ci.appveyor.com/project/schadin/nppgit-wwn5y/branch/master) 
-### Ветка develop
+##### Ветка develop
 [![Build status develop](https://ci.appveyor.com/api/projects/status/0juypbxi4ew49ug5/branch/develop?svg=true)](https://ci.appveyor.com/project/schadin/nppgit-wwn5y/branch/develop)
 
 
