@@ -141,6 +141,7 @@
     <Compile Include="Common\IDockableManager.cs" />
     <Compile Include="Common\IDockDialog.cs" />
     <Compile Include="Common\IFormManager.cs" />
+    <Compile Include="Common\IResourceManager.cs" />
     <Compile Include="Common\LoggerUtil.cs" />
     <Compile Include="Common\ResourceManager.cs" />
     <Compile Include="Common\SimpleDialog.cs">

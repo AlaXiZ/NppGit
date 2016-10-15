@@ -33,33 +33,25 @@ using System.Runtime.InteropServices;
 
 namespace NppKate.Common
 {
-    public class ResourceManager : IDisposable
+    public class ResourceManager : IResourceManager, IDisposable
     {
         private const int ToolbarIconSize = 16;
-        private readonly IntPtr _hResourceDll;
         private readonly Dictionary<string, IntPtr> _resourceCache;
+        private readonly List<IntPtr> _hResources;
 
         public ResourceManager()
         {
             _resourceCache = new Dictionary<string, IntPtr>();
-            var dllPath = Path.Combine(Npp.NppUtils.PluginDir, Properties.Resources.ExternalResourceDll);
-            if (!File.Exists(dllPath))
-            {
-                throw new Exception($"File with resources {dllPath} not exists!");
-            }
-
-            _hResourceDll = Interop.Win32.LoadLibraryEx(dllPath, IntPtr.Zero, Interop.LoadLibraryFlags.LOAD_LIBRARY_AS_DATAFILE);
-            if (_hResourceDll == IntPtr.Zero)
-            {
-                throw new Exception($"Library {dllPath} not loaded!");
-            }
+            _hResources = new List<IntPtr>();
+            var path = Path.Combine(Npp.NppUtils.PluginDir, Properties.Resources.ExternalResourceDll);
+            AddImageLibrary(path);
         }
 
         public void Dispose()
         {
-            if (_hResourceDll != IntPtr.Zero)
+            foreach(var h in _hResources)
             {
-                Interop.Win32.FreeLibrary(_hResourceDll);
+                Marshal.FreeHGlobal(h);
             }
             foreach (var h in _resourceCache.Values)
             {
@@ -78,12 +70,43 @@ namespace NppKate.Common
             if (_resourceCache.ContainsKey(resourceName))
                 return _resourceCache[resourceName];
 
-            var handle = Interop.Win32.LoadImage(_hResourceDll, resourceName, Interop.Win32.IMAGE_BITMAP,
-                width, height, Interop.Win32.LR_LOADMAP3DCOLORS | Interop.Win32.LR_LOADTRANSPARENT);
-            _resourceCache.Add(resourceName, handle);
-            return handle;
+            IntPtr handleLibrary = IntPtr.Zero;
+            foreach (var h in _hResources)
+            {
+                var fHandle = Interop.Win32.FindResource(h, resourceName, Interop.Win32.RT_BITMAP);
+                if (fHandle != IntPtr.Zero)
+                {
+                    handleLibrary = h;
+                    break;
+                }
+            }
+            if (handleLibrary != IntPtr.Zero)
+            {
+                var handle = Interop.Win32.LoadImage(handleLibrary, resourceName, Interop.Win32.IMAGE_BITMAP,
+                    width, height, Interop.Win32.LR_LOADMAP3DCOLORS | Interop.Win32.LR_LOADTRANSPARENT);
+                _resourceCache.Add(resourceName, handle);
+                return handle;
+            }
+            else
+            {
+                return IntPtr.Zero;
+            }
         }
 
-
+        public void AddImageLibrary(string path)
+        {
+            if (File.Exists(path))
+            {
+                var handle = Interop.Win32.LoadLibraryEx(path, IntPtr.Zero, Interop.LoadLibraryFlags.LOAD_LIBRARY_AS_DATAFILE);
+                if (handle == IntPtr.Zero)
+                {
+                    System.Diagnostics.Debug.WriteLine($"AddImageLibrary::Library {path} not loaded!");
+                }
+                else
+                {
+                    _hResources.Add(handle);
+                }
+            }
+        }
     }
 }
