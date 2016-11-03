@@ -146,11 +146,10 @@ namespace NppKate.Modules.TortoiseGitFeatures
         {
             Logger.Debug("Create toolbar");
 
-            if (Settings.TortoiseGitProc.ShowToolbar)
-                foreach (var i in _icons)
-                {
-                    _manager.AddToolbarButton(i.Key, i.Value);
-                }
+            foreach (var i in _icons)
+            {
+                _manager.AddToolbarButton(i.Key, i.Value);
+            }
             _icons.Clear();
         }
 
