@@ -175,6 +175,7 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
+    <Image Include="C:\Users\ashchadin\Desktop\application-terminal.bmp" />
     <Image Include="Resources\Icons\apply_patch.bmp" />
     <Image Include="Resources\Icons\blame.bmp" />
     <Image Include="Resources\Icons\cleanup.bmp" />

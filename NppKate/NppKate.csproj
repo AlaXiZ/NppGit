@@ -179,6 +179,13 @@
     <Compile Include="Forms\SettingsDialog.Designer.cs">
       <DependentUpon>SettingsDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Modules\ConsoleLog\Console.cs" />
+    <Compile Include="Modules\ConsoleLog\LogForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Modules\ConsoleLog\LogForm.Designer.cs">
+      <DependentUpon>LogForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Modules\GitCore\RepositoryChangedEventArgs.cs" />
     <Compile Include="Modules\GitCore\TortoiseLogSearch.cs">
       <SubType>Form</SubType>
@@ -269,6 +276,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\SettingsDialog.resx">
       <DependentUpon>SettingsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Modules\ConsoleLog\LogForm.resx">
+      <DependentUpon>LogForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Modules\GitCore\TortoiseLogSearch.resx">
       <DependentUpon>TortoiseLogSearch.cs</DependentUpon>
@@ -400,6 +410,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\arrow-curve.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\application-terminal.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildProjectDirectory)\DllExport\NppPlugin.DllExport.targets" />

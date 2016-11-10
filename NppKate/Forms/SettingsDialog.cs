@@ -25,12 +25,12 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-using NppKate.Common;
-using NppKate.Modules.TortoiseGitFeatures;
-using NppKate.Npp;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using NppKate.Common;
+using NppKate.Modules.TortoiseGitFeatures;
+using NppKate.Npp;
 
 namespace NppKate.Forms
 {
@@ -106,6 +106,7 @@ namespace NppKate.Forms
             chlModules.SetItemChecked(1, Settings.Modules.Git);
             chlModules.SetItemChecked(2, Settings.Modules.SQLIDE);
             chlModules.SetItemChecked(3, Settings.Modules.Snippets);
+            chlModules.SetItemChecked(4, Settings.Modules.LogConsole);
 
             //chlModules.SetItemChecked(4, Settings.Modules.PSSE);
 
@@ -187,6 +188,7 @@ namespace NppKate.Forms
             Settings.Modules.Git = chlModules.GetItemChecked(1);
             Settings.Modules.SQLIDE = chlModules.GetItemChecked(2);
             Settings.Modules.Snippets = chlModules.GetItemChecked(3);
+            Settings.Modules.LogConsole = chlModules.GetItemChecked(4);
 
             // Snippet settings
             Settings.Snippets.IsGroupByCategory = chbGroupByCategory.Checked;

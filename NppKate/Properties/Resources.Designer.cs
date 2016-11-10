@@ -141,6 +141,15 @@ namespace NppKate.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Console log.
+        /// </summary>
+        internal static string CmdConsoleLog {
+            get {
+                return ResourceManager.GetString("CmdConsoleLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Quick search.
         /// </summary>
         internal static string CmdQuickSearch {
@@ -164,6 +173,16 @@ namespace NppKate.Properties {
         internal static System.Drawing.Bitmap commit {
             get {
                 object obj = ResourceManager.GetObject("commit", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap console {
+            get {
+                object obj = ResourceManager.GetObject("console", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
