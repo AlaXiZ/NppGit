@@ -32,7 +32,7 @@ namespace NppKate.Modules.GitCore
     {
         public string Name
         {
-            get; protected set;
+            get; set;
         }
 
         public string Path
@@ -40,10 +40,10 @@ namespace NppKate.Modules.GitCore
             get; protected set;
         }
 
-        public RepositoryLink(string path)
+        public RepositoryLink(string path, string name = null)
         {
             Path = path;
-            Name = GitCore.GetRepoName(path);
+            Name = name ?? GitCore.GetRepoName(path);
         }
 
         public override bool Equals(object obj)

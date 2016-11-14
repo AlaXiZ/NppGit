@@ -170,12 +170,12 @@ namespace NppKate.Modules.GitCore
             {
                 _doc = XDocument.Load(fileName);
                 _repos = (from e in _doc.Descendants("Repository")
-                          select e).ToDictionary(e => e.Attribute("Name")?.Value, (e) => new RepositoryLink(e.Value));
-                foreach (var name in _repos.Keys.ToList())
+                          select e).ToDictionary(e => e.Attribute("Name")?.Value, (e) => new RepositoryLink(e.Value, e.Attribute("Name")?.Value));
+                foreach (var v in _repos.Values.ToList())
                 {
-                    if (_repos[name].Name == null)
+                    if (!IsValidGitRepo(v.Path))
                     {
-                        _repos.Remove(name);
+                        _repos.Remove(v.Name);
                     }
                 }
                 if (_repos.ContainsKey(Settings.GitCore.LastActiveRepository))
@@ -221,7 +221,7 @@ namespace NppKate.Modules.GitCore
             {
                 var path = GetRootDir(NppUtils.CurrentFileDir);
                 if (path == null) return null;
-                var name = GetRepoName(path);
+                var name = FindRepoByPath(path);
                 return _repos.ContainsKey(name) ? _repos[name] : null;
             }
         }
@@ -237,9 +237,26 @@ namespace NppKate.Modules.GitCore
             var newRepo = new RepositoryLink(newPath);
 
             var oldName = FindRepoByPath(newPath);
-            if (!string.IsNullOrWhiteSpace(oldName))
+            if (!string.IsNullOrWhiteSpace(oldName) && _repos[oldName].Path == newPath) // Репозиторий нашли по пути
             {
-                UpdateRepository(oldName, newRepo);
+                if (oldName != newRepo.Name && !_repos.ContainsKey(newRepo.Name)) // но имена не совпадают
+                    UpdateRepository(oldName, newRepo);
+                else
+                    newRepo.Name = oldName;
+            }
+            else // не нашли по пути
+            {
+                while (true)
+                {
+                    if (_repos.ContainsKey(newRepo.Name))
+                    {
+                        newRepo.Name += "_1";
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
             }
 
             if (_currentRepo != null)
@@ -377,7 +394,7 @@ namespace NppKate.Modules.GitCore
         {
             Logger.Trace($"IsValidGitRepo path={path}");
             var repoDir = GetRootDir(path);
-            return !string.IsNullOrEmpty(repoDir) && Repository.IsValid(repoDir);
+            return !string.IsNullOrEmpty(repoDir) && Directory.Exists(path) && Repository.IsValid(repoDir);
         }
 
         public static string GetRootDir(string path)
