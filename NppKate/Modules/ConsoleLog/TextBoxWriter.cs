@@ -25,27 +25,26 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-using System.Drawing;
-using NppKate.Common;
-using NppKate.Forms;
+using System.IO;
+using System.Text;
+using System.Windows.Forms;
 
 namespace NppKate.Modules.ConsoleLog
 {
-    public partial class LogForm : DockDialog, FormDockable
+    public class TextBoxWriter : TextWriter
     {
-        TextBoxWriter _writer;
-        public LogForm()
+        private TextBox _output;
+        public override Encoding Encoding => Encoding.UTF8;
+
+        public TextBoxWriter(TextBox textBox)
         {
-            InitializeComponent();
-            Text = Title;
-            _writer = new TextBoxWriter(tbLog);
-            System.Console.SetOut(_writer);
+            _output = textBox;
         }
 
-        public Bitmap TabIcon => null;
-
-        public string Title => Properties.Resources.CmdConsoleLog;
-
-        public void ChangeContext() { }
+        public override void Write(char value)
+        {
+            base.Write(value);
+            _output?.AppendText(value.ToString());
+        }
     }
 }
