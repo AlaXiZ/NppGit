@@ -25,11 +25,11 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+using System.IO;
+using System.Linq;
 using NLog;
 using NppKate.Common;
 using NppKate.Npp;
-using System.IO;
-using System.Linq;
 
 namespace NppKate.Modules.SnippetFeature
 {

@@ -114,5 +114,8 @@
     <Image Include="Resources\Icons\list.bmp">
       <Filter>Файлы ресурсов</Filter>
     </Image>
+    <Image Include="C:\Users\ashchadin\Desktop\application-terminal.bmp">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
   </ItemGroup>
 </Project>

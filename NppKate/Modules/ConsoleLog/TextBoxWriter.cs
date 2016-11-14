@@ -25,34 +25,26 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-namespace NppKate.Resources
+using System.IO;
+using System.Text;
+using System.Windows.Forms;
+
+namespace NppKate.Modules.ConsoleLog
 {
-    public static class ExternalResourceName
+    public class TextBoxWriter : TextWriter
     {
-        public const string IDB_PATCH_APPLY = "#102";
-        public const string IDB_BLAME = "#103";
-        public const string IDB_CLEANUP = "#104";
-        public const string IDB_COMMIT = "#105";
-        public const string IDB_COMPARE = "#106";
-        public const string IDB_PATCH_CREATE = "#107";
-        public const string IDB_CREATE_REPOS = "#108";
-        public const string IDB_CREDENTIAL = "#109";
-        public const string IDB_DAEMON = "#110";
-        public const string IDB_EXPORT = "#111";
-        public const string IDB_LOG = "#112";
-        public const string IDB_MERGE = "#113";
-        public const string IDB_PULL = "#114";
-        public const string IDB_PUSH = "#115";
-        public const string IDB_REBASE = "#116";
-        public const string IDB_REFRESH = "#117";
-        public const string IDB_RENAME = "#118";
-        public const string IDB_REPO_BROWSER = "#119";
-        public const string IDB_STASH_POP = "#120";
-        public const string IDB_STASH_SAVE = "#121";
-        public const string IDB_SWITCH = "#122";
-        public const string IDB_REPOSITORIES = "#123";
-        public const string IDB_SNIPPETS = "#124";
-        public const string IDB_LIST = "#125";
-        public const string IDB_CONSOLE = "#126";
+        private TextBox _output;
+        public override Encoding Encoding => Encoding.UTF8;
+
+        public TextBoxWriter(TextBox textBox)
+        {
+            _output = textBox;
+        }
+
+        public override void Write(char value)
+        {
+            base.Write(value);
+            _output?.AppendText(value.ToString());
+        }
     }
 }
