@@ -147,6 +147,8 @@
     <Compile Include="Common\SimpleDialog.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Common\VCS\VCSCommand.cs" />
+    <Compile Include="Common\VCS\VCSShell.cs" />
     <Compile Include="DllExport\DllExportAttribute.cs" />
     <Compile Include="Forms\FormDockable.cs" />
     <Compile Include="Forms\About.cs">
