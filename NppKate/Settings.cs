@@ -356,5 +356,18 @@ namespace NppKate
             }
         }
         #endregion
+
+        #region "Git Bash"
+        public static class GitBash
+        {
+            public static string BinPath
+            {
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                get { return Get(""); }
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                set { Set(value); }
+            }
+        }
+        #endregion
     }
 }
