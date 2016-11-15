@@ -25,6 +25,7 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -227,6 +228,8 @@ namespace NppKate
                 [MethodImpl(MethodImplOptions.NoInlining)]
                 set { Set(value); }
             }
+
+            [Obsolete("Deprecated", true)]
             public static bool ShowToolbar
             {
                 [MethodImpl(MethodImplOptions.NoInlining)]
@@ -234,6 +237,8 @@ namespace NppKate
                 [MethodImpl(MethodImplOptions.NoInlining)]
                 set { Set(value); }
             }
+
+            [Obsolete("Deprecated", true)]
             public static uint ButtonMask
             {
                 [MethodImpl(MethodImplOptions.NoInlining)]
@@ -250,12 +255,14 @@ namespace NppKate
             }
 
             [MethodImpl(MethodImplOptions.NoInlining)]
+            [Obsolete("Deprecated", true)]
             public static bool GetButtonVisible(string command)
             {
                 return Get(false, key: command);
             }
 
             [MethodImpl(MethodImplOptions.NoInlining)]
+            [Obsolete("Deprecated", true)]
             public static void SetButtonVisible(string command, bool value)
             {
                 Set(value, key: command);
