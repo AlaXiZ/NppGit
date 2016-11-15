@@ -136,6 +136,7 @@ namespace NppKate
         }
         public static class Modules
         {
+            private const string IniSection = "Modules";
             public static bool TortoiseGit
             {
                 [MethodImpl(MethodImplOptions.NoInlining)]
@@ -171,6 +172,24 @@ namespace NppKate
                 get { return Get(true); }
                 [MethodImpl(MethodImplOptions.NoInlining)]
                 set { Set(value); }
+            }
+
+            [MethodImpl(MethodImplOptions.NoInlining)]
+            public static bool NeedCurrentModuleLoad()
+            {
+                var mth = new StackTrace().GetFrame(1).GetMethod();
+                var cls = mth.ReflectedType.Name;
+                return GetModuleState(cls);
+            }
+
+            public static bool GetModuleState(string module)
+            {
+                return Get(true, IniSection, module);
+            }
+
+            public static void SetModuleState(string module, bool value)
+            {
+                Set(value, IniSection, module);
             }
         }
 
