@@ -196,6 +196,7 @@
     <Compile Include="Modules\GitCore\TortoiseLogSearch.Designer.cs">
       <DependentUpon>TortoiseLogSearch.cs</DependentUpon>
     </Compile>
+    <Compile Include="Modules\GitFeatures\GitBash.cs" />
     <Compile Include="Modules\SnippetFeature\ISnippetManager.cs" />
     <Compile Include="Modules\SnippetFeature\ISnippetTextBuilder.cs" />
     <Compile Include="Modules\SnippetFeature\ISnippetValidator.cs" />
