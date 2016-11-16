@@ -197,6 +197,27 @@
       <DependentUpon>TortoiseLogSearch.cs</DependentUpon>
     </Compile>
     <Compile Include="Modules\GitFeatures\GitBash.cs" />
+    <Compile Include="Modules\GitFeatures\GitCommands\Add.cs" />
+    <Compile Include="Modules\GitFeatures\GitCommands\Bisect.cs" />
+    <Compile Include="Modules\GitFeatures\GitCommands\Branch.cs" />
+    <Compile Include="Modules\GitFeatures\GitCommands\Checkout.cs" />
+    <Compile Include="Modules\GitFeatures\GitCommands\Clone.cs" />
+    <Compile Include="Modules\GitFeatures\GitCommands\Commit.cs" />
+    <Compile Include="Modules\GitFeatures\GitCommands\Diff.cs" />
+    <Compile Include="Modules\GitFeatures\GitCommands\Fetch.cs" />
+    <Compile Include="Modules\GitFeatures\GitCommands\Log.cs" />
+    <Compile Include="Modules\GitFeatures\GitCommands\Merge.cs" />
+    <Compile Include="Modules\GitFeatures\GitCommands\Mv.cs" />
+    <Compile Include="Modules\GitFeatures\GitCommands\Pull.cs" />
+    <Compile Include="Modules\GitFeatures\GitCommands\Push.cs" />
+    <Compile Include="Modules\GitFeatures\GitCommands\Init.cs" />
+    <Compile Include="Modules\GitFeatures\GitCommands\Rebase.cs" />
+    <Compile Include="Modules\GitFeatures\GitCommands\Reset.cs" />
+    <Compile Include="Modules\GitFeatures\GitCommands\Rm.cs" />
+    <Compile Include="Modules\GitFeatures\GitCommands\Stash.cs" />
+    <Compile Include="Modules\GitFeatures\GitCommands\Status.cs" />
+    <Compile Include="Modules\GitFeatures\GitCommands\Tag.cs" />
+    <Compile Include="Modules\GitFeatures\GitShell.cs" />
     <Compile Include="Modules\SnippetFeature\ISnippetManager.cs" />
     <Compile Include="Modules\SnippetFeature\ISnippetTextBuilder.cs" />
     <Compile Include="Modules\SnippetFeature\ISnippetValidator.cs" />

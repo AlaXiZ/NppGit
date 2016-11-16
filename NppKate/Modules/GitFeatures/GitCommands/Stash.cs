@@ -25,58 +25,14 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+using NppKate.Common.VCS;
 
-using System.Threading.Tasks;
-
-namespace NppKate.Common.VCS
+namespace NppKate.Modules.GitFeatures.GitCommands
 {
-    public abstract class VCSShell
+    public class Stash : VCSCommand
     {
-        protected string _executePath;
-        protected string _exe;
-
-        public VCSShell(string shellExecutePath)
+        public Stash() : base(nameof(Stash).ToLower())
         {
-            _executePath = shellExecutePath;
-        }
-
-        public string ShellExecutePath
-        {
-            get { return _executePath; }
-        }
-
-        public bool IsWaitShell
-        {
-            get; set;
-        }
-
-        public virtual void ExecuteCommand(VCSCommand command)
-        {
-            var task = new Task(() =>
-            {
-                var pi = new System.Diagnostics.ProcessStartInfo
-                {
-                    FileName = System.IO.Path.Combine(_executePath, _exe),
-                    WorkingDirectory = command.Path,
-                    Arguments = command.CommandString,
-                    CreateNoWindow = true,
-                    UseShellExecute = false,
-                    RedirectStandardOutput = true
-                };
-
-                var process = new System.Diagnostics.Process();
-                process.StartInfo = pi;
-                process.OutputDataReceived += (o, e) => System.Console.Write(e.Data);
-
-                process.Start();
-                process.BeginOutputReadLine();
-                process.WaitForExit();
-                process.CancelOutputRead();
-            });
-
-            task.Start();
-            if (IsWaitShell)
-                task.Wait();
         }
     }
 }

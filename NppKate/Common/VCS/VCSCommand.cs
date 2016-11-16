@@ -33,11 +33,14 @@ namespace NppKate.Common.VCS
     public abstract class VCSCommand
     {
         private List<KeyValuePair<string, string>> _params;
-        protected string NamePattern = "{0}";
-        protected string PathPattern = "{1}";
-        public VCSCommand()
+        private List<string> _customParams;
+
+        protected string SimplePattern = "{0}";
+        public VCSCommand(string name)
         {
+            Name = name;
             _params = new List<KeyValuePair<string, string>>();
+            _customParams = new List<string>();
         }
         public string CommandString
         {
@@ -50,6 +53,11 @@ namespace NppKate.Common.VCS
                     if (!string.IsNullOrEmpty(kv.Value))
                         buffer.AppendFormat(kv.Key, kv.Value);
                 }
+                foreach (var v in _customParams)
+                {
+                    if (!string.IsNullOrEmpty(v))
+                        buffer.AppendFormat(SimplePattern, v);
+                }
                 buffer.Replace("/n", "").Replace("/r", " ");
                 return buffer.ToString();
             }
@@ -57,16 +65,17 @@ namespace NppKate.Common.VCS
         protected virtual void PutParams()
         {
             _params.Clear();
-            PutParam(NamePattern, Name);
-            //PutParam(PathPattern, Path);
+            PutParam(SimplePattern, Name);
         }
         protected void PutParam(string pattern, string value)
         {
-            _params.Add(new KeyValuePair<string, string>(pattern, Name));
+            _params.Add(new KeyValuePair<string, string>(pattern, value));
         }
 
-        public string Name { get; set; }
+        public string Name { get; private set; }
         public string Path { get; set; }
+
+        public List<string> CustomParams => _customParams;
     }
 
 }
