@@ -27,6 +27,7 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using NppKate.Common;
 using NppKate.Modules.TortoiseGitFeatures;
@@ -78,7 +79,27 @@ namespace NppKate.Forms
                 udNestedLEvel.Items.Add(i);
             }
             _commandManager = commandManager;
+
+            LoadModuleList();
+
             LoadSettings();
+        }
+
+        private void LoadModuleList()
+        {
+            chlModules.Items.Clear();
+
+            var imodule = typeof(IModule);
+            var types = AppDomain.CurrentDomain.GetAssemblies()
+                        .SelectMany(s => s.GetTypes())
+                        .Where(p => imodule.IsAssignableFrom(p))
+                        .Where(p => p.IsClass)                    // Нужны только классы
+                        .OrderBy(p => p.Name);                    // Отсортируем по имени
+            // Создаем модули, добавляем в менеджер
+            foreach (var t in types)
+            {
+                chlModules.Items.Add(t.Name, Settings.Modules.GetModuleState(t.Name));
+            }
         }
 
         private void LoadSettings()
@@ -101,14 +122,6 @@ namespace NppKate.Forms
             cbLogLevel.Items.Clear();
             cbLogLevel.Items.AddRange(_logLevel.ToArray());
             cbLogLevel.Text = Settings.CommonSettings.LogLevel;
-
-            chlModules.SetItemChecked(0, Settings.Modules.TortoiseGit);
-            chlModules.SetItemChecked(1, Settings.Modules.Git);
-            chlModules.SetItemChecked(2, Settings.Modules.SQLIDE);
-            chlModules.SetItemChecked(3, Settings.Modules.Snippets);
-            chlModules.SetItemChecked(4, Settings.Modules.LogConsole);
-
-            //chlModules.SetItemChecked(4, Settings.Modules.PSSE);
 
             chbGroupByCategory.Checked = Settings.Snippets.IsGroupByCategory;
             chbHideByExt.Checked = Settings.Snippets.IsHideByExtention;
@@ -175,8 +188,6 @@ namespace NppKate.Forms
         {
             Settings.CommonSettings.IsSetDefaultShortcut = chbDefaultShortcut.Checked;
             Settings.CommonSettings.LogLevel = cbLogLevel.Text;
-            //Settings.TortoiseGitProc.ShowToolbar = chbTGToolbar.Checked;
-            //Settings.TortoiseGitProc.ButtonMask = GetButtonMask();
             Settings.TortoiseGitProc.Path = tbTGProcPath.Text;
             SaveTortoiseGitCommand();
             Settings.Functions.SHACount = byte.Parse(mtxbSHACount.Text);
@@ -184,11 +195,10 @@ namespace NppKate.Forms
             Settings.GitCore.AutoExpand = chbAutoExpand.Checked;
 
             // Modules state
-            Settings.Modules.TortoiseGit = chlModules.GetItemChecked(0);
-            Settings.Modules.Git = chlModules.GetItemChecked(1);
-            Settings.Modules.SQLIDE = chlModules.GetItemChecked(2);
-            Settings.Modules.Snippets = chlModules.GetItemChecked(3);
-            Settings.Modules.LogConsole = chlModules.GetItemChecked(4);
+            for (int i = 0; i < chlModules.Items.Count; i++)
+            {
+                Settings.Modules.SetModuleState((string)chlModules.Items[i], chlModules.GetItemChecked(i));
+            }
 
             // Snippet settings
             Settings.Snippets.IsGroupByCategory = chbGroupByCategory.Checked;

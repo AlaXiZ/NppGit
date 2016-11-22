@@ -165,7 +165,7 @@ namespace NppKate.Forms
             this.gbUsingModules.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.gbUsingModules.Location = new System.Drawing.Point(8, 56);
             this.gbUsingModules.Name = "gbUsingModules";
-            this.gbUsingModules.Size = new System.Drawing.Size(389, 65);
+            this.gbUsingModules.Size = new System.Drawing.Size(389, 123);
             this.gbUsingModules.TabIndex = 8;
             this.gbUsingModules.TabStop = false;
             this.gbUsingModules.Text = "Включенные модули*";
@@ -174,16 +174,10 @@ namespace NppKate.Forms
             // 
             this.chlModules.Dock = System.Windows.Forms.DockStyle.Fill;
             this.chlModules.FormattingEnabled = true;
-            this.chlModules.Items.AddRange(new object[] {
-            "Tortoise Git",
-            "Git Features",
-            "SQL IDE",
-            "Snippets",
-            "Log Console"});
             this.chlModules.Location = new System.Drawing.Point(3, 16);
             this.chlModules.MultiColumn = true;
             this.chlModules.Name = "chlModules";
-            this.chlModules.Size = new System.Drawing.Size(383, 46);
+            this.chlModules.Size = new System.Drawing.Size(383, 104);
             this.chlModules.TabIndex = 0;
             this.chlModules.SelectedValueChanged += new System.EventHandler(this.chlModules_SelectedValueChanged);
             // 

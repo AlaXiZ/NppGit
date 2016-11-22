@@ -143,6 +143,7 @@
     <Compile Include="Common\IFormManager.cs" />
     <Compile Include="Common\IResourceManager.cs" />
     <Compile Include="Common\LoggerUtil.cs" />
+    <Compile Include="Common\ModuleInfo.cs" />
     <Compile Include="Common\ResourceManager.cs" />
     <Compile Include="Common\SimpleDialog.cs">
       <SubType>Form</SubType>

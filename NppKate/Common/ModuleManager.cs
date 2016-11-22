@@ -43,7 +43,7 @@ namespace NppKate.Common
 
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
-        private LinkedList<IModule> _modules;
+        private Dictionary<string, ModuleInfo> _modules;
         private bool _canEvent = false;
         private ulong _currentFormId = ulong.MaxValue;
         private LocalWindowsHook winHookProcRet;
@@ -68,7 +68,7 @@ namespace NppKate.Common
 
         public ModuleManager(ICommandManager commandManager, IFormManager formManager)
         {
-            _modules = new LinkedList<IModule>();
+            _modules = new Dictionary<string, ModuleInfo>();
             _services = new Dictionary<Type, object>();
             //
             _commandManager = commandManager;
@@ -134,18 +134,25 @@ namespace NppKate.Common
                 winHookProcRet.Uninstall();
             if (winHookProc != null && winHookProc.IsInstalled)
                 winHookProc.Uninstall();
-            foreach (var m in _modules)
-                if (m.IsNeedRun)
-                    m.Final();
+            foreach (var m in _modules.Values)
+                if (m.IsLoaded)
+                    m.Module.Final();
         }
 
         public void Init()
         {
             _resourceManager = new ResourceManager();
-            foreach (var m in _modules)
+            string[] keys = new string[_modules.Keys.Count];
+            _modules.Keys.CopyTo(keys, 0);
+            foreach(var key in keys)
             {
-                if (m.IsNeedRun)
-                    m.Init(this);
+                if (Settings.Modules.GetModuleState(key))
+                {
+                    _modules[key].Module.Init(this);
+                    var mi = _modules[key];
+                    mi.IsLoaded = true;
+                    _modules[key] = mi;
+                }
             }
 
             _commandManager.RegisterCommand("ModuleManager", "Sample context menu", DoContextMenu);// RegisterCommandItem(new CommandItem { Name = "Sample context menu", Hint = "Sample context menu", Action = DoContextMenu });
@@ -218,9 +225,10 @@ namespace NppKate.Common
 
         public void AddModule(IModule item)
         {
-            if (!_modules.Contains(item))
+            var key = item.GetType().Name;
+            if (!_modules.ContainsKey(key))
             {
-                _modules.AddLast(item);
+                _modules.Add(key, new ModuleInfo { Module = item, IsLoaded = false });
             }
         }
 
