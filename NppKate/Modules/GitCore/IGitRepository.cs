@@ -30,7 +30,7 @@ using System.Collections.Generic;
 
 namespace NppKate.Modules.GitCore
 {
-    public interface IGitCore
+    public interface IGitRepository
     {
         // Event
         event Common.EventHandler<RepositoryChangedEventArgs> OnActiveRepositoryChanged;

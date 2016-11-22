@@ -38,7 +38,7 @@ using NppKate.Npp;
 
 namespace NppKate.Modules.GitCore
 {
-    public class GitCore : IModule, IGitCore
+    public class GitRepository : IModule, IGitRepository
     {
         private const string CErrorEventTemplate = "Error in event {0}";
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
@@ -126,9 +126,9 @@ namespace NppKate.Modules.GitCore
         private readonly string _filename;
 
         #region Singletone
-        private static GitCore _instance;
+        private static GitRepository _instance;
         private static readonly object ObjLock = new object();
-        public static IGitCore Instance
+        public static IGitRepository Instance
         {
             get
             {
@@ -157,13 +157,13 @@ namespace NppKate.Modules.GitCore
             if (_instance != null) return;
             lock (ObjLock)
                 if (_instance == null)
-                    _instance = new GitCore();
+                    _instance = new GitRepository();
         }
 
         #endregion
 
         #region GitCore
-        private GitCore()
+        private GitRepository()
         {
             var fileName = Path.Combine(NppUtils.ConfigDir, Properties.Resources.PluginName, Properties.Resources.RepositoriesXml);
             if (File.Exists(fileName))

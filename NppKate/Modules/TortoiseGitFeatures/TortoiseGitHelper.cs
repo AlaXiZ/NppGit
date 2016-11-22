@@ -242,7 +242,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
         {
             if (CheckRepoAndShowError())
             {
-                var dirPath = GitCore.GitCore.Instance.ActiveRepository.Path;
+                var dirPath = GitCore.GitRepository.Instance.ActiveRepository.Path;
                 StartCommand(BuildCommandString(TortoiseGitCommand.Log, dirPath));
             }
         }
@@ -251,7 +251,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
         {
             if (CheckRepoAndShowError())
             {
-                var dirPath = GitCore.GitCore.Instance.ActiveRepository.Path;
+                var dirPath = GitCore.GitRepository.Instance.ActiveRepository.Path;
                 StartCommand(BuildCommandString(TortoiseGitCommand.Fetch, dirPath));
             }
         }
@@ -260,7 +260,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
         {
             if (CheckRepoAndShowError())
             {
-                var dirPath = GitCore.GitCore.Instance.ActiveRepository.Path;
+                var dirPath = GitCore.GitRepository.Instance.ActiveRepository.Path;
                 StartCommand(BuildCommandString(TortoiseGitCommand.Pull, dirPath));
             }
         }
@@ -269,7 +269,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
         {
             if (CheckRepoAndShowError())
             {
-                var dirPath = GitCore.GitCore.Instance.ActiveRepository.Path;
+                var dirPath = GitCore.GitRepository.Instance.ActiveRepository.Path;
                 StartCommand(BuildCommandString(TortoiseGitCommand.Push, dirPath));
             }
         }
@@ -278,7 +278,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
         {
             if (CheckRepoAndShowError())
             {
-                var dirPath = GitCore.GitCore.Instance.ActiveRepository.Path;
+                var dirPath = GitCore.GitRepository.Instance.ActiveRepository.Path;
                 StartCommand(BuildCommandString(TortoiseGitCommand.Commit, dirPath));
             }
         }
@@ -300,7 +300,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
         {
             if (CheckRepoAndShowError())
             {
-                var dirPath = GitCore.GitCore.Instance.ActiveRepository.Path;
+                var dirPath = GitCore.GitRepository.Instance.ActiveRepository.Path;
                 StartCommand(BuildCommandString(TortoiseGitCommand.Switch, dirPath));
             }
         }
@@ -309,7 +309,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
         {
             if (CheckRepoAndShowError())
             {
-                var dirPath = GitCore.GitCore.Instance.ActiveRepository.Path;
+                var dirPath = GitCore.GitRepository.Instance.ActiveRepository.Path;
                 var msg = "/msg:" + DateTime.Now.ToString();
                 StartCommand(BuildCommandString(TortoiseGitCommand.StashSave, dirPath, additionalParam: msg));
             }
@@ -319,7 +319,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
         {
             if (CheckRepoAndShowError())
             {
-                var dirPath = GitCore.GitCore.Instance.ActiveRepository.Path;
+                var dirPath = GitCore.GitRepository.Instance.ActiveRepository.Path;
                 StartCommand(BuildCommandString(TortoiseGitCommand.StashPop, dirPath));
             }
         }
@@ -328,7 +328,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
         {
             if (CheckRepoAndShowError())
             {
-                var dirPath = GitCore.GitCore.Instance.ActiveRepository.Path;
+                var dirPath = GitCore.GitRepository.Instance.ActiveRepository.Path;
                 StartCommand(BuildCommandString(TortoiseGitCommand.RepoStatus, dirPath));
             }
         }
@@ -349,7 +349,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
         {
             if (CheckRepoAndShowError())
             {
-                var path = GitCore.GitCore.Instance.ActiveRepository.Path;
+                var path = GitCore.GitRepository.Instance.ActiveRepository.Path;
                 StartCommand(BuildCommandString(TortoiseGitCommand.Rebase, path));
             }
         }
@@ -374,7 +374,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
         {
             if (CheckRepoAndShowError())
             {
-                var path = GitCore.GitCore.Instance.ActiveRepository.Path;
+                var path = GitCore.GitRepository.Instance.ActiveRepository.Path;
                 StartCommand(BuildCommandString(TortoiseGitCommand.RepoBrowser, path));
             }
         }
@@ -383,7 +383,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
         {
             if (CheckRepoAndShowError())
             {
-                var path = GitCore.GitCore.Instance.ActiveRepository.Path;
+                var path = GitCore.GitRepository.Instance.ActiveRepository.Path;
                 StartCommand(BuildCommandString(TortoiseGitCommand.StashApply, path));
             }
         }
@@ -392,7 +392,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
         {
             if (CheckRepoAndShowError())
             {
-                var path = GitCore.GitCore.Instance.ActiveRepository.Path;
+                var path = GitCore.GitRepository.Instance.ActiveRepository.Path;
                 StartCommand(BuildCommandString(TortoiseGitCommand.RefBrowse, path));
             }
         }
@@ -410,7 +410,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
         {
             if (CheckRepoAndShowError())
             {
-                var path = GitCore.GitCore.Instance.ActiveRepository.Path;
+                var path = GitCore.GitRepository.Instance.ActiveRepository.Path;
                 StartCommand(BuildCommandString(TortoiseGitCommand.Export, path));
             }
         }
@@ -419,7 +419,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
         {
             if (CheckRepoAndShowError())
             {
-                var path = GitCore.GitCore.Instance.ActiveRepository.Path;
+                var path = GitCore.GitRepository.Instance.ActiveRepository.Path;
                 StartCommand(BuildCommandString(TortoiseGitCommand.Merge, path));
             }
         }
@@ -428,7 +428,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
         {
             if (CheckRepoAndShowError())
             {
-                var path = GitCore.GitCore.Instance.ActiveRepository.Path;
+                var path = GitCore.GitRepository.Instance.ActiveRepository.Path;
                 StartCommand(BuildCommandString(TortoiseGitCommand.CleanUp, path));
             }
         }
@@ -465,7 +465,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
         {
             if (CheckRepoAndShowError())
             {
-                var path = GitCore.GitCore.Instance.ActiveRepository.Path;
+                var path = GitCore.GitRepository.Instance.ActiveRepository.Path;
                 StartCommand(BuildCommandString(TortoiseGitCommand.RefLog, path));
             }
         }
@@ -474,7 +474,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
         {
             if (CheckRepoAndShowError())
             {
-                var path = GitCore.GitCore.Instance.ActiveRepository.Path;
+                var path = GitCore.GitRepository.Instance.ActiveRepository.Path;
                 StartCommand(BuildCommandString(TortoiseGitCommand.RevisionGraph, path));
             }
         }
@@ -483,7 +483,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
         {
             if (CheckRepoAndShowError())
             {
-                var path = GitCore.GitCore.Instance.ActiveRepository.Path;
+                var path = GitCore.GitRepository.Instance.ActiveRepository.Path;
                 StartCommand(BuildCommandString(TortoiseGitCommand.Tag, path));
             }
         }
@@ -492,7 +492,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
         {
             if (CheckRepoAndShowError())
             {
-                var path = GitCore.GitCore.Instance.ActiveRepository.Path;
+                var path = GitCore.GitRepository.Instance.ActiveRepository.Path;
                 StartCommand(BuildCommandString(TortoiseGitCommand.Daemon, path));
             }
         }
@@ -502,7 +502,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
                 {
                     if (CheckRepoAndShowError())
                     {
-                        var path = GitCore.GitCore.Instance.ActiveRepository.Path;
+                        var path = GitRepository.GitRepository.Instance.ActiveRepository.Path;
                         StartCommand(BuildCommandString(TortoiseGitCommand.PGPfp, path));
                     }
                 }
@@ -540,7 +540,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
         {
             if (CheckRepoAndShowError())
             {
-                var path = GitCore.GitCore.Instance.ActiveRepository.Path;
+                var path = GitCore.GitRepository.Instance.ActiveRepository.Path;
                 StartCommand(BuildCommandString(TortoiseGitCommand.Resolve, path));
             }
         }
@@ -549,7 +549,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
         {
             if (CheckRepoAndShowError())
             {
-                var path = GitCore.GitCore.Instance.ActiveRepository.Path;
+                var path = GitCore.GitRepository.Instance.ActiveRepository.Path;
                 StartCommand(BuildCommandString(TortoiseGitCommand.ImportPatch, path));
             }
         }
@@ -558,7 +558,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
         {
             if (CheckRepoAndShowError())
             {
-                var path = GitCore.GitCore.Instance.ActiveRepository.Path;
+                var path = GitCore.GitRepository.Instance.ActiveRepository.Path;
                 StartCommand(BuildCommandString(TortoiseGitCommand.FormatPatch, path));
             }
         }
@@ -567,7 +567,7 @@ namespace NppKate.Modules.TortoiseGitFeatures
         {
             if (CheckRepoAndShowError())
             {
-                var path = GitCore.GitCore.Instance.ActiveRepository.Path;
+                var path = GitCore.GitRepository.Instance.ActiveRepository.Path;
                 StartCommand(BuildCommandString(TortoiseGitCommand.RefLog, path, additionalParam: @"/ref:refs/stash"));
             }
         }
@@ -575,11 +575,11 @@ namespace NppKate.Modules.TortoiseGitFeatures
         private static bool CheckRepoAndShowError()
         {
             // TODO: Hmm... Need "common console"
-            if (GitCore.GitCore.Instance.ActiveRepository == null)
+            if (GitCore.GitRepository.Instance.ActiveRepository == null)
             {
                 MessageBox.Show("Нет активного репозитория!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
-            return GitCore.GitCore.Instance.ActiveRepository != null;
+            return GitCore.GitRepository.Instance.ActiveRepository != null;
         }
 
         private static string BuildCommandString(TortoiseGitCommand command, string path, string logMsg = null, byte? closeParam = null, string additionalParam = null)

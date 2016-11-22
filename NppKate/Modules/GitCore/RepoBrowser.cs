@@ -94,10 +94,10 @@ namespace NppKate.Modules.GitCore
         {
             InitializeComponent();
 
-            GitCore.Instance.OnActiveRepositoryChanged += GitCoreOnActiveRepositoryChanged;
-            GitCore.Instance.OnDocumentReposituryChanged += GitCoreOnDocumentRepositoryChanged;
-            GitCore.Instance.OnRepositoryAdded += GitCoreOnRepositoryAdded;
-            GitCore.Instance.OnRepositoryRemoved += GitCoreOnRepositoryRemoved;
+            GitRepository.Instance.OnActiveRepositoryChanged += GitCoreOnActiveRepositoryChanged;
+            GitRepository.Instance.OnDocumentReposituryChanged += GitCoreOnDocumentRepositoryChanged;
+            GitRepository.Instance.OnRepositoryAdded += GitCoreOnRepositoryAdded;
+            GitRepository.Instance.OnRepositoryRemoved += GitCoreOnRepositoryRemoved;
 
             _watchers = new Dictionary<string, FileSystemWatcher>();
         }
@@ -118,7 +118,7 @@ namespace NppKate.Modules.GitCore
             if (node.Name == _lastActiveRepo)
             {
                 var otherNode = node.PrevVisibleNode ?? node.NextVisibleNode;
-                if (!GitCore.Instance.SwitchByName(otherNode.Name))
+                if (!GitRepository.Instance.SwitchByName(otherNode.Name))
                     _lastActiveRepo = null;
             }
             _watchers[node.Name].EnableRaisingEvents = false;
@@ -132,7 +132,7 @@ namespace NppKate.Modules.GitCore
         private void GitCoreOnRepositoryAdded(object sender, RepositoryChangedEventArgs e)
         {
             if (tvRepositories.Nodes.ContainsKey(e.RepositoryName)) return;
-            var node = CreateRepoNode(GitCore.Instance.Repositories.Find(r => r.Name == e.RepositoryName));
+            var node = CreateRepoNode(GitRepository.Instance.Repositories.Find(r => r.Name == e.RepositoryName));
             if (node == null) return;
             tvRepositories.Nodes.Add(node);
         }
@@ -199,7 +199,7 @@ namespace NppKate.Modules.GitCore
         {
             if (e.Button == MouseButtons.Left && e.Node.ImageKey == RepoIndex && !(e.Node.NodeFont?.Bold ?? false))
             {
-                GitCore.Instance.SwitchByName(e.Node.Name);
+                GitRepository.Instance.SwitchByName(e.Node.Name);
             }
         }
 
@@ -237,13 +237,13 @@ namespace NppKate.Modules.GitCore
         {
             if (e.ChangeType == WatcherChangeTypes.Deleted && FileLock.Equals(e.Name, System.StringComparison.InvariantCultureIgnoreCase))
             {
-                UpdateBranch(GitCore.GetRepoName(GitCore.GetRootDir(e.FullPath)));
+                UpdateBranch(GitRepository.GetRepoName(GitRepository.GetRootDir(e.FullPath)));
             }
         }
 
         private void LoadTree()
         {
-            var repoList = GitCore.Instance.Repositories;
+            var repoList = GitRepository.Instance.Repositories;
             var task = new Task<List<TreeNode>>(() =>
             {
                 var result = new List<TreeNode>();
@@ -274,10 +274,10 @@ namespace NppKate.Modules.GitCore
 
         private void UpdateState()
         {
-            var repoLink = GitCore.Instance.ActiveRepository;
+            var repoLink = GitRepository.Instance.ActiveRepository;
             if (repoLink != null)
                 ActiverRepositoryUpdate(repoLink.Name);
-            repoLink = GitCore.Instance.DocumentRepository;
+            repoLink = GitRepository.Instance.DocumentRepository;
             if (repoLink != null)
                 DocumentRepositoryUpdate(repoLink.Name);
         }
@@ -287,7 +287,7 @@ namespace NppKate.Modules.GitCore
             if (string.IsNullOrEmpty(repoName)) return;
             Logger.Debug($"Update branches for repo {repoName}");
             var node = tvRepositories.Nodes[repoName];
-            var link = GitCore.Instance.GetRepositoryByName(repoName);
+            var link = GitRepository.Instance.GetRepositoryByName(repoName);
             using (var r = new Repository(link.Path))
             {
                 var currentBranch = node.Nodes[CurrentBranch];
@@ -376,7 +376,7 @@ namespace NppKate.Modules.GitCore
         private void miSetActive_Click(object sender, EventArgs e)
         {
             var node = tvRepositories.SelectedNode;
-            GitCore.Instance.SwitchByName(node?.Name);
+            GitRepository.Instance.SwitchByName(node?.Name);
         }
 
         private void cmRepositories_Opening(object sender, System.ComponentModel.CancelEventArgs e)
@@ -385,7 +385,7 @@ namespace NppKate.Modules.GitCore
             miSetActive.Enabled = _lastActiveRepo != node?.Name;
             miRemoveRepo.Enabled = _lastDocumentRepo != node?.Name;
 
-            var inRepo = GitCore.IsValidGitRepo(Npp.NppUtils.CurrentFileDir);
+            var inRepo = GitRepository.IsValidGitRepo(Npp.NppUtils.CurrentFileDir);
 
             blameToolStripMenuItem.Enabled = inRepo;
             showLogFileToolStripMenuItem.Enabled = inRepo;
@@ -409,14 +409,14 @@ namespace NppKate.Modules.GitCore
             };
             if (openDlg.ShowDialog() == DialogResult.OK)
             {
-                GitCore.Instance.SwitchByPath(openDlg.SelectedPath);
+                GitRepository.Instance.SwitchByPath(openDlg.SelectedPath);
             }
         }
 
         private void miRemoveRepo_Click(object sender, EventArgs e)
         {
             var node = tvRepositories.SelectedNode;
-            GitCore.Instance.RemoveRepository(node.Name);
+            GitRepository.Instance.RemoveRepository(node.Name);
         }
 
         private void tvRepositories_BeforeCollapse(object sender, TreeViewCancelEventArgs e)
@@ -467,7 +467,7 @@ namespace NppKate.Modules.GitCore
         private void RunTortoiseCommandForRepo(TortoiseGitCommand cmd)
         {
             var node = tvRepositories.SelectedNode;
-            var path = GitCore.Instance.GetRepositoryByName(node?.Name)?.Path;
+            var path = GitRepository.Instance.GetRepositoryByName(node?.Name)?.Path;
             if (path != null)
                 _commandRuner.RunCommand(cmd, path);
         }
@@ -577,7 +577,7 @@ namespace NppKate.Modules.GitCore
         private void findInLogMenuItem_Click(object sender, EventArgs e)
         {
             var node = tvRepositories.SelectedNode;
-            var path = GitCore.Instance.GetRepositoryByName(node?.Name)?.Path;
+            var path = GitRepository.Instance.GetRepositoryByName(node?.Name)?.Path;
             if (path != null)
             {
                 var searchDialog = new TortoiseLogSearch();

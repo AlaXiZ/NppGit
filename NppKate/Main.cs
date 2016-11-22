@@ -43,7 +43,7 @@ namespace NppKate
         private static ModuleManager mm = new ModuleManager(cm, new FormManager());
         private static readonly IList<Type> _excludedTypes = new ReadOnlyCollection<Type>(
             new List<Type> {
-                typeof(GitCore)
+                typeof(GitRepository)
             });
         private static Logger _logger;
         #endregion
@@ -54,7 +54,7 @@ namespace NppKate
             _logger = LogManager.GetCurrentClassLogger();
 
             LoadModules();
-            mm.AddModule(GitCore.Module); // TODO: Переделать на автоматическую загрузку
+            mm.AddModule(GitRepository.Module); // TODO: Переделать на автоматическую загрузку
 
             try
             {

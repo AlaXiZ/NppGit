@@ -269,7 +269,7 @@
     <Compile Include="Modules\GitFeatures\GitFeatures.cs" />
     <Compile Include="Modules\SnippetFeature\Snippets.cs" />
     <Compile Include="Modules\IdeFeatures\SqlIde.cs" />
-    <Compile Include="Modules\GitCore\IGitCore.cs" />
+    <Compile Include="Modules\GitCore\IGitRepository.cs" />
     <Compile Include="Npp\NppUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -284,7 +284,7 @@
     <Compile Include="Modules\GitFeatures\Git.cs" />
     <Compile Include="Modules\SnippetFeature\Snippet.cs" />
     <Compile Include="Common\TabEventArgs.cs" />
-    <Compile Include="Modules\GitCore\GitCore.cs" />
+    <Compile Include="Modules\GitCore\GitRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Forms\About.resx">
