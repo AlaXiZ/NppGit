@@ -148,6 +148,7 @@
     <Compile Include="Common\SimpleDialog.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Common\VCS\IVCSShell.cs" />
     <Compile Include="Common\VCS\VCSCommand.cs" />
     <Compile Include="Common\VCS\VCSShell.cs" />
     <Compile Include="DllExport\DllExportAttribute.cs" />
@@ -219,6 +220,7 @@
     <Compile Include="Modules\GitFeatures\GitCommands\Status.cs" />
     <Compile Include="Modules\GitFeatures\GitCommands\Tag.cs" />
     <Compile Include="Modules\GitFeatures\GitShell.cs" />
+    <Compile Include="Modules\GitFeatures\IGitShell.cs" />
     <Compile Include="Modules\SnippetFeature\ISnippetManager.cs" />
     <Compile Include="Modules\SnippetFeature\ISnippetTextBuilder.cs" />
     <Compile Include="Modules\SnippetFeature\ISnippetValidator.cs" />

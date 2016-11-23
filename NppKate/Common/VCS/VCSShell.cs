@@ -30,7 +30,7 @@ using System.Threading.Tasks;
 
 namespace NppKate.Common.VCS
 {
-    public abstract class VCSShell
+    public abstract class VCSShell : IVCSShell
     {
         protected string _executePath;
         protected string _exe;
@@ -52,13 +52,18 @@ namespace NppKate.Common.VCS
 
         public virtual void ExecuteCommand(VCSCommand command)
         {
+            Execute(command.Path, command.CommandString);
+        }
+
+        public virtual void Execute(string workingDirectory, string arguments)
+        {
             var task = new Task(() =>
             {
                 var pi = new System.Diagnostics.ProcessStartInfo
                 {
                     FileName = System.IO.Path.Combine(_executePath, _exe),
-                    WorkingDirectory = command.Path,
-                    Arguments = command.CommandString,
+                    WorkingDirectory = workingDirectory,
+                    Arguments = arguments,
                     CreateNoWindow = true,
                     UseShellExecute = false,
                     RedirectStandardOutput = true
