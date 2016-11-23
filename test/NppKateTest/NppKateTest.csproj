@@ -74,6 +74,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="CommandManager\CmdManagerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SnippetTest\SnippetTest.cs" />
     <Compile Include="SnippetTest\SnippetTextBuilderTest.cs" />

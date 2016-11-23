@@ -25,12 +25,16 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+using System;
+
 namespace NppKate.Common
 {
     public interface IModule
     {
         void Init(IModuleManager manager);
         void Final();
+
+        [Obsolete("Property is deprecated", false)]
         bool IsNeedRun { get; }
     }
 }

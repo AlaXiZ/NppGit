@@ -35,6 +35,7 @@ namespace NppKate.Common
     {
         const int DefaultCapacity = 5;
         private volatile int HiddenIndex = -1;
+        private volatile bool _LastItemIsSeparator = true;
 
         private Dictionary<string, List<CommandMenuItem>> _commandIndexes;
 
@@ -69,6 +70,9 @@ namespace NppKate.Common
 
         public int RegisterCommand(string module, string name, Action commandHandler = null, bool isCheckedWithStart = false, ShortcutKey? shortcut = null)
         {
+            if (_LastItemIsSeparator && "-".Equals(name))
+                return 0;
+
             if (!_commandIndexes.ContainsKey(module))
             {
                 _commandIndexes.Add(module, new List<CommandMenuItem>(DefaultCapacity));
@@ -86,6 +90,7 @@ namespace NppKate.Common
                 Name = name,
                 CommandIndex = cmdIndex
             });
+            _LastItemIsSeparator = "-".Equals(name);
             return cmdIndex;
         }
 
