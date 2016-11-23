@@ -28,6 +28,7 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using NppKate.Common;
 using NppKate.Modules.TortoiseGitFeatures;
@@ -98,8 +99,24 @@ namespace NppKate.Forms
             // Создаем модули, добавляем в менеджер
             foreach (var t in types)
             {
-                chlModules.Items.Add(t.Name, Settings.Modules.GetModuleState(t.Name));
+                chlModules.Items.Add(AddSpace(t.Name), Settings.Modules.GetModuleState(t.Name));
             }
+        }
+
+        private string AddSpace(string name)
+        {
+            var buffer = new StringBuilder(name);
+            for (int i = buffer.Length - 1; i >= 0; i--)
+            {
+                if (char.IsUpper(buffer[i]) && i > 0)
+                    buffer.Insert(i, ' ');
+            }
+            return buffer.ToString();
+        }
+
+        private string RemoveSpace(string name)
+        {
+            return name.Replace(" ", "");
         }
 
         private void LoadSettings()
@@ -197,7 +214,7 @@ namespace NppKate.Forms
             // Modules state
             for (int i = 0; i < chlModules.Items.Count; i++)
             {
-                Settings.Modules.SetModuleState((string)chlModules.Items[i], chlModules.GetItemChecked(i));
+                Settings.Modules.SetModuleState(RemoveSpace((string)chlModules.Items[i]), chlModules.GetItemChecked(i));
             }
 
             // Snippet settings
