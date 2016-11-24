@@ -26,6 +26,7 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 using NppKate.Common.VCS;
+using NppKate.Modules.GitFeatures.GitCommands;
 
 namespace NppKate.Modules.GitFeatures
 {
@@ -33,7 +34,12 @@ namespace NppKate.Modules.GitFeatures
     {
         public GitShell(string shellExecutePath) : base(shellExecutePath)
         {
-            _exe = System.IO.Path.Combine("bin", "git");
+            _exe = "git.exe";
+        }
+
+        public bool Test()
+        {
+            return !string.IsNullOrEmpty(ExecuteCommand(new Version()));
         }
     }
 }

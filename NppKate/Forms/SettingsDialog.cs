@@ -121,13 +121,6 @@ namespace NppKate.Forms
 
         private void LoadSettings()
         {
-            //chbTGToolbar.Checked = Settings.TortoiseGitProc.ShowToolbar;
-            //chlButtons.Enabled = chbTGToolbar.Checked;
-            //var mask = Settings.TortoiseGitProc.ButtonMask;
-            //for (int i = 0; i < chlButtons.Items.Count; i++)
-            //{
-            //    chlButtons.SetItemChecked(i, (mask & (1u << i)) > 0);
-            //}
             tbTGProcPath.Text = Settings.TortoiseGitProc.Path;
             LoadTortoiseCommands();
 
@@ -135,6 +128,7 @@ namespace NppKate.Forms
             mtxbSHACount.Text = Settings.Functions.SHACount.ToString();
             chbFileInOtherView.Checked = Settings.Functions.OpenFileInOtherView;
             chbAutoExpand.Checked = Settings.GitCore.AutoExpand;
+            tbGitPath.Text = Settings.GitBash.BinPath;
 
             cbLogLevel.Items.Clear();
             cbLogLevel.Items.AddRange(_logLevel.ToArray());
@@ -145,7 +139,6 @@ namespace NppKate.Forms
             chbExpand.Checked = Settings.Snippets.IsExpanAfterCreate;
             chbInsertEmpty.Checked = Settings.Snippets.InsertEmpty;
             udNestedLEvel.SelectedIndex = Settings.Snippets.MaxLevel - 1;
-
         }
 
         private uint GetButtonMask()
@@ -210,6 +203,7 @@ namespace NppKate.Forms
             Settings.Functions.SHACount = byte.Parse(mtxbSHACount.Text);
             Settings.Functions.OpenFileInOtherView = chbFileInOtherView.Checked;
             Settings.GitCore.AutoExpand = chbAutoExpand.Checked;
+            Settings.GitBash.BinPath = tbGitPath.Text;
 
             // Modules state
             for (int i = 0; i < chlModules.Items.Count; i++)
@@ -300,6 +294,20 @@ namespace NppKate.Forms
             if (e.Node.ForeColor == DisableColor)
             {
                 e.Cancel = true;
+            }
+        }
+
+        private void bSelectGitPath_Click(object sender, EventArgs e)
+        {
+            var dlg = new FolderBrowserDialog
+            {
+                Description = "Выберите папку с git.exe",
+                ShowNewFolderButton = false,
+                SelectedPath = tbGitPath.Text
+            };
+            if (dlg.ShowDialog() == DialogResult.OK)
+            {
+                tbGitPath.Text = dlg.SelectedPath;
             }
         }
     }
