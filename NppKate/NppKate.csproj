@@ -219,6 +219,7 @@
     <Compile Include="Modules\GitFeatures\GitCommands\Stash.cs" />
     <Compile Include="Modules\GitFeatures\GitCommands\Status.cs" />
     <Compile Include="Modules\GitFeatures\GitCommands\Tag.cs" />
+    <Compile Include="Modules\GitFeatures\GitCommands\Version.cs" />
     <Compile Include="Modules\GitFeatures\GitShell.cs" />
     <Compile Include="Modules\GitFeatures\IGitShell.cs" />
     <Compile Include="Modules\SnippetFeature\ISnippetManager.cs" />

@@ -1,5 +1,5 @@
 ﻿/*
-Copyright (c) 2015-2016, Schadin Alexey (schadin@gmail.com)
+Copyright (c) 2016, Schadin Alexey (schadin@gmail.com)
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted 
@@ -25,31 +25,15 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-using NppKate.Common;
 using NppKate.Common.VCS;
-using NppKate.Modules.GitFeatures.GitCommands;
 
-namespace NppKate.Modules.GitFeatures
+namespace NppKate.Modules.GitFeatures.GitCommands
 {
-    public class GitBash : IModule
+    public class Version : VCSCommand
     {
-        private IModuleManager _manager;
-        private GitShell _gitShell;
-        public bool IsNeedRun => Settings.Modules.NeedCurrentModuleLoad();
-
-        public void Final() { }
-
-        public void Init(IModuleManager manager)
+        public Version() : base("")
         {
-            _manager = manager;
-
-            _gitShell = new GitShell(Settings.GitBash.BinPath);
-
-            if (!_gitShell.Test())
-                return;
-            _manager.RegisterService(typeof(IGitShell), _gitShell);
-
-            var name = GetType().Name;
+            CustomParams.Add("--version");
         }
     }
 }
