@@ -26,7 +26,7 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-using System.Threading.Tasks;
+using System.Text;
 
 namespace NppKate.Common.VCS
 {
@@ -34,10 +34,12 @@ namespace NppKate.Common.VCS
     {
         protected string _executePath;
         protected string _exe;
+        private StringBuilder _out;
 
         public VCSShell(string shellExecutePath)
         {
             _executePath = shellExecutePath;
+            _out = new StringBuilder();
         }
 
         public string ShellExecutePath
@@ -45,19 +47,15 @@ namespace NppKate.Common.VCS
             get { return _executePath; }
         }
 
-        public bool IsWaitShell
+        public virtual string ExecuteCommand(VCSCommand command)
         {
-            get; set;
+            return Execute(command.Path, command.CommandString);
         }
 
-        public virtual void ExecuteCommand(VCSCommand command)
+        public virtual string Execute(string workingDirectory, string arguments)
         {
-            Execute(command.Path, command.CommandString);
-        }
-
-        public virtual void Execute(string workingDirectory, string arguments)
-        {
-            var task = new Task(() =>
+            _out.Clear();
+            try
             {
                 var pi = new System.Diagnostics.ProcessStartInfo
                 {
@@ -68,20 +66,19 @@ namespace NppKate.Common.VCS
                     UseShellExecute = false,
                     RedirectStandardOutput = true
                 };
-
                 var process = new System.Diagnostics.Process();
                 process.StartInfo = pi;
-                process.OutputDataReceived += (o, e) => System.Console.Write(e.Data);
+                process.OutputDataReceived += (o, e) => _out.AppendLine(e.Data);
 
                 process.Start();
                 process.BeginOutputReadLine();
                 process.WaitForExit();
                 process.CancelOutputRead();
-            });
+                process.Close();
+            }
+            catch { }
 
-            task.Start();
-            if (IsWaitShell)
-                task.Wait();
+            return _out.ToString().TrimEnd();
         }
     }
 }

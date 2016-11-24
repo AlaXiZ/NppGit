@@ -29,7 +29,7 @@ namespace NppKate.Common.VCS
 {
     public interface IVCSShell
     {
-        void Execute(string workingDirectory, string arguments);
-        void ExecuteCommand(VCSCommand command);
+        string Execute(string workingDirectory, string arguments);
+        string ExecuteCommand(VCSCommand command);
     }
 }
