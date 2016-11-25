@@ -280,4 +280,7 @@
   <data name="CmdConsoleLog" xml:space="preserve">
     <value>Console log</value>
   </data>
+  <data name="RsWorktree" xml:space="preserve">
+    <value>worktree</value>
+  </data>
 </root>

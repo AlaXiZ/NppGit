@@ -527,6 +527,15 @@ namespace NppKate.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to worktree.
+        /// </summary>
+        internal static string RsWorktree {
+            get {
+                return ResourceManager.GetString("RsWorktree", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap Search_32 {

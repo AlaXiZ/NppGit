@@ -31,12 +31,14 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RepoBrowser));
             this.tvRepositories = new System.Windows.Forms.TreeView();
+            this.cmTreeView = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.miAddRepo2 = new System.Windows.Forms.ToolStripMenuItem();
             this.ilImages = new System.Windows.Forms.ImageList(this.components);
             this.cmRepositories = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.miSetActive = new System.Windows.Forms.ToolStripMenuItem();
             this.miAddRepo = new System.Windows.Forms.ToolStripMenuItem();
             this.miRemoveRepo = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsGit = new System.Windows.Forms.ToolStripSeparator();
             this.tortoiseGitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cmTortoiseGit = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.findInLogMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -61,12 +63,10 @@
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cmBranch = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.miSwitchTo = new System.Windows.Forms.ToolStripMenuItem();
-            this.cmTreeView = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.miAddRepo2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmTreeView.SuspendLayout();
             this.cmRepositories.SuspendLayout();
             this.cmTortoiseGit.SuspendLayout();
             this.cmBranch.SuspendLayout();
-            this.cmTreeView.SuspendLayout();
             this.SuspendLayout();
             // 
             // tvRepositories
@@ -88,6 +88,21 @@
             this.tvRepositories.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.tvRepositories_NodeMouseDoubleClick);
             this.tvRepositories.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tvRepositories_MouseDown);
             // 
+            // cmTreeView
+            // 
+            this.cmTreeView.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.miAddRepo2});
+            this.cmTreeView.Name = "cmTreeView";
+            this.cmTreeView.Size = new System.Drawing.Size(153, 26);
+            // 
+            // miAddRepo2
+            // 
+            this.miAddRepo2.Image = global::NppKate.Properties.Resources.database__plus;
+            this.miAddRepo2.Name = "miAddRepo2";
+            this.miAddRepo2.Size = new System.Drawing.Size(152, 22);
+            this.miAddRepo2.Text = "Add repository";
+            this.miAddRepo2.Click += new System.EventHandler(this.miAddRepo_Click);
+            // 
             // ilImages
             // 
             this.ilImages.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ilImages.ImageStream")));
@@ -99,6 +114,7 @@
             this.ilImages.Images.SetKeyName(4, "BRANCH_FOLDER");
             this.ilImages.Images.SetKeyName(5, "CURRENT_BRANCH");
             this.ilImages.Images.SetKeyName(6, "LOADING");
+            this.ilImages.Images.SetKeyName(7, "WORKTREE_FOLDER");
             // 
             // cmRepositories
             // 
@@ -106,7 +122,7 @@
             this.miSetActive,
             this.miAddRepo,
             this.miRemoveRepo,
-            this.toolStripMenuItem1,
+            this.tsGit,
             this.tortoiseGitToolStripMenuItem});
             this.cmRepositories.Name = "cmRepositories";
             this.cmRepositories.Size = new System.Drawing.Size(174, 98);
@@ -136,10 +152,11 @@
             this.miRemoveRepo.Text = "Remove repository";
             this.miRemoveRepo.Click += new System.EventHandler(this.miRemoveRepo_Click);
             // 
-            // toolStripMenuItem1
+            // tsGit
             // 
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(170, 6);
+            this.tsGit.Name = "tsGit";
+            this.tsGit.Size = new System.Drawing.Size(170, 6);
+            this.tsGit.Visible = false;
             // 
             // tortoiseGitToolStripMenuItem
             // 
@@ -355,21 +372,6 @@
             this.miSwitchTo.Size = new System.Drawing.Size(123, 22);
             this.miSwitchTo.Text = "Switch to";
             // 
-            // cmTreeView
-            // 
-            this.cmTreeView.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.miAddRepo2});
-            this.cmTreeView.Name = "cmTreeView";
-            this.cmTreeView.Size = new System.Drawing.Size(153, 26);
-            // 
-            // miAddRepo2
-            // 
-            this.miAddRepo2.Image = global::NppKate.Properties.Resources.database__plus;
-            this.miAddRepo2.Name = "miAddRepo2";
-            this.miAddRepo2.Size = new System.Drawing.Size(152, 22);
-            this.miAddRepo2.Text = "Add repository";
-            this.miAddRepo2.Click += new System.EventHandler(this.miAddRepo_Click);
-            // 
             // RepoBrowser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -379,10 +381,10 @@
             this.Name = "RepoBrowser";
             this.Text = "Repositories";
             this.VisibleChanged += new System.EventHandler(this.RepoBrowser_VisibleChanged);
+            this.cmTreeView.ResumeLayout(false);
             this.cmRepositories.ResumeLayout(false);
             this.cmTortoiseGit.ResumeLayout(false);
             this.cmBranch.ResumeLayout(false);
-            this.cmTreeView.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -397,7 +399,7 @@
         private System.Windows.Forms.ToolStripMenuItem miRemoveRepo;
         private System.Windows.Forms.ContextMenuStrip cmBranch;
         private System.Windows.Forms.ToolStripMenuItem miSwitchTo;
-        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripSeparator tsGit;
         private System.Windows.Forms.ToolStripMenuItem tortoiseGitToolStripMenuItem;
         private System.Windows.Forms.ContextMenuStrip cmTortoiseGit;
         private System.Windows.Forms.ToolStripMenuItem fetchToolStripMenuItem;

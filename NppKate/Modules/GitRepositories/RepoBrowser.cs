@@ -50,6 +50,7 @@ namespace NppKate.Modules.GitCore
         private const string RemoteFolder = "REMOTE";
         private const string LoadItem = "LOAD";
         private const string CurrentBranch = "CURRENT";
+        private const string WorktreeFolder = "WORKTREE";
         #endregion
 
         #region Image key
@@ -60,6 +61,12 @@ namespace NppKate.Modules.GitCore
         private const string BranchFolderIndex = "BRANCH_FOLDER";
         private const string RemoteBranchIndex = "REMOTE_BRANCH";
         private const string LoadingIndex = "LOADING";
+        private const string WorktreeFolderIndex = "WORKTREE_FOLDER";
+        #endregion
+
+        #region Int Const
+        const int NODE_NOLOADED = 0;
+        const int NODE_LOADED = 1;
         #endregion
 
         #region File hook
@@ -107,6 +114,7 @@ namespace NppKate.Modules.GitCore
             if (_manager.ModuleManager.ServiceExists(typeof(ITortoiseCommand)))
             {
                 _commandRuner = (ITortoiseCommand)_manager.ModuleManager.GetService(typeof(ITortoiseCommand));
+                tsGit.Visible = true;
                 tortoiseGitToolStripMenuItem.Visible = true;
             }
             findInLogMenuItem.Enabled = _manager.ModuleManager.ServiceExists(typeof(ITortoiseGitSearch));
@@ -207,15 +215,17 @@ namespace NppKate.Modules.GitCore
         {
             var currentBranch = node.Nodes.Add(CurrentBranch, "", CurbranchIndex, CurbranchIndex);
             var local = node.Nodes.Add(LocalFolder, Properties.Resources.RsLocal, BranchFolderIndex, BranchFolderIndex);
-            local.Tag = 0;
+            local.Tag = NODE_NOLOADED;
             CreateNode(LoadItem, Properties.Resources.RsLoading, LoadingIndex, local);
             var remote = node.Nodes.Add(RemoteFolder, Properties.Resources.RsRemote, BranchFolderIndex, BranchFolderIndex);
-            remote.Tag = 0;
+            remote.Tag = NODE_NOLOADED;
             CreateNode(LoadItem, Properties.Resources.RsLoading, LoadingIndex, remote);
             using (var r = new Repository(link.Path))
             {
                 currentBranch.Text = r.Head.FriendlyName;
             }
+            var worktree = node.Nodes.Add(WorktreeFolder, Properties.Resources.RsWorktree, WorktreeFolderIndex, WorktreeFolderIndex);
+            CreateNode(LoadItem, Properties.Resources.RsLoading, LoadingIndex, worktree);
         }
 
         private TreeNode CreateRepoNode(RepositoryLink link)
@@ -294,7 +304,7 @@ namespace NppKate.Modules.GitCore
                 var local = node.Nodes[LocalFolder];
                 var remote = node.Nodes[RemoteFolder];
 
-                tvRepositories.Invoke(new Action(() =>
+                Invoke(new Action(() =>
                 {
                     tvRepositories.BeginUpdate();
                     currentBranch.Text = r.Head.FriendlyName;
@@ -302,15 +312,15 @@ namespace NppKate.Modules.GitCore
 
                 try
                 {
-                    if ((int)local.Tag != 0 || (int)remote.Tag != 0)
+                    if ((int)local.Tag != NODE_NOLOADED || (int)remote.Tag != NODE_NOLOADED)
                     {
                         foreach (var b in r.Branches.OrderBy(b => b.FriendlyName))
                         {
-                            if (!b.IsRemote && (int)local.Tag == 1)
+                            if (!b.IsRemote && (int)local.Tag == NODE_LOADED)
                             {
                                 if (!local.Nodes.ContainsKey(b.FriendlyName))
                                 {
-                                    tvRepositories.Invoke(new Action(() =>
+                                    Invoke(new Action(() =>
                                     {
                                         CreateNode(b.FriendlyName, b.FriendlyName, BranchIndex, local);
                                     }));
@@ -318,7 +328,7 @@ namespace NppKate.Modules.GitCore
                                 var branch = local.Nodes[b.FriendlyName];
                                 if (b.IsCurrentRepositoryHead)
                                 {
-                                    tvRepositories.Invoke(new Action(() =>
+                                    Invoke(new Action(() =>
                                     {
                                         branch.ImageKey = CurbranchIndex;
                                         branch.SelectedImageKey = CurbranchIndex;
@@ -327,7 +337,7 @@ namespace NppKate.Modules.GitCore
                                 }
                                 else
                                 {
-                                    tvRepositories.Invoke(new Action(() =>
+                                    Invoke(new Action(() =>
                                     {
                                         branch.ImageKey = BranchIndex;
                                         branch.SelectedImageKey = BranchIndex;
@@ -335,12 +345,12 @@ namespace NppKate.Modules.GitCore
                                     }));
                                 }
                             }
-                            else if (b.IsRemote && (int)remote.Tag == 1)
+                            else if (b.IsRemote && (int)remote.Tag == NODE_LOADED)
                             {
                                 if (!b.FriendlyName.EndsWith("/HEAD", StringComparison.InvariantCultureIgnoreCase) &&
                                     !remote.Nodes.ContainsKey(b.FriendlyName))
                                 {
-                                    tvRepositories.Invoke(new Action(() =>
+                                    Invoke(new Action(() =>
                                     {
                                         CreateNode(b.FriendlyName, b.FriendlyName, RemoteBranchIndex, remote);
                                     }));
@@ -351,7 +361,7 @@ namespace NppKate.Modules.GitCore
                 }
                 finally
                 {
-                    tvRepositories.Invoke(new Action(() =>
+                    Invoke(new Action(() =>
                     {
                         tvRepositories.EndUpdate();
                     }));
@@ -451,9 +461,9 @@ namespace NppKate.Modules.GitCore
 
         private void tvRepositories_AfterExpand(object sender, TreeViewEventArgs e)
         {
-            if (e.Node.ImageKey == BranchFolderIndex && (int)e.Node.Tag == 0)
+            if (e.Node.ImageKey == BranchFolderIndex && (int)e.Node.Tag == NODE_NOLOADED)
             {
-                e.Node.Tag = 1;
+                e.Node.Tag = NODE_LOADED;
                 var task = Task.Factory.StartNew(() =>
                {
                    UpdateBranch(e.Node.Parent.Name);
