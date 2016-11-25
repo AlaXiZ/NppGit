@@ -27,7 +27,6 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using NppKate.Common;
 using NppKate.Common.VCS;
-using NppKate.Modules.GitFeatures.GitCommands;
 
 namespace NppKate.Modules.GitFeatures
 {
@@ -45,8 +44,6 @@ namespace NppKate.Modules.GitFeatures
 
             _gitShell = new GitShell(Settings.GitBash.BinPath);
 
-            if (!_gitShell.Test())
-                return;
             _manager.RegisterService(typeof(IGitShell), _gitShell);
 
             var name = GetType().Name;
