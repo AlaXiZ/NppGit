@@ -581,7 +581,7 @@ namespace NppKate.Modules.GitCore
             if (path != null)
             {
                 var searchDialog = new TortoiseLogSearch();
-                searchDialog.Init(_manager);
+                searchDialog.Init(_manager, 0);
                 searchDialog.RepositoryPath = path;
                 searchDialog.Show();
             }

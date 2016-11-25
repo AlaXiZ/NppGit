@@ -26,40 +26,33 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 using System;
+using System.Windows.Forms;
 
 namespace NppKate.Common
 {
-    public class FormManager : IFormManager
-    {        
-        public T BuildForm<T>(int commandIndex, NppTbMsg dockParam, IntPtr iconHandle, IDockableManager dockableManager) where T : DockDialog, new()
+    public class FormDialog : Form, IDialog
+    {
+        protected IDockableManager _manager;
+
+        public void Init(IDockableManager manager, int id)
         {
-            var formInst = new T();
-            var cmdId = Npp.NppInfo.Instance.SearchCmdIdByIndex(commandIndex);
-            formInst.init(dockableManager, cmdId);
-            var nppTbData = new NppTbData
-            {
-                hClient = formInst.Handle,
-                dlgID = cmdId,
-                hIconTab = (uint)iconHandle,
-                pszModuleName = Properties.Resources.PluginName,
-                pszName = formInst.Text,
-                uMask = dockParam
-            };
-            Npp.NppUtils.RegisterAsDockDialog(nppTbData);
-            return formInst;
+            _manager = manager;
+            AfterInit();
         }
 
-        public bool ToogleVisibleDockableForm(IntPtr hwnd)
+        protected virtual void AfterInit() { }
+
+        protected override void OnVisibleChanged(EventArgs e)
         {
-            var isVisible = true;
-            if (Npp.NppUtils.IsVisibleDockForm(hwnd))
+            base.OnVisibleChanged(e);
+            if (Visible)
             {
-                Npp.NppUtils.HideDockForm(hwnd);
-                isVisible = false;
+                Npp.NppUtils.RegisterAsDialog(Handle);
             }
             else
-                Npp.NppUtils.ShowDockForm(hwnd);
-            return isVisible;
+            {
+                Npp.NppUtils.UnregisterAsDialog(Handle);
+            }
         }
     }
 }

@@ -35,7 +35,7 @@ namespace NppKate.Forms
 {
     public enum SnippetEditAction { Insert, Update };
 
-    public partial class SnippetEdit : SimpleDialog
+    public partial class SnippetEdit : FormDialog
     {
         ISnippetManager _snippetManager;
         ISnippetValidator _snippetValidator;

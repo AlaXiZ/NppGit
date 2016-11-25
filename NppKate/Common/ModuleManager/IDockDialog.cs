@@ -25,19 +25,9 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-using System;
-using System.Drawing;
-using System.Windows.Forms;
-
 namespace NppKate.Common
 {
-    public class DockForm
+    public interface IDockDialog : IDialog
     {
-        public Type Type;
-        public Form Form;
-        public bool UpdateWithChangeContext;
-        public Icon TabIcon;
-        public NppTbMsg uMask;
-        public IntPtr hBitmap;
     }
 }

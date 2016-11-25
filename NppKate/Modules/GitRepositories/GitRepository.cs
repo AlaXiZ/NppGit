@@ -115,7 +115,7 @@ namespace NppKate.Modules.GitCore
             var path = ActiveRepository?.Path;
             if (path == null) return;
             var searchDialog = new TortoiseLogSearch();
-            searchDialog.Init((IDockableManager)_manager);
+            searchDialog.Init((IDockableManager)_manager, 0);
             searchDialog.RepositoryPath = path;
             searchDialog.SearchText = NppUtils.GetSelectedText();
             searchDialog.Show();

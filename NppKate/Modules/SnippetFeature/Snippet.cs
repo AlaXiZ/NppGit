@@ -33,7 +33,12 @@ namespace NppKate.Modules.SnippetFeature
         public const string DefaultCategory = "default";
         public const string DefaultFileExtention = "*";
 
-        public static readonly Snippet Null = new Snippet("", "", "");
+        public static readonly Snippet Null;
+
+        static Snippet()
+        {
+            Null = new Snippet("", "", "");
+        }
 
         public string Name { get; set; }
         public bool IsVisible { get; set; }

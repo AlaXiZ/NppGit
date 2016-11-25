@@ -6,7 +6,7 @@ using NppKate.Modules.TortoiseGitFeatures;
 
 namespace NppKate.Modules.GitCore
 {
-    public partial class TortoiseLogSearch : SimpleDialog
+    public partial class TortoiseLogSearch : FormDialog
     {
         private readonly int[] filters = new int[] { 0x001, 0x002, 0x004, 0x008, 0x020, 0x040, 0x080, 0x100, 0x200 };
         private LocalWindowsHook hook;

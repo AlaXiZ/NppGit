@@ -44,7 +44,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisIgnoreGeneratedCode>false</CodeAnalysisIgnoreGeneratedCode>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>BasicCorrectnessRules.ruleset</CodeAnalysisRuleSet>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
@@ -129,23 +129,22 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\AssemblyLoader.cs" />
-    <Compile Include="Common\CommandManager.cs" />
-    <Compile Include="Common\CommandMenuItem.cs" />
+    <Compile Include="Common\ModuleManager\CommandManager.cs" />
+    <Compile Include="Common\ModuleManager\CommandMenuItem.cs" />
     <Compile Include="Common\DockDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Common\DockDialogData.cs" />
-    <Compile Include="Common\DockForm.cs" />
-    <Compile Include="Common\FormManager.cs" />
-    <Compile Include="Common\ICommandManager.cs" />
-    <Compile Include="Common\IDockableManager.cs" />
-    <Compile Include="Common\IDockDialog.cs" />
-    <Compile Include="Common\IFormManager.cs" />
-    <Compile Include="Common\IResourceManager.cs" />
+    <Compile Include="Common\ModuleManager\FormManager.cs" />
+    <Compile Include="Common\ModuleManager\ICommandManager.cs" />
+    <Compile Include="Common\ModuleManager\IDialog.cs" />
+    <Compile Include="Common\ModuleManager\IDockableManager.cs" />
+    <Compile Include="Common\ModuleManager\IDockDialog.cs" />
+    <Compile Include="Common\ModuleManager\IFormManager.cs" />
+    <Compile Include="Common\ModuleManager\IResourceManager.cs" />
     <Compile Include="Common\LoggerUtil.cs" />
-    <Compile Include="Common\ModuleInfo.cs" />
-    <Compile Include="Common\ResourceManager.cs" />
-    <Compile Include="Common\SimpleDialog.cs">
+    <Compile Include="Common\ModuleManager\ModuleInfo.cs" />
+    <Compile Include="Common\ModuleManager\ResourceManager.cs" />
+    <Compile Include="Common\FormDialog.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Common\VCS\IVCSShell.cs" />
@@ -191,16 +190,14 @@
       <DependentUpon>LogForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Modules\ConsoleLog\TextBoxWriter.cs" />
-    <Compile Include="Modules\GitCore\RepositoryChangedEventArgs.cs" />
-    <Compile Include="Modules\GitCore\TortoiseLogSearch.cs">
+    <Compile Include="Modules\GitRepositories\RepositoryChangedEventArgs.cs" />
+    <Compile Include="Modules\GitRepositories\TortoiseLogSearch.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Modules\GitCore\TortoiseLogSearch.Designer.cs">
+    <Compile Include="Modules\GitRepositories\TortoiseLogSearch.Designer.cs">
       <DependentUpon>TortoiseLogSearch.cs</DependentUpon>
     </Compile>
     <Compile Include="Modules\GitFeatures\GitBash.cs" />
-    <Compile Include="Modules\GitFeatures\GitCommand.cs" />
-    <Compile Include="Modules\GitFeatures\GitCommandFactory.cs" />
     <Compile Include="Modules\GitFeatures\GitShell.cs" />
     <Compile Include="Modules\GitFeatures\IGitShell.cs" />
     <Compile Include="Modules\SnippetFeature\ISnippetManager.cs" />
@@ -225,9 +222,9 @@
     <Compile Include="Forms\Status.Designer.cs">
       <DependentUpon>Status.cs</DependentUpon>
     </Compile>
-    <Compile Include="Common\CommandItemClickEventArgs.cs" />
-    <Compile Include="Common\IModule.cs" />
-    <Compile Include="Common\IModuleManager.cs" />
+    <Compile Include="Common\ModuleManager\CommandItemClickEventArgs.cs" />
+    <Compile Include="Common\ModuleManager\IModule.cs" />
+    <Compile Include="Common\ModuleManager\IModuleManager.cs" />
     <Compile Include="Common\EventHandler.cs" />
     <Compile Include="Interop\IniFile.cs" />
     <Compile Include="Interop\LocalWindowsHook.cs" />
@@ -242,19 +239,19 @@
     <Compile Include="Modules\TortoiseGitFeatures\TortoiseGitFindType.cs" />
     <Compile Include="Npp\NppInfo.cs" />
     <Compile Include="Interop\NppStruct.cs" />
-    <Compile Include="Common\MessageEventArgs.cs" />
-    <Compile Include="Common\ModuleManager.cs" />
-    <Compile Include="Modules\GitCore\RepoBrowser.cs">
+    <Compile Include="Common\ModuleManager\MessageEventArgs.cs" />
+    <Compile Include="Common\ModuleManager\ModuleManager.cs" />
+    <Compile Include="Modules\GitRepositories\RepoBrowser.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Modules\GitCore\RepoBrowser.Designer.cs">
+    <Compile Include="Modules\GitRepositories\RepoBrowser.Designer.cs">
       <DependentUpon>RepoBrowser.cs</DependentUpon>
     </Compile>
-    <Compile Include="Modules\GitCore\RepositoryLink.cs" />
+    <Compile Include="Modules\GitRepositories\RepositoryLink.cs" />
     <Compile Include="Modules\GitFeatures\GitFeatures.cs" />
     <Compile Include="Modules\SnippetFeature\Snippets.cs" />
     <Compile Include="Modules\IdeFeatures\SqlIde.cs" />
-    <Compile Include="Modules\GitCore\IGitRepository.cs" />
+    <Compile Include="Modules\GitRepositories\IGitRepository.cs" />
     <Compile Include="Npp\NppUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -266,10 +263,10 @@
     <Compile Include="Settings.cs" />
     <Compile Include="Modules\TortoiseGitFeatures\TortoiseGitHelper.cs" />
     <Compile Include="Interop\UnmanagedExports.cs" />
-    <Compile Include="Modules\GitFeatures\Git.cs" />
+    <Compile Include="Modules\GitFeatures\GitHelper.cs" />
     <Compile Include="Modules\SnippetFeature\Snippet.cs" />
-    <Compile Include="Common\TabEventArgs.cs" />
-    <Compile Include="Modules\GitCore\GitRepository.cs" />
+    <Compile Include="Common\ModuleManager\TabEventArgs.cs" />
+    <Compile Include="Modules\GitRepositories\GitRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Forms\About.resx">
@@ -290,7 +287,7 @@
     <EmbeddedResource Include="Modules\ConsoleLog\LogForm.resx">
       <DependentUpon>LogForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Modules\GitCore\TortoiseLogSearch.resx">
+    <EmbeddedResource Include="Modules\GitRepositories\TortoiseLogSearch.resx">
       <DependentUpon>TortoiseLogSearch.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Modules\SnippetFeature\SnippetEdit.resx">
@@ -302,7 +299,7 @@
     <EmbeddedResource Include="Forms\Status.resx">
       <DependentUpon>Status.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Modules\GitCore\RepoBrowser.resx">
+    <EmbeddedResource Include="Modules\GitRepositories\RepoBrowser.resx">
       <DependentUpon>RepoBrowser.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -406,9 +403,7 @@
   <ItemGroup>
     <None Include="Resources\menurelocate.ico" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Modules\QuickCommandFeatures\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="Resources\magnifier-left.png" />
   </ItemGroup>

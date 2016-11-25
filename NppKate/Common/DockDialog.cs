@@ -52,7 +52,7 @@ namespace NppKate.Common
 
         protected virtual void AfterInit() { }
 
-        public void init(IDockableManager manager, int commandId)
+        public void Init(IDockableManager manager, int commandId)
         {
             _manager = manager;
             _cmdId = commandId;

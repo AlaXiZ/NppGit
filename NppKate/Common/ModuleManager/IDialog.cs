@@ -25,22 +25,10 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-using System;
-
 namespace NppKate.Common
 {
-    public struct DockDialogData
+    public interface IDialog
     {
-        public Type Class;
-        public string Title;
-        public NppTbMsg uMask;
-        public string IconResourceName;
-    }
-
-    public struct DockDialogData2
-    {
-        public Type FormType;
-        public NppTbMsg DockMask;
-        public string IconResourceName;
+        void Init(IDockableManager manager, int commandId);
     }
 }
