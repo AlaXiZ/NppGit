@@ -37,6 +37,7 @@ using NLog;
 using NppKate.Common;
 using NppKate.Forms;
 using NppKate.Modules.TortoiseGitFeatures;
+using NppKate.Modules.GitRepositories.RepositoryExt;
 
 namespace NppKate.Modules.GitCore
 {
@@ -62,6 +63,7 @@ namespace NppKate.Modules.GitCore
         private const string RemoteBranchIndex = "REMOTE_BRANCH";
         private const string LoadingIndex = "LOADING";
         private const string WorktreeFolderIndex = "WORKTREE_FOLDER";
+        private const string WorktreeLeafIndex = "WORKTREE_LEAF";
         #endregion
 
         #region Int Const
@@ -213,18 +215,19 @@ namespace NppKate.Modules.GitCore
 
         private void FillContent(TreeNode node, RepositoryLink link)
         {
-            var currentBranch = node.Nodes.Add(CurrentBranch, "", CurbranchIndex, CurbranchIndex);
-            var local = node.Nodes.Add(LocalFolder, Properties.Resources.RsLocal, BranchFolderIndex, BranchFolderIndex);
+            var currentBranch = CreateNode(CurrentBranch, "", CurbranchIndex, node, cmNone);
+            var local = CreateNode(LocalFolder, Properties.Resources.RsLocal, BranchFolderIndex, node, cmNone);
             local.Tag = NODE_NOLOADED;
             CreateNode(LoadItem, Properties.Resources.RsLoading, LoadingIndex, local);
-            var remote = node.Nodes.Add(RemoteFolder, Properties.Resources.RsRemote, BranchFolderIndex, BranchFolderIndex);
+            var remote = CreateNode(RemoteFolder, Properties.Resources.RsRemote, BranchFolderIndex, node, cmNone);
             remote.Tag = NODE_NOLOADED;
             CreateNode(LoadItem, Properties.Resources.RsLoading, LoadingIndex, remote);
             using (var r = new Repository(link.Path))
             {
                 currentBranch.Text = r.Head.FriendlyName;
             }
-            var worktree = node.Nodes.Add(WorktreeFolder, Properties.Resources.RsWorktree, WorktreeFolderIndex, WorktreeFolderIndex);
+            var worktree = CreateNode(WorktreeFolder, Properties.Resources.RsWorktree, WorktreeFolderIndex, node, cmNone);
+            worktree.Tag = NODE_NOLOADED;
             CreateNode(LoadItem, Properties.Resources.RsLoading, LoadingIndex, worktree);
         }
 
@@ -248,6 +251,7 @@ namespace NppKate.Modules.GitCore
             if (e.ChangeType == WatcherChangeTypes.Deleted && FileLock.Equals(e.Name, System.StringComparison.InvariantCultureIgnoreCase))
             {
                 UpdateBranch(GitRepository.GetRepoName(GitRepository.GetRootDir(e.FullPath)));
+                UpdateWorktree(GitRepository.GetRepoName(GitRepository.GetRootDir(e.FullPath)));
             }
         }
 
@@ -322,7 +326,7 @@ namespace NppKate.Modules.GitCore
                                 {
                                     Invoke(new Action(() =>
                                     {
-                                        CreateNode(b.FriendlyName, b.FriendlyName, BranchIndex, local);
+                                        CreateNode(b.FriendlyName, b.FriendlyName, BranchIndex, local, cmBranch);
                                     }));
                                 }
                                 var branch = local.Nodes[b.FriendlyName];
@@ -352,7 +356,7 @@ namespace NppKate.Modules.GitCore
                                 {
                                     Invoke(new Action(() =>
                                     {
-                                        CreateNode(b.FriendlyName, b.FriendlyName, RemoteBranchIndex, remote);
+                                        CreateNode(b.FriendlyName, b.FriendlyName, RemoteBranchIndex, remote, cmBranch);
                                     }));
                                 }
                             }
@@ -369,6 +373,41 @@ namespace NppKate.Modules.GitCore
             }
         }
 
+        private void UpdateWorktree(string repoName)
+        {
+            if (string.IsNullOrEmpty(repoName)) return;
+            Logger.Debug($"Update worktree for repo {repoName}");
+            var worktree = tvRepositories.Nodes[repoName].Nodes[WorktreeFolder];
+            var link = GitRepository.Instance.GetRepositoryByName(repoName);
+            using (var r = new Repository(link.Path))
+            {
+                Invoke(new Action(() =>
+                {
+                    tvRepositories.BeginUpdate();
+                    worktree.Nodes.Clear();
+                }));
+                try
+                {
+                    foreach(var w in r.GetWorktrees())
+                    {
+                        Invoke(new Action(() =>
+                        {
+                            var node = CreateNode(w.Branch, w.Branch, w.isRoot ? WorktreeFolderIndex : WorktreeLeafIndex, worktree, cmWorktree);
+                            node.Tag = w.Path;
+                        }));
+                    }
+                }
+                finally
+                {
+                    Invoke(new Action(() =>
+                    {
+                        tvRepositories.EndUpdate();
+                    }));
+                }
+
+            }
+        }
+
         private TreeNode CreateNode(string name, string text, string imageKey, TreeNode parentNode = null, ContextMenuStrip menu = null)
         {
             var node = new TreeNode()
@@ -377,7 +416,7 @@ namespace NppKate.Modules.GitCore
                 Text = text,
                 ImageKey = imageKey,
                 SelectedImageKey = imageKey,
-                ContextMenuStrip = menu
+                ContextMenuStrip = menu ?? cmNone
             };
             parentNode?.Nodes?.Add(node);
             return node;
@@ -469,8 +508,26 @@ namespace NppKate.Modules.GitCore
                    UpdateBranch(e.Node.Parent.Name);
                }).ContinueWith((r) =>
                {
-                   e.Node.Nodes.RemoveByKey(LoadItem);
+                   Invoke(new Action(() =>
+                   {
+                       e.Node.Nodes.RemoveByKey(LoadItem);
+                   }));
                }, TaskScheduler.FromCurrentSynchronizationContext());
+            }
+            else if (e.Node.ImageKey == WorktreeFolderIndex && (int)e.Node.Tag == NODE_NOLOADED)
+            {
+                e.Node.Tag = NODE_LOADED;
+                var task = Task.Factory.StartNew(() =>
+                {
+                    UpdateWorktree(e.Node.Parent.Name);
+                }).ContinueWith((r) =>
+                {
+                    Invoke(new Action(() =>
+                    {
+                        e.Node.Nodes.RemoveByKey(LoadItem);
+                    }));
+                }, TaskScheduler.FromCurrentSynchronizationContext());
+
             }
         }
 
@@ -594,6 +651,52 @@ namespace NppKate.Modules.GitCore
                 searchDialog.Init(_manager, 0);
                 searchDialog.RepositoryPath = path;
                 searchDialog.Show();
+            }
+        }
+
+        private void cmBranch_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            // TODO: Проверки
+            // 1. Проверить, что ветка не выгружена
+            //   1.1 Да - недоступны оба пункта
+            //   1.2 Нет - доступны оба пункта
+        }
+
+        private void miSwitchTo_Click(object sender, EventArgs e)
+        {
+            var node = tvRepositories.SelectedNode;
+            var nodeBranchName = node?.Name;
+            var nodeRepoName = node?.Parent.Parent.Name;
+            if (nodeBranchName != null && nodeRepoName != null)
+            {
+                var t = new Task(new Action(() =>
+                {
+                    using (var repo = new Repository(GitRepository.Instance.GetRepositoryByName(nodeRepoName)?.Path))
+                    {
+                        var branch = repo.Branches.Where(b => b.FriendlyName == nodeBranchName)?.First();
+                        if (branch != null)
+                        {
+                            Branch local = null;
+                            if (branch.IsRemote)
+                            {
+                                if (branch.IsTracking)
+                                {
+                                    local = branch.TrackedBranch;
+                                }
+                                else
+                                {
+                                    var localName = branch.FriendlyName.Replace(branch.RemoteName + "/", "");
+                                    local = repo.CreateBranch(localName, branch.Tip);
+                                }
+                            }
+                            else
+                                local = branch;
+                            Commands.Checkout(repo, local);
+                        }
+                    }
+                }));
+
+                t.Start();
             }
         }
     }

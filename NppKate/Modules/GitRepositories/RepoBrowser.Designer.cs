@@ -63,6 +63,9 @@
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cmBranch = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.miSwitchTo = new System.Windows.Forms.ToolStripMenuItem();
+            this.checkoutToFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmNone = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.cmWorktree = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cmTreeView.SuspendLayout();
             this.cmRepositories.SuspendLayout();
             this.cmTortoiseGit.SuspendLayout();
@@ -115,6 +118,7 @@
             this.ilImages.Images.SetKeyName(5, "CURRENT_BRANCH");
             this.ilImages.Images.SetKeyName(6, "LOADING");
             this.ilImages.Images.SetKeyName(7, "WORKTREE_FOLDER");
+            this.ilImages.Images.SetKeyName(8, "WORKTREE_LEAF");
             // 
             // cmRepositories
             // 
@@ -360,17 +364,36 @@
             // cmBranch
             // 
             this.cmBranch.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.miSwitchTo});
+            this.miSwitchTo,
+            this.checkoutToFolderToolStripMenuItem});
             this.cmBranch.Name = "cmBranch";
-            this.cmBranch.Size = new System.Drawing.Size(124, 26);
+            this.cmBranch.Size = new System.Drawing.Size(138, 48);
+            this.cmBranch.Opening += new System.ComponentModel.CancelEventHandler(this.cmBranch_Opening);
             // 
             // miSwitchTo
             // 
-            this.miSwitchTo.Enabled = false;
             this.miSwitchTo.Image = global::NppKate.Properties.Resources.checkout;
             this.miSwitchTo.Name = "miSwitchTo";
-            this.miSwitchTo.Size = new System.Drawing.Size(123, 22);
+            this.miSwitchTo.Size = new System.Drawing.Size(137, 22);
             this.miSwitchTo.Text = "Switch to";
+            this.miSwitchTo.Click += new System.EventHandler(this.miSwitchTo_Click);
+            // 
+            // checkoutToFolderToolStripMenuItem
+            // 
+            this.checkoutToFolderToolStripMenuItem.Image = global::NppKate.Properties.Resources.arrow_branch;
+            this.checkoutToFolderToolStripMenuItem.Name = "checkoutToFolderToolStripMenuItem";
+            this.checkoutToFolderToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.checkoutToFolderToolStripMenuItem.Text = "To worktree";
+            // 
+            // cmNone
+            // 
+            this.cmNone.Name = "cmNone";
+            this.cmNone.Size = new System.Drawing.Size(61, 4);
+            // 
+            // cmWorktree
+            // 
+            this.cmWorktree.Name = "cmWorktree";
+            this.cmWorktree.Size = new System.Drawing.Size(153, 26);
             // 
             // RepoBrowser
             // 
@@ -424,5 +447,8 @@
         private System.Windows.Forms.ToolStripMenuItem findInLogMenuItem;
         private System.Windows.Forms.ContextMenuStrip cmTreeView;
         private System.Windows.Forms.ToolStripMenuItem miAddRepo2;
+        private System.Windows.Forms.ToolStripMenuItem checkoutToFolderToolStripMenuItem;
+        private System.Windows.Forms.ContextMenuStrip cmNone;
+        private System.Windows.Forms.ContextMenuStrip cmWorktree;
     }
 }

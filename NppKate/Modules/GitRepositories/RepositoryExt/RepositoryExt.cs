@@ -25,16 +25,32 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+using System.Collections.Generic;
 using LibGit2Sharp;
 
 namespace NppKate.Modules.GitRepositories.RepositoryExt
 {
     public static class RepositoryExt
     {
-        public static Worktree[] Worktrees(this Repository repo)
+        const string WorktreeList = "worktree list --porcelain"; //--git-dir=\"{0}\" --work-tree=\"{1}\" 
+        public static Worktree[] GetWorktrees(this Repository repo)
         {
-
-            return null;
+            var shell = GitFeatures.GitShell.GetNppInst();
+            var inf = repo.Info;
+            var gitDir = inf.Path.Substring(0, inf.Path.Length - 1);
+            var workDir = inf.WorkingDirectory.Substring(0, inf.WorkingDirectory.Length - 1);
+            var result = new List<Worktree>();
+            var wt = shell.Execute(workDir, string.Format(WorktreeList, gitDir, workDir)).Split(new char[]{ '\r', '\n'}, System.StringSplitOptions.RemoveEmptyEntries);
+            for (int i = 0; i < wt.Length; i += 3)
+            {
+                result.Add(new Worktree(workDir)
+                {
+                    Path = wt[i].Substring(wt[i].IndexOf(' ') + 1),
+                    HeadSha = wt[i + 1].Substring(wt[i + 1].IndexOf(' ') + 1),
+                    Branch = wt[i + 2].Substring(wt[i + 2].IndexOf(' ') + 1).Replace("refs/heads/", "")
+                });
+            }
+            return result.ToArray();
         }
     }
 }

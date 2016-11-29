@@ -35,5 +35,10 @@ namespace NppKate.Modules.GitFeatures
         {
             _exe = "git.exe";
         }
+
+        public static GitShell GetNppInst()
+        {
+            return new GitShell(Settings.GitBash.BinPath);
+        }
     }
 }

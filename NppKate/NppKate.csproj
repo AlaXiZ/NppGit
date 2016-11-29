@@ -405,7 +405,9 @@
   <ItemGroup>
     <None Include="Resources\menurelocate.ico" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Resources\arrow-merge.png" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="Resources\magnifier-left.png" />
   </ItemGroup>
@@ -420,6 +422,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\application-terminal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\arrow-branch-090.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\arrow-branch.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildProjectDirectory)\DllExport\NppPlugin.DllExport.targets" />
