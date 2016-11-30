@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 /*
 Copyright (c) 2015-2016, Schadin Alexey (schadin@gmail.com)
 All rights reserved.
@@ -214,7 +216,7 @@ namespace NppKate.Common
             logger.Debug("MenuID = {0}, MenuName = {1}", menuId, menuName);
             if (!string.IsNullOrEmpty(menuName) && OnCommandItemClick != null)
             {
-                OnCommandItemClick(this, new CommandItemClickEventArgs(menuName));
+                OnCommandItemClick?.Invoke(this, new CommandItemClickEventArgs(menuName));
             }
         }
 

@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 /*
 Copyright (c) 2015-2016, Schadin Alexey (schadin@gmail.com)
 All rights reserved.
@@ -61,10 +63,7 @@ namespace NppKate.Interop
 
         internal void HookProc(IntPtr hWinEventHook, WinEvent eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
         {
-            if (WinEventHook != null)
-            {
-                WinEventHook(new WinEventHookArgs(eventType, hwnd, idObject, idChild, dwEventThread, dwmsEventTime));
-            }
+            WinEventHook?.Invoke(new WinEventHookArgs(eventType, hwnd, idObject, idChild, dwEventThread, dwmsEventTime));
         }
 
         public LocalWinEventHook(WinEvent eventMin, WinEvent eventMax)

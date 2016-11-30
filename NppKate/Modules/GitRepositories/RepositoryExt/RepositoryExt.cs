@@ -1,4 +1,6 @@
-﻿/*
+﻿// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+/*
 Copyright (c) 2015-2016, Schadin Alexey (schadin@gmail.com)
 All rights reserved.
 
@@ -37,10 +39,9 @@ namespace NppKate.Modules.GitRepositories.RepositoryExt
         {
             var shell = GitFeatures.GitShell.GetNppInst();
             var inf = repo.Info;
-            var gitDir = inf.Path.Substring(0, inf.Path.Length - 1);
             var workDir = inf.WorkingDirectory.Substring(0, inf.WorkingDirectory.Length - 1);
             var result = new List<Worktree>();
-            var wt = shell.Execute(workDir, string.Format(WorktreeList, gitDir, workDir)).Split(new char[]{ '\r', '\n'}, System.StringSplitOptions.RemoveEmptyEntries);
+            var wt = shell.Execute(workDir, WorktreeList).Split(new char[]{ '\r', '\n'}, System.StringSplitOptions.RemoveEmptyEntries);
             for (int i = 0; i < wt.Length; i += 3)
             {
                 result.Add(new Worktree(workDir)

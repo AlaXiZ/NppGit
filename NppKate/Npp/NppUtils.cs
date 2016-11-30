@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 /*
 Copyright (c) 2015-2016, Schadin Alexey (schadin@gmail.com)
 All rights reserved.
@@ -473,8 +475,11 @@ namespace NppKate.Npp
 
         public static void Restart()
         {
-            var path = Path.Combine(PluginDir, "restart.exe");
             var proc = Process.GetCurrentProcess();
+            if (proc == null)
+                return;
+
+            var path = Path.Combine(PluginDir, "restart.exe");
             ProcessModule npp = null;
             foreach (ProcessModule m in proc.Modules)
             {
@@ -484,7 +489,7 @@ namespace NppKate.Npp
                     break;
                 }
             }
-            if (proc != null && npp != null)
+            if (npp != null)
             {
                 ProcessStartInfo psi = new ProcessStartInfo(path, string.Format("-name \"{0}\" -path \"{1}\" -id \"{2}\"", proc.ProcessName, npp.FileName, proc.Id));
                 psi.WindowStyle = ProcessWindowStyle.Hidden;

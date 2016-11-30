@@ -1,4 +1,6 @@
-﻿namespace NppKate.Modules.GitCore
+﻿// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+namespace NppKate.Modules.GitCore
 {
     partial class RepoBrowser
     {
@@ -84,8 +86,8 @@
             this.tvRepositories.SelectedImageIndex = 0;
             this.tvRepositories.Size = new System.Drawing.Size(284, 353);
             this.tvRepositories.TabIndex = 0;
-            this.tvRepositories.BeforeCollapse += new System.Windows.Forms.TreeViewCancelEventHandler(this.tvRepositories_BeforeCollapse);
-            this.tvRepositories.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.tvRepositories_BeforeExpand);
+            this.tvRepositories.BeforeCollapse += new System.Windows.Forms.TreeViewCancelEventHandler(this.tvRepositories_Before);
+            this.tvRepositories.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.tvRepositories_Before);
             this.tvRepositories.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.tvRepositories_AfterExpand);
             this.tvRepositories.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.tvRepositories_NodeMouseClick);
             this.tvRepositories.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.tvRepositories_NodeMouseDoubleClick);
@@ -393,7 +395,7 @@
             // cmWorktree
             // 
             this.cmWorktree.Name = "cmWorktree";
-            this.cmWorktree.Size = new System.Drawing.Size(153, 26);
+            this.cmWorktree.Size = new System.Drawing.Size(61, 4);
             // 
             // RepoBrowser
             // 

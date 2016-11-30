@@ -1,4 +1,6 @@
-﻿/*
+﻿// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+/*
 Copyright (c) 2015-2016, Schadin Alexey (schadin@gmail.com)
 All rights reserved.
 
@@ -25,13 +27,14 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+using System;
 using System.Drawing;
 using NppKate.Common;
 using NppKate.Forms;
 
 namespace NppKate.Modules.ConsoleLog
 {
-    public partial class LogForm : DockDialog, FormDockable
+    public partial class LogForm : DockDialog, FormDockable //-V3073
     {
         TextBoxWriter _writer;
         public LogForm()
@@ -47,5 +50,12 @@ namespace NppKate.Modules.ConsoleLog
         public string Title => Properties.Resources.CmdConsoleLog;
 
         public void ChangeContext() { }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+            if (_writer != null)
+                _writer.Dispose();
+        }
     }
 }

@@ -1,4 +1,6 @@
-﻿/*
+﻿// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+/*
 Copyright (c) 2015-2016, Schadin Alexey (schadin@gmail.com)
 All rights reserved.
 
@@ -472,13 +474,7 @@ namespace NppKate.Modules.GitCore
             GitRepository.Instance.RemoveRepository(node.Name);
         }
 
-        private void tvRepositories_BeforeCollapse(object sender, TreeViewCancelEventArgs e)
-        {
-            e.Cancel = _hasDoubleClick;
-            _hasDoubleClick = false;
-        }
-
-        private void tvRepositories_BeforeExpand(object sender, TreeViewCancelEventArgs e)
+        private void tvRepositories_Before(object sender, TreeViewCancelEventArgs e)
         {
             e.Cancel = _hasDoubleClick;
             _hasDoubleClick = false;
