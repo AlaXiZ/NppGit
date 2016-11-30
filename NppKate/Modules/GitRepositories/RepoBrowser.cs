@@ -38,6 +38,7 @@ using NppKate.Common;
 using NppKate.Forms;
 using NppKate.Modules.TortoiseGitFeatures;
 using NppKate.Modules.GitRepositories.RepositoryExt;
+using System.Windows.Threading;
 
 namespace NppKate.Modules.GitCore
 {
@@ -87,6 +88,8 @@ namespace NppKate.Modules.GitCore
 
         private readonly Dictionary<string, FileSystemWatcher> _watchers;
 
+        private Dispatcher _UIDispatcher;
+
         protected override void OnSwitchIn()
         {
             Logger.Trace("Switch in repository browser");
@@ -102,6 +105,8 @@ namespace NppKate.Modules.GitCore
         public RepoBrowser()
         {
             InitializeComponent();
+
+            _UIDispatcher = Dispatcher.CurrentDispatcher;
 
             GitRepository.Instance.OnActiveRepositoryChanged += GitCoreOnActiveRepositoryChanged;
             GitRepository.Instance.OnDocumentReposituryChanged += GitCoreOnDocumentRepositoryChanged;
@@ -404,7 +409,6 @@ namespace NppKate.Modules.GitCore
                         tvRepositories.EndUpdate();
                     }));
                 }
-
             }
         }
 
@@ -671,6 +675,8 @@ namespace NppKate.Modules.GitCore
             {
                 var t = new Task(new Action(() =>
                 {
+                    ToLog("In repository '{0}' switching to branch '{1}'", nodeRepoName, nodeBranchName);
+
                     using (var repo = new Repository(GitRepository.Instance.GetRepositoryByName(nodeRepoName)?.Path))
                     {
                         var branch = repo.Branches.Where(b => b.FriendlyName == nodeBranchName)?.First();
@@ -686,18 +692,36 @@ namespace NppKate.Modules.GitCore
                                 else
                                 {
                                     var localName = branch.FriendlyName.Replace(branch.RemoteName + "/", "");
-                                    local = repo.CreateBranch(localName, branch.Tip);
+                                    try
+                                    {
+                                        local = repo.CreateBranch(localName, branch.Tip);
+                                        ToLog("In repository '{0}' created local branch '{1}'", nodeRepoName, nodeBranchName);
+                                    }
+                                    catch { }
                                 }
                             }
                             else
                                 local = branch;
-                            Commands.Checkout(repo, local);
+                            try
+                            {
+                                Commands.Checkout(repo, local);
+                                ToLog("Switched to branch '{0}'", nodeBranchName);
+                            }
+                            catch { }
                         }
                     }
                 }));
 
                 t.Start();
             }
+        }
+
+        private void ToLog(string format, params object[] args)
+        {
+            _UIDispatcher.Invoke(new Action(() => 
+            {
+                Console.WriteLine(format, args);
+            }));
         }
     }
 
