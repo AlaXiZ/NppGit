@@ -51,7 +51,7 @@ namespace NppKate.Modules.GitCore
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(this, obj)) return true;
-            return obj != null && obj is RepositoryLink && (obj as RepositoryLink).Path.Equals(Name);
+            return obj != null && obj is RepositoryLink && (obj as RepositoryLink).Path.Equals(Path);
         }
 
         public override int GetHashCode()
