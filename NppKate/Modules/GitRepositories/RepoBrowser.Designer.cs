@@ -65,13 +65,21 @@ namespace NppKate.Modules.GitCore
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cmBranch = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.miSwitchTo = new System.Windows.Forms.ToolStripMenuItem();
-            this.checkoutToFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.miToWorktree = new System.Windows.Forms.ToolStripMenuItem();
             this.cmNone = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cmWorktree = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.miPrune = new System.Windows.Forms.ToolStripMenuItem();
+            this.miRefresh = new System.Windows.Forms.ToolStripMenuItem();
+            this.smiWorktree = new System.Windows.Forms.ToolStripSeparator();
+            this.miLock = new System.Windows.Forms.ToolStripMenuItem();
+            this.miUnlock = new System.Windows.Forms.ToolStripMenuItem();
+            this.miRemove = new System.Windows.Forms.ToolStripMenuItem();
+            this.pbProgress = new System.Windows.Forms.ProgressBar();
             this.cmTreeView.SuspendLayout();
             this.cmRepositories.SuspendLayout();
             this.cmTortoiseGit.SuspendLayout();
             this.cmBranch.SuspendLayout();
+            this.cmWorktree.SuspendLayout();
             this.SuspendLayout();
             // 
             // tvRepositories
@@ -121,6 +129,8 @@ namespace NppKate.Modules.GitCore
             this.ilImages.Images.SetKeyName(6, "LOADING");
             this.ilImages.Images.SetKeyName(7, "WORKTREE_FOLDER");
             this.ilImages.Images.SetKeyName(8, "WORKTREE_LEAF");
+            this.ilImages.Images.SetKeyName(9, "WORKTREE_LOCK");
+            this.ilImages.Images.SetKeyName(10, "WORKTREE_NOT_EXISTS");
             // 
             // cmRepositories
             // 
@@ -367,7 +377,7 @@ namespace NppKate.Modules.GitCore
             // 
             this.cmBranch.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.miSwitchTo,
-            this.checkoutToFolderToolStripMenuItem});
+            this.miToWorktree});
             this.cmBranch.Name = "cmBranch";
             this.cmBranch.Size = new System.Drawing.Size(138, 48);
             this.cmBranch.Opening += new System.ComponentModel.CancelEventHandler(this.cmBranch_Opening);
@@ -380,12 +390,13 @@ namespace NppKate.Modules.GitCore
             this.miSwitchTo.Text = "Switch to";
             this.miSwitchTo.Click += new System.EventHandler(this.miSwitchTo_Click);
             // 
-            // checkoutToFolderToolStripMenuItem
+            // miToWorktree
             // 
-            this.checkoutToFolderToolStripMenuItem.Image = global::NppKate.Properties.Resources.arrow_branch;
-            this.checkoutToFolderToolStripMenuItem.Name = "checkoutToFolderToolStripMenuItem";
-            this.checkoutToFolderToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
-            this.checkoutToFolderToolStripMenuItem.Text = "To worktree";
+            this.miToWorktree.Image = global::NppKate.Properties.Resources.arrow_branch;
+            this.miToWorktree.Name = "miToWorktree";
+            this.miToWorktree.Size = new System.Drawing.Size(137, 22);
+            this.miToWorktree.Text = "To worktree";
+            this.miToWorktree.Click += new System.EventHandler(this.miToWorktree_Click);
             // 
             // cmNone
             // 
@@ -394,14 +405,80 @@ namespace NppKate.Modules.GitCore
             // 
             // cmWorktree
             // 
+            this.cmWorktree.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.miPrune,
+            this.miRefresh,
+            this.smiWorktree,
+            this.miLock,
+            this.miUnlock,
+            this.miRemove});
             this.cmWorktree.Name = "cmWorktree";
-            this.cmWorktree.Size = new System.Drawing.Size(61, 4);
+            this.cmWorktree.Size = new System.Drawing.Size(118, 120);
+            this.cmWorktree.Opening += new System.ComponentModel.CancelEventHandler(this.cmWorktree_Opening);
+            // 
+            // miPrune
+            // 
+            this.miPrune.Image = global::NppKate.Properties.Resources.tree__minus;
+            this.miPrune.Name = "miPrune";
+            this.miPrune.Size = new System.Drawing.Size(117, 22);
+            this.miPrune.Text = "Prune";
+            this.miPrune.Click += new System.EventHandler(this.miPrune_Click);
+            // 
+            // miRefresh
+            // 
+            this.miRefresh.Image = global::NppKate.Properties.Resources.arrow_circle_315;
+            this.miRefresh.Name = "miRefresh";
+            this.miRefresh.Size = new System.Drawing.Size(117, 22);
+            this.miRefresh.Text = "Refresh";
+            this.miRefresh.Click += new System.EventHandler(this.miRefresh_Click);
+            // 
+            // smiWorktree
+            // 
+            this.smiWorktree.Name = "smiWorktree";
+            this.smiWorktree.Size = new System.Drawing.Size(114, 6);
+            this.smiWorktree.Visible = false;
+            // 
+            // miLock
+            // 
+            this.miLock.Image = global::NppKate.Properties.Resources._lock;
+            this.miLock.Name = "miLock";
+            this.miLock.Size = new System.Drawing.Size(117, 22);
+            this.miLock.Text = "Lock";
+            this.miLock.Click += new System.EventHandler(this.miLock_Click);
+            // 
+            // miUnlock
+            // 
+            this.miUnlock.Image = global::NppKate.Properties.Resources.lock_unlock;
+            this.miUnlock.Name = "miUnlock";
+            this.miUnlock.Size = new System.Drawing.Size(117, 22);
+            this.miUnlock.Text = "Unlock";
+            this.miUnlock.Click += new System.EventHandler(this.miUnlock_Click);
+            // 
+            // miRemove
+            // 
+            this.miRemove.Image = global::NppKate.Properties.Resources.tree__minus;
+            this.miRemove.Name = "miRemove";
+            this.miRemove.Size = new System.Drawing.Size(117, 22);
+            this.miRemove.Text = "Remove";
+            this.miRemove.Click += new System.EventHandler(this.miRemove_Click);
+            // 
+            // pbProgress
+            // 
+            this.pbProgress.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.pbProgress.Location = new System.Drawing.Point(0, 338);
+            this.pbProgress.MarqueeAnimationSpeed = 200;
+            this.pbProgress.Name = "pbProgress";
+            this.pbProgress.Size = new System.Drawing.Size(284, 15);
+            this.pbProgress.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            this.pbProgress.TabIndex = 6;
+            this.pbProgress.UseWaitCursor = true;
             // 
             // RepoBrowser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 353);
+            this.Controls.Add(this.pbProgress);
             this.Controls.Add(this.tvRepositories);
             this.Name = "RepoBrowser";
             this.Text = "Repositories";
@@ -410,6 +487,7 @@ namespace NppKate.Modules.GitCore
             this.cmRepositories.ResumeLayout(false);
             this.cmTortoiseGit.ResumeLayout(false);
             this.cmBranch.ResumeLayout(false);
+            this.cmWorktree.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -449,8 +527,15 @@ namespace NppKate.Modules.GitCore
         private System.Windows.Forms.ToolStripMenuItem findInLogMenuItem;
         private System.Windows.Forms.ContextMenuStrip cmTreeView;
         private System.Windows.Forms.ToolStripMenuItem miAddRepo2;
-        private System.Windows.Forms.ToolStripMenuItem checkoutToFolderToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem miToWorktree;
         private System.Windows.Forms.ContextMenuStrip cmNone;
         private System.Windows.Forms.ContextMenuStrip cmWorktree;
+        private System.Windows.Forms.ToolStripMenuItem miPrune;
+        private System.Windows.Forms.ToolStripSeparator smiWorktree;
+        private System.Windows.Forms.ToolStripMenuItem miLock;
+        private System.Windows.Forms.ToolStripMenuItem miUnlock;
+        private System.Windows.Forms.ToolStripMenuItem miRemove;
+        private System.Windows.Forms.ToolStripMenuItem miRefresh;
+        private System.Windows.Forms.ProgressBar pbProgress;
     }
 }

@@ -67,6 +67,8 @@ namespace NppKate.Modules.GitCore
         private const string LoadingIndex = "LOADING";
         private const string WorktreeFolderIndex = "WORKTREE_FOLDER";
         private const string WorktreeLeafIndex = "WORKTREE_LEAF";
+        private const string WorktreeLockIndex = "WORKTREE_LOCK";
+        private const string WorktreeNotExistsIndex = "WORKTREE_NOT_EXISTS";
         #endregion
 
         #region Int Const
@@ -233,7 +235,7 @@ namespace NppKate.Modules.GitCore
             {
                 currentBranch.Text = r.Head.FriendlyName;
             }
-            var worktree = CreateNode(WorktreeFolder, Properties.Resources.RsWorktree, WorktreeFolderIndex, node, cmNone);
+            var worktree = CreateNode(WorktreeFolder, Properties.Resources.RsWorktree, WorktreeFolderIndex, node, cmWorktree);
             worktree.Tag = NODE_NOLOADED;
             CreateNode(LoadItem, Properties.Resources.RsLoading, LoadingIndex, worktree);
         }
@@ -386,31 +388,34 @@ namespace NppKate.Modules.GitCore
             Logger.Debug($"Update worktree for repo {repoName}");
             var worktree = tvRepositories.Nodes[repoName].Nodes[WorktreeFolder];
             var link = GitRepository.Instance.GetRepositoryByName(repoName);
-            using (var r = new Repository(link.Path))
+            if (link == null) return;
+
+            Invoke(new Action(() =>
             {
-                Invoke(new Action(() =>
-                {
-                    tvRepositories.BeginUpdate();
-                    worktree.Nodes.Clear();
-                }));
-                try
-                {
-                    foreach(var w in r.GetWorktrees())
-                    {
-                        Invoke(new Action(() =>
-                        {
-                            var node = CreateNode(w.Branch, w.Branch, w.isRoot ? WorktreeFolderIndex : WorktreeLeafIndex, worktree, cmWorktree);
-                            node.Tag = w.Path;
-                        }));
-                    }
-                }
-                finally
+                tvRepositories.BeginUpdate();
+                worktree.Nodes.Clear();
+            }));
+            try
+            {
+                foreach(var w in link.Worktrees)
                 {
                     Invoke(new Action(() =>
                     {
-                        tvRepositories.EndUpdate();
+                        var node = CreateNode(w.Branch, w.Branch, w.IsLocked ? WorktreeLockIndex : WorktreeLeafIndex, worktree, cmWorktree);
+                        if (!Directory.Exists(w.Path) && !w.IsLocked)
+                        {
+                            node.ImageKey = node.SelectedImageKey = WorktreeNotExistsIndex;
+                        }
+                        node.Tag = w;
                     }));
                 }
+            }
+            finally
+            {
+                Invoke(new Action(() =>
+                {
+                    tvRepositories.EndUpdate();
+                }));
             }
         }
 
@@ -503,16 +508,18 @@ namespace NppKate.Modules.GitCore
             if (e.Node.ImageKey == BranchFolderIndex && (int)e.Node.Tag == NODE_NOLOADED)
             {
                 e.Node.Tag = NODE_LOADED;
+                startProgress();
                 var task = Task.Factory.StartNew(() =>
-               {
-                   UpdateBranch(e.Node.Parent.Name);
-               }).ContinueWith((r) =>
-               {
-                   Invoke(new Action(() =>
-                   {
-                       e.Node.Nodes.RemoveByKey(LoadItem);
-                   }));
-               }, TaskScheduler.FromCurrentSynchronizationContext());
+                {
+                    UpdateBranch(e.Node.Parent.Name);
+                }).ContinueWith((r) =>
+                {
+                    Invoke(new Action(() =>
+                    {
+                        e.Node.Nodes.RemoveByKey(LoadItem);
+                        stopProgress();
+                    }));
+                }, TaskScheduler.FromCurrentSynchronizationContext());
             }
             else if (e.Node.ImageKey == WorktreeFolderIndex && (int)e.Node.Tag == NODE_NOLOADED)
             {
@@ -524,10 +531,9 @@ namespace NppKate.Modules.GitCore
                 {
                     Invoke(new Action(() =>
                     {
-                        e.Node.Nodes.RemoveByKey(LoadItem);
+                        stopProgress();
                     }));
                 }, TaskScheduler.FromCurrentSynchronizationContext());
-
             }
         }
 
@@ -660,6 +666,23 @@ namespace NppKate.Modules.GitCore
             // 1. Проверить, что ветка не выгружена
             //   1.1 Да - недоступны оба пункта
             //   1.2 Нет - доступны оба пункта
+
+            var node = tvRepositories.SelectedNode;
+            var nodeBranchName = node?.Name;
+            var nodeRepoName = node?.Parent.Parent.Name;
+            if (nodeBranchName != null && nodeRepoName != null)
+            {
+                var t = new Task(new Action(() => 
+                {
+                    UpdateWorktree(nodeRepoName);
+                }));
+                t.RunSynchronously();
+
+                var worktree = tvRepositories.Nodes[nodeRepoName].Nodes[WorktreeFolder];
+                var enabled = !worktree.Nodes.ContainsKey(nodeBranchName) && node.Parent.PrevNode.Text != node.Text;
+                miSwitchTo.Enabled = enabled;
+                miToWorktree.Enabled = enabled;
+            }
         }
 
         private void miSwitchTo_Click(object sender, EventArgs e)
@@ -708,6 +731,13 @@ namespace NppKate.Modules.GitCore
                     }
                 }));
 
+                t.ContinueWith((r) =>
+                {
+                    MessageBox.Show($"Switched to branch '{nodeBranchName}'", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    stopProgress();
+                }, TaskScheduler.FromCurrentSynchronizationContext());
+
+                startProgress();
                 t.Start();
             }
         }
@@ -718,6 +748,219 @@ namespace NppKate.Modules.GitCore
             {
                 Console.WriteLine(format, args);
             }));
+        }
+
+        private void cmWorktree_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            var node = tvRepositories.SelectedNode;
+            if (node == null || node.ImageKey == WorktreeNotExistsIndex)
+            {
+                e.Cancel = true;
+                return;
+            }
+            var isLeaf = node.ImageKey == WorktreeLeafIndex || node.ImageKey == WorktreeLockIndex;
+            miPrune.Visible = miRefresh.Visible = !isLeaf;
+            miRemove.Visible = miLock.Visible = miUnlock.Visible = isLeaf;
+            if (isLeaf)
+            {
+                var w = (Worktree)node.Tag;
+                miRemove.Visible = w != null & !w.IsLocked;
+                miLock.Visible = !w?.IsLocked ?? false;
+                miUnlock.Visible = w?.IsLocked ?? false;
+            }
+        }
+
+        private void miToWorktree_Click(object sender, EventArgs e)
+        {
+            var node = tvRepositories.SelectedNode;
+            var nodeBranchName = node?.Name;
+            var nodeRepoName = node?.Parent.Parent.Name;
+            if (nodeBranchName != null && nodeRepoName != null)
+            {
+                var t = new Task(new Action(() =>
+                {
+                    ToLog("In repository '{0}' branch '{1}' checkout to worktree dir", nodeRepoName, nodeBranchName);
+
+                    using (var repo = new Repository(GitRepository.Instance.GetRepositoryByName(nodeRepoName)?.Path))
+                    {
+                        var branch = repo.Branches.Where(b => b.FriendlyName == nodeBranchName)?.First();
+                        if (branch != null)
+                        {
+                            repo.AddWorktree(branch);
+                        }
+                    }
+                }));
+                t.ContinueWith((r) =>
+                {
+                    UpdateWorktree(nodeRepoName);
+                }).ContinueWith((r) =>
+                {
+                    MessageBox.Show("Branch has been checkout", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    stopProgress();
+                }, TaskScheduler.FromCurrentSynchronizationContext());
+
+                startProgress();
+                t.Start();
+            }
+        }
+
+        private void miLock_Click(object sender, EventArgs e)
+        {
+            var node = tvRepositories.SelectedNode;
+            var nodeWorktreePath = ((Worktree)node?.Tag)?.Path;
+            var nodeRepoName = node?.Parent.Parent.Name;
+            if (nodeWorktreePath != null && nodeRepoName != null)
+            {
+                var t = new Task(new Action(() =>
+                {
+                    ToLog("In repository '{0}' worktree '{1}' will be locked", nodeRepoName, nodeWorktreePath);
+
+                    using (var repo = new Repository(GitRepository.Instance.GetRepositoryByName(nodeRepoName)?.Path))
+                    {
+                        repo.LockWorktree(nodeWorktreePath);
+                    }
+                }));
+                t.ContinueWith((r) =>
+                {
+                    UpdateWorktree(nodeRepoName);
+                }).ContinueWith((r) =>
+                {
+                    MessageBox.Show("Worktree locked", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    stopProgress();
+                }, TaskScheduler.FromCurrentSynchronizationContext());
+
+                startProgress();
+                t.Start();
+            }
+
+        }
+
+        private void miUnlock_Click(object sender, EventArgs e)
+        {
+            var node = tvRepositories.SelectedNode;
+            var nodeWorktreePath = ((Worktree)node?.Tag)?.Path;
+            var nodeRepoName = node?.Parent.Parent.Name;
+            if (nodeWorktreePath != null && nodeRepoName != null)
+            {
+                var t = new Task(new Action(() =>
+                {
+                    ToLog("In repository '{0}' worktree '{1}' will be unlocked", nodeRepoName, nodeWorktreePath);
+
+                    using (var repo = new Repository(GitRepository.Instance.GetRepositoryByName(nodeRepoName)?.Path))
+                    {
+                        repo.UnlockWorktree(nodeWorktreePath);
+                    }
+                }));
+                t.ContinueWith((r) =>
+                {
+                    UpdateWorktree(nodeRepoName);
+                }).ContinueWith((r) =>
+                {
+                    MessageBox.Show("Worktree unlocked", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    stopProgress();
+                }, TaskScheduler.FromCurrentSynchronizationContext()); ;
+
+                stopProgress();
+                t.Start();
+            }
+        }
+
+        private void miPrune_Click(object sender, EventArgs e)
+        {
+            var node = tvRepositories.SelectedNode;
+            var nodeRepoName = node?.Parent.Name;
+            if (nodeRepoName != null)
+            {
+                var t = new Task(new Action(() =>
+                {
+                    ToLog("In repository '{0}' worktrees will be pruned", nodeRepoName);
+
+                    using (var repo = new Repository(GitRepository.Instance.GetRepositoryByName(nodeRepoName)?.Path))
+                    {
+                        repo.PruneWorktree();
+                    }
+                }));
+                t.ContinueWith((r) =>
+                {
+                    UpdateWorktree(nodeRepoName);
+                }).ContinueWith((r) =>
+                {
+                    stopProgress();
+                    MessageBox.Show("Worktrees has been pruned", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }, TaskScheduler.FromCurrentSynchronizationContext());
+
+                t.Start();
+            }
+
+        }
+
+        private void miRefresh_Click(object sender, EventArgs e)
+        {
+            var node = tvRepositories.SelectedNode;
+            var nodeRepoName = node?.Parent.Name;
+            if (nodeRepoName != null)
+            {
+                var t = new Task(new Action(() =>
+                {
+                    UpdateWorktree(nodeRepoName);
+                }));
+
+                t.ContinueWith((r) =>
+                {
+                    stopProgress();
+                }, TaskScheduler.FromCurrentSynchronizationContext());
+
+                startProgress();
+                t.Start();
+            }
+        }
+
+        private void miRemove_Click(object sender, EventArgs e)
+        {
+            var node = tvRepositories.SelectedNode;
+            var nodeWorktreePath = ((Worktree)node?.Tag)?.Path;
+            var nodeRepoName = node?.Parent.Parent.Name;
+            if (nodeWorktreePath != null && nodeRepoName != null)
+            {
+                if (MessageBox.Show($"Remove worktree path '{nodeWorktreePath}'?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Information) != DialogResult.Yes)
+                    return;
+
+                var t = new Task(new Action(() =>
+                {
+                    ToLog("In repository '{0}' worktree '{1}' will be removed", nodeRepoName, nodeWorktreePath);
+
+                    using (var repo = new Repository(GitRepository.Instance.GetRepositoryByName(nodeRepoName)?.Path))
+                    {
+                        repo.RemoveWorktree(nodeWorktreePath);
+                    }
+                }));
+                t.ContinueWith((r) =>
+                {
+                    UpdateWorktree(nodeRepoName);
+                }).ContinueWith((r) =>
+                {
+                    MessageBox.Show("Worktree has been removed", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    stopProgress();
+                }, TaskScheduler.FromCurrentSynchronizationContext());
+
+                startProgress();
+                t.Start();
+            }
+        }
+
+        private void startProgress()
+        {
+            pbProgress.Show();
+            pbProgress.Style = ProgressBarStyle.Marquee;
+            pbProgress.MarqueeAnimationSpeed = 30;
+        }
+
+        private void stopProgress()
+        {
+            pbProgress.MarqueeAnimationSpeed = 0;
+            pbProgress.Style = ProgressBarStyle.Continuous;
+            pbProgress.Hide();
+
         }
     }
 

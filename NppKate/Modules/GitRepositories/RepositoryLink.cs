@@ -28,6 +28,13 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using LibGit2Sharp;
+using NppKate.Modules.GitRepositories.RepositoryExt;
+
 namespace NppKate.Modules.GitCore
 {
     public class RepositoryLink
@@ -57,6 +64,82 @@ namespace NppKate.Modules.GitCore
         public override int GetHashCode()
         {
             return Path.GetHashCode();
+        }
+
+        public Branch Head
+        {
+            get
+            {
+                using (var repo = new Repository(Path))
+                {
+                    return repo.Head;
+                }
+            }
+        }
+        
+        public Branch[] LocalBranches
+        {
+            get
+            {
+                using (var repo = new Repository(Path))
+                {
+                    return repo.Branches.Where(b => !b.IsRemote).ToArray();
+                }
+            }
+        }
+        public Branch[] RemoteBranches
+        {
+            get
+            {
+                using (var repo = new Repository(Path))
+                {
+                    return repo.Branches.Where(b => b.IsRemote).ToArray();
+                }
+            }
+        }
+        public Branch[] UntractedBranches
+        {
+            get
+            {
+                using (var repo = new Repository(Path))
+                {
+                    return repo.Branches.Where(b => !b.IsRemote && !b.IsTracking).ToArray();
+                }
+            }
+        }
+
+        private static string ReadOneLineFromFile(string path)
+        {
+            using (var read = new StreamReader(path, Encoding.UTF8))
+            {
+                return read.ReadLine();
+            }
+        }
+
+        public Worktree[] Worktrees
+        {
+            get
+            {
+                var wtFolder = System.IO.Path.Combine(Path, ".git", "worktrees");
+                var di = new System.IO.DirectoryInfo(wtFolder);
+                var result = new List<Worktree>();
+                foreach (var d in di.GetDirectories())
+                {
+                    var @ref = ReadOneLineFromFile(System.IO.Path.Combine(d.FullName, "HEAD"));
+                    var branch = @ref.Replace("ref: refs/heads/", "");
+                    var head = ReadOneLineFromFile(System.IO.Path.Combine(d.FullName, "ORIG_HEAD"));
+                    var path = ReadOneLineFromFile(System.IO.Path.Combine(d.FullName, "gitdir"))?.Replace("/.git", "");
+                    var fi = new FileInfo(System.IO.Path.Combine(d.FullName, "locked"));
+                    result.Add(new Worktree
+                    {
+                        HeadSha = head,
+                        Path = path,
+                        IsLocked = fi.Exists,
+                        Branch = branch
+                    });
+                }
+                return result.ToArray();
+            }
         }
     }
 }

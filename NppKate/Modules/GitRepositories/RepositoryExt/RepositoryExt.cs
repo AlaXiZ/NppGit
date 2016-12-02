@@ -27,31 +27,120 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+using System;
 using System.Collections.Generic;
 using LibGit2Sharp;
 
 namespace NppKate.Modules.GitRepositories.RepositoryExt
 {
+    public enum LockType
+    {
+        IndexLock,
+        HeadLock
+    }
     public static class RepositoryExt
     {
-        const string WorktreeList = "worktree list --porcelain"; //--git-dir=\"{0}\" --work-tree=\"{1}\" 
-        public static Worktree[] GetWorktrees(this Repository repo)
+        const string WorktreeAdd = "worktree add \"{0}\" {1}";
+        const string WorktreePrune = "worktree prune";
+        const string WorktreeLock = "worktree lock \"{0}\"";
+        const string WorktreeUnlock = "worktree unlock \"{0}\"";
+
+        public static void AddWorktree(this Repository repo, Branch branch, string worktreePath = null)
+        {
+            Branch local = null;
+
+            if (branch.IsRemote)
+            {
+                if (branch.IsTracking)
+                {
+                    local = branch.TrackedBranch;
+                }
+                else
+                {
+                    var localName = branch.FriendlyName.Replace(branch.RemoteName + "/", "");
+                    try
+                    {
+                        local = repo.CreateBranch(localName, branch.Tip);
+                    }
+                    catch {}
+                }
+            }
+            else
+                local = branch;
+
+            if (local == null) return;
+
+            var repositoryPath = repo.Info.WorkingDirectory.Substring(0, repo.Info.WorkingDirectory.Length - 1);
+
+            if (string.IsNullOrEmpty(worktreePath))
+            {
+                var parent = new System.IO.DirectoryInfo(repositoryPath).Name;
+
+                worktreePath = System.IO.Path.Combine("..", parent + "-" + string.Join("_", local.FriendlyName.Split(System.IO.Path.GetInvalidPathChars(), StringSplitOptions.RemoveEmptyEntries)));
+            }
+
+            var shell = GitFeatures.GitShell.GetNppInst();
+            if (shell == null) return;
+
+            try
+            {
+                var errMsg = shell.Execute(repositoryPath, string.Format(WorktreeAdd, worktreePath, local.FriendlyName));
+
+                if (!string.IsNullOrEmpty(errMsg?.Trim()) && errMsg.Contains("fatal"))
+                {
+                    throw new Exception(errMsg);
+                }
+            }
+            finally
+            {
+            }
+        }
+
+        public static void LockWorktree(this Repository repo, string worktreePath)
         {
             var shell = GitFeatures.GitShell.GetNppInst();
-            var inf = repo.Info;
-            var workDir = inf.WorkingDirectory.Substring(0, inf.WorkingDirectory.Length - 1);
-            var result = new List<Worktree>();
-            var wt = shell.Execute(workDir, WorktreeList).Split(new char[]{ '\r', '\n'}, System.StringSplitOptions.RemoveEmptyEntries);
-            for (int i = 0; i < wt.Length; i += 3)
+            if (shell == null) return;
+            var repositoryPath = repo.Info.WorkingDirectory.Substring(0, repo.Info.WorkingDirectory.Length - 1);
+
+            var errMsg = shell.Execute(repositoryPath, string.Format(WorktreeLock, worktreePath));
+
+            if (!string.IsNullOrEmpty(errMsg?.Trim()) && errMsg.Contains("fatal"))
             {
-                result.Add(new Worktree(workDir)
-                {
-                    Path = wt[i].Substring(wt[i].IndexOf(' ') + 1),
-                    HeadSha = wt[i + 1].Substring(wt[i + 1].IndexOf(' ') + 1),
-                    Branch = wt[i + 2].Substring(wt[i + 2].IndexOf(' ') + 1).Replace("refs/heads/", "")
-                });
+                throw new Exception(errMsg);
             }
-            return result.ToArray();
+        }
+
+        public static void UnlockWorktree(this Repository repo, string worktreePath)
+        {
+            var shell = GitFeatures.GitShell.GetNppInst();
+            if (shell == null) return;
+            var repositoryPath = repo.Info.WorkingDirectory.Substring(0, repo.Info.WorkingDirectory.Length - 1);
+
+            var errMsg = shell.Execute(repositoryPath, string.Format(WorktreeUnlock, worktreePath));
+
+            if (!string.IsNullOrEmpty(errMsg?.Trim()) && errMsg.Contains("fatal"))
+            {
+                throw new Exception(errMsg);
+            }
+        }
+
+        public static void RemoveWorktree(this Repository repo, string worktreePath)
+        {
+            System.IO.Directory.Delete(worktreePath, true);
+            repo.PruneWorktree();
+        }
+        public static void PruneWorktree(this Repository repo)
+        {
+            var shell = GitFeatures.GitShell.GetNppInst();
+            if (shell == null) return;
+            var repositoryPath = repo.Info.WorkingDirectory.Substring(0, repo.Info.WorkingDirectory.Length - 1);
+
+            var errMsg = shell.Execute(repositoryPath, WorktreePrune);
+
+            if (!string.IsNullOrEmpty(errMsg?.Trim()) && errMsg.Contains("fatal"))
+            {
+                throw new Exception(errMsg);
+            }
         }
     }
 }
