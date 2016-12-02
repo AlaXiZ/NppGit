@@ -27,6 +27,7 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+using System;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
@@ -46,7 +47,11 @@ namespace NppKate.Modules.ConsoleLog
         public override void Write(char value)
         {
             base.Write(value);
-            _output?.AppendText(value.ToString());
+            _output?.Invoke(new Action(() =>
+            {
+                _output.AppendText(value.ToString());
+            }
+            ));
         }
     }
 }
