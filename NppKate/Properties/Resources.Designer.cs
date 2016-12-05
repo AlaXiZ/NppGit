@@ -113,6 +113,16 @@ namespace NppKate.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap arrow_curve_090_left {
+            get {
+                object obj = ResourceManager.GetObject("arrow_curve_090_left", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap arrow_curve_180_left {
             get {
                 object obj = ResourceManager.GetObject("arrow-curve-180-left", resourceCulture);
@@ -126,6 +136,36 @@ namespace NppKate.Properties {
         internal static System.Drawing.Bitmap arrow_merge {
             get {
                 object obj = ResourceManager.GetObject("arrow-merge", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap arrow_transition_090 {
+            get {
+                object obj = ResourceManager.GetObject("arrow_transition_090", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap arrow_transition_180 {
+            get {
+                object obj = ResourceManager.GetObject("arrow_transition_180", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap arrow_transition_270 {
+            get {
+                object obj = ResourceManager.GetObject("arrow_transition_270", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

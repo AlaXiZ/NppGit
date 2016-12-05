@@ -28,30 +28,43 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 using System;
-using System.IO;
-using System.Text;
-using System.Windows.Forms;
 
-namespace NppKate.Modules.ConsoleLog
+namespace NppKate.Modules.GitRepositories.RepositoryExt
 {
-    public class TextBoxWriter : TextWriter
+    public static class WorktreeOperation
     {
-        private TextBox _output;
-        public override Encoding Encoding => Encoding.UTF8;
+        const string PullCommand = "pull --rebase --autostash -v";
+        const string CommitComand = "gui citool";
+        const string PushCommand = "push -v";
 
-        public TextBoxWriter(TextBox textBox)
+        public static void Pull(this Worktree wt)
         {
-            _output = textBox;
+            GitCommand(wt, PushCommand);
+        }
+        public static void Commit(this Worktree wt)
+        {
+            GitCommand(wt, CommitComand);
+        }
+        public static void Push(this Worktree wt)
+        {
+            GitCommand(wt, PullCommand);
         }
 
-        public override void Write(char value)
+        private static void GitCommand(Worktree wt, string command)
         {
-            base.Write(value);
-            _output?.Invoke(new Action(() =>
+            var shell = GitFeatures.GitShell.GetNppInst();
+            if (shell == null) return;
+
+            string errMsg = null;
+            try
             {
-                _output?.AppendText(value.ToString());
+                errMsg = shell.Execute(wt.Path, command);
             }
-            ));
+            finally
+            {
+                if (!string.IsNullOrWhiteSpace(errMsg))
+                  Console.WriteLine(errMsg);
+            }
         }
     }
 }

@@ -760,13 +760,26 @@ namespace NppKate.Modules.GitCore
             }
             var isLeaf = node.ImageKey == WorktreeLeafIndex || node.ImageKey == WorktreeLockIndex;
             miPrune.Visible = miRefresh.Visible = !isLeaf;
-            miRemove.Visible = miLock.Visible = miUnlock.Visible = isLeaf;
+            miRemove.Visible = 
+                miLock.Visible = 
+                miUnlock.Visible = 
+                smiGit.Visible = 
+                miWTPull.Visible =
+                miWTCommit.Visible =
+                miWTPush.Visible =
+                isLeaf;
+
             if (isLeaf)
             {
                 var w = (Worktree)node.Tag;
-                miRemove.Visible = w != null & !w.IsLocked;
+                miRemove.Visible = w != null & !w?.IsLocked ?? false;
                 miLock.Visible = !w?.IsLocked ?? false;
                 miUnlock.Visible = w?.IsLocked ?? false;
+
+                smiGit.Visible =
+                miWTPull.Visible =
+                miWTCommit.Visible =
+                miWTPush.Visible = Directory.Exists(w?.Path);
             }
         }
 
@@ -961,6 +974,69 @@ namespace NppKate.Modules.GitCore
             pbProgress.Style = ProgressBarStyle.Continuous;
             pbProgress.Hide();
 
+        }
+
+        private void miWTPull_Click(object sender, EventArgs e)
+        {
+            var node = tvRepositories.SelectedNode;
+            var nodeWorktree = ((Worktree)node?.Tag);
+
+            if (nodeWorktree != null)
+            {
+                var t = new Task(new Action(() =>
+                {
+                    nodeWorktree.Pull();
+                }));
+                t.ContinueWith((r) =>
+                {
+                    stopProgress();
+                }, TaskScheduler.FromCurrentSynchronizationContext());
+
+                startProgress();
+                t.Start();
+            }
+        }
+
+        private void miWTCommit_Click(object sender, EventArgs e)
+        {
+            var node = tvRepositories.SelectedNode;
+            var nodeWorktree = ((Worktree)node?.Tag);
+
+            if (nodeWorktree != null)
+            {
+                var t = new Task(new Action(() =>
+                {
+                    nodeWorktree.Commit();
+                }));
+                t.ContinueWith((r) =>
+                {
+                    stopProgress();
+                }, TaskScheduler.FromCurrentSynchronizationContext());
+
+                startProgress();
+                t.Start();
+            }
+        }
+
+        private void miWTPush_Click(object sender, EventArgs e)
+        {
+            var node = tvRepositories.SelectedNode;
+            var nodeWorktree = ((Worktree)node?.Tag);
+
+            if (nodeWorktree != null)
+            {
+                var t = new Task(new Action(() =>
+                {
+                    nodeWorktree.Push();
+                }));
+                t.ContinueWith((r) =>
+                {
+                    stopProgress();
+                }, TaskScheduler.FromCurrentSynchronizationContext());
+
+                startProgress();
+                t.Start();
+            }
         }
     }
 

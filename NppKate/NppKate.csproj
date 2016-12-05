@@ -194,6 +194,7 @@
     <Compile Include="Modules\GitRepositories\RepositoryChangedEventArgs.cs" />
     <Compile Include="Modules\GitRepositories\RepositoryExt\RepositoryExt.cs" />
     <Compile Include="Modules\GitRepositories\RepositoryExt\Worktree.cs" />
+    <Compile Include="Modules\GitRepositories\RepositoryExt\WorktreeOperation.cs" />
     <Compile Include="Modules\GitRepositories\TortoiseLogSearch.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -438,6 +439,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\tree--minus.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\arrow-curve-090-left.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\arrow-transition-180.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\arrow-transition-270.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\arrow-transition-090.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildProjectDirectory)\DllExport\NppPlugin.DllExport.targets" />

@@ -74,6 +74,10 @@ namespace NppKate.Modules.GitCore
             this.miLock = new System.Windows.Forms.ToolStripMenuItem();
             this.miUnlock = new System.Windows.Forms.ToolStripMenuItem();
             this.miRemove = new System.Windows.Forms.ToolStripMenuItem();
+            this.smiGit = new System.Windows.Forms.ToolStripSeparator();
+            this.miWTPull = new System.Windows.Forms.ToolStripMenuItem();
+            this.miWTCommit = new System.Windows.Forms.ToolStripMenuItem();
+            this.miWTPush = new System.Windows.Forms.ToolStripMenuItem();
             this.pbProgress = new System.Windows.Forms.ProgressBar();
             this.cmTreeView.SuspendLayout();
             this.cmRepositories.SuspendLayout();
@@ -411,16 +415,20 @@ namespace NppKate.Modules.GitCore
             this.smiWorktree,
             this.miLock,
             this.miUnlock,
-            this.miRemove});
+            this.miRemove,
+            this.smiGit,
+            this.miWTPull,
+            this.miWTCommit,
+            this.miWTPush});
             this.cmWorktree.Name = "cmWorktree";
-            this.cmWorktree.Size = new System.Drawing.Size(118, 120);
+            this.cmWorktree.Size = new System.Drawing.Size(119, 192);
             this.cmWorktree.Opening += new System.ComponentModel.CancelEventHandler(this.cmWorktree_Opening);
             // 
             // miPrune
             // 
             this.miPrune.Image = global::NppKate.Properties.Resources.tree__minus;
             this.miPrune.Name = "miPrune";
-            this.miPrune.Size = new System.Drawing.Size(117, 22);
+            this.miPrune.Size = new System.Drawing.Size(118, 22);
             this.miPrune.Text = "Prune";
             this.miPrune.Click += new System.EventHandler(this.miPrune_Click);
             // 
@@ -428,21 +436,21 @@ namespace NppKate.Modules.GitCore
             // 
             this.miRefresh.Image = global::NppKate.Properties.Resources.arrow_circle_315;
             this.miRefresh.Name = "miRefresh";
-            this.miRefresh.Size = new System.Drawing.Size(117, 22);
+            this.miRefresh.Size = new System.Drawing.Size(118, 22);
             this.miRefresh.Text = "Refresh";
             this.miRefresh.Click += new System.EventHandler(this.miRefresh_Click);
             // 
             // smiWorktree
             // 
             this.smiWorktree.Name = "smiWorktree";
-            this.smiWorktree.Size = new System.Drawing.Size(114, 6);
+            this.smiWorktree.Size = new System.Drawing.Size(115, 6);
             this.smiWorktree.Visible = false;
             // 
             // miLock
             // 
             this.miLock.Image = global::NppKate.Properties.Resources._lock;
             this.miLock.Name = "miLock";
-            this.miLock.Size = new System.Drawing.Size(117, 22);
+            this.miLock.Size = new System.Drawing.Size(118, 22);
             this.miLock.Text = "Lock";
             this.miLock.Click += new System.EventHandler(this.miLock_Click);
             // 
@@ -450,7 +458,7 @@ namespace NppKate.Modules.GitCore
             // 
             this.miUnlock.Image = global::NppKate.Properties.Resources.lock_unlock;
             this.miUnlock.Name = "miUnlock";
-            this.miUnlock.Size = new System.Drawing.Size(117, 22);
+            this.miUnlock.Size = new System.Drawing.Size(118, 22);
             this.miUnlock.Text = "Unlock";
             this.miUnlock.Click += new System.EventHandler(this.miUnlock_Click);
             // 
@@ -458,9 +466,38 @@ namespace NppKate.Modules.GitCore
             // 
             this.miRemove.Image = global::NppKate.Properties.Resources.tree__minus;
             this.miRemove.Name = "miRemove";
-            this.miRemove.Size = new System.Drawing.Size(117, 22);
+            this.miRemove.Size = new System.Drawing.Size(118, 22);
             this.miRemove.Text = "Remove";
             this.miRemove.Click += new System.EventHandler(this.miRemove_Click);
+            // 
+            // smiGit
+            // 
+            this.smiGit.Name = "smiGit";
+            this.smiGit.Size = new System.Drawing.Size(115, 6);
+            // 
+            // miWTPull
+            // 
+            this.miWTPull.Image = global::NppKate.Properties.Resources.arrow_transition_270;
+            this.miWTPull.Name = "miWTPull";
+            this.miWTPull.Size = new System.Drawing.Size(118, 22);
+            this.miWTPull.Text = "Pull";
+            this.miWTPull.Click += new System.EventHandler(this.miWTPull_Click);
+            // 
+            // miWTCommit
+            // 
+            this.miWTCommit.Image = global::NppKate.Properties.Resources.arrow_curve_090_left;
+            this.miWTCommit.Name = "miWTCommit";
+            this.miWTCommit.Size = new System.Drawing.Size(118, 22);
+            this.miWTCommit.Text = "Commit";
+            this.miWTCommit.Click += new System.EventHandler(this.miWTCommit_Click);
+            // 
+            // miWTPush
+            // 
+            this.miWTPush.Image = global::NppKate.Properties.Resources.arrow_transition_090;
+            this.miWTPush.Name = "miWTPush";
+            this.miWTPush.Size = new System.Drawing.Size(118, 22);
+            this.miWTPush.Text = "Push";
+            this.miWTPush.Click += new System.EventHandler(this.miWTPush_Click);
             // 
             // pbProgress
             // 
@@ -537,5 +574,9 @@ namespace NppKate.Modules.GitCore
         private System.Windows.Forms.ToolStripMenuItem miRemove;
         private System.Windows.Forms.ToolStripMenuItem miRefresh;
         private System.Windows.Forms.ProgressBar pbProgress;
+        private System.Windows.Forms.ToolStripSeparator smiGit;
+        private System.Windows.Forms.ToolStripMenuItem miWTPull;
+        private System.Windows.Forms.ToolStripMenuItem miWTCommit;
+        private System.Windows.Forms.ToolStripMenuItem miWTPush;
     }
 }
