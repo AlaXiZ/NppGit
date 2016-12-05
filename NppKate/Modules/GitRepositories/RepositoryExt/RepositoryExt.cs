@@ -76,7 +76,7 @@ namespace NppKate.Modules.GitRepositories.RepositoryExt
             {
                 var parent = new System.IO.DirectoryInfo(repositoryPath).Name;
 
-                worktreePath = System.IO.Path.Combine("..", parent + "-" + string.Join("_", local.FriendlyName.Split(System.IO.Path.GetInvalidPathChars(), StringSplitOptions.RemoveEmptyEntries)));
+                worktreePath = System.IO.Path.Combine("..", parent + "-" + string.Join("_", local.FriendlyName.Split(System.IO.Path.GetInvalidFileNameChars(), StringSplitOptions.RemoveEmptyEntries)));
             }
 
             var shell = GitFeatures.GitShell.GetNppInst();
