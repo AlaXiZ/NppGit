@@ -121,23 +121,24 @@ namespace NppKate.Modules.GitCore
             get
             {
                 var wtFolder = System.IO.Path.Combine(Path, ".git", "worktrees");
-                var di = new System.IO.DirectoryInfo(wtFolder);
+                var di = new DirectoryInfo(wtFolder);
                 var result = new List<Worktree>();
-                foreach (var d in di.GetDirectories())
-                {
-                    var @ref = ReadOneLineFromFile(System.IO.Path.Combine(d.FullName, "HEAD"));
-                    var branch = @ref.Replace("ref: refs/heads/", "");
-                    var head = ReadOneLineFromFile(System.IO.Path.Combine(d.FullName, "ORIG_HEAD"));
-                    var path = ReadOneLineFromFile(System.IO.Path.Combine(d.FullName, "gitdir"))?.Replace("/.git", "");
-                    var fi = new FileInfo(System.IO.Path.Combine(d.FullName, "locked"));
-                    result.Add(new Worktree
+                if (di.Exists)
+                    foreach (var d in di.GetDirectories())
                     {
-                        HeadSha = head,
-                        Path = path,
-                        IsLocked = fi.Exists,
-                        Branch = branch
-                    });
-                }
+                        var @ref = ReadOneLineFromFile(System.IO.Path.Combine(d.FullName, "HEAD"));
+                        var branch = @ref.Replace("ref: refs/heads/", "");
+                        var head = ReadOneLineFromFile(System.IO.Path.Combine(d.FullName, "ORIG_HEAD"));
+                        var path = ReadOneLineFromFile(System.IO.Path.Combine(d.FullName, "gitdir"))?.Replace("/.git", "");
+                        var fi = new FileInfo(System.IO.Path.Combine(d.FullName, "locked"));
+                        result.Add(new Worktree
+                        {
+                            HeadSha = head,
+                            Path = path,
+                            IsLocked = fi.Exists,
+                            Branch = branch
+                        });
+                    }
                 return result.ToArray();
             }
         }
