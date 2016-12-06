@@ -78,6 +78,7 @@ namespace NppKate.Modules.GitCore
             this.miWTPull = new System.Windows.Forms.ToolStripMenuItem();
             this.miWTCommit = new System.Windows.Forms.ToolStripMenuItem();
             this.miWTPush = new System.Windows.Forms.ToolStripMenuItem();
+            this.miWTLog = new System.Windows.Forms.ToolStripMenuItem();
             this.pbProgress = new System.Windows.Forms.ProgressBar();
             this.cmTreeView.SuspendLayout();
             this.cmRepositories.SuspendLayout();
@@ -419,9 +420,10 @@ namespace NppKate.Modules.GitCore
             this.smiGit,
             this.miWTPull,
             this.miWTCommit,
-            this.miWTPush});
+            this.miWTPush,
+            this.miWTLog});
             this.cmWorktree.Name = "cmWorktree";
-            this.cmWorktree.Size = new System.Drawing.Size(119, 192);
+            this.cmWorktree.Size = new System.Drawing.Size(153, 236);
             this.cmWorktree.Opening += new System.ComponentModel.CancelEventHandler(this.cmWorktree_Opening);
             // 
             // miPrune
@@ -498,6 +500,14 @@ namespace NppKate.Modules.GitCore
             this.miWTPush.Size = new System.Drawing.Size(118, 22);
             this.miWTPush.Text = "Push";
             this.miWTPush.Click += new System.EventHandler(this.miWTPush_Click);
+            // 
+            // miWTLog
+            // 
+            this.miWTLog.Image = global::NppKate.Properties.Resources.document_list;
+            this.miWTLog.Name = "miWTLog";
+            this.miWTLog.Size = new System.Drawing.Size(152, 22);
+            this.miWTLog.Text = "Log";
+            this.miWTLog.Click += new System.EventHandler(this.miWTLog_Click);
             // 
             // pbProgress
             // 
@@ -578,5 +588,6 @@ namespace NppKate.Modules.GitCore
         private System.Windows.Forms.ToolStripMenuItem miWTPull;
         private System.Windows.Forms.ToolStripMenuItem miWTCommit;
         private System.Windows.Forms.ToolStripMenuItem miWTPush;
+        private System.Windows.Forms.ToolStripMenuItem miWTLog;
     }
 }

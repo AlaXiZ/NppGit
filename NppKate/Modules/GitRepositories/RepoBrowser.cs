@@ -767,6 +767,7 @@ namespace NppKate.Modules.GitCore
                 miWTPull.Visible =
                 miWTCommit.Visible =
                 miWTPush.Visible =
+                miWTLog.Visible =
                 isLeaf;
 
             if (isLeaf)
@@ -779,7 +780,8 @@ namespace NppKate.Modules.GitCore
                 smiGit.Visible =
                 miWTPull.Visible =
                 miWTCommit.Visible =
-                miWTPush.Visible = Directory.Exists(w?.Path);
+                miWTPush.Visible =
+                miWTLog.Visible = Directory.Exists(w?.Path);
             }
         }
 
@@ -1037,6 +1039,28 @@ namespace NppKate.Modules.GitCore
                 startProgress();
                 t.Start();
             }
+        }
+
+        private void miWTLog_Click(object sender, EventArgs e)
+        {
+            var node = tvRepositories.SelectedNode;
+            var nodeWorktree = ((Worktree)node?.Tag);
+
+            if (nodeWorktree != null)
+            {
+                var t = new Task(new Action(() =>
+                {
+                    nodeWorktree.Log();
+                }));
+                t.ContinueWith((r) =>
+                {
+                    stopProgress();
+                }, TaskScheduler.FromCurrentSynchronizationContext());
+
+                startProgress();
+                t.Start();
+            }
+
         }
     }
 

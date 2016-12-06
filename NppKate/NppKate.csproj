@@ -452,6 +452,9 @@
   <ItemGroup>
     <None Include="Resources\arrow-transition-090.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\document-list.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildProjectDirectory)\DllExport\NppPlugin.DllExport.targets" />
   <PropertyGroup>

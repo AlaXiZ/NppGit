@@ -28,6 +28,7 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 using System;
+using NppKate.Common.VCS;
 
 namespace NppKate.Modules.GitRepositories.RepositoryExt
 {
@@ -36,6 +37,7 @@ namespace NppKate.Modules.GitRepositories.RepositoryExt
         const string PullCommand = "pull --rebase --autostash -v";
         const string CommitComand = "gui citool";
         const string PushCommand = "push -v";
+        const string LogCommand = "gitk.exe";
 
         public static void Pull(this Worktree wt)
         {
@@ -48,6 +50,28 @@ namespace NppKate.Modules.GitRepositories.RepositoryExt
         public static void Push(this Worktree wt)
         {
             GitCommand(wt, PushCommand);
+        }
+
+        public static void Log(this Worktree wt)
+        {
+            var shell = GitFeatures.GitShell.GetNppInst();
+            if (shell == null) return;
+            shell.GetType().GetField("_exe", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+                .SetValue(shell, LogCommand);
+
+            shell.GetType().GetField("_executePath", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+                .SetValue(shell, System.IO.Path.Combine(shell.ShellExecutePath, "..", "cmd"));
+
+            string errMsg = null;
+            try
+            {
+                errMsg = shell.Execute(wt.Path, "");
+            }
+            finally
+            {
+                if (!string.IsNullOrWhiteSpace(errMsg))
+                    Console.WriteLine(errMsg);
+            }
         }
 
         private static void GitCommand(Worktree wt, string command)
