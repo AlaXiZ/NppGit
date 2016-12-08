@@ -24,18 +24,21 @@ namespace NppKate.Modules.GitRepositories.RepositoryExt
         public Worktree(string gitdir)
         {
             var @ref = GitHelper.ReadOneLineFromFile(System.IO.Path.Combine(gitdir, "HEAD"));
-            var Branch = @ref.Replace("ref: refs/heads/", "");
-            var HeadSha = GitHelper.ReadOneLineFromFile(System.IO.Path.Combine(gitdir, "ORIG_HEAD"));
-            var Path = GitHelper.ReadOneLineFromFile(System.IO.Path.Combine(gitdir, "gitdir"))?.Replace("/.git", "");
-            var IsLocked = new FileInfo(System.IO.Path.Combine(gitdir, "locked")).Exists;
+            Branch = @ref.Replace("ref: refs/heads/", "");
+            HeadSha = GitHelper.ReadOneLineFromFile(System.IO.Path.Combine(gitdir, "ORIG_HEAD"));
+            Path = GitHelper.ReadOneLineFromFile(System.IO.Path.Combine(gitdir, "gitdir"))?.Replace("/.git", "");
+            IsLocked = new FileInfo(System.IO.Path.Combine(gitdir, "locked")).Exists;
         }
 
         public static bool IsWorktreePath(string path)
         {
-            return File.Exists(System.IO.Path.Combine(path, ".git"));
+            return !string.IsNullOrEmpty(path) ? File.Exists(System.IO.Path.Combine(path, ".git")) : false;
         }
         public static string GetMainRepositoryPath(string path)
         {
+            if (string.IsNullOrEmpty(path))
+                return null;
+            
             var mainRepoPath = new StringBuilder(270);
             var git = System.IO.Path.Combine(path, ".git");
             if (File.Exists(git))
