@@ -232,6 +232,12 @@ namespace NppKate.Modules.GitCore
         public bool SwitchByPath(string path)
         {
             var newPath = GetRootDir(path);
+            var newWt = "";
+            if (Worktree.IsWorktreePath(newPath))
+            {
+                newWt = newPath;
+                newPath = Worktree.GetMainRepositoryPath(newPath);
+            }
 
             if (string.IsNullOrWhiteSpace(newPath) || !Repository.IsValid(newPath))
             {
@@ -396,11 +402,11 @@ namespace NppKate.Modules.GitCore
             }
         }
 
-        public static bool IsValidGitRepo(string path)
+        public static bool IsValidGitRepo(string path, bool detectWorktree = false)
         {
             Logger.Trace($"IsValidGitRepo path={path}");
             var repoDir = GetRootDir(path);
-            return !string.IsNullOrEmpty(repoDir) && Directory.Exists(path) && Repository.IsValid(repoDir);
+            return !string.IsNullOrEmpty(repoDir) && Directory.Exists(path) && (Repository.IsValid(repoDir) || detectWorktree && Worktree.IsWorktreePath(path));
         }
 
         public static string GetRootDir(string path)
