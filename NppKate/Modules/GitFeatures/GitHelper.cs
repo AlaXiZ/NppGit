@@ -29,6 +29,7 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
 using System.IO;
+using System.Text;
 using NLog;
 
 namespace NppKate.Common
@@ -57,6 +58,14 @@ namespace NppKate.Common
                 logger.Debug(e, "Stack Trace: ", e.StackTrace);
             }
             return result;
+        }
+
+        public static string ReadOneLineFromFile(string path)
+        {
+            using (var read = new StreamReader(path, Encoding.UTF8))
+            {
+                return read.ReadLine();
+            }
         }
     }
 }

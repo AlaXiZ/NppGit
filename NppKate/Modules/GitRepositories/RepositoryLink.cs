@@ -33,6 +33,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using LibGit2Sharp;
+using NppKate.Common;
 using NppKate.Modules.GitRepositories.RepositoryExt;
 
 namespace NppKate.Modules.GitCore
@@ -108,14 +109,6 @@ namespace NppKate.Modules.GitCore
             }
         }
 
-        private static string ReadOneLineFromFile(string path)
-        {
-            using (var read = new StreamReader(path, Encoding.UTF8))
-            {
-                return read.ReadLine();
-            }
-        }
-
         public Worktree[] Worktrees
         {
             get
@@ -124,21 +117,7 @@ namespace NppKate.Modules.GitCore
                 var di = new DirectoryInfo(wtFolder);
                 var result = new List<Worktree>();
                 if (di.Exists)
-                    foreach (var d in di.GetDirectories())
-                    {
-                        var @ref = ReadOneLineFromFile(System.IO.Path.Combine(d.FullName, "HEAD"));
-                        var branch = @ref.Replace("ref: refs/heads/", "");
-                        var head = ReadOneLineFromFile(System.IO.Path.Combine(d.FullName, "ORIG_HEAD"));
-                        var path = ReadOneLineFromFile(System.IO.Path.Combine(d.FullName, "gitdir"))?.Replace("/.git", "");
-                        var fi = new FileInfo(System.IO.Path.Combine(d.FullName, "locked"));
-                        result.Add(new Worktree
-                        {
-                            HeadSha = head,
-                            Path = path,
-                            IsLocked = fi.Exists,
-                            Branch = branch
-                        });
-                    }
+                    result.AddRange(di.GetDirectories().Select(d => new Worktree(d.FullName)));
                 return result.ToArray();
             }
         }
