@@ -232,6 +232,7 @@ namespace NppKate.Modules.GitCore
         public bool SwitchByPath(string path)
         {
             var newPath = GetRootDir(path);
+
             if (string.IsNullOrWhiteSpace(newPath) || !Repository.IsValid(newPath))
             {
                 return false;
@@ -284,7 +285,7 @@ namespace NppKate.Modules.GitCore
 
         private string FindRepoByPath(string path)
         {
-            return _repos.Values.FirstOrDefault(r => r.Path == path)?.Name ?? string.Empty;
+            return _repos.Values.FirstOrDefault(r => r.Path.Equals(path, StringComparison.InvariantCultureIgnoreCase))?.Name ?? string.Empty;
         }
 
         private void UpdateRepository(string name, RepositoryLink link)
