@@ -36,6 +36,7 @@ using System.Xml.Linq;
 using LibGit2Sharp;
 using NLog;
 using NppKate.Common;
+using NppKate.Modules.GitRepositories.RepositoryExt;
 using NppKate.Npp;
 
 namespace NppKate.Modules.GitCore
@@ -248,11 +249,13 @@ namespace NppKate.Modules.GitCore
             }
             else // не нашли по пути
             {
+                var i = 1;
                 while (true)
                 {
                     if (_repos.ContainsKey(newRepo.Name))
                     {
-                        newRepo.Name += "_1";
+                        newRepo.Name += $"_{i}";
+                        i++;
                     }
                     else
                     {
@@ -414,6 +417,8 @@ namespace NppKate.Modules.GitCore
                 path = Directory.GetParent(path).FullName;
             }
         }
+
+
 
         public static string GetRepoName(string repoDir)
         {
