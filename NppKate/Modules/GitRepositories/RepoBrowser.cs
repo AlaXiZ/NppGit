@@ -311,6 +311,8 @@ namespace NppKate.Modules.GitCore
             Logger.Debug($"Update branches for repo {repoName}");
             var node = tvRepositories.Nodes[repoName];
             var link = GitRepository.Instance.GetRepositoryByName(repoName);
+            if (link == null)
+                return;
             using (var r = new Repository(link.Path))
             {
                 var currentBranch = node.Nodes[CurrentBranch];
