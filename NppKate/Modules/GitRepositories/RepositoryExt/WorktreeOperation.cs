@@ -41,7 +41,7 @@ namespace NppKate.Modules.GitRepositories.RepositoryExt
 
         public static void Pull(this Worktree wt)
         {
-            GitCommand(wt, PushCommand);
+            GitCommand(wt, PullCommand);
         }
         public static void Commit(this Worktree wt)
         {
