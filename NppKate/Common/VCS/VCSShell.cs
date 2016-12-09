@@ -66,7 +66,8 @@ namespace NppKate.Common.VCS
                     Arguments = arguments,
                     CreateNoWindow = true,
                     UseShellExecute = false,
-                    RedirectStandardOutput = true
+                    RedirectStandardOutput = true,
+                    StandardOutputEncoding = Encoding.UTF8
                 };
                 var process = new System.Diagnostics.Process();
                 process.StartInfo = pi;
