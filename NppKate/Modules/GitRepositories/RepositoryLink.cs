@@ -31,9 +31,7 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using LibGit2Sharp;
-using NppKate.Common;
 using NppKate.Modules.GitRepositories.RepositoryExt;
 
 namespace NppKate.Modules.GitCore
@@ -121,5 +119,16 @@ namespace NppKate.Modules.GitCore
                 return result.ToArray();
             }
         }
+
+        public Worktree ActiveWorktree
+        {
+            get; set;
+        }
+
+        public void SetActiveWorktree(string wtName)
+        {
+            ActiveWorktree = Worktrees.Where(w => w.Branch.Equals(wtName, System.StringComparison.InvariantCultureIgnoreCase))?.FirstOrDefault();
+        }
+
     }
 }

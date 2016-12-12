@@ -8,9 +8,12 @@ namespace NppKate.Modules.GitCore
     {
         public string RepositoryName { get; protected set; }
 
-        public RepositoryChangedEventArgs(string repositoryName)
+        public string WorktreeName { get; protected set; }
+
+        public RepositoryChangedEventArgs(string repositoryName, string worktreeName = null)
         {
             RepositoryName = repositoryName;
+            WorktreeName = worktreeName;
         }
     }
 }

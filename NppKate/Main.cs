@@ -56,7 +56,14 @@ namespace NppKate
             _logger = LogManager.GetCurrentClassLogger();
 
             LoadModules();
-            mm.AddModule(GitRepository.Module); // TODO: Переделать на автоматическую загрузку
+            try
+            {
+                mm.AddModule(GitRepository.Module); // TODO: Переделать на автоматическую загрузку
+            }
+            catch (Exception ex)
+            {
+                LoggerUtil.Error(_logger, ex, "mm.AddModule(GitRepository.Module)", null);
+            }
 
             try
             {

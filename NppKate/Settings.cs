@@ -120,6 +120,15 @@ namespace NppKate
                 [MethodImpl(MethodImplOptions.NoInlining)]
                 set { Set(value); }
             }
+
+            public static string LastActiveWorktree
+            {
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                get { return Get(""); }
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                set { Set(value); }
+            }
+
             public static bool AutoExpand
             {
                 [MethodImpl(MethodImplOptions.NoInlining)]

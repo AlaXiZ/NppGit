@@ -89,6 +89,7 @@ namespace NppKate.Modules.GitCore
         private DateTime _lastMouseDown = DateTime.Now;
         private bool _isInitialized = false;
         private ITortoiseCommand _commandRuner;
+        private string _lastActiveWt = null;
 
         private readonly Dictionary<string, FileSystemWatcher> _watchers;
 
@@ -150,6 +151,7 @@ namespace NppKate.Modules.GitCore
 
         private void GitCoreOnRepositoryAdded(object sender, RepositoryChangedEventArgs e)
         {
+            _lastActiveWt = e.WorktreeName;
             if (tvRepositories.Nodes.ContainsKey(e.RepositoryName)) return;
             var node = CreateRepoNode(GitRepository.Instance.Repositories.Find(r => r.Name == e.RepositoryName));
             if (node == null) return;
@@ -158,25 +160,55 @@ namespace NppKate.Modules.GitCore
 
         private void GitCoreOnDocumentRepositoryChanged(object sender, RepositoryChangedEventArgs e)
         {
-            DocumentRepositoryUpdate(e.RepositoryName);
+            DocumentRepositoryUpdate(e.RepositoryName, e.WorktreeName);
         }
 
-        private void DocumentRepositoryUpdate(string repoName)
+        private void DocumentRepositoryUpdate(string repoName, string wtName = null, bool forced = false)
         {
-            if (!string.IsNullOrEmpty(repoName) && repoName.Equals(_lastDocumentRepo)) return;
-            if (!string.IsNullOrEmpty(_lastDocumentRepo))
+
+            if ((repoName?.Equals(_lastDocumentRepo) ?? false) && (_lastActiveWt?.Equals(wtName) ?? false) && !forced)
+                return;
+
+            if (!string.IsNullOrEmpty(_lastDocumentRepo) && !forced)
             {
                 var nodeOld = tvRepositories.Nodes[_lastDocumentRepo];
                 nodeOld.Text = nodeOld.Name;
-                nodeOld.ForeColor = tvRepositories.ForeColor;
+                if (string.IsNullOrEmpty(_lastActiveWt))
+                    nodeOld.ForeColor = tvRepositories.ForeColor;
+                else if (nodeOld.Nodes[WorktreeFolder]?.Tag as int? == NODE_LOADED)
+                {
+                    var wtOldNode = nodeOld.Nodes[WorktreeFolder].Nodes[_lastActiveWt];
+                    if (wtOldNode != null)
+                        wtOldNode.ForeColor = tvRepositories.ForeColor;
+                }
             }
             if (!string.IsNullOrEmpty(repoName))
             {
                 var nodeNew = tvRepositories.Nodes[repoName];
-                nodeNew.ForeColor = _documentRepoColor;
+                if (string.IsNullOrEmpty(wtName))
+                    nodeNew.ForeColor = _documentRepoColor;
+                else 
+                {
+                    if (nodeNew.Nodes[WorktreeFolder]?.Tag as int? != NODE_LOADED)
+                    {
+                        var t = new Task(new Action(() =>
+                        {
+                            UpdateWorktree(repoName);
+                        }));
+                        t.RunSynchronously();
+                        nodeNew.Nodes[WorktreeFolder]?.Expand();
+                    }
+                    var wtNewNode = nodeNew.Nodes[WorktreeFolder]?.Nodes[wtName];
+                    if (wtNewNode != null)
+                    {
+                        wtNewNode.ForeColor = _documentRepoColor;
+                        wtNewNode.Text += string.Empty;
+                    }
+                }
                 nodeNew.Text = nodeNew.Name + "*";
             }
             _lastDocumentRepo = repoName;
+            _lastActiveWt = wtName;
         }
 
         public Bitmap TabIcon => Properties.Resources.repositories;
@@ -302,7 +334,7 @@ namespace NppKate.Modules.GitCore
                 ActiverRepositoryUpdate(repoLink.Name);
             repoLink = GitRepository.Instance.DocumentRepository;
             if (repoLink != null)
-                DocumentRepositoryUpdate(repoLink.Name);
+                DocumentRepositoryUpdate(repoLink.Name, repoLink.ActiveWorktree?.Branch);
         }
 
         private void UpdateBranch(string repoName)
@@ -396,6 +428,7 @@ namespace NppKate.Modules.GitCore
             {
                 tvRepositories.BeginUpdate();
                 worktree.Nodes.Clear();
+                worktree.Tag = NODE_LOADED;
             }));
             try
             {
@@ -925,6 +958,7 @@ namespace NppKate.Modules.GitCore
                 t.ContinueWith((r) =>
                 {
                     stopProgress();
+                    DocumentRepositoryUpdate(_lastDocumentRepo, _lastActiveWt, true);
                 }, TaskScheduler.FromCurrentSynchronizationContext());
 
                 startProgress();

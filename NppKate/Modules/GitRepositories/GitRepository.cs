@@ -108,7 +108,7 @@ namespace NppKate.Modules.GitCore
         {
             if (SwitchByPath(NppUtils.CurrentFilePath))
                 DoActiveRepository();
-            DoDocumentRepositiry(DocumentRepository?.Name);
+            DoDocumentRepositiry(DocumentRepository?.Name, DocumentRepository?.ActiveWorktree?.Branch);
         }
 
         public bool IsNeedRun => true;
@@ -184,6 +184,7 @@ namespace NppKate.Modules.GitCore
                 if (_repos.ContainsKey(Settings.GitCore.LastActiveRepository))
                 {
                     _currentRepo = _repos[Settings.GitCore.LastActiveRepository];
+                    _currentRepo.SetActiveWorktree(Settings.GitCore.LastActiveWorktree);
                 }
             }
             else
@@ -223,19 +224,31 @@ namespace NppKate.Modules.GitCore
             get
             {
                 var path = GetRootDir(NppUtils.CurrentFileDir);
-                if (path == null) return null;
+                if (string.IsNullOrEmpty(path)) return null;
+                Worktree newWt = null;
+
+                if (Worktree.IsWorktreePath(path))
+                {
+                    newWt = new Worktree(wtDir: path);
+                    path = Worktree.GetMainRepositoryPath(path);
+                }
+
                 var name = FindRepoByPath(path);
-                return _repos.ContainsKey(name) ? _repos[name] : null;
+                var repo = _repos.ContainsKey(name) ? _repos[name] : null;
+                if (repo != null)
+                    repo.ActiveWorktree = newWt;
+                return repo;
             }
         }
 
         public bool SwitchByPath(string path)
         {
             var newPath = GetRootDir(path);
-            var newWt = "";
+            Worktree newWt = null;
+
             if (Worktree.IsWorktreePath(newPath))
             {
-                newWt = newPath;
+                newWt = new Worktree(wtDir: newPath);
                 newPath = Worktree.GetMainRepositoryPath(newPath);
             }
 
@@ -245,6 +258,7 @@ namespace NppKate.Modules.GitCore
             }
 
             var newRepo = new RepositoryLink(newPath);
+            newRepo.ActiveWorktree = newWt;
 
             var oldName = FindRepoByPath(newPath);
             if (!string.IsNullOrWhiteSpace(oldName) && _repos[oldName].Path == newPath) // Репозиторий нашли по пути
@@ -274,12 +288,14 @@ namespace NppKate.Modules.GitCore
             if (_currentRepo != null)
             {
                 // По пути сравнить надежнее, чем по имени
-                if (_currentRepo.Path.Equals(newRepo.Path, StringComparison.InvariantCultureIgnoreCase))
+                if (_currentRepo.Path.Equals(newRepo.Path, StringComparison.InvariantCultureIgnoreCase) && (
+                    _currentRepo.ActiveWorktree?.Path.Equals(newWt?.Path, StringComparison.InvariantCultureIgnoreCase) ?? false))
                 {
                     return false;
                 }
             }
-            if (SwitchByName(newRepo.Name))
+            var switchName = newWt == null ? newRepo.Name : $"{newRepo.Name}|{newWt.Branch}";
+            if (SwitchByName(switchName))
             {
                 return true;
             }
@@ -302,8 +318,24 @@ namespace NppKate.Modules.GitCore
 
         public bool SwitchByName(string name)
         {
-            if (!_repos.ContainsKey(name)) return false;
-            _currentRepo = _repos[name];
+            if (string.IsNullOrEmpty(name))
+                return false;
+            string repoName = null, wtName = null;
+            if (name.Contains("|"))
+            {
+                var arr = name.Split('|');
+                repoName = arr[0];
+                wtName = arr[1];
+            }
+            else
+            {
+                repoName = name;
+            }
+
+            if (!_repos.ContainsKey(repoName))
+                return false;
+            _currentRepo = _repos[repoName];
+            _currentRepo.SetActiveWorktree(wtName);
             DoActiveRepository();
             return true;
         }
@@ -317,11 +349,12 @@ namespace NppKate.Modules.GitCore
             {
                 _currRepo = new Repository(_currentRepo.Path);
                 Settings.GitCore.LastActiveRepository = _currentRepo.Name;
-                args = new RepositoryChangedEventArgs(_currentRepo.Name);
+                Settings.GitCore.LastActiveWorktree = _currentRepo.ActiveWorktree?.Branch ?? "";
+                args = new RepositoryChangedEventArgs(_currentRepo.Name, _currentRepo.ActiveWorktree?.Branch);
             }
             else
             {
-                args = new RepositoryChangedEventArgs(null);
+                args = new RepositoryChangedEventArgs(null, null);
             }
             try
             {
@@ -333,9 +366,9 @@ namespace NppKate.Modules.GitCore
             }
         }
 
-        private void DoDocumentRepositiry(string repoName)
+        private void DoDocumentRepositiry(string repoName, string wtName = null)
         {
-            var args = new RepositoryChangedEventArgs(repoName);
+            var args = new RepositoryChangedEventArgs(repoName, wtName);
             try
             {
                 OnDocumentReposituryChanged?.Invoke(this, args);
@@ -346,9 +379,9 @@ namespace NppKate.Modules.GitCore
             }
         }
 
-        private void DoRepoAdded(string repoName)
+        private void DoRepoAdded(string repoName, string wtName = null)
         {
-            var args = new RepositoryChangedEventArgs(repoName);
+            var args = new RepositoryChangedEventArgs(repoName, wtName);
             try
             {
                 OnRepositoryAdded?.Invoke(this, args);
@@ -388,7 +421,7 @@ namespace NppKate.Modules.GitCore
         {
             Logger.Trace($"Save repo Name={repoLink.Name}, Path={repoLink.Path}");
             _repos.Add(repoLink.Name, repoLink);
-            DoRepoAdded(repoLink.Name);
+            DoRepoAdded(repoLink.Name, repoLink.ActiveWorktree?.Branch);
             var root = _doc.Root;
             var element = new XElement("Repository", repoLink.Path, new XAttribute("Name", repoLink.Name));
             root?.Add(element);
