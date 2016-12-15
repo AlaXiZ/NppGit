@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 /*
 Copyright (c) 2015-2016, Schadin Alexey (schadin@gmail.com)
 All rights reserved.
@@ -91,6 +93,9 @@ namespace NppKate.Forms
             this.llWiki = new System.Windows.Forms.LinkLabel();
             this.chbRestartNpp = new System.Windows.Forms.CheckBox();
             this.pMain = new System.Windows.Forms.Panel();
+            this.bSelectGitPath = new System.Windows.Forms.Button();
+            this.tbGitPath = new System.Windows.Forms.TextBox();
+            this.lGitPath = new System.Windows.Forms.Label();
             this.tbSettings.SuspendLayout();
             this.tpCommon.SuspendLayout();
             this.gbUsingModules.SuspendLayout();
@@ -165,7 +170,7 @@ namespace NppKate.Forms
             this.gbUsingModules.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.gbUsingModules.Location = new System.Drawing.Point(8, 56);
             this.gbUsingModules.Name = "gbUsingModules";
-            this.gbUsingModules.Size = new System.Drawing.Size(389, 65);
+            this.gbUsingModules.Size = new System.Drawing.Size(389, 123);
             this.gbUsingModules.TabIndex = 8;
             this.gbUsingModules.TabStop = false;
             this.gbUsingModules.Text = "Включенные модули*";
@@ -174,15 +179,10 @@ namespace NppKate.Forms
             // 
             this.chlModules.Dock = System.Windows.Forms.DockStyle.Fill;
             this.chlModules.FormattingEnabled = true;
-            this.chlModules.Items.AddRange(new object[] {
-            "Tortoise Git",
-            "Git Features",
-            "SQL IDE",
-            "Snippets"});
             this.chlModules.Location = new System.Drawing.Point(3, 16);
             this.chlModules.MultiColumn = true;
             this.chlModules.Name = "chlModules";
-            this.chlModules.Size = new System.Drawing.Size(383, 46);
+            this.chlModules.Size = new System.Drawing.Size(383, 104);
             this.chlModules.TabIndex = 0;
             this.chlModules.SelectedValueChanged += new System.EventHandler(this.chlModules_SelectedValueChanged);
             // 
@@ -286,10 +286,9 @@ namespace NppKate.Forms
             // 
             // bSelectFolder
             // 
-            this.bSelectFolder.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.bSelectFolder.Location = new System.Drawing.Point(366, 18);
+            this.bSelectFolder.Location = new System.Drawing.Point(366, 19);
             this.bSelectFolder.Name = "bSelectFolder";
-            this.bSelectFolder.Size = new System.Drawing.Size(28, 23);
+            this.bSelectFolder.Size = new System.Drawing.Size(28, 21);
             this.bSelectFolder.TabIndex = 4;
             this.bSelectFolder.Text = "...";
             this.bSelectFolder.UseVisualStyleBackColor = true;
@@ -315,6 +314,9 @@ namespace NppKate.Forms
             // 
             // tpGitFeatures
             // 
+            this.tpGitFeatures.Controls.Add(this.bSelectGitPath);
+            this.tpGitFeatures.Controls.Add(this.tbGitPath);
+            this.tpGitFeatures.Controls.Add(this.lGitPath);
             this.tpGitFeatures.Controls.Add(this.chbAutoExpand);
             this.tpGitFeatures.Controls.Add(this.gbFileInBranch);
             this.tpGitFeatures.Location = new System.Drawing.Point(4, 22);
@@ -502,6 +504,34 @@ namespace NppKate.Forms
             this.pMain.Size = new System.Drawing.Size(409, 227);
             this.pMain.TabIndex = 6;
             // 
+            // bSelectGitPath
+            // 
+            this.bSelectGitPath.Location = new System.Drawing.Point(369, 112);
+            this.bSelectGitPath.Name = "bSelectGitPath";
+            this.bSelectGitPath.Size = new System.Drawing.Size(28, 21);
+            this.bSelectGitPath.TabIndex = 10;
+            this.bSelectGitPath.Text = "...";
+            this.bSelectGitPath.UseVisualStyleBackColor = true;
+            this.bSelectGitPath.Click += new System.EventHandler(this.bSelectGitPath_Click);
+            // 
+            // tbGitPath
+            // 
+            this.tbGitPath.Location = new System.Drawing.Point(6, 113);
+            this.tbGitPath.Name = "tbGitPath";
+            this.tbGitPath.ReadOnly = true;
+            this.tbGitPath.Size = new System.Drawing.Size(357, 20);
+            this.tbGitPath.TabIndex = 9;
+            // 
+            // lGitPath
+            // 
+            this.lGitPath.AutoSize = true;
+            this.lGitPath.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.lGitPath.Location = new System.Drawing.Point(3, 97);
+            this.lGitPath.Name = "lGitPath";
+            this.lGitPath.Size = new System.Drawing.Size(84, 13);
+            this.lGitPath.TabIndex = 8;
+            this.lGitPath.Text = "Путь до git.exe*";
+            // 
             // SettingsDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -577,5 +607,8 @@ namespace NppKate.Forms
         private System.Windows.Forms.TreeView tvToolbarCommand;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.DomainUpDown udNestedLEvel;
+        private System.Windows.Forms.Button bSelectGitPath;
+        private System.Windows.Forms.TextBox tbGitPath;
+        private System.Windows.Forms.Label lGitPath;
     }
 }

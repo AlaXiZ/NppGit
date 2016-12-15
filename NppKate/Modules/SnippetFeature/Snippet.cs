@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 /*
 Copyright (c) 2015-2016, Schadin Alexey (schadin@gmail.com)
 All rights reserved.
@@ -33,7 +35,12 @@ namespace NppKate.Modules.SnippetFeature
         public const string DefaultCategory = "default";
         public const string DefaultFileExtention = "*";
 
-        public static readonly Snippet Null = new Snippet("", "", "");
+        public static readonly Snippet Null;
+
+        static Snippet()
+        {
+            Null = new Snippet("", "", "");
+        }
 
         public string Name { get; set; }
         public bool IsVisible { get; set; }

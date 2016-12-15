@@ -1,4 +1,6 @@
-﻿/*
+﻿// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+/*
 Copyright (c) 2015-2016, Schadin Alexey (schadin@gmail.com)
 All rights reserved.
 
@@ -103,8 +105,7 @@ namespace NppKate.Modules.SnippetFeature
 
         private static void CheckSyntaxCorrect(string text, int paramCount)
         {
-            var parameters = new object[paramCount];
-            string.Format(text, parameters);
+            string.Format(text, new object[paramCount]); //-V3010
         }
     }
 }

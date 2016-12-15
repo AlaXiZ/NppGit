@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 /*
 Copyright (c) 2015-2016, Schadin Alexey (schadin@gmail.com)
 All rights reserved.
@@ -112,7 +114,6 @@ namespace NppKate.Interop
         }
     }
 
-
     [StructLayout(LayoutKind.Sequential)]
     public struct RECT
     {
@@ -186,6 +187,7 @@ namespace NppKate.Interop
         public int dwMenuData;
     }
 
+    [Flags]
     public enum WinEventContext : uint
     {
         WINEVENT_OUTOFCONTEXT = 0x0000,
@@ -315,6 +317,7 @@ namespace NppKate.Interop
         public static IntPtr SendMessage(IntPtr hWnd, NppMsg Msg, int wParam, out string lParam)
         {
             var text = new StringBuilder(Win32.MAX_PATH);
+
             IntPtr retval = Win32.SendMessage(hWnd, Msg, 0, text);
             lParam = text.ToString();
             return retval;
@@ -352,6 +355,7 @@ namespace NppKate.Interop
         public static IntPtr SendMessage(IntPtr hWnd, SciMsg Msg, int wParam, out string lParam)
         {
             var text = new StringBuilder(Win32.MAX_PATH);
+
             IntPtr retval = Win32.SendMessage(hWnd, Msg, 0, text);
             lParam = text.ToString();
             return retval;
@@ -361,13 +365,13 @@ namespace NppKate.Interop
         [DllImport("user32.dll", SetLastError = true)]
         public static extern bool PostMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
 
-
         [DllImport("Shell32.dll")]
         public extern static int ExtractIconEx(string libName, int iconIndex, IntPtr[] largeIcon, IntPtr[] smallIcon, int nIcons);
 
         public static Icon ExtractIcon(string file, int index, bool small = true)
         {
             IntPtr[] icons = new IntPtr[index + 1];
+
             if (small)
                 ExtractIconEx(file, 0, null, icons, icons.Length);
             else
@@ -403,7 +407,6 @@ namespace NppKate.Interop
         [DllImport("kernel32")]
         public static extern void OutputDebugString(string lpOutputString);
 
-
         [DllImport("user32.dll")]
         public static extern IntPtr SetWinEventHook(WinEvent eventMin, WinEvent eventMax, IntPtr hmodWinEventProc, WinEventDelegate lpfnWinEventProc, uint idProcess, uint idThread, uint dwFlags);
 
@@ -419,18 +422,33 @@ namespace NppKate.Interop
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern IntPtr LoadLibraryEx(string lpFileName, IntPtr hReservedNull, LoadLibraryFlags dwFlags);
 
-
         [DllImport("kernel32.dll")]
         public static extern bool FreeLibrary(IntPtr hModule);
 
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         public static extern IntPtr LoadImage(IntPtr hInstance, string lpszName, uint uType, int cxDesired, int cyDesired, uint fuLoad);
+
+        [DllImport("kernel32.dll")]
+        public static extern IntPtr FindResource(IntPtr hModule, string lpName, int lpType);
+
+        // lpType
+        public const int RT_CURSOR = 1;
+        public const int RT_BITMAP = 2;
+        public const int RT_ICON = 3;
+        public const int RT_MENU = 4;
+        public const int RT_DIALOG = 5;
+        public const int RT_STRING = 6;
+        public const int RT_FONTDIR = 7;
+        public const int RT_FONT = 8;
+        public const int RT_ACCELERATOR = 9;
+        public const int RT_RCDATA = 10;
+        public const int RT_MESSAGETABLE = 11;
         // uType
         public const uint IMAGE_BITMAP = 0; // Loads a bitmap.
         public const uint IMAGE_CURSOR = 2; // Loads a cursor.
         public const uint IMAGE_ICON = 1; // Loads an icon.
         // fuLoad
-        public const uint LR_CREATEDIBSECTION = 0x00002000; 
+        public const uint LR_CREATEDIBSECTION = 0x00002000;
         public const uint LR_DEFAULTCOLOR = 0x00000000;
         public const uint LR_DEFAULTSIZE = 0x00000040;
         public const uint LR_LOADFROMFILE = 0x00000010;
@@ -450,7 +468,9 @@ namespace NppKate.Interop
         public static string GetUserNameEx(ExtendedNameFormat nameFormat)
         {
             var buf = new StringBuilder(MAX_PATH);
+
             int size = buf.Capacity;
+
             if (GetUserNameEx(nameFormat, buf, ref size) > 0)
             {
                 buf.Capacity = size;

@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 /*
 Copyright (c) 2015-2016, Schadin Alexey (schadin@gmail.com)
 All rights reserved.
@@ -43,7 +45,7 @@ namespace NppKate
         private static ModuleManager mm = new ModuleManager(cm, new FormManager());
         private static readonly IList<Type> _excludedTypes = new ReadOnlyCollection<Type>(
             new List<Type> {
-                typeof(GitCore)
+                typeof(GitRepository)
             });
         private static Logger _logger;
         #endregion
@@ -54,7 +56,14 @@ namespace NppKate
             _logger = LogManager.GetCurrentClassLogger();
 
             LoadModules();
-            mm.AddModule(GitCore.Module); // TODO: Переделать на автоматическую загрузку
+            try
+            {
+                mm.AddModule(GitRepository.Module); // TODO: Переделать на автоматическую загрузку
+            }
+            catch (Exception ex)
+            {
+                LoggerUtil.Error(_logger, ex, "mm.AddModule(GitRepository.Module)", null);
+            }
 
             try
             {

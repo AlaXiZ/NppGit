@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 /*
 Copyright (c) 2015-2016, Schadin Alexey (schadin@gmail.com)
 All rights reserved.
@@ -110,7 +112,7 @@ namespace NppKate.Forms
         private void miAdd_Click(object sender, EventArgs e)
         {
             var dlg = new SnippetEdit();
-            dlg.Init(_manager);
+            dlg.Init(_manager, 0);
             if (dlg.ShowDialog() == DialogResult.OK)
             {
                 SaveSnippet(_snippetManager.FindByName(dlg.SnippetName));
@@ -178,7 +180,7 @@ namespace NppKate.Forms
             var selectedSnippet = tvSnippets.SelectedNode?.Tag as Snippet;
             if (selectedSnippet == null) return;
             var dlg = new SnippetEdit();
-            dlg.Init(_manager);
+            dlg.Init(_manager, 0);
             dlg.SnippetName = selectedSnippet.Name;
             dlg.Action = SnippetEditAction.Update;
 
@@ -312,7 +314,7 @@ namespace NppKate.Forms
         private void miExtract_Click(object sender, EventArgs e)
         {
             var dlg = new SnippetEdit();
-            dlg.Init(_manager);
+            dlg.Init(_manager, 0);
             dlg.SnippetText = Npp.NppUtils.GetSelectedText();
             if (dlg.ShowDialog() == DialogResult.OK)
             {

@@ -1,4 +1,6 @@
-﻿/*
+﻿// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+/*
 Copyright (c) 2015-2016, Schadin Alexey (schadin@gmail.com)
 All rights reserved.
 
@@ -29,7 +31,7 @@ using System;
 
 namespace NppKate.Npp
 {
-    public class NppInfo
+    public class NppInfo : IDisposable
     {
         private static object locker = new object();
         private volatile static NppInfo _instance;
@@ -88,6 +90,12 @@ namespace NppKate.Npp
             funcItem._init2Check = checkOnInit;
             _funcItems.Add(funcItem);
             return (_index - 1);
+        }
+
+        public void Dispose()
+        {
+            if (_funcItems != null)
+                _funcItems.Dispose();
         }
     }
 }

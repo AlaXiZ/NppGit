@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 /*
 Copyright (c) 2015-2016, Schadin Alexey (schadin@gmail.com)
 All rights reserved.
@@ -25,12 +27,14 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
 using NppKate.Common;
 using NppKate.Modules.TortoiseGitFeatures;
 using NppKate.Npp;
-using System;
-using System.Collections.Generic;
-using System.Windows.Forms;
 
 namespace NppKate.Forms
 {
@@ -78,18 +82,47 @@ namespace NppKate.Forms
                 udNestedLEvel.Items.Add(i);
             }
             _commandManager = commandManager;
+
+            LoadModuleList();
+
             LoadSettings();
+        }
+
+        private void LoadModuleList()
+        {
+            chlModules.Items.Clear();
+
+            var imodule = typeof(IModule);
+            var types = AppDomain.CurrentDomain.GetAssemblies()
+                        .SelectMany(s => s.GetTypes())
+                        .Where(p => imodule.IsAssignableFrom(p))
+                        .Where(p => p.IsClass)                    // Нужны только классы
+                        .OrderBy(p => p.Name);                    // Отсортируем по имени
+            // Создаем модули, добавляем в менеджер
+            foreach (var t in types)
+            {
+                chlModules.Items.Add(AddSpace(t.Name), Settings.Modules.GetModuleState(t.Name));
+            }
+        }
+
+        private string AddSpace(string name)
+        {
+            var buffer = new StringBuilder(name);
+            for (int i = buffer.Length - 1; i >= 0; i--)
+            {
+                if (char.IsUpper(buffer[i]) && i > 0)
+                    buffer.Insert(i, ' ');
+            }
+            return buffer.ToString();
+        }
+
+        private string RemoveSpace(string name)
+        {
+            return name.Replace(" ", "");
         }
 
         private void LoadSettings()
         {
-            //chbTGToolbar.Checked = Settings.TortoiseGitProc.ShowToolbar;
-            //chlButtons.Enabled = chbTGToolbar.Checked;
-            //var mask = Settings.TortoiseGitProc.ButtonMask;
-            //for (int i = 0; i < chlButtons.Items.Count; i++)
-            //{
-            //    chlButtons.SetItemChecked(i, (mask & (1u << i)) > 0);
-            //}
             tbTGProcPath.Text = Settings.TortoiseGitProc.Path;
             LoadTortoiseCommands();
 
@@ -97,24 +130,17 @@ namespace NppKate.Forms
             mtxbSHACount.Text = Settings.Functions.SHACount.ToString();
             chbFileInOtherView.Checked = Settings.Functions.OpenFileInOtherView;
             chbAutoExpand.Checked = Settings.GitCore.AutoExpand;
+            tbGitPath.Text = Settings.GitBash.BinPath;
 
             cbLogLevel.Items.Clear();
             cbLogLevel.Items.AddRange(_logLevel.ToArray());
             cbLogLevel.Text = Settings.CommonSettings.LogLevel;
-
-            chlModules.SetItemChecked(0, Settings.Modules.TortoiseGit);
-            chlModules.SetItemChecked(1, Settings.Modules.Git);
-            chlModules.SetItemChecked(2, Settings.Modules.SQLIDE);
-            chlModules.SetItemChecked(3, Settings.Modules.Snippets);
-
-            //chlModules.SetItemChecked(4, Settings.Modules.PSSE);
 
             chbGroupByCategory.Checked = Settings.Snippets.IsGroupByCategory;
             chbHideByExt.Checked = Settings.Snippets.IsHideByExtention;
             chbExpand.Checked = Settings.Snippets.IsExpanAfterCreate;
             chbInsertEmpty.Checked = Settings.Snippets.InsertEmpty;
             udNestedLEvel.SelectedIndex = Settings.Snippets.MaxLevel - 1;
-
         }
 
         private uint GetButtonMask()
@@ -174,19 +200,18 @@ namespace NppKate.Forms
         {
             Settings.CommonSettings.IsSetDefaultShortcut = chbDefaultShortcut.Checked;
             Settings.CommonSettings.LogLevel = cbLogLevel.Text;
-            //Settings.TortoiseGitProc.ShowToolbar = chbTGToolbar.Checked;
-            //Settings.TortoiseGitProc.ButtonMask = GetButtonMask();
             Settings.TortoiseGitProc.Path = tbTGProcPath.Text;
             SaveTortoiseGitCommand();
             Settings.Functions.SHACount = byte.Parse(mtxbSHACount.Text);
             Settings.Functions.OpenFileInOtherView = chbFileInOtherView.Checked;
             Settings.GitCore.AutoExpand = chbAutoExpand.Checked;
+            Settings.GitBash.BinPath = tbGitPath.Text;
 
             // Modules state
-            Settings.Modules.TortoiseGit = chlModules.GetItemChecked(0);
-            Settings.Modules.Git = chlModules.GetItemChecked(1);
-            Settings.Modules.SQLIDE = chlModules.GetItemChecked(2);
-            Settings.Modules.Snippets = chlModules.GetItemChecked(3);
+            for (int i = 0; i < chlModules.Items.Count; i++)
+            {
+                Settings.Modules.SetModuleState(RemoveSpace((string)chlModules.Items[i]), chlModules.GetItemChecked(i));
+            }
 
             // Snippet settings
             Settings.Snippets.IsGroupByCategory = chbGroupByCategory.Checked;
@@ -271,6 +296,20 @@ namespace NppKate.Forms
             if (e.Node.ForeColor == DisableColor)
             {
                 e.Cancel = true;
+            }
+        }
+
+        private void bSelectGitPath_Click(object sender, EventArgs e)
+        {
+            var dlg = new FolderBrowserDialog
+            {
+                Description = "Выберите папку с git.exe",
+                ShowNewFolderButton = false,
+                SelectedPath = tbGitPath.Text
+            };
+            if (dlg.ShowDialog() == DialogResult.OK)
+            {
+                tbGitPath.Text = dlg.SelectedPath;
             }
         }
     }

@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 /*
 Copyright (c) 2015-2016, Schadin Alexey (schadin@gmail.com)
 All rights reserved.
@@ -25,6 +27,7 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -117,6 +120,15 @@ namespace NppKate
                 [MethodImpl(MethodImplOptions.NoInlining)]
                 set { Set(value); }
             }
+
+            public static string LastActiveWorktree
+            {
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                get { return Get(""); }
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                set { Set(value); }
+            }
+
             public static bool AutoExpand
             {
                 [MethodImpl(MethodImplOptions.NoInlining)]
@@ -135,6 +147,7 @@ namespace NppKate
         }
         public static class Modules
         {
+            private const string IniSection = "Modules";
             public static bool TortoiseGit
             {
                 [MethodImpl(MethodImplOptions.NoInlining)]
@@ -162,6 +175,32 @@ namespace NppKate
                 get { return Get(true); }
                 [MethodImpl(MethodImplOptions.NoInlining)]
                 set { Set(value); }
+            }
+
+            public static bool LogConsole
+            {
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                get { return Get(true); }
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                set { Set(value); }
+            }
+
+            [MethodImpl(MethodImplOptions.NoInlining)]
+            public static bool NeedCurrentModuleLoad()
+            {
+                var mth = new StackTrace().GetFrame(1).GetMethod();
+                var cls = mth.ReflectedType.Name;
+                return GetModuleState(cls);
+            }
+
+            public static bool GetModuleState(string module)
+            {
+                return Get(true, IniSection, module);
+            }
+
+            public static void SetModuleState(string module, bool value)
+            {
+                Set(value, IniSection, module);
             }
         }
 
@@ -200,6 +239,14 @@ namespace NppKate
                 [MethodImpl(MethodImplOptions.NoInlining)]
                 set { Set(value); }
             }
+            public static bool ConsoleLogPanelVisible
+            {
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                get { return Get(false); }
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                set { Set(value); }
+            }
+
         }
 
         public static class TortoiseGitProc
@@ -211,6 +258,8 @@ namespace NppKate
                 [MethodImpl(MethodImplOptions.NoInlining)]
                 set { Set(value); }
             }
+
+            [Obsolete("Deprecated", true)]
             public static bool ShowToolbar
             {
                 [MethodImpl(MethodImplOptions.NoInlining)]
@@ -218,6 +267,8 @@ namespace NppKate
                 [MethodImpl(MethodImplOptions.NoInlining)]
                 set { Set(value); }
             }
+
+            [Obsolete("Deprecated", true)]
             public static uint ButtonMask
             {
                 [MethodImpl(MethodImplOptions.NoInlining)]
@@ -234,12 +285,14 @@ namespace NppKate
             }
 
             [MethodImpl(MethodImplOptions.NoInlining)]
+            [Obsolete("Deprecated", true)]
             public static bool GetButtonVisible(string command)
             {
                 return Get(false, key: command);
             }
 
             [MethodImpl(MethodImplOptions.NoInlining)]
+            [Obsolete("Deprecated", true)]
             public static void SetButtonVisible(string command, bool value)
             {
                 Set(value, key: command);
@@ -328,6 +381,27 @@ namespace NppKate
             {
                 [MethodImpl(MethodImplOptions.NoInlining)]
                 get { return Get<ushort>(5); }
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                set { Set(value); }
+            }
+        }
+        #endregion
+
+        #region "Git Bash"
+        public static class GitBash
+        {
+            public static string BinPath
+            {
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                get { return Get(""); }
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                set { Set(value); }
+            }
+
+            public static bool IsFirstRun
+            {
+                [MethodImpl(MethodImplOptions.NoInlining)]
+                get { return Get(true); }
                 [MethodImpl(MethodImplOptions.NoInlining)]
                 set { Set(value); }
             }

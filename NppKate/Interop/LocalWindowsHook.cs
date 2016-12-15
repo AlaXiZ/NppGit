@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 // ***********************************************************************
 //  LocalWindowsHook class
 //  Dino Esposito, summer 2002 
@@ -75,8 +77,7 @@ namespace NppKate
 		public event HookEventHandler HookInvoked;
 		protected void OnHookInvoked(HookEventArgs e)
 		{
-			if (HookInvoked != null)
-				HookInvoked(this, e);
+			HookInvoked?.Invoke(this, e);
 		}
 		// ************************************************************************
 

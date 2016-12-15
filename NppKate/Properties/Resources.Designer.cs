@@ -63,6 +63,36 @@ namespace NppKate.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap _lock {
+            get {
+                object obj = ResourceManager.GetObject("lock", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap arrow_branch {
+            get {
+                object obj = ResourceManager.GetObject("arrow-branch", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap arrow_branch_090 {
+            get {
+                object obj = ResourceManager.GetObject("arrow-branch-090", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap arrow_circle_315 {
             get {
                 object obj = ResourceManager.GetObject("arrow-circle-315", resourceCulture);
@@ -83,9 +113,59 @@ namespace NppKate.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap arrow_curve_090_left {
+            get {
+                object obj = ResourceManager.GetObject("arrow_curve_090_left", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap arrow_curve_180_left {
             get {
                 object obj = ResourceManager.GetObject("arrow-curve-180-left", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap arrow_merge {
+            get {
+                object obj = ResourceManager.GetObject("arrow-merge", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap arrow_transition_090 {
+            get {
+                object obj = ResourceManager.GetObject("arrow_transition_090", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap arrow_transition_180 {
+            get {
+                object obj = ResourceManager.GetObject("arrow_transition_180", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap arrow_transition_270 {
+            get {
+                object obj = ResourceManager.GetObject("arrow_transition_270", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -141,6 +221,15 @@ namespace NppKate.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Console log.
+        /// </summary>
+        internal static string CmdConsoleLog {
+            get {
+                return ResourceManager.GetString("CmdConsoleLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Quick search.
         /// </summary>
         internal static string CmdQuickSearch {
@@ -171,6 +260,16 @@ namespace NppKate.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap console {
+            get {
+                object obj = ResourceManager.GetObject("console", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap database__arrow {
             get {
                 object obj = ResourceManager.GetObject("database--arrow", resourceCulture);
@@ -194,6 +293,16 @@ namespace NppKate.Properties {
         internal static System.Drawing.Bitmap database__plus {
             get {
                 object obj = ResourceManager.GetObject("database--plus", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap document_list {
+            get {
+                object obj = ResourceManager.GetObject("document_list", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -270,6 +379,16 @@ namespace NppKate.Properties {
         internal static string LICENSE {
             get {
                 return ResourceManager.GetString("LICENSE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap lock_unlock {
+            get {
+                object obj = ResourceManager.GetObject("lock-unlock", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -508,6 +627,15 @@ namespace NppKate.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to worktree.
+        /// </summary>
+        internal static string RsWorktree {
+            get {
+                return ResourceManager.GetString("RsWorktree", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap Search_32 {
@@ -572,6 +700,16 @@ namespace NppKate.Properties {
         internal static System.Drawing.Bitmap Tortoise {
             get {
                 object obj = ResourceManager.GetObject("Tortoise", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap tree__minus {
+            get {
+                object obj = ResourceManager.GetObject("tree--minus", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
