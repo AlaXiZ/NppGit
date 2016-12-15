@@ -29,6 +29,7 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using NppKate.Common;
 using NppKate.Common.VCS;
+using System;
 
 namespace NppKate.Modules.GitFeatures
 {
@@ -36,6 +37,8 @@ namespace NppKate.Modules.GitFeatures
     {
         private IModuleManager _manager;
         private GitShell _gitShell;
+        private static readonly string _gitBinPath = System.IO.Path.Combine("Git", "cmd");
+
         public bool IsNeedRun => Settings.Modules.NeedCurrentModuleLoad();
 
         public void Final() { }
@@ -44,11 +47,71 @@ namespace NppKate.Modules.GitFeatures
         {
             _manager = manager;
 
-            _gitShell = new GitShell(Settings.GitBash.BinPath);
+            if (SearchGit())
+            {
+                _gitShell = new GitShell(Settings.GitBash.BinPath);
 
-            _manager.RegisterService(typeof(IGitShell), _gitShell);
+                _manager.RegisterService(typeof(IGitShell), _gitShell);
+            } else
+            {
+                Console.WriteLine("Need configure git path: NppKate-Settings-Git");
+            }
 
             var name = GetType().Name;
+        }
+        private static bool ExistsGit(string programPath)
+        {
+            return System.IO.Directory.Exists(System.IO.Path.Combine(programPath, _gitBinPath));
+        }
+
+        private static bool SearchGit()
+        {
+            var gitPath = Settings.GitBash.BinPath;
+            // Path not set and first run
+            if (string.IsNullOrEmpty(gitPath) && Settings.GitBash.IsFirstRun)
+            {
+                var env_path = Environment.GetEnvironmentVariable("PATH");
+                if (env_path.Contains(_gitBinPath))
+                {
+                    var idx = env_path.IndexOf(_gitBinPath);
+                    var stopIdx = env_path.IndexOf(';', idx);
+                    if (stopIdx == -1)
+                        stopIdx = env_path.Length;
+                    var pathTmp = env_path.Substring(0, stopIdx);
+                    idx = pathTmp.LastIndexOf(';');
+                    gitPath = pathTmp.Substring(idx + 1);
+                }
+                // If OS x64, then search in "Program Files (x86)"
+                if (string.IsNullOrEmpty(gitPath) && (8 == IntPtr.Size || !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("PROCESSOR_ARCHITEW6432"))))
+                {
+                    var path = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+                    if (ExistsGit(path))
+                    {
+                        gitPath = System.IO.Path.Combine(path, _gitBinPath);
+                    }
+                }
+                // if not found or OS x32, then search in "Program Files"
+                if (string.IsNullOrEmpty(gitPath))
+                {
+                    var environmentVariable = Environment.GetEnvironmentVariable("ProgramFiles");
+                    if (environmentVariable != null)
+                    {
+                        // But npp is 32bit process,
+                        // then Environment.GetEnvironmentVariable("ProgramFiles") return "Program Files (x86)"
+                        var path = environmentVariable.Replace(" (x86)", "");
+                        if (ExistsGit(path))
+                        {
+                            gitPath = System.IO.Path.Combine(path, _gitBinPath);
+                        }
+                    }
+                }
+                // If found then save path in setting
+                if (!string.IsNullOrEmpty(gitPath))
+                    Settings.GitBash.BinPath = gitPath;
+                Settings.GitBash.IsFirstRun = false;
+            }
+            
+            return !string.IsNullOrEmpty(gitPath) && System.IO.Directory.Exists(gitPath);
         }
     }
 }
