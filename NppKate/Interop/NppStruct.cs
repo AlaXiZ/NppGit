@@ -258,7 +258,6 @@ namespace NppKate
         L_EXTERNAL
     }
 
-    [Flags]
     public enum WinMsg : uint
     {
         WM_ACTIVATE = 0x0006,
@@ -476,7 +475,6 @@ namespace NppKate
         WM_XBUTTONUP = 0x020C
     }
 
-    [Flags]
     public enum NppMsg : uint
     {
         //Here you can find how to use these messages : http://notepad-plus.sourceforge.net/uk/plugins-HOWTO.php
@@ -501,11 +499,11 @@ namespace NppKate
         NPPM_GETSESSIONFILES = (NPPMSG + 14),
         NPPM_SAVESESSION = (NPPMSG + 15),
         NPPM_SAVECURRENTSESSION = (NPPMSG + 16),
-        //struct sessionInfo {
+        // struct sessionInfo {
         //    TCHAR* sessionFilePathName;
         //    int nbFile;
         //    TCHAR** files;
-        //};
+        // };
 
         NPPM_GETOPENFILENAMESPRIMARY = (NPPMSG + 17),
         NPPM_GETOPENFILENAMESSECOND = (NPPMSG + 18),
@@ -579,7 +577,7 @@ namespace NppKate
         //struct toolbarIcons {
         //    HBITMAP    hToolbarBmp;
         //    HICON    hToolbarIcon;
-        //};
+        // };
 
         NPPM_GETWINDOWSVERSION = (NPPMSG + 42),
         //winVer NPPM_GETWINDOWSVERSION(0, 0)
@@ -606,7 +604,7 @@ namespace NppKate
         //    long internalMsg;
         //    const TCHAR * srcModuleName;
         //    void * info; // defined by plugin
-        //};
+        // };
 
         NPPM_MENUCOMMAND = (NPPMSG + 48),
         //void NPPM_MENUCOMMAND(0, int cmdID)
@@ -880,7 +878,7 @@ namespace NppKate
         //    bool _isAlt;
         //    bool _isShift;
         //    UCHAR _key;
-        //};
+        // };
 
         NPPN_FILEBEFORELOAD = (NPPN_FIRST + 14), // To notify plugins that the current file is about to be loaded
         //scnNotification->nmhdr.code = NPPN_FILEBEFOREOPEN;
@@ -1411,7 +1409,6 @@ namespace NppKate
         public int annotationLinesAdded;/* SC_MOD_CHANGEANNOTATION */
     }
 
-    [Flags]
     public enum SciMsg : uint
     {
         INVALID_POSITION = 0xFFFFFFFF,
