@@ -57,7 +57,7 @@ namespace NppKate.Modules.GitRepositories.RepositoryExt
                 }
                 else
                 {
-                    var localName = branch.FriendlyName.Replace(branch.RemoteName + "/", "");
+                    var localName = branch.Name.Replace(branch.Remote.Name + "/", "");
                     try
                     {
                         local = repo.CreateBranch(localName, branch.Tip);
@@ -76,7 +76,7 @@ namespace NppKate.Modules.GitRepositories.RepositoryExt
             {
                 var parent = new System.IO.DirectoryInfo(repositoryPath).Name;
 
-                worktreePath = System.IO.Path.Combine("..", parent + "-" + string.Join("_", local.FriendlyName.Split(System.IO.Path.GetInvalidFileNameChars(), StringSplitOptions.RemoveEmptyEntries)));
+                worktreePath = System.IO.Path.Combine("..", parent + "-" + string.Join("_", local.Name.Split(System.IO.Path.GetInvalidFileNameChars(), StringSplitOptions.RemoveEmptyEntries)));
             }
 
             var shell = GitFeatures.GitShell.GetNppInst();
@@ -84,7 +84,7 @@ namespace NppKate.Modules.GitRepositories.RepositoryExt
 
             try
             {
-                var errMsg = shell.Execute(repositoryPath, string.Format(WorktreeAdd, worktreePath, local.FriendlyName));
+                var errMsg = shell.Execute(repositoryPath, string.Format(WorktreeAdd, worktreePath, local.Name));
 
                 if (!string.IsNullOrEmpty(errMsg?.Trim()) && errMsg.Contains("fatal"))
                 {

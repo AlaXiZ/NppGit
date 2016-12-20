@@ -70,7 +70,7 @@ class Script
 
             _branch = System.Environment.GetEnvironmentVariable("APPVEYOR_REPO_BRANCH");
 
-            _suffix = (_branch == "master" ? "" : _branch == "develop" ? "b" : "a") + "_" 
+            _suffix = (_branch == "master" ? "" : (_branch == "vForXP" ? "legacy" : (_branch == "develop" ? "b" : "a"))) + "_" 
                 + System.Environment.GetEnvironmentVariable("PLATFORM");
             System.Console.WriteLine("Suffix: {0}", _suffix);
             

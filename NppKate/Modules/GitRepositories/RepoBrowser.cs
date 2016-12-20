@@ -265,7 +265,7 @@ namespace NppKate.Modules.GitCore
             CreateNode(LoadItem, Properties.Resources.RsLoading, LoadingIndex, remote);
             using (var r = new Repository(link.Path))
             {
-                currentBranch.Text = r.Head.FriendlyName;
+                currentBranch.Text = r.Head.Name;
             }
             var worktree = CreateNode(WorktreeFolder, Properties.Resources.RsWorktree, WorktreeFolderIndex, node, cmWorktree);
             worktree.Tag = NODE_NOLOADED;
@@ -354,25 +354,25 @@ namespace NppKate.Modules.GitCore
                 Invoke(new Action(() =>
                 {
                     tvRepositories.BeginUpdate();
-                    currentBranch.Text = r.Head.FriendlyName;
+                    currentBranch.Text = r.Head.Name;
                 }));
 
                 try
                 {
                     if ((int)local.Tag != NODE_NOLOADED || (int)remote.Tag != NODE_NOLOADED)
                     {
-                        foreach (var b in r.Branches.OrderBy(b => b.FriendlyName))
+                        foreach (var b in r.Branches.OrderBy(b => b.Name))
                         {
                             if (!b.IsRemote && (int)local.Tag == NODE_LOADED)
                             {
-                                if (!local.Nodes.ContainsKey(b.FriendlyName))
+                                if (!local.Nodes.ContainsKey(b.Name))
                                 {
                                     Invoke(new Action(() =>
                                     {
-                                        CreateNode(b.FriendlyName, b.FriendlyName, BranchIndex, local, cmBranch);
+                                        CreateNode(b.Name, b.Name, BranchIndex, local, cmBranch);
                                     }));
                                 }
-                                var branch = local.Nodes[b.FriendlyName];
+                                var branch = local.Nodes[b.Name];
                                 if (b.IsCurrentRepositoryHead)
                                 {
                                     Invoke(new Action(() =>
@@ -394,12 +394,12 @@ namespace NppKate.Modules.GitCore
                             }
                             else if (b.IsRemote && (int)remote.Tag == NODE_LOADED)
                             {
-                                if (!b.FriendlyName.EndsWith("/HEAD", StringComparison.InvariantCultureIgnoreCase) &&
-                                    !remote.Nodes.ContainsKey(b.FriendlyName))
+                                if (!b.Name.EndsWith("/HEAD", StringComparison.InvariantCultureIgnoreCase) &&
+                                    !remote.Nodes.ContainsKey(b.Name))
                                 {
                                     Invoke(new Action(() =>
                                     {
-                                        CreateNode(b.FriendlyName, b.FriendlyName, RemoteBranchIndex, remote, cmBranch);
+                                        CreateNode(b.Name, b.Name, RemoteBranchIndex, remote, cmBranch);
                                     }));
                                 }
                             }
@@ -733,7 +733,7 @@ namespace NppKate.Modules.GitCore
 
                     using (var repo = new Repository(GitRepository.Instance.GetRepositoryByName(nodeRepoName)?.Path))
                     {
-                        var branch = repo.Branches.Where(b => b.FriendlyName == nodeBranchName)?.First();
+                        var branch = repo.Branches.Where(b => b.Name == nodeBranchName)?.First();
                         if (branch != null)
                         {
                             Branch local = null;
@@ -745,7 +745,7 @@ namespace NppKate.Modules.GitCore
                                 }
                                 else
                                 {
-                                    var localName = branch.FriendlyName.Replace(branch.RemoteName + "/", "");
+                                    var localName = branch.Name.Replace(branch.Remote.Name + "/", "");
                                     try
                                     {
                                         local = repo.CreateBranch(localName, branch.Tip);
@@ -758,7 +758,7 @@ namespace NppKate.Modules.GitCore
                                 local = branch;
                             try
                             {
-                                Commands.Checkout(repo, local);
+                                repo.Checkout(local);
                                 ToLog("Switched to branch '{0}'", nodeBranchName);
                             }
                             catch { }
@@ -833,7 +833,7 @@ namespace NppKate.Modules.GitCore
 
                     using (var repo = new Repository(GitRepository.Instance.GetRepositoryByName(nodeRepoName)?.Path))
                     {
-                        var branch = repo.Branches.Where(b => b.FriendlyName == nodeBranchName)?.First();
+                        var branch = repo.Branches.Where(b => b.Name == nodeBranchName)?.First();
                         if (branch != null)
                         {
                             repo.AddWorktree(branch);

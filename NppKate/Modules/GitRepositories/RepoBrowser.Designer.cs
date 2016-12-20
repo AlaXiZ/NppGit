@@ -423,7 +423,7 @@ namespace NppKate.Modules.GitCore
             this.miWTPush,
             this.miWTLog});
             this.cmWorktree.Name = "cmWorktree";
-            this.cmWorktree.Size = new System.Drawing.Size(153, 236);
+            this.cmWorktree.Size = new System.Drawing.Size(119, 214);
             this.cmWorktree.Opening += new System.ComponentModel.CancelEventHandler(this.cmWorktree_Opening);
             // 
             // miPrune
@@ -505,7 +505,7 @@ namespace NppKate.Modules.GitCore
             // 
             this.miWTLog.Image = global::NppKate.Properties.Resources.document_list;
             this.miWTLog.Name = "miWTLog";
-            this.miWTLog.Size = new System.Drawing.Size(152, 22);
+            this.miWTLog.Size = new System.Drawing.Size(118, 22);
             this.miWTLog.Text = "Log";
             this.miWTLog.Click += new System.EventHandler(this.miWTLog_Click);
             // 
@@ -519,6 +519,7 @@ namespace NppKate.Modules.GitCore
             this.pbProgress.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.pbProgress.TabIndex = 6;
             this.pbProgress.UseWaitCursor = true;
+            this.pbProgress.Visible = false;
             // 
             // RepoBrowser
             // 

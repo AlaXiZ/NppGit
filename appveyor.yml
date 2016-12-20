@@ -1,11 +1,11 @@
-version: 0.6.0.{build}
+version: 0.6.1.{build}
 branches:
   except:
   - wiki-content
   - gh-pages
 skip_tags: true
 configuration:
-- Debug
+# - Debug
 - Release
 platform:
 - x86
