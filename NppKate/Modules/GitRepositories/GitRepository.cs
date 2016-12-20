@@ -472,23 +472,27 @@ namespace NppKate.Modules.GitCore
             if (!Directory.Exists(repoDir)) return null;
 
             Logger.Trace($"GetRepoName path={repoDir}");
-            var remote = "";
+            var repoName = "";
             using (var repo = new Repository(repoDir))
             {
-                if (repo.Network.Remotes.Any())
+                // Если есть несколько ссылок на репозиторий, то не можем точно определить
+                // какое имя у репозитория должно быть, значит берем имя по папке
+                if (repo.Network.Remotes.Any() && repo.Network.Remotes.Count() == 1)
                 {
-                    var remoteUrl = repo.Network.Remotes.First().Url;
+                    var remote = repo.Network.Remotes.FirstOrDefault();
+                    var remoteUrl = remote?.Url;
                     if (!string.IsNullOrEmpty(remoteUrl))
                     {
-                        remote = remoteUrl.Substring(remoteUrl.LastIndexOf('/') + 1, remoteUrl.Length - remoteUrl.LastIndexOf('/') - 1).Replace(".git", "");
+                        repoName = remoteUrl.Substring(remoteUrl.LastIndexOf('/') + 1, remoteUrl.Length - remoteUrl.LastIndexOf('/') - 1).Replace(".git", "");
                     }
                 }
-                else
+
+                if (string.IsNullOrEmpty(repoName))
                 {
-                    remote = new DirectoryInfo(repoDir).Name;
+                    repoName = new DirectoryInfo(repoDir).Name;
                 }
-                Logger.Trace($"return {remote}");
-                return remote;
+                Logger.Trace($"return {repoName}");
+                return repoName;
             }
         }
 
