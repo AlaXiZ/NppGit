@@ -27,39 +27,65 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+using NppKate.Common;
 using System;
-using NLog;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
-namespace NppKate.Common
+namespace NppKate.Core
 {
-    public static class LoggerUtil
+    public class ModuleLoader
     {
-        private static void ErrorEx(Logger logger, Exception ex)
+        private Type[] _types;
+        private string _modulePath;
+        public ModuleLoader(string modulePath)
         {
-            logger.Error("Exception\r\nMessage: {0}\r\nSource: {1}\r\nStacktrace: {2}\r\n Has inner exception: {3}",
-                ex.Message, ex.Source, ex.StackTrace, ex.InnerException != null);
-            if (ex.InnerException != null)
-                ErrorEx(logger, ex.InnerException);
-        }
-        public static void Error(Logger logger, Exception ex, string format, params object[] args)
-        {
-            logger.Error(format, args);
-            ErrorEx(logger, ex);
+            _modulePath = modulePath;
         }
 
-        private static void ConsoleErrorEx(Exception ex)
+        public uint LoadModules()
         {
-             System.Diagnostics.Debug.WriteLine("Exception\r\nMessage: {0}\r\nSource: {1}\r\nStacktrace: {2}\r\n",
-                ex.Message, ex.Source, ex.StackTrace);
-            System.Diagnostics.Debug.WriteLineIf(ex.InnerException != null, "");
-            if (ex.InnerException != null)
-                ConsoleErrorEx(ex.InnerException);
+            LoadAssemblies();
+            FindTypes();
+            return (uint?)_types?.Length ?? 0;
         }
-        public static void ConsoleError(Exception ex, string format, params object[] args)
+
+        private void FindTypes()
         {
-            if (args != null)
-                System.Diagnostics.Debug.WriteLine(format, args);
-            ConsoleErrorEx(ex);
+            var comparer = new TypeComparer();
+            var moduleIntf = typeof(IModule);
+            var types = AppDomain.CurrentDomain.GetAssemblies()
+                        .SelectMany(s => s.GetTypes())
+                        .Where(p => moduleIntf.IsAssignableFrom(p))
+                        .Where(p => p.IsClass)                    // Нужны только классы
+                        .OrderBy(t => t, comparer);
+            _types = types.ToArray();
+        }
+
+        private void LoadAssemblies()
+        {
+            if (!Directory.Exists(_modulePath))
+                return;
+
+            var dInfo = new DirectoryInfo(_modulePath);
+            foreach(var f in dInfo.GetFileSystemInfos("Kate.*.dll"))
+            {
+                AssemblyLoader.LoadAssembly(f.FullName);
+            }
+        }
+
+        public Type[] Modules => _types;
+    }
+
+    class TypeComparer : IComparer<Type>
+    {
+        public int Compare(Type x, Type y)
+        {
+            var xOrder = (x.GetCustomAttributes(typeof(Module), false).FirstOrDefault() as Module).Order;
+            var yOrder = (y.GetCustomAttributes(typeof(Module), false).FirstOrDefault() as Module).Order;
+
+            return xOrder.CompareTo(yOrder);
         }
     }
 }

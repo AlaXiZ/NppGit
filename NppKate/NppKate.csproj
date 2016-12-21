@@ -152,6 +152,7 @@
     <Compile Include="Common\VCS\VCSCommand.cs" />
     <Compile Include="Common\VCS\VCSShell.cs" />
     <Compile Include="Core\ModuleAttribute.cs" />
+    <Compile Include="Core\ModuleLoader.cs" />
     <Compile Include="DllExport\DllExportAttribute.cs" />
     <Compile Include="Forms\FormDockable.cs" />
     <Compile Include="Forms\About.cs">

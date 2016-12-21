@@ -121,7 +121,7 @@ namespace NppKate.Common
         }
 
         
-        private static Assembly LoadAssembly(string path)
+        public static Assembly LoadAssembly(string path)
         {
             try
             {
