@@ -32,11 +32,13 @@ using System.Linq;
 using NLog;
 using NppKate.Common;
 using NppKate.Npp;
+using NppKate.Core;
 
 namespace NppKate.Modules.SnippetFeature
 {
     internal delegate void InsertSnippet(string snippetName);
 
+    [Module("Snippets", 6000, "{444600A2-02D1-4720-898E-860790FB07F2}", "1.0.0")]
     public class Snippets : IModule
     {
         #region Commands Name

@@ -38,9 +38,11 @@ using NLog;
 using NppKate.Common;
 using NppKate.Modules.GitRepositories.RepositoryExt;
 using NppKate.Npp;
+using NppKate.Core;
 
 namespace NppKate.Modules.GitCore
 {
+    [Module("Git repository", 3000, "{BF107EE3-C876-49B8-BDC8-D45947E37F28}", "1.0.0")]
     public class GitRepository : IModule, IGitRepository
     {
         private const string CErrorEventTemplate = "Error in event {0}";

@@ -35,9 +35,11 @@ using NLog;
 using NppKate.Common;
 using NppKate.Npp;
 using NppKate.Resources;
+using NppKate.Core;
 
 namespace NppKate.Modules.TortoiseGitFeatures
 {
+    [Module("TortoiseGit", 4000, "{6D0A0BBB-D370-4AF3-BFC3-47FF57E40295}", "1.0.0")]
     public class TortoiseGitHelper : IModule, ITortoiseCommand, ITortoiseGitSearch
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();

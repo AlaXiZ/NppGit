@@ -29,10 +29,12 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using NppKate.Common;
 using NppKate.Common.VCS;
+using NppKate.Core;
 using System;
 
 namespace NppKate.Modules.GitFeatures
 {
+    [Module("Git shell", 1000, "{C2FA64C4-5B09-4407-9C8C-3A8DC6F46529}", "1.0.0")]
     public class GitBash : IModule
     {
         private IModuleManager _manager;

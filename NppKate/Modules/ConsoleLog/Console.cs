@@ -28,9 +28,12 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 using NppKate.Common;
+using NppKate.Core;
+using System;
 
 namespace NppKate.Modules.ConsoleLog
 {
+    [Module("Action log", 0, "{5D3520F9-7E9C-40C7-8968-87D12D8ED53E}", "1.0.0")]
     public class Console : IModule
     {
         private IModuleManager _manager;

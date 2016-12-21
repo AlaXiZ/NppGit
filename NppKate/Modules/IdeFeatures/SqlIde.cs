@@ -28,6 +28,7 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 using NppKate.Common;
+using NppKate.Core;
 using NppKate.Npp;
 using System;
 using System.Collections.Generic;
@@ -37,6 +38,7 @@ using System.Text.RegularExpressions;
 
 namespace NppKate.Modules.IdeFeatures
 {
+    [Module("Useful tricks", 5000, "{BF107EE3-C876-49B8-BDC8-D45947E37F28}", "1.0.0")]
     public class SqlIde : IModule
     {
         private IModuleManager _manager;

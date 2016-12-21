@@ -32,9 +32,11 @@ using NLog;
 using NppKate.Common;
 using System;
 using NppKate.Npp;
+using NppKate.Core;
 
 namespace NppKate.Modules
 {
+    [Module("Git tricks", 2000, "{8D083DBF-29B4-4832-9CB4-E3A141419876}", "1.0.0")]
     public class Git : IModule
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
