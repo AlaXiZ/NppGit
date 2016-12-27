@@ -45,7 +45,7 @@ namespace NppKate
         private static ModuleManager mm = new ModuleManager(cm, new FormManager());
         private static readonly IList<Type> _excludedTypes = new ReadOnlyCollection<Type>(
             new List<Type> {
-                typeof(GitRepository)
+                typeof(GitBrowser)
             });
         private static Logger _logger;
         #endregion
@@ -58,7 +58,7 @@ namespace NppKate
             LoadModules();
             try
             {
-                mm.AddModule(GitRepository.Module); // TODO: Переделать на автоматическую загрузку
+                mm.AddModule(GitBrowser.Module); // TODO: Переделать на автоматическую загрузку
             }
             catch (Exception ex)
             {

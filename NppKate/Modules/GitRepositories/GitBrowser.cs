@@ -42,8 +42,8 @@ using NppKate.Core;
 
 namespace NppKate.Modules.GitCore
 {
-    [Module("Git repository", 3000, "{BF107EE3-C876-49B8-BDC8-D45947E37F28}", "1.0.0")]
-    public class GitRepository : IModule, IGitRepository
+    [Module("Git browser", 3000, "{BF107EE3-C876-49B8-BDC8-D45947E37F28}", "1.0.0")]
+    public class GitBrowser : IModule, IGitRepository
     {
         private const string CErrorEventTemplate = "Error in event {0}";
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
@@ -131,7 +131,7 @@ namespace NppKate.Modules.GitCore
         private readonly string _filename;
 
         #region Singletone
-        private static GitRepository _instance;
+        private static GitBrowser _instance;
         private static readonly object ObjLock = new object();
         public static IGitRepository Instance
         {
@@ -162,13 +162,13 @@ namespace NppKate.Modules.GitCore
             if (_instance != null) return;
             lock (ObjLock)
                 if (_instance == null)
-                    _instance = new GitRepository();
+                    _instance = new GitBrowser();
         }
 
         #endregion
 
         #region GitCore
-        private GitRepository()
+        private GitBrowser()
         {
             var fileName = Path.Combine(NppUtils.ConfigDir, Properties.Resources.PluginName, Properties.Resources.RepositoriesXml);
             if (File.Exists(fileName))

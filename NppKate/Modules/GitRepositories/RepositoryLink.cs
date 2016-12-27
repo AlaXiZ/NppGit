@@ -51,7 +51,7 @@ namespace NppKate.Modules.GitCore
         public RepositoryLink(string path, string name = null)
         {
             Path = path;
-            Name = name ?? GitRepository.GetRepoName(path);
+            Name = name ?? GitBrowser.GetRepoName(path);
         }
 
         public override bool Equals(object obj)

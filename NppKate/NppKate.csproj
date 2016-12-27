@@ -272,7 +272,7 @@
     <Compile Include="Modules\GitFeatures\GitHelper.cs" />
     <Compile Include="Modules\SnippetFeature\Snippet.cs" />
     <Compile Include="Common\ModuleManager\TabEventArgs.cs" />
-    <Compile Include="Modules\GitRepositories\GitRepository.cs" />
+    <Compile Include="Modules\GitRepositories\GitBrowser.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Forms\About.resx">
