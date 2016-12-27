@@ -29,7 +29,6 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using NLog;
 using NppKate.Common;
-using NppKate.Modules.GitCore;
 using NppKate.Npp;
 using System;
 using System.Collections.Generic;
@@ -43,10 +42,7 @@ namespace NppKate
         #region "Fields"
         private static CommandManager cm = new CommandManager();
         private static ModuleManager mm = new ModuleManager(cm, new FormManager());
-        private static readonly IList<Type> _excludedTypes = new ReadOnlyCollection<Type>(
-            new List<Type> {
-                typeof(GitBrowser)
-            });
+        private static readonly IList<Type> _excludedTypes = new ReadOnlyCollection<Type>(new List<Type> {});
         private static Logger _logger;
         #endregion
 
@@ -56,14 +52,6 @@ namespace NppKate
             _logger = LogManager.GetCurrentClassLogger();
 
             LoadModules();
-            try
-            {
-                mm.AddModule(GitBrowser.Module); // TODO: Переделать на автоматическую загрузку
-            }
-            catch (Exception ex)
-            {
-                LoggerUtil.Error(_logger, ex, "mm.AddModule(GitRepository.Module)", null);
-            }
 
             try
             {

@@ -41,6 +41,7 @@ using NppKate.Forms;
 using NppKate.Modules.TortoiseGitFeatures;
 using NppKate.Modules.GitRepositories.RepositoryExt;
 using System.Windows.Threading;
+using NppKate.Modules.GitRepositories;
 
 namespace NppKate.Modules.GitCore
 {
@@ -113,10 +114,10 @@ namespace NppKate.Modules.GitCore
 
             _UIDispatcher = Dispatcher.CurrentDispatcher;
 
-            GitBrowser.Instance.OnActiveRepositoryChanged += GitCoreOnActiveRepositoryChanged;
-            GitBrowser.Instance.OnDocumentReposituryChanged += GitCoreOnDocumentRepositoryChanged;
-            GitBrowser.Instance.OnRepositoryAdded += GitCoreOnRepositoryAdded;
-            GitBrowser.Instance.OnRepositoryRemoved += GitCoreOnRepositoryRemoved;
+            GitBrowser.GitRepository.OnActiveRepositoryChanged += GitCoreOnActiveRepositoryChanged;
+            GitBrowser.GitRepository.OnDocumentReposituryChanged += GitCoreOnDocumentRepositoryChanged;
+            GitBrowser.GitRepository.OnRepositoryAdded += GitCoreOnRepositoryAdded;
+            GitBrowser.GitRepository.OnRepositoryRemoved += GitCoreOnRepositoryRemoved;
 
             _watchers = new Dictionary<string, FileSystemWatcher>();
         }
@@ -138,7 +139,7 @@ namespace NppKate.Modules.GitCore
             if (node.Name == _lastActiveRepo)
             {
                 var otherNode = node.PrevVisibleNode ?? node.NextVisibleNode;
-                if (!GitBrowser.Instance.SwitchByName(otherNode.Name))
+                if (!GitBrowser.GitRepository.SwitchByName(otherNode.Name))
                     _lastActiveRepo = null;
             }
             _watchers[node.Name].EnableRaisingEvents = false;
@@ -153,7 +154,7 @@ namespace NppKate.Modules.GitCore
         {
             _lastActiveWt = e.WorktreeName;
             if (tvRepositories.Nodes.ContainsKey(e.RepositoryName)) return;
-            var node = CreateRepoNode(GitBrowser.Instance.Repositories.Find(r => r.Name == e.RepositoryName));
+            var node = CreateRepoNode(GitBrowser.GitRepository.Repositories.Find(r => r.Name == e.RepositoryName));
             if (node == null) return;
             tvRepositories.Nodes.Add(node);
         }
@@ -250,7 +251,7 @@ namespace NppKate.Modules.GitCore
         {
             if (e.Button == MouseButtons.Left && e.Node.ImageKey == RepoIndex && !(e.Node.NodeFont?.Bold ?? false))
             {
-                GitBrowser.Instance.SwitchByName(e.Node.Name);
+                GitBrowser.GitRepository.SwitchByName(e.Node.Name);
             }
         }
 
@@ -291,14 +292,14 @@ namespace NppKate.Modules.GitCore
         {
             if (e.ChangeType == WatcherChangeTypes.Deleted && FileLock.Equals(e.Name, System.StringComparison.InvariantCultureIgnoreCase))
             {
-                UpdateBranch(GitBrowser.GetRepoName(GitBrowser.GetRootDir(e.FullPath)));
-                UpdateWorktree(GitBrowser.GetRepoName(GitBrowser.GetRootDir(e.FullPath)));
+                UpdateBranch(GitRepository.GetRepoName(GitRepository.GetRootDir(e.FullPath)));
+                UpdateWorktree(GitRepository.GetRepoName(GitRepository.GetRootDir(e.FullPath)));
             }
         }
 
         private void LoadTree()
         {
-            var repoList = GitBrowser.Instance.Repositories;
+            var repoList = GitBrowser.GitRepository.Repositories;
             var task = new Task<List<TreeNode>>(() =>
             {
                 var result = new List<TreeNode>();
@@ -329,10 +330,10 @@ namespace NppKate.Modules.GitCore
 
         private void UpdateState()
         {
-            var repoLink = GitBrowser.Instance.ActiveRepository;
+            var repoLink = GitBrowser.GitRepository.ActiveRepository;
             if (repoLink != null)
                 ActiverRepositoryUpdate(repoLink.Name);
-            repoLink = GitBrowser.Instance.DocumentRepository;
+            repoLink = GitBrowser.GitRepository.DocumentRepository;
             if (repoLink != null)
                 DocumentRepositoryUpdate(repoLink.Name, repoLink.ActiveWorktree?.Branch);
         }
@@ -342,7 +343,7 @@ namespace NppKate.Modules.GitCore
             if (string.IsNullOrEmpty(repoName)) return;
             Logger.Debug($"Update branches for repo {repoName}");
             var node = tvRepositories.Nodes[repoName];
-            var link = GitBrowser.Instance.GetRepositoryByName(repoName);
+            var link = GitBrowser.GitRepository.GetRepositoryByName(repoName);
             if (link == null)
                 return;
             using (var r = new Repository(link.Path))
@@ -421,7 +422,7 @@ namespace NppKate.Modules.GitCore
             if (string.IsNullOrEmpty(repoName)) return;
             Logger.Debug($"Update worktree for repo {repoName}");
             var worktree = tvRepositories.Nodes[repoName].Nodes[WorktreeFolder];
-            var link = GitBrowser.Instance.GetRepositoryByName(repoName);
+            var link = GitBrowser.GitRepository.GetRepositoryByName(repoName);
             if (link == null) return;
 
             Invoke(new Action(() =>
@@ -471,7 +472,7 @@ namespace NppKate.Modules.GitCore
         private void miSetActive_Click(object sender, EventArgs e)
         {
             var node = tvRepositories.SelectedNode;
-            GitBrowser.Instance.SwitchByName(node?.Name);
+            GitBrowser.GitRepository.SwitchByName(node?.Name);
         }
 
         private void cmRepositories_Opening(object sender, System.ComponentModel.CancelEventArgs e)
@@ -480,7 +481,7 @@ namespace NppKate.Modules.GitCore
             miSetActive.Enabled = _lastActiveRepo != node?.Name;
             miRemoveRepo.Enabled = _lastDocumentRepo != node?.Name;
 
-            var inRepo = GitBrowser.IsValidGitRepo(Npp.NppUtils.CurrentFileDir);
+            var inRepo = GitRepository.IsValidGitRepo(Npp.NppUtils.CurrentFileDir);
 
             blameToolStripMenuItem.Enabled = inRepo;
             showLogFileToolStripMenuItem.Enabled = inRepo;
@@ -504,14 +505,14 @@ namespace NppKate.Modules.GitCore
             };
             if (openDlg.ShowDialog() == DialogResult.OK)
             {
-                GitBrowser.Instance.SwitchByPath(openDlg.SelectedPath);
+                GitBrowser.GitRepository.SwitchByPath(openDlg.SelectedPath);
             }
         }
 
         private void miRemoveRepo_Click(object sender, EventArgs e)
         {
             var node = tvRepositories.SelectedNode;
-            GitBrowser.Instance.RemoveRepository(node.Name);
+            GitBrowser.GitRepository.RemoveRepository(node.Name);
         }
 
         private void tvRepositories_Before(object sender, TreeViewCancelEventArgs e)
@@ -575,7 +576,7 @@ namespace NppKate.Modules.GitCore
         private void RunTortoiseCommandForRepo(TortoiseGitCommand cmd)
         {
             var node = tvRepositories.SelectedNode;
-            var path = GitBrowser.Instance.GetRepositoryByName(node?.Name)?.Path;
+            var path = GitBrowser.GitRepository.GetRepositoryByName(node?.Name)?.Path;
             if (path != null)
                 _commandRuner.RunCommand(cmd, path);
         }
@@ -685,7 +686,7 @@ namespace NppKate.Modules.GitCore
         private void findInLogMenuItem_Click(object sender, EventArgs e)
         {
             var node = tvRepositories.SelectedNode;
-            var path = GitBrowser.Instance.GetRepositoryByName(node?.Name)?.Path;
+            var path = GitBrowser.GitRepository.GetRepositoryByName(node?.Name)?.Path;
             if (path != null)
             {
                 var searchDialog = new TortoiseLogSearch();
@@ -731,7 +732,7 @@ namespace NppKate.Modules.GitCore
                 {
                     ToLog("In repository '{0}' switching to branch '{1}'", nodeRepoName, nodeBranchName);
 
-                    using (var repo = new Repository(GitBrowser.Instance.GetRepositoryByName(nodeRepoName)?.Path))
+                    using (var repo = new Repository(GitBrowser.GitRepository.GetRepositoryByName(nodeRepoName)?.Path))
                     {
                         var branch = repo.Branches.Where(b => b.FriendlyName == nodeBranchName)?.First();
                         if (branch != null)
@@ -831,7 +832,7 @@ namespace NppKate.Modules.GitCore
                 {
                     ToLog("In repository '{0}' branch '{1}' checkout to worktree dir", nodeRepoName, nodeBranchName);
 
-                    using (var repo = new Repository(GitBrowser.Instance.GetRepositoryByName(nodeRepoName)?.Path))
+                    using (var repo = new Repository(GitBrowser.GitRepository.GetRepositoryByName(nodeRepoName)?.Path))
                     {
                         var branch = repo.Branches.Where(b => b.FriendlyName == nodeBranchName)?.First();
                         if (branch != null)
@@ -865,7 +866,7 @@ namespace NppKate.Modules.GitCore
                 {
                     ToLog("In repository '{0}' worktree '{1}' will be locked", nodeRepoName, nodeWorktreePath);
 
-                    using (var repo = new Repository(GitBrowser.Instance.GetRepositoryByName(nodeRepoName)?.Path))
+                    using (var repo = new Repository(GitBrowser.GitRepository.GetRepositoryByName(nodeRepoName)?.Path))
                     {
                         repo.LockWorktree(nodeWorktreePath);
                     }
@@ -896,7 +897,7 @@ namespace NppKate.Modules.GitCore
                 {
                     ToLog("In repository '{0}' worktree '{1}' will be unlocked", nodeRepoName, nodeWorktreePath);
 
-                    using (var repo = new Repository(GitBrowser.Instance.GetRepositoryByName(nodeRepoName)?.Path))
+                    using (var repo = new Repository(GitBrowser.GitRepository.GetRepositoryByName(nodeRepoName)?.Path))
                     {
                         repo.UnlockWorktree(nodeWorktreePath);
                     }
@@ -925,7 +926,7 @@ namespace NppKate.Modules.GitCore
                 {
                     ToLog("In repository '{0}' worktrees will be pruned", nodeRepoName);
 
-                    using (var repo = new Repository(GitBrowser.Instance.GetRepositoryByName(nodeRepoName)?.Path))
+                    using (var repo = new Repository(GitBrowser.GitRepository.GetRepositoryByName(nodeRepoName)?.Path))
                     {
                         repo.PruneWorktree();
                     }
@@ -980,7 +981,7 @@ namespace NppKate.Modules.GitCore
                 {
                     ToLog("In repository '{0}' worktree '{1}' will be removed", nodeRepoName, nodeWorktreePath);
 
-                    using (var repo = new Repository(GitBrowser.Instance.GetRepositoryByName(nodeRepoName)?.Path))
+                    using (var repo = new Repository(GitBrowser.GitRepository.GetRepositoryByName(nodeRepoName)?.Path))
                     {
                         repo.RemoveWorktree(nodeWorktreePath);
                     }

@@ -193,6 +193,7 @@
       <DependentUpon>LogForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Modules\ConsoleLog\TextBoxWriter.cs" />
+    <Compile Include="Modules\GitRepositories\GitRepository.cs" />
     <Compile Include="Modules\GitRepositories\RepositoryChangedEventArgs.cs" />
     <Compile Include="Modules\GitRepositories\RepositoryExt\RepositoryExt.cs" />
     <Compile Include="Modules\GitRepositories\RepositoryExt\Worktree.cs" />

@@ -28,7 +28,6 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 using System;
-using NppKate.Common.VCS;
 
 namespace NppKate.Modules.GitRepositories.RepositoryExt
 {

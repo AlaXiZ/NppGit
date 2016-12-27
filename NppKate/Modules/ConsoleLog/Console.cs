@@ -29,7 +29,6 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using NppKate.Common;
 using NppKate.Core;
-using System;
 
 namespace NppKate.Modules.ConsoleLog
 {

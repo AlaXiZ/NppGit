@@ -33,6 +33,7 @@ using System.IO;
 using System.Linq;
 using LibGit2Sharp;
 using NppKate.Modules.GitRepositories.RepositoryExt;
+using NppKate.Modules.GitRepositories;
 
 namespace NppKate.Modules.GitCore
 {
@@ -51,7 +52,7 @@ namespace NppKate.Modules.GitCore
         public RepositoryLink(string path, string name = null)
         {
             Path = path;
-            Name = name ?? GitBrowser.GetRepoName(path);
+            Name = name ?? GitRepository.GetRepoName(path);
         }
 
         public override bool Equals(object obj)
