@@ -61,7 +61,7 @@ namespace NppKate
             {
                 LoggerUtil.Error(_logger, ex, "Init", null);
             }
-
+            NppInfo.Instance.AddCommand("-", null);
             NppInfo.Instance.AddCommand("Restart Notepad++", NppUtils.Restart);
             NppInfo.Instance.AddCommand("Settings", DoSettings);
             NppInfo.Instance.AddCommand("About", DoAbout);

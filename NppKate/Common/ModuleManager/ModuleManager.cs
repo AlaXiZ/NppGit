@@ -150,13 +150,14 @@ namespace NppKate.Common
             {
                 if (Settings.Modules.GetModuleState(key))
                 {
+                    _commandManager.RegisterSeparator(_modules[key].Module.GetType().Name);
                     _modules[key].Module.Init(this);
                     var mi = _modules[key];
                     mi.IsLoaded = true;
                     _modules[key] = mi;
                 }
             }
-
+            _commandManager.RegisterSeparator("ModuleManager");
             _commandManager.RegisterCommand("ModuleManager", "Sample context menu", DoContextMenu);// RegisterCommandItem(new CommandItem { Name = "Sample context menu", Hint = "Sample context menu", Action = DoContextMenu });
 
             winHookProcRet = new LocalWindowsHook(HookType.WH_CALLWNDPROCRET);
