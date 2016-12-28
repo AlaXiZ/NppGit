@@ -29,11 +29,14 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using NLog;
 using NppKate.Common;
+using NppKate.Core;
 using NppKate.Npp;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace NppKate
 {
@@ -44,14 +47,30 @@ namespace NppKate
         private static ModuleManager mm = new ModuleManager(cm, new FormManager());
         private static readonly IList<Type> _excludedTypes = new ReadOnlyCollection<Type>(new List<Type> {});
         private static Logger _logger;
+        private static ModuleLoader _loader;
         #endregion
 
         #region "Main"
         public static void Init()
         {
             _logger = LogManager.GetCurrentClassLogger();
+            var modulesDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), Properties.Resources.PluginName, Properties.Resources.ModulesDir);
 
-            LoadModules();
+            _loader = new ModuleLoader(modulesDir);
+            _loader.LoadModules();
+
+            foreach(var m in _loader.Types)
+            {
+                try
+                {
+                    var inst = Activator.CreateInstance(m) as IModule;
+                    mm.AddModule(inst);
+                }
+                catch (Exception exc)
+                {
+                    LoggerUtil.Error(_logger, exc, $"CreateInstance with type {m.Name}", 0);
+                }
+            }
 
             try
             {
@@ -99,7 +118,7 @@ namespace NppKate
             }
             catch (Exception ex)
             {
-                LoggerUtil.Error(_logger, ex, "MessageProc NppMsg={0} or SciMsg={1}", (NppMsg)sn.nmhdr.code, (SciMsg)sn.message);
+                LoggerUtil.Error(_logger, ex, $"MessageProc NppMsg={(NppMsg)sn.nmhdr.code}", null);
             }
         }
         #endregion

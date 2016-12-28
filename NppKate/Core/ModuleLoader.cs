@@ -27,6 +27,7 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+using NLog;
 using NppKate.Common;
 using System;
 using System.Collections.Generic;
@@ -37,6 +38,7 @@ namespace NppKate.Core
 {
     public class ModuleLoader
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private Type[] _types;
         private string _modulePath;
         public ModuleLoader(string modulePath)
@@ -46,8 +48,15 @@ namespace NppKate.Core
 
         public uint LoadModules()
         {
-            LoadAssemblies();
-            FindTypes();
+            try
+            {
+                LoadAssemblies();
+                FindTypes();
+            }
+            catch (Exception ex)
+            {
+                LoggerUtil.Error(logger, ex, "LoadModules", null);
+            }
             return (uint?)_types?.Length ?? 0;
         }
 
@@ -56,7 +65,7 @@ namespace NppKate.Core
             var comparer = new TypeComparer();
             var moduleIntf = typeof(IModule);
             var types = AppDomain.CurrentDomain.GetAssemblies()
-                        .SelectMany(s => s.GetTypes())
+                        .SelectMany( s => s.GetTypes())
                         .Where(p => moduleIntf.IsAssignableFrom(p))
                         .Where(p => p.IsClass)                    // Нужны только классы
                         .OrderBy(t => t, comparer);
@@ -66,16 +75,20 @@ namespace NppKate.Core
         private void LoadAssemblies()
         {
             if (!Directory.Exists(_modulePath))
+            {
+                logger.Trace($"Path \"{_modulePath}\" not exists!");
                 return;
+            }
 
             var dInfo = new DirectoryInfo(_modulePath);
             foreach(var f in dInfo.GetFileSystemInfos("Kate.*.dll"))
             {
+                logger.Debug($"Load assembly ${f.Name}");
                 AssemblyLoader.LoadAssembly(f.FullName);
             }
         }
 
-        public Type[] Modules => _types;
+        public Type[] Types => _types;
     }
 
     class TypeComparer : IComparer<Type>

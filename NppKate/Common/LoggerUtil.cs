@@ -43,7 +43,10 @@ namespace NppKate.Common
         }
         public static void Error(Logger logger, Exception ex, string format, params object[] args)
         {
-            logger.Error(format, args);
+            if (args != null)
+                logger.Error(format, args);
+            else
+                logger.Error(format);
             ErrorEx(logger, ex);
         }
 
