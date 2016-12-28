@@ -34,6 +34,7 @@ using NLog.Targets;
 using NLog.Config;
 #if !DEBUG
 using NppKate.Npp;
+using System.IO;
 #endif
 
 namespace NppKate.Common
