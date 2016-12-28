@@ -35,9 +35,6 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
-#if !DEBUG
-using NppKate.Npp;
-#endif
 
 namespace NppKate.Common
 {
@@ -46,57 +43,9 @@ namespace NppKate.Common
         [DllImport("shlwapi.dll")]
         private static extern bool PathIsNetworkPath(string pszPath);
 
-        private static Object asyncWrapper = null;
-
-
         public static void Init()
         {
             AppDomain.CurrentDomain.AssemblyResolve += AssemblyResolve;
-            ReConfigLog();
-        }
-
-        public static void ReConfigLog()
-        {
-            var layout = "[${level:uppercase=true}][${logger}][${longdate}][${processid}] ${message}";
-            if (asyncWrapper == null)
-            {
-#if DEBUG
-                var logTarget = new DebuggerTarget
-                {
-                    Layout = layout
-                };
-#else
-            var logTarget = new FileTarget
-            {
-                Layout = layout,
-                AutoFlush = true,
-                DeleteOldFileOnStartup = true,
-                CreateDirs = true,
-                FileName = Path.Combine(NppUtils.ConfigDir, Properties.Resources.PluginName, Properties.Resources.PluginName + ".log")
-            };
-#endif
-                asyncWrapper = new AsyncTargetWrapper
-                {
-                    WrappedTarget = logTarget,
-                    QueueLimit = 5000,
-                    OverflowAction = AsyncTargetWrapperOverflowAction.Discard,
-                    Name = "NppKate.AsyncTarget",
-                    BatchSize = 10
-                };
-            }
-            try
-            {
-                LogManager.Configuration.RemoveTarget("NppKate.AsyncTarget");
-            }
-            catch { }
-
-            SimpleConfigurator.ConfigureForTargetLogging((AsyncTargetWrapper)asyncWrapper, LogLevel.FromString(Settings.CommonSettings.LogLevel));
-            LogManager.GetCurrentClassLogger().Info("Logger initialized");
-        }
-
-        public static void StopLogging()
-        {
-            LogManager.DisableLogging();
         }
 
         private static Assembly AssemblyResolve(object sender, ResolveEventArgs args)

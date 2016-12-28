@@ -21,6 +21,7 @@ namespace NppKate.Interop
         {
             NppInfo.Instance.NppData = notepadPlusData;
             AssemblyLoader.Init();
+            LoggerUtil.Configurate();
 
             Main.Init();
         }

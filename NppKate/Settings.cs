@@ -318,7 +318,7 @@ namespace NppKate
                 set
                 {
                     Set(value);
-                    AssemblyLoader.ReConfigLog();
+                    LoggerUtil.Configurate();
                 }
             }
 

@@ -29,11 +29,64 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
 using NLog;
+using NLog.Targets.Wrappers;
+using NLog.Targets;
+using NLog.Config;
+#if !DEBUG
+using NppKate.Npp;
+#endif
 
 namespace NppKate.Common
 {
     public static class LoggerUtil
     {
+        private static AsyncTargetWrapper asyncWrapper = null;
+        public static void Configurate()
+        {
+            var layout = "[${level:uppercase=true}][${logger}][${longdate}][${processid}] ${message}";
+            if (asyncWrapper == null)
+            {
+                
+#if DEBUG
+                var logTarget = new DebuggerTarget
+                {
+                    Layout = layout
+                };
+#else
+            var logTarget = new FileTarget
+            {
+                Layout = layout,
+                AutoFlush = true,
+                DeleteOldFileOnStartup = true,
+                CreateDirs = true,
+                FileName = Path.Combine(NppUtils.ConfigDir, Properties.Resources.PluginName, Properties.Resources.PluginName + ".log")
+            };
+#endif
+                asyncWrapper = new AsyncTargetWrapper
+                {
+                    WrappedTarget = logTarget,
+                    QueueLimit = 500,
+                    TimeToSleepBetweenBatches = 100,
+                    OverflowAction = AsyncTargetWrapperOverflowAction.Discard,
+                    Name = "NppKate.AsyncTarget",
+                    BatchSize = 10
+                };
+            }
+            try
+            {
+                LogManager.Configuration.RemoveTarget("NppKate.AsyncTarget");
+            }
+            catch { }
+
+            SimpleConfigurator.ConfigureForTargetLogging(asyncWrapper, LogLevel.FromString(Settings.CommonSettings.LogLevel));
+            LogManager.GetCurrentClassLogger().Info("Logger initialized");
+        }
+
+        public static void StopLogging()
+        {
+            LogManager.DisableLogging();
+        }
+
         private static void ErrorEx(Logger logger, Exception ex)
         {
             logger.Error("Exception\r\nMessage: {0}\r\nSource: {1}\r\nStacktrace: {2}\r\n Has inner exception: {3}",

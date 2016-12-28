@@ -176,7 +176,7 @@ namespace NppKate.Npp
 
         public static void Shutdown()
         {
-            AssemblyLoader.StopLogging();
+            LoggerUtil.StopLogging();
             Win32.SendMenuCmd(_nppInfo.NppHandle, NppMenuCmd.IDM_FILE_EXIT, 0);
         }
 
