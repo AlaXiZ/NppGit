@@ -109,11 +109,9 @@ namespace NppKate.Modules.GitCore
 
         private void ManagerOnTabChangeEvent(object sender, TabEventArgs e)
         {
-            _gitRepository.SwitchByPath(NppUtils.CurrentFilePath);
-            /* if (SwitchByPath(NppUtils.CurrentFilePath))
-             *   DoActiveRepository();
-             * DoDocumentRepositiry(DocumentRepository?.Name, DocumentRepository?.ActiveWorktree?.Branch);
-             */
+            var filepath = NppUtils.CurrentFilePath;
+            if (!string.IsNullOrEmpty(filepath) && !filepath.StartsWith("new"))
+                _gitRepository.SwitchByPath(filepath);
         }
 
         public bool IsNeedRun => true;

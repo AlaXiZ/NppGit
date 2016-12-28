@@ -327,14 +327,16 @@ namespace NppKate.Modules.GitRepositories
             while (true)
             {
                 Logger.Trace($"GetRootDir path={path}");
+                if (!Directory.Exists(path) || string.IsNullOrEmpty(path))
+                    return null;
                 var search = Path.Combine(path, ".git");
                 if (Directory.Exists(search) || File.Exists(search))
                 {
                     return path;
                 }
-                if (string.IsNullOrEmpty(path) || Directory.GetParent(path) == null || !Path.IsPathRooted(path))
+                if (Directory.GetParent(path) == null || !Path.IsPathRooted(path))
                     return null;
-                path = Directory.GetParent(path).FullName;
+                path = Directory.GetParent(path)?.FullName;
             }
         }
 
