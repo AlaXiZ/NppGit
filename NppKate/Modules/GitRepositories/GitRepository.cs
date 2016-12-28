@@ -118,6 +118,13 @@ namespace NppKate.Modules.GitRepositories
 
         public bool SwitchByPath(string path)
         {
+            var result = InnerSwitchByPath(path);
+            DoDocumentRepositiry(DocumentRepository?.Name, DocumentRepository?.ActiveWorktree?.Branch);
+            return result;
+        }
+
+        private bool InnerSwitchByPath(string path)
+        {
             var newPath = GetRootDir(path);
             Worktree newWt = null;
 
@@ -179,7 +186,7 @@ namespace NppKate.Modules.GitRepositories
             DoActiveRepository();
             return true;
         }
-        
+
         private string FindRepoByPath(string path)
         {
             return _repos.Values.FirstOrDefault(r => r.Path.Equals(path, StringComparison.InvariantCultureIgnoreCase))?.Name ?? string.Empty;
@@ -402,7 +409,11 @@ namespace NppKate.Modules.GitRepositories
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            if (_currRepo != null)
+            {
+                _currRepo.Dispose();
+                _currRepo = null;
+            }
         }
     }
 }
