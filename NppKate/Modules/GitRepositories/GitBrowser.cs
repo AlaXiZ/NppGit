@@ -34,6 +34,7 @@ using NppKate.Npp;
 using NppKate.Core;
 using NppKate.Modules.GitRepositories;
 using System;
+using NppKate.Modules.TortoiseGitFeatures;
 
 namespace NppKate.Modules.GitCore
 {
@@ -88,7 +89,8 @@ namespace NppKate.Modules.GitCore
 
             _browserCmdId = _manager.CommandManager.RegisterCommand(selfName, Properties.Resources.CmdRepositoryBrowser, DoBrowser, Settings.Panels.RepoBrowserPanelVisible);
 
-            _manager.CommandManager.RegisterCommand(selfName, Properties.Resources.CmdQuickSearch, DoQuickSearch, false, new ShortcutKey(false, true, false, System.Windows.Forms.Keys.F));
+            if (_manager.ServiceExists(typeof(ITortoiseGitSearch)))
+                _manager.CommandManager.RegisterCommand(selfName, Properties.Resources.CmdQuickSearch, DoQuickSearch, false, new ShortcutKey(false, true, false, System.Windows.Forms.Keys.F));
 
             _manager.CommandManager.RegisterSeparator(selfName);
 
