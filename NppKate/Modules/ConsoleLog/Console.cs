@@ -38,7 +38,6 @@ namespace NppKate.Modules.ConsoleLog
         private IModuleManager _manager;
         private int _consoleId;
         private LogForm _consoleForm = null;
-        public bool IsNeedRun => Settings.Modules.LogConsole;
 
         public void Final()
         {

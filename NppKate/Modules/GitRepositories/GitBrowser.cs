@@ -114,8 +114,6 @@ namespace NppKate.Modules.GitCore
                 _gitRepository.SwitchByPath(filepath);
         }
 
-        public bool IsNeedRun => true;
-
         private void DoQuickSearch()
         {
             var path = _gitRepository.ActiveRepository?.Path;

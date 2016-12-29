@@ -41,11 +41,6 @@ namespace NppKate.Modules
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
         private IModuleManager _manager;
-
-        public bool IsNeedRun
-        {
-            get { return Settings.Modules.Git; }
-        }
         
         public void Final()
         {

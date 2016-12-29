@@ -52,8 +52,6 @@ namespace NppKate.Modules.SnippetFeature
         private Forms.SnippetsManagerForm _managerForm;
         private ISnippetManager _snippetManager;
 
-        public bool IsNeedRun => Settings.Modules.Snippets;
-
         public void Final()
         {
         }

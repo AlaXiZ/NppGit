@@ -40,8 +40,6 @@ namespace NppKate.Modules.GitFeatures
         private GitShell _gitShell;
         private static readonly string _gitBinPath = System.IO.Path.Combine("Git", "cmd");
 
-        public bool IsNeedRun => Settings.Modules.NeedCurrentModuleLoad();
-
         public void Final() { }
 
         public void Init(IModuleManager manager)

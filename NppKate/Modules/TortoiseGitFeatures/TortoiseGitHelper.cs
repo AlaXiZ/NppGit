@@ -56,8 +56,6 @@ namespace NppKate.Modules.TortoiseGitFeatures
         private Dictionary<int, string> _icons;
         private IModuleManager _manager;
 
-        public bool IsNeedRun => Settings.Modules.TortoiseGit;
-
         void IModule.Init(IModuleManager manager)
         {
             _manager = manager;

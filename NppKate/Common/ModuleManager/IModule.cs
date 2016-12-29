@@ -36,7 +36,5 @@ namespace NppKate.Common
         void Init(IModuleManager manager);
         void Final();
 
-        [Obsolete("Property is deprecated", false)]
-        bool IsNeedRun { get; }
     }
 }

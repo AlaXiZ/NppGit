@@ -43,10 +43,6 @@ namespace NppKate.Modules.IdeFeatures
     {
         private IModuleManager _manager;
 
-        public bool IsNeedRun
-        {
-            get { return Settings.Modules.SQLIDE; }
-        }
 
         public void Final() { }
 
