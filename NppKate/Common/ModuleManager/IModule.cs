@@ -33,8 +33,12 @@ namespace NppKate.Common
 {
     public interface IModule
     {
-        void Init(IModuleManager manager);
-        void Final();
+        void Context(IModuleManager manager);
 
+        void Registration();
+
+        void Initialization();
+        
+        void Finalization();
     }
 }

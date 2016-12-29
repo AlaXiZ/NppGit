@@ -33,6 +33,7 @@ using NppKate.Common;
 using NppKate.Npp;
 using NppKate.Core;
 using NppKate.Modules.GitRepositories;
+using System;
 
 namespace NppKate.Modules.GitCore
 {
@@ -40,17 +41,13 @@ namespace NppKate.Modules.GitCore
     public class GitBrowser : IModule
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        #region IModule
-        private IModuleManager _manager = null;
         private int _browserCmdId;
         private RepoBrowser _repoBrowser = null;
         private static IGitRepository _gitRepository;
+        #region IModule
+        private IModuleManager _manager = null;
 
         public static IGitRepository GitRepository => _gitRepository;
-
-        public void Final()
-        {
-        }
 
         private void DoBrowser()
         {
@@ -67,32 +64,40 @@ namespace NppKate.Modules.GitCore
             }
         }
 
-        public void Init(IModuleManager manager)
+        public void Context(IModuleManager manager)
         {
+            _manager = manager;
+        }
 
+        public void Registration()
+        {
             var fileName = Path.Combine(NppUtils.ConfigDir, Properties.Resources.PluginName, Properties.Resources.RepositoriesXml);
             _gitRepository = new GitRepository(fileName);
             _gitRepository.SwitchByName(Settings.GitCore.LastActiveRepository);
 
-            _manager = manager;
+            _manager.RegisterService(typeof(IGitRepository), _gitRepository);
+        }
 
-            manager.RegisterService(typeof(IGitRepository), _gitRepository);
-
-            manager.OnTabChangeEvent += ManagerOnTabChangeEvent;
-            manager.OnSystemInit += ManagerOnSystemInit;
-            manager.OnToolbarRegisterEvent += ManagerOnToolbarRegisterEvent;
+        public void Initialization()
+        {
+            _manager.OnTabChangeEvent += ManagerOnTabChangeEvent;
+            _manager.OnSystemInit += ManagerOnSystemInit;
+            _manager.OnToolbarRegisterEvent += ManagerOnToolbarRegisterEvent;
 
             var selfName = GetType().Name;
 
-            _browserCmdId = manager.CommandManager.RegisterCommand(selfName, Properties.Resources.CmdRepositoryBrowser, DoBrowser, Settings.Panels.RepoBrowserPanelVisible);
+            _browserCmdId = _manager.CommandManager.RegisterCommand(selfName, Properties.Resources.CmdRepositoryBrowser, DoBrowser, Settings.Panels.RepoBrowserPanelVisible);
 
-            manager.CommandManager.RegisterCommand(selfName, Properties.Resources.CmdQuickSearch, DoQuickSearch, false, new ShortcutKey(false, true, false, System.Windows.Forms.Keys.F));
+            _manager.CommandManager.RegisterCommand(selfName, Properties.Resources.CmdQuickSearch, DoQuickSearch, false, new ShortcutKey(false, true, false, System.Windows.Forms.Keys.F));
 
-            manager.CommandManager.RegisterSeparator(selfName);
+            _manager.CommandManager.RegisterSeparator(selfName);
 
             if (!Settings.CommonSettings.GetToolbarCommandState(selfName, Properties.Resources.CmdRepositoryBrowser))
                 Settings.CommonSettings.SetToolbarCommandState(selfName, Properties.Resources.CmdRepositoryBrowser, true);
         }
+
+        public void Finalization() { }
+        #endregion
 
         private void ManagerOnToolbarRegisterEvent()
         {
@@ -124,7 +129,6 @@ namespace NppKate.Modules.GitCore
             searchDialog.SearchText = NppUtils.GetSelectedText();
             searchDialog.Show();
         }
-        #endregion        
-        
+
     }
 }

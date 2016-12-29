@@ -42,19 +42,22 @@ namespace NppKate.Modules
         private static Logger logger = LogManager.GetCurrentClassLogger();
         private IModuleManager _manager;
         
-        public void Final()
-        {
-        }
-
-        public void Init(IModuleManager manager)
+        public void Context(IModuleManager manager)
         {
             _manager = manager;
+        }
 
+        public void Registration() { }
+
+        public void Initialization()
+        {
             var selfName = GetType().Name;
 
             _manager.CommandManager.RegisterCommand(selfName, "File in other branch", OpenFileInOtherBranch);
             _manager.CommandManager.RegisterSeparator(selfName);
         }
+
+        public void Finalization() { }
 
         private void OpenFileInOtherBranch()
         {
@@ -105,6 +108,5 @@ namespace NppKate.Modules
                 logger.Debug(e, "Directory {0} isn't git repository!", repoDir);
             }
         }
-
     }
 }

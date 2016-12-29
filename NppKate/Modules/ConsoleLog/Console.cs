@@ -27,6 +27,7 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+using System;
 using NppKate.Common;
 using NppKate.Core;
 
@@ -39,18 +40,16 @@ namespace NppKate.Modules.ConsoleLog
         private int _consoleId;
         private LogForm _consoleForm = null;
 
-        public void Final()
+        public void Finalization()
         {
         }
 
-        public void Init(IModuleManager manager)
+        public void Initialization()
         {
-            _manager = manager;
-
             var selfName = GetType().Name;
-            _consoleId = manager.CommandManager.RegisterCommand(selfName, Properties.Resources.CmdConsoleLog, DoConsoleLog, Settings.Panels.ConsoleLogPanelVisible);
-            manager.OnSystemInit += ManagerOnSystemInit;
-            manager.OnToolbarRegisterEvent += ManagerOnToolbarRegisterEvent;
+            _consoleId = _manager.CommandManager.RegisterCommand(selfName, Properties.Resources.CmdConsoleLog, DoConsoleLog, Settings.Panels.ConsoleLogPanelVisible);
+            _manager.OnSystemInit += ManagerOnSystemInit;
+            _manager.OnToolbarRegisterEvent += ManagerOnToolbarRegisterEvent;
 
             if (!Settings.CommonSettings.GetToolbarCommandState(selfName, Properties.Resources.CmdConsoleLog))
                 Settings.CommonSettings.SetToolbarCommandState(selfName, Properties.Resources.CmdConsoleLog, true);
@@ -80,6 +79,15 @@ namespace NppKate.Modules.ConsoleLog
                 Settings.Panels.ConsoleLogPanelVisible = _manager.FormManager.ToogleVisibleDockableForm(_consoleForm.Handle);
                 _manager.CommandManager.SetCommandChekedState(_consoleId, Settings.Panels.ConsoleLogPanelVisible);
             }
+        }
+
+        public void Context(IModuleManager manager)
+        {
+            _manager = manager;
+        }
+
+        public void Registration()
+        {
         }
     }
 }

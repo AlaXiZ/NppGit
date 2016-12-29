@@ -43,17 +43,22 @@ namespace NppKate.Modules.IdeFeatures
     {
         private IModuleManager _manager;
 
-
-        public void Final() { }
-
-        public void Init(IModuleManager manager)
+        public void Context(IModuleManager manager)
         {
             _manager = manager;
+        }
+
+        public void Registration() { }
+
+        public void Initialization()
+        {
             var selfName = GetType().Name;
             _manager.CommandManager.RegisterCommand(selfName, "Swap", DoSwap);
             _manager.CommandManager.RegisterCommand(selfName, "Align columns", DoAlign);
             _manager.CommandManager.RegisterCommand(selfName, "-");
         }
+
+        public void Finalization() { }
 
         private void DoSwap()
         {

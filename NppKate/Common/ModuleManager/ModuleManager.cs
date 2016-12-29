@@ -138,7 +138,7 @@ namespace NppKate.Common
                 winHookProc.Uninstall();
             foreach (var m in _modules.Values)
                 if (m.IsLoaded)
-                    m.Module.Final();
+                    m.Module.Finalization();
         }
 
         public void Init()
@@ -146,16 +146,29 @@ namespace NppKate.Common
             _resourceManager = new ResourceManager();
             string[] keys = new string[_modules.Keys.Count];
             _modules.Keys.CopyTo(keys, 0);
+            // Set context
             foreach(var key in keys)
             {
                 if (Settings.Modules.GetModuleState(key))
                 {
                     _commandManager.RegisterSeparator(_modules[key].Module.GetType().Name);
-                    _modules[key].Module.Init(this);
+                    _modules[key].Module.Context(this);
                     var mi = _modules[key];
                     mi.IsLoaded = true;
                     _modules[key] = mi;
                 }
+            }
+            // Registration
+            foreach (var m in _modules)
+            {
+                if (m.Value.IsLoaded)
+                    m.Value.Module.Registration();
+            }
+            // Initialization
+            foreach (var m in _modules)
+            {
+                if (m.Value.IsLoaded)
+                    m.Value.Module.Initialization();
             }
             _commandManager.RegisterSeparator("ModuleManager");
             _commandManager.RegisterCommand("ModuleManager", "Sample context menu", DoContextMenu);// RegisterCommandItem(new CommandItem { Name = "Sample context menu", Hint = "Sample context menu", Action = DoContextMenu });

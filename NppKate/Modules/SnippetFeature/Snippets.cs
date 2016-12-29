@@ -33,6 +33,7 @@ using NLog;
 using NppKate.Common;
 using NppKate.Npp;
 using NppKate.Core;
+using System;
 
 namespace NppKate.Modules.SnippetFeature
 {
@@ -52,19 +53,21 @@ namespace NppKate.Modules.SnippetFeature
         private Forms.SnippetsManagerForm _managerForm;
         private ISnippetManager _snippetManager;
 
-        public void Final()
-        {
-        }
-
-        public void Init(IModuleManager manager)
+        public void Context(IModuleManager manager)
         {
             _manager = manager;
+        }
 
+        public void Registration()
+        {
             _snippetManager = new SnippetManager(Path.Combine(NppUtils.ConfigDir, Properties.Resources.PluginName, Properties.Resources.SnippetsXml));
 
             _manager.RegisterService(typeof(ISnippetManager), _snippetManager);
             _manager.RegisterService(typeof(ISnippetValidator), new SnippetValidator());
+        }
 
+        public void Initialization()
+        {
             var selfName = GetType().Name;
             // Load snippets ---------------------------------------------------
             foreach (var i in _snippetManager.GetAllSnippets())
@@ -86,6 +89,10 @@ namespace NppKate.Modules.SnippetFeature
 
             if (!Settings.CommonSettings.GetToolbarCommandState(selfName, SnippetManager))
                 Settings.CommonSettings.SetToolbarCommandState(selfName, SnippetManager, true);
+        }
+
+        public void Finalization()
+        {
         }
 
         private void ManagerOnSystemInit()

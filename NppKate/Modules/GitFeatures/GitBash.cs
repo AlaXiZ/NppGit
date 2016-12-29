@@ -39,25 +39,32 @@ namespace NppKate.Modules.GitFeatures
         private IModuleManager _manager;
         private GitShell _gitShell;
         private static readonly string _gitBinPath = System.IO.Path.Combine("Git", "cmd");
-
-        public void Final() { }
-
-        public void Init(IModuleManager manager)
+        
+        public void Context(IModuleManager manager)
         {
             _manager = manager;
+        }
 
+        public void Registration()
+        {
             if (SearchGit())
             {
                 _gitShell = new GitShell(Settings.GitBash.BinPath);
 
                 _manager.RegisterService(typeof(IGitShell), _gitShell);
-            } else
+            }
+            else
             {
                 Console.WriteLine("Need configure git path: NppKate-Settings-Git");
             }
-
-            var name = GetType().Name;
         }
+
+        public void Initialization()
+        {
+        }
+
+        public void Finalization() { }
+
         private static bool ExistsGit(string programPath)
         {
             return System.IO.Directory.Exists(System.IO.Path.Combine(programPath, _gitBinPath));

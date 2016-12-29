@@ -55,20 +55,32 @@ namespace NppKate.Modules.TortoiseGitFeatures
 
         private Dictionary<int, string> _icons;
         private IModuleManager _manager;
+        private bool _isSearched = false;
 
-        void IModule.Init(IModuleManager manager)
+        public void Context(IModuleManager manager)
         {
             _manager = manager;
-            _manager.OnToolbarRegisterEvent += ToolBarInit;
+        }
 
-            _icons = new Dictionary<int, string>();
+        public void Registration()
+        {
+            _isSearched = SearchTortoiseGit();
+            if (_isSearched)
+            {
+                _manager.RegisterService(typeof(ITortoiseCommand), this);
+                _manager.RegisterService(typeof(ITortoiseGitSearch), this);
+            }
+        }
+
+        void IModule.Initialization()
+        {
             var selfName = GetType().Name;
-            if (SearchTortoiseGit())
+            if (_isSearched)
             {
                 Logger.Info("TortoiseGit found");
 
-                _manager.RegisterService(typeof(ITortoiseCommand), this);
-                _manager.RegisterService(typeof(ITortoiseGitSearch), this);
+                _manager.OnToolbarRegisterEvent += ToolBarInit;
+                _icons = new Dictionary<int, string>();
 
                 var cmdId = _manager.CommandManager.RegisterCommand(selfName, "Pull", GitPull, false, new ShortcutKey("Alt+P"));
                 _icons.Add(cmdId, ExternalResourceName.IDB_PULL);
@@ -144,6 +156,11 @@ namespace NppKate.Modules.TortoiseGitFeatures
             }
         }
 
+        public void Finalization()
+        {
+            Logger.Debug("Finalization");
+        }
+
         public void ToolBarInit()
         {
             Logger.Debug("Create toolbar");
@@ -153,11 +170,6 @@ namespace NppKate.Modules.TortoiseGitFeatures
                 _manager.AddToolbarButton(i.Key, i.Value);
             }
             _icons.Clear();
-        }
-
-        public void Final()
-        {
-            Logger.Debug("Finalization");
         }
 
         public void RunCommand(TortoiseGitCommand command, string path, string logMessage = null, bool isAutoClose = false)
