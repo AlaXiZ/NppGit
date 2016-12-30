@@ -103,7 +103,7 @@ class Script
         var exists = Directory.Exists(path);
         if (!exists)
         {
-            System.Console.WriteLine($"Create directory {path}");
+            System.Console.WriteLine("Create directory {0}", path);
             Directory.CreateDirectory(path);
         }
         var result = new DirectoryInfo(path);
