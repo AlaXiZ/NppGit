@@ -14,7 +14,9 @@ class Script
 {
     private const string DEPLOY_DIR = "Deploy";
     private const string DEPLOY_DLL_DIR = "NppKate";
+    private const string DEPLOY_MODULES_DIR = "Modules";
     private const string DEPLOY_ARCHIVE = "NppKate_{0}{1}.zip";
+    private const string ModulePreffix = "Kate.";
     private static readonly IList<string> _exclude = new ReadOnlyCollection<string>(
             new List<string> {
                 ".pdb", ".lib", ".exp", ".config", ".xml", "linux", "osx", ".iobj", ".ipdb"
@@ -86,25 +88,30 @@ class Script
         var configDir = new DirectoryInfo(Path.Combine(_rootDir, "bin", _config));
         
         System.Console.WriteLine("Search work directories...");
-        var pathDir = Path.Combine(_rootDir, "bin", DEPLOY_DIR);
-        if (!Directory.Exists(pathDir))
-        {
-            System.Console.WriteLine("Create directory {0}", pathDir);
-            Directory.CreateDirectory(pathDir);
-        }
-        var deployDir = new DirectoryInfo(pathDir);
-        pathDir = Path.Combine(_rootDir, "bin", DEPLOY_DIR, DEPLOY_DLL_DIR);
-        if (!Directory.Exists(pathDir))
-        {
-            System.Console.WriteLine("Create directory {0}", pathDir);
-            Directory.CreateDirectory(pathDir);
-        }
-        var deployDll = new DirectoryInfo(pathDir);
+        var deployDir = BuildDirectory(_rootDir, "bin", DEPLOY_DIR);
+        var deployDll = BuildDirectory(_rootDir, "bin", DEPLOY_DIR, DEPLOY_DLL_DIR);
+        var deployModules = BuildDirectory(_rootDir, "bin", DEPLOY_DIR, DEPLOY_DLL_DIR, DEPLOY_MODULES_DIR);
         
-        ClearDir(deployDir);
         System.Console.WriteLine("Copying files...");
-        CopyFiles(configDir, deployDir, deployDll);
+        CopyFiles(configDir, deployDir, deployDll, deployModules);
         Archive(deployDir, deployName);
+    }
+
+    private static DirectoryInfo BuildDirectory(params string[] @params)
+    {
+        var path = Path.Combine(@params);
+        var exists = Directory.Exists(path);
+        if (!exists)
+        {
+            System.Console.WriteLine($"Create directory {path}");
+            Directory.CreateDirectory(path);
+        }
+        var result = new DirectoryInfo(path);
+        if (exists)
+        {
+            ClearDir(result);
+        }
+        return result;
     }
     
     private static void ClearDir(DirectoryInfo dirInfo) 
@@ -128,17 +135,25 @@ class Script
         }
     }
     
-    private static void CopyFiles(DirectoryInfo source, DirectoryInfo deployDir, DirectoryInfo deployDll)
+    private static void CopyFiles(DirectoryInfo source, DirectoryInfo deployDir, DirectoryInfo deployDll, DirectoryInfo deployModules)
     {
         foreach(var f in source.GetFiles()) 
         {
             if (!_exclude.Contains(f.Extension)) 
             {
                 var destination = "";
-                if (_rootFiles.Contains(f.Name)) 
+                if (_rootFiles.Contains(f.Name))
+                {
                     destination = Path.Combine(deployDir.FullName, f.Name);
-                else 
+                }
+                if (f.Name.StartsWith(ModulePreffix))
+                {
+                    destination = Path.Combine(deployModules.FullName, f.Name);
+                }
+                else
+                {
                     destination = Path.Combine(deployDll.FullName, f.Name);
+                }
                 System.Console.WriteLine("Copying files: {0} -> {1}", f.FullName, destination);
                 f.CopyTo(destination);
             }
