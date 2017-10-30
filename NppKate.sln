@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2005
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NppKate", "NppKate\NppKate.csproj", "{E56F6E12-089C-40ED-BCFD-923E5FA121A1}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -16,7 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common Items", "Common Item
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "restart", "restart\restart.csproj", "{F7161BE6-9FA7-4BEB-94C1-3BDD0CCC9079}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KateRestart", "restart\KateRestart.csproj", "{F7161BE6-9FA7-4BEB-94C1-3BDD0CCC9079}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KateResource", "KateResource\KateResource.vcxproj", "{CBA0747E-9E1E-421E-8926-E104BF0192EB}"
 EndProject
@@ -66,5 +66,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1AF07EAA-3713-41D1-B647-F679B6092311}
 	EndGlobalSection
 EndGlobal

@@ -480,6 +480,8 @@ namespace NppKate.Npp
                 return;
 
             var path = Path.Combine(PluginDir, "restart.exe");
+            if (!File.Exists(path))
+                path = Path.Combine(PluginDir, "KateRestart.exe");
             ProcessModule npp = null;
             foreach (ProcessModule m in proc.Modules)
             {
