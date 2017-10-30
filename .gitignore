@@ -193,3 +193,4 @@ ModelManifest.xml
 /*.iml
 *.db
 *.opendb
+/.vs/**/*.*
